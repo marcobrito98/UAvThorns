@@ -476,7 +476,7 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         const CCTK_REAL z1  = z[ind] - z0;
 
         const CCTK_REAL x2  = x[ind] - x0_2;
-        const CCTK_REAL y2  = y[ind] - y0_2; //criar estas constantes.
+        const CCTK_REAL y2  = y[ind] - y0_2;
         const CCTK_REAL z2  = z[ind] - z0_2;
 
         // For the Boson Star, r = R, no coordinate change needed.

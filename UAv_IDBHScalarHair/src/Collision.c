@@ -705,7 +705,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
           alp[ind] += alph - 1;
           if (alp[ind] < SMALL)
-            alp[ind] += SMALL - 1;
+            alp[ind] += SMALL;
         }
 
         // shift

@@ -701,17 +701,17 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] += pow(psi1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "ScalarBS")) {
-          alp[ind] += alph;
+          alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
+        else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
+          alp[ind] += alph - 1;
           if (alp[ind] < SMALL)
-            alp[ind] += SMALL;
+            alp[ind] += SMALL - 1;
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "ScalarBS")) {
-          betax[ind] +=  W[ind] * y1;
-          betay[ind] += -W[ind] * x1;
+        if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
+          betax[ind] +=  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
+          betay[ind] += -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
           betaz[ind] +=  0.;
         }
 

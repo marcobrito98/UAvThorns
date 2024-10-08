@@ -10,6 +10,7 @@ EXTENDS KEYWORD initial_data
   "Kerr_test" :: "test with Kerr data"
   "HairyBH"   :: "HairyBH initial data"
   "ScalarBS"  :: "Scalar boson star initial data"
+  "TwinScalarBS" :: "Twin scalar boson star initial data"
 }
 
 EXTENDS KEYWORD initial_lapse

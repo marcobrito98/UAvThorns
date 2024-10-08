@@ -701,9 +701,9 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
+          alp[ind] += pow(psi1, initial_lapse_psi_exponent) + 1;
         else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
-          alp[ind] += alph - 1;
+          alp[ind] += alph + 1;
           if (alp[ind] < SMALL)
             alp[ind] += SMALL;
         }

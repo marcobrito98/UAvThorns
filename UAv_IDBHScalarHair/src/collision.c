@@ -465,6 +465,10 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
+  const CCTK_REAL coswt_2 = cos(omega_BS * tt);
+  const CCTK_REAL sinwt_2 = sin(omega_BS * tt);
+
+
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -544,7 +548,7 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
 
 
 
-        gxx[ind] = h1xx + h2xx - 1;//estas variaveis devem vir de outro thorn??????????
+        gxx[ind] = h1xx + h2xx - 1;//estas variaveis devem vir de outro thorn?
         gxy[ind] = h1xy + h2xy;
         gxz[ind] = 0;
         gyy[ind] = h1yy + h2yy -1;
@@ -598,8 +602,8 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         k2yz[ind] = -0.5 *  x2 * exp_auxi * dW_dz;
         k2zz[ind] =  0.;
 
-
-        kxx[ind] =  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+        //work in progress
+        kxx[ind] =  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;//change this
         kxy[ind] = -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
         kxz[ind] =  0.5 *  y1 * exp_auxi * dW_dz;
         kyy[ind] = -kxx[ind];
@@ -615,14 +619,28 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
 
         // scalar fields
-        phi1[ind]  = phi0_l * (coswt * cosmph + sinwt * sinmph);
-        phi2[ind]  = phi0_l * (coswt * sinmph - sinwt * cosmph);
+        phi1_1  = phi0_l * (coswt * cosmph + sinwt * sinmph);
+        phi2_1  = phi0_l * (coswt * sinmph - sinwt * cosmph);
+
+        phi1_2 = phi0_l * (coswt_2 * cosmph_2 + sinwt_2 * sinmph_2);
+        phi2_2 = phi0_l * (coswt_2 * sinmph_2 - sinwt_2 * cosmph_2);
+
+        phi1[ind]  = phi1_1 + phi1_2;
+        phi2[ind]  = phi2_1 + phi2_2;
 
         const CCTK_REAL alph = exp(F0[ind]);
 
         // No regularization needed for the BS, the lapse is non-zero
-        Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
-        Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
+
+        Kphi1_1 = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2_1[ind];
+        Kphi2_1 = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1_1[ind];
+
+        Kphi1_2 = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2_2[ind];
+        Kphi2_2 = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1_2[ind];
+
+
+        Kphi1[ind] = Kphi1_1 + Kphi1_2;
+        Kphi2[ind] = Kphi2_1 + Kphi2_2;
         
 
         // lapse

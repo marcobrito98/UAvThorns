@@ -599,9 +599,9 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
         const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-        const CCTK_REAL x1  = x[ind] - x0_2;
-        const CCTK_REAL y1  = y[ind] - y0_2;
-        const CCTK_REAL z1  = z[ind] - z0_2;
+        const CCTK_REAL x1  = x[ind] +40;
+        const CCTK_REAL y1  = y[ind] +40;
+        const CCTK_REAL z1  = z[ind] +40;
 
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;

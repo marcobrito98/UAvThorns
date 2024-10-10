@@ -634,12 +634,12 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         const CCTK_REAL conf_fac = psi4 * pert_cf;
 
         // 3-metric
-        gxx[ind] += conf_fac * (1. + h_rho2 * sinph * sinph) - 1;
-        gxy[ind] += -conf_fac * h_rho2 * sinph * cosph;
-        gxz[ind] += 0;
-        gyy[ind] += conf_fac * (1. + h_rho2 * cosph * cosph) - 1;
-        gyz[ind] += 0;
-        gzz[ind] += conf_fac - 1;
+        gxx[ind] = conf_fac * (1. + h_rho2 * sinph * sinph) ;
+        gxy[ind] = -conf_fac * h_rho2 * sinph * cosph;
+        gxz[ind] = 0;
+        gyy[ind] = conf_fac * (1. + h_rho2 * cosph * cosph) ;
+        gyz[ind] = 0;
+        gzz[ind] = conf_fac ;
 
         /*
           d/drho = rho/r * d/dr  +    z/r^2 * d/dth
@@ -673,12 +673,12 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         }
 
         // extrinsic curvature
-        kxx[ind] +=  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-        kxy[ind] += -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
-        kxz[ind] +=  0.5 *  y1 * exp_auxi * dW_dz;
-        kyy[ind] += -kxx[ind];
-        kyz[ind] += -0.5 *  x1 * exp_auxi * dW_dz;
-        kzz[ind] +=  0.;
+        kxx[ind] =  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+        kxy[ind] = -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
+        kxz[ind] =  0.5 *  y1 * exp_auxi * dW_dz;
+        kyy[ind] = -0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+        kyz[ind] = -0.5 *  x1 * exp_auxi * dW_dz;
+        kzz[ind] =  0.;
 
           
 
@@ -689,30 +689,30 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
 
         // scalar fields
-        phi1[ind]  += phi0_l * (coswt * cosmph + sinwt * sinmph);
-        phi2[ind]  += phi0_l * (coswt * sinmph - sinwt * cosmph);
+        phi1[ind]  = phi0_l * (coswt * cosmph + sinwt * sinmph);
+        phi2[ind]  = phi0_l * (coswt * sinmph - sinwt * cosmph);
 
         const CCTK_REAL alph = exp(F0[ind]);
 
         // No regularization needed for the BS, the lapse is non-zero
-        Kphi1[ind] += 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
-        Kphi2[ind] += 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
+        Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
+        Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
         
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
+          alp[ind] = pow(psi1, initial_lapse_psi_exponent) - 1;
         else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
-          alp[ind] += alph - 1;
+          alp[ind] = alph;
           if (alp[ind] < SMALL)
-            alp[ind] += SMALL;
+            alp[ind] = SMALL;
         }
 
         // shift
         if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-          betax[ind] +=  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
-          betay[ind] += -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
-          betaz[ind] +=  0.;
+          betax[ind] =  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
+          betay[ind] = -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
+          betaz[ind] =  0.;
         }
 
       } /* for i */

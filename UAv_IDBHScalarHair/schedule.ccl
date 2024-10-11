@@ -20,6 +20,15 @@ if (CCTK_Equals(initial_data, "HairyBH"))
   } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
 }
 
+if (CCTK_Equals(initial_data, "ScalarBS"))
+{
+  SCHEDULE UAv_IDScalarBS IN ADMBase_InitialData
+  {
+    LANG: C
+    OPTIONS: Local
+    SYNC: ADMBase::curv
+  } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
+}
 
 if (CCTK_Equals(initial_data, "TwinScalarBS"))
 {

@@ -739,11 +739,11 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
         // No regularization needed for the BS, the lapse is non-zero
 
-        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1[ind];
-        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1[ind];
+        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
+        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
 
-        CCTK_REAL Kphi1_2 = 0.5 * (mm * W_2[ind] - omega_BS) / alph_2 * phi2_2[ind];
-        CCTK_REAL Kphi2_2 = 0.5 * (omega_BS - mm * W_2[ind]) / alph_2 * phi1_2[ind];
+        CCTK_REAL Kphi1_2 = 0.5 * (mm * W_2[ind] - omega_BS) / alph_2 * phi2_2;
+        CCTK_REAL Kphi2_2 = 0.5 * (omega_BS - mm * W_2[ind]) / alph_2 * phi1_2;
 
 
         Kphi1[ind] = Kphi1_1 + Kphi1_2;

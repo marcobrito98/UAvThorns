@@ -306,9 +306,13 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
      the grid points themselves in the coordinates (X, theta). */
   const CCTK_INT N_interp_points = cctk_lsh[0]*cctk_lsh[1]*cctk_lsh[2]; // total points
 
-  CCTK_REAL *X_g, *theta_g;
-  X_g     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  theta_g = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  CCTK_REAL *X_g_1, *theta_g_1;
+  X_g_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  theta_g_1 = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+
+  CCTK_REAL *X_g_2, *theta_g_2;
+  X_g_2     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  theta_g_2 = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
@@ -316,24 +320,42 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
         const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-        const CCTK_REAL x1  = x[ind] - x0;
-        const CCTK_REAL y1  = y[ind] - y0;
-        const CCTK_REAL z1  = z[ind] - z0;
+        const CCTK_REAL x1_1  = x[ind] - x0;
+        const CCTK_REAL y1_1  = y[ind] - y0;
+        const CCTK_REAL z1_1  = z[ind] - z0;
 
-        const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;
+        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
 
-        CCTK_REAL rr  = sqrt(rr2);
+        CCTK_REAL rr_1  = sqrt(rr2_1);
         /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
         
         // From r to the X radial coordinate (used in input files)
-        const CCTK_REAL lX = rr / (C0 + rr);
+        const CCTK_REAL lX_1 = rr_1 / (C0 + rr_1);
 
-        CCTK_REAL ltheta = rr < 1e-16 ? 0 : acos( z1/rr );    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
-        if (ltheta > 0.5*M_PI)    // symmetry along the equatorial plane
-          ltheta = M_PI - ltheta;
+        CCTK_REAL ltheta_1 = rr_1 < 1e-16 ? 0 : acos( z1_1/rr_1 );    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        if (ltheta_1 > 0.5*M_PI)    // symmetry along the equatorial plane
+          ltheta_1 = M_PI - ltheta_1;
 
-        X_g[ind]     = lX;
-        theta_g[ind] = ltheta;
+        X_g_1[ind]     = lX_1;
+        theta_g_1[ind] = ltheta_1;
+        const CCTK_REAL x1_2  = x[ind] - x0_2;
+        const CCTK_REAL y1_2  = y[ind] - y0_2;
+        const CCTK_REAL z1_2  = z[ind] - z0_2;
+
+        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+
+        CCTK_REAL rr_2  = sqrt(rr2_2);
+        /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
+        
+        // From r to the X radial coordinate (used in input files)
+        const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
+
+        CCTK_REAL ltheta_2 = rr_2 < 1e-16 ? 0 : acos( z1_2/rr_2);    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        if (ltheta_2 > 0.5*M_PI)    // symmetry along the equatorial plane
+          ltheta_2 = M_PI - ltheta_2;
+
+        X_g_2[ind]     = lX_2;
+        theta_g_2[ind] = ltheta_2;
       }
     }
   }
@@ -354,9 +376,13 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
   /* points onto which we want to interpolate, ie, the grid points themselves in
      (X, theta) coordinates (computed above) */
-  const void *interp_coords[N_dims];
-  interp_coords[0] = (const void *) X_g;
-  interp_coords[1] = (const void *) theta_g;
+  const void *interp_coords_1[N_dims];
+  interp_coords_1[0] = (const void *) X_g_1;
+  interp_coords_1[1] = (const void *) theta_g_1;
+
+  const void *interp_coords_2[N_dims];
+  interp_coords_2[0] = (const void *) X_g_2;
+  interp_coords_2[1] = (const void *) theta_g_2;
 
 
   /* input arrays */
@@ -386,34 +412,61 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   input_arrays[6] = (const void *) dW_dth_in;
 
   /* output arrays */
-  void *output_arrays[N_output_arrays];
-  CCTK_INT output_array_type_codes[N_output_arrays];
-  CCTK_REAL *F1, *F2, *F0, *phi0, *W;
-  CCTK_REAL *dW_dr, *dW_dth;
+  void *output_arrays_1[N_output_arrays];
+  CCTK_INT output_array_type_codes_1[N_output_arrays];
+  void *output_arrays_2[N_output_arrays];
+  CCTK_INT output_array_type_codes_2[N_output_arrays];
+  CCTK_REAL *F1_1, *F2_1, *F0_1, *phi0_1, *W_1, *F1_2, *F2_2, *F0_2, *phi0_2, *W_2;
+  CCTK_REAL *dW_dr_1, *dW_dth_1;
+  CCTK_REAL *dW_dr_2, *dW_dth_2;
 
-  F1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  F2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  F0          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  phi0        = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  W           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  dW_dr       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  dW_dth      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  F2_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  F0_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  phi0_1        = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  W_1           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dW_dr_1       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dW_dth_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  
+  F1_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  F2_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  F0_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  phi0_2        = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  W_2           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dW_dr_2       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dW_dth_2      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
-  output_array_type_codes[0] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[1] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[2] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[3] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[4] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[5] = CCTK_VARIABLE_REAL;
-  output_array_type_codes[6] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[0] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[1] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[2] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[3] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[4] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[5] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_1[6] = CCTK_VARIABLE_REAL;
 
-  output_arrays[0] = (void *) F1;
-  output_arrays[1] = (void *) F2;
-  output_arrays[2] = (void *) F0;
-  output_arrays[3] = (void *) phi0;
-  output_arrays[4] = (void *) W;
-  output_arrays[5] = (void *) dW_dr;
-  output_arrays[6] = (void *) dW_dth;
+  output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
+
+  output_arrays_1[0] = (void *) F1_1;
+  output_arrays_1[1] = (void *) F2_1;
+  output_arrays_1[2] = (void *) F0_1;
+  output_arrays_1[3] = (void *) phi0_1;
+  output_arrays_1[4] = (void *) W_1;
+  output_arrays_1[5] = (void *) dW_dr_1;
+  output_arrays_1[6] = (void *) dW_dth_1;
+
+  output_arrays_2[0] = (void *) F1_2;
+  output_arrays_2[1] = (void *) F2_2;
+  output_arrays_2[2] = (void *) F0_2;
+  output_arrays_2[3] = (void *) phi0_2;
+  output_arrays_2[4] = (void *) W_2;
+  output_arrays_2[5] = (void *) dW_dr_2;
+  output_arrays_2[6] = (void *) dW_dth_2;
 
 
   /* handle and settings for the interpolation routine */
@@ -424,23 +477,40 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   CCTK_INFO("Interpolating result...");
 
   /* do the actual interpolation, and check for error returns */
-  int status = CCTK_InterpLocalUniform(N_dims, operator_handle,
+  int status_1 = CCTK_InterpLocalUniform(N_dims, operator_handle,
                                        param_table_handle,
                                        origin, delta,
                                        N_interp_points,
                                        CCTK_VARIABLE_REAL,
-                                       interp_coords,
+                                       interp_coords_1,
                                        N_input_arrays, input_array_dims,
                                        input_array_type_codes,
                                        input_arrays,
-                                       N_output_arrays, output_array_type_codes,
-                                       output_arrays);
-  if (status < 0) {
+                                       N_output_arrays, output_array_type_codes_1,
+                                       output_arrays_1);
+  if (status_1 < 0) {
     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
     "interpolation screwed up!");
   }
 
-  free(X_g); free(theta_g);
+    /* do the actual interpolation, and check for error returns */
+  int status_2 = CCTK_InterpLocalUniform(N_dims, operator_handle,
+                                       param_table_handle,
+                                       origin, delta,
+                                       N_interp_points,
+                                       CCTK_VARIABLE_REAL,
+                                       interp_coords_2,
+                                       N_input_arrays, input_array_dims,
+                                       input_array_type_codes,
+                                       input_arrays,
+                                       N_output_arrays, output_array_type_codes_2,
+                                       output_arrays_2);
+  if (status_2 < 0) {
+    CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+    "interpolation screwed up!");
+  }
+
+  free(X_g_1); free(theta_g_1); free(X_g_2); free(theta_g_2);
   free(Xtmp); free(thtmp);
   free(F1_in); free(F2_in); free(F0_in); free(phi0_in); free(Wbar_in);
   free(W_in); free(dW_dr_in); free(dW_dth_in);
@@ -465,15 +535,244 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
+
+
+  for (int k = 0; k < cctk_lsh[2]; ++k) {
+    for (int j = 0; j < cctk_lsh[1]; ++j) {
+      for (int i = 0; i < cctk_lsh[0]; ++i) {
+
+        const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
+
+        //Boson Star 1
+
+        const CCTK_REAL x1_1  = x[ind] - x0;
+        const CCTK_REAL y1_1  = y[ind] - y0;
+        const CCTK_REAL z1_1  = z[ind] - z0;
+
+        // For the Boson Star, r = R, no coordinate change needed.
+        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr_1  = sqrt(rr2_1);
+
+        const CCTK_REAL rho2_1 = x1_1*x1_1 + y1_1*y1_1;
+        const CCTK_REAL rho_1  = sqrt(rho2_1);
+        
+
+        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
+        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
+        // but can this lead to nan depending on the C implementation?
+
+        const CCTK_REAL cosph_1  = cos(ph_1);
+        const CCTK_REAL sinph_1  = sin(ph_1);
+
+        const CCTK_REAL cosmph_1 = cos(mm*ph_1);
+        const CCTK_REAL sinmph_1 = sin(mm*ph_1);
+
+        //Boson Star B
+
+        const CCTK_REAL x1_2  = x[ind] - x0_2;
+        const CCTK_REAL y1_2  = y[ind] - y0_2;
+        const CCTK_REAL z1_2  = z[ind] - z0_2;
+
+        // For the Boson Star, r = R, no coordinate change needed.
+        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        const CCTK_REAL rr_2  = sqrt(rr2_2);
+
+        const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
+        const CCTK_REAL rho_2  = sqrt(rho2_2);
+        
+
+        const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
+        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
+        // but can this lead to nan depending on the C implementation?
+
+        const CCTK_REAL cosph_2  = cos(ph_2);
+        const CCTK_REAL sinph_2  = sin(ph_2);
+
+        const CCTK_REAL cosmph_2 = cos(mm*ph_2);
+        const CCTK_REAL sinmph_2 = sin(mm*ph_2);
+        //////////////////////////////////////////
+
+        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        const CCTK_REAL psi4_2 = exp(2. * F1_2[ind]);
+        const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        const CCTK_REAL psi2_2 = sqrt(psi4_2);
+        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+        const CCTK_REAL psi1_2 = sqrt(psi2_2);
+
+        const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
+        const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
+
+        // add non-axisymmetric perturbation on conformal factor
+        const CCTK_REAL argpert_cf_1 = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
+        const CCTK_REAL pert_cf_1 = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf_1*argpert_cf_1);
+        const CCTK_REAL argpert_cf_2 = (rr_2 - R0pert_conf_fac)/Sigmapert_conf_fac;
+        const CCTK_REAL pert_cf_2 = 1. + Apert_conf_fac * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_cf_2*argpert_cf_2);
+
+        const CCTK_REAL conf_fac_1 = psi4_1 * pert_cf_1;
+        const CCTK_REAL conf_fac_2 = psi4_2 * pert_cf_2;
+
+        // 3-metric
+
+        // Boson Star 1
+        CCTK_REAL gxx_1 = conf_fac_1 * (1. + h_rho2_1 * sinph_1 * sinph_1);
+        CCTK_REAL gxy_1 = -conf_fac_1 * h_rho2_1 * sinph_1 * cosph_1;
+        CCTK_REAL gxz_1 = 0;
+        CCTK_REAL gyy_1 = conf_fac_1 * (1. + h_rho2_1 * cosph_1 * cosph_1);
+        CCTK_REAL gyz_1 = 0;
+        CCTK_REAL gzz_1 = conf_fac_1;
+
+          // Boson Star 2
+        CCTK_REAL gxx_2 = conf_fac_2 * (1. + h_rho2_2 * sinph_2 * sinph_2);
+        CCTK_REAL gxy_2 = -conf_fac_2 * h_rho2_2 * sinph_2 * cosph_2;
+        CCTK_REAL gxz_2 = 0;
+        CCTK_REAL gyy_2 = conf_fac_2 * (1. + h_rho2_2 * cosph_2 * cosph_2);
+        CCTK_REAL gyz_2 = 0;
+        CCTK_REAL gzz_2 = conf_fac_2;
+
+        //Superposition
+        gxx[ind] = gxx_1 + gxx_2 - 1;
+        gxy[ind] = gxy_1 + gxy_2;
+        gxz[ind] = gxz_1 + gxz_2;
+        gyy[ind] = gyy_1 + gyy_2 - 1;
+        gyz[ind] = gyz_1 + gyz_2;
+        gzz[ind] = gzz_1 + gzz_2 - 1;
+
+        /*
+          d/drho = rho/r * d/dr  +    z/r^2 * d/dth
+          d/dz   =   z/r * d/dr  -  rho/r^2 * d/dth
+
+          Kxx = 0.5 * 2xy/rho        * exp(2F2-F0) * dW/drho   = 0.5 * rho * sin(2phi) * exp(2F2-F0) * dW/drho
+          Kyy = - Kxx
+          Kzz = 0
+          Kxy =-0.5 * (x^2-y^2)/rho  * exp(2F2-F0) * dW/drho   = 0.5 * rho * cos(2phi) * exp(2F2-F0) * dW/drho
+          Kxz = 0.5 * y * exp(2F2-F0) * dW/dz
+          Kyz =-0.5 * x * exp(2F2-F0) * dW/dz
+        */
+
+        /*
+          Close to the axis and the origin, Kij = 0.
+          The "coordinate" part of the expressions above behave like rho (or r).
+          Let's first consider a threshold of rho < 1e-8. The sphere r < 1e-8 is included in this cylinder.
+          In this case, we just set d/drho and d/dz = 0 as proxies.
+        */
+
+
+      
+        CCTK_REAL dW_drho_1, dW_dz_1;
+        CCTK_REAL dW_drho_2, dW_dz_2;
+        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+        const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
+
+        if (rho_1 < 1e-8) {
+          dW_drho_1 = 0.;
+          dW_dz_1   = 0.;
+        }
+        else {
+          dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+          dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+        }
+
+
+        if (rho_2 < 1e-8) {
+          dW_drho_2 = 0.;
+          dW_dz_2   = 0.;
+        }
+        else {
+          dW_drho_2 = rho_2/rr_2 * dW_dr_2[ind]  +   z1_2/rr2_2 * dW_dth_2[ind];
+          dW_dz_2   =  z1_2/rr_2 * dW_dr_2[ind]  -  rho_2/rr2_2 * dW_dth_2[ind];
+        }
+
+        //Boson star 1
+        CCTK_REAL kxx_1  = 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        CCTK_REAL kxy_1  = -0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        CCTK_REAL kxz_1  = 0.5 * y1_1 * exp_auxi_1 * dW_dz_1;
+        CCTK_REAL kyy_1  = -0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        CCTK_REAL kyz_1  = -0.5 * x1_1 * exp_auxi_1 * dW_dz_1;
+        CCTK_REAL kzz_1 = 0.;
+
+        //Boson star 2
+
+        CCTK_REAL kxx_2  = 0.5 * rho_2 * sin(2*ph_2) * exp_auxi_2 * dW_drho_2;
+        CCTK_REAL kxy_2  = -0.5 * rho_2 * cos(2*ph_2) * exp_auxi_2 * dW_drho_2;
+        CCTK_REAL kxz_2  = 0.5 * y1_2 * exp_auxi_2 * dW_dz_2;
+        CCTK_REAL kyy_2  = -0.5 * rho_2 * sin(2*ph_2) * exp_auxi_2 * dW_drho_2;
+        CCTK_REAL kyz_2  = -0.5 * x1_2 * exp_auxi_2 * dW_dz_2;
+        CCTK_REAL kzz_2 = 0.;
+
+        // extrinsic curvature (this will be zero due to W=0)
+        kxx[ind] = kxx_1 + kxx_2;
+        kxy[ind] = kxy_1 + kxy_2;
+        kxz[ind] = kxz_1 + kxz_2;
+        kyy[ind] = kyy_1 + kyy_2;
+        kyz[ind] = kyz_1 + kyz_2;
+        kzz[ind] = kzz_1 + kzz_2;
+
+          
+
+        // let's add a perturbation to the scalar field as well
+        const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
+        const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
+        
+        const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
+        const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+
+        const CCTK_REAL phi0_l_1 = phi0_1[ind] * pert_phi_1;
+        const CCTK_REAL phi0_l_2 = phi0_2[ind] * pert_phi_2;
+
+        // scalar fields
+
+              //star 1
+        CCTK_REAL phi1_1  = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
+        CCTK_REAL phi2_1  = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
+        
+
+              //star 2
+        CCTK_REAL phi1_2  = phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
+        CCTK_REAL phi2_2  = phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
+        /////////////////////////////
+
+        phi1[ind]  = phi1_1 + phi1_2;
+        phi2[ind]  = phi2_1 + phi2_2;
+
+        const CCTK_REAL alph_1 = exp(F0_1[ind]);
+        const CCTK_REAL alph_2 = exp(F0_2[ind]);
+
+        // No regularization needed for the BS, the lapse is non-zero
+        Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
+        Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
+        
+
+        // lapse
+        if (CCTK_EQUALS(initial_lapse, "psi^n"))
+          alp[ind] = pow(psi1_1, initial_lapse_psi_exponent) + pow(psi1_2, initial_lapse_psi_exponent) - 1;
+        else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
+          alp[ind] = alph_1 + alph_2 - 1;
+          if (alp[ind] < SMALL)
+            alp[ind] = SMALL;
+        }
+
+        // shift
+        if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
+          betax[ind] =  W_1[ind] * y1_1 + W_2[ind] * y1_2;
+          betay[ind] = -W_1[ind] * x1_1 -W_2[ind] * x1_2;
+          betaz[ind] =  0.;
+        }
+
+      } /* for i */
+    }   /* for j */
+  }     /* for k */
+
+
+
   // for (int k = 0; k < cctk_lsh[2]; ++k) {
   //   for (int j = 0; j < cctk_lsh[1]; ++j) {
   //     for (int i = 0; i < cctk_lsh[0]; ++i) {
 
   //       const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-  //       const CCTK_REAL x1  = x[ind] - x0;
-  //       const CCTK_REAL y1  = y[ind] - y0;
-  //       const CCTK_REAL z1  = z[ind] - z0;
+  //       const CCTK_REAL x1  = x[ind] +40;
+  //       const CCTK_REAL y1  = y[ind] +40;
+  //       const CCTK_REAL z1  = z[ind] +40;
 
   //       // For the Boson Star, r = R, no coordinate change needed.
   //       const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;
@@ -506,12 +805,12 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   //       const CCTK_REAL conf_fac = psi4 * pert_cf;
 
   //       // 3-metric
-  //       gxx[ind] = conf_fac * (1. + h_rho2 * sinph * sinph);
-  //       gxy[ind] = -conf_fac * h_rho2 * sinph * cosph;
-  //       gxz[ind] = 0;
-  //       gyy[ind] = conf_fac * (1. + h_rho2 * cosph * cosph);
-  //       gyz[ind] = 0;
-  //       gzz[ind] = conf_fac;
+  //       gxx[ind] += conf_fac * (1. + h_rho2 * sinph * sinph) - 1;
+  //       gxy[ind] += -conf_fac * h_rho2 * sinph * cosph;
+  //       gxz[ind] += 0;
+  //       gyy[ind] += conf_fac * (1. + h_rho2 * cosph * cosph) - 1;
+  //       gyz[ind] += 0;
+  //       gzz[ind] += conf_fac - 1;
 
   //       /*
   //         d/drho = rho/r * d/dr  +    z/r^2 * d/dth
@@ -545,12 +844,12 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   //       }
 
   //       // extrinsic curvature
-  //       kxx[ind] =  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-  //       kxy[ind] = -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
-  //       kxz[ind] =  0.5 *  y1 * exp_auxi * dW_dz;
-  //       kyy[ind] = -kxx[ind];
-  //       kyz[ind] = -0.5 *  x1 * exp_auxi * dW_dz;
-  //       kzz[ind] =  0.;
+  //       kxx[ind] +=  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+  //       kxy[ind] += -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
+  //       kxz[ind] +=  0.5 *  y1 * exp_auxi * dW_dz;
+  //       kyy[ind] += -kxx[ind];
+  //       kyz[ind] += -0.5 *  x1 * exp_auxi * dW_dz;
+  //       kzz[ind] +=  0.;
 
           
 
@@ -561,30 +860,30 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   //       const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
 
   //       // scalar fields
-  //       phi1[ind]  = phi0_l * (coswt * cosmph + sinwt * sinmph);
-  //       phi2[ind]  = phi0_l * (coswt * sinmph - sinwt * cosmph);
+  //       phi1[ind]  += phi0_l * (coswt * cosmph + sinwt * sinmph);
+  //       phi2[ind]  += phi0_l * (coswt * sinmph - sinwt * cosmph);
 
   //       const CCTK_REAL alph = exp(F0[ind]);
 
   //       // No regularization needed for the BS, the lapse is non-zero
-  //       Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
-  //       Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
+  //       Kphi1[ind] += 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
+  //       Kphi2[ind] += 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
         
 
   //       // lapse
   //       if (CCTK_EQUALS(initial_lapse, "psi^n"))
-  //         alp[ind] = pow(psi1, initial_lapse_psi_exponent);
+  //         alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
   //       else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
-  //         alp[ind] = alph;
+  //         alp[ind] += alph - 1;
   //         if (alp[ind] < SMALL)
-  //           alp[ind] = SMALL;
+  //           alp[ind] += SMALL;
   //       }
 
   //       // shift
   //       if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-  //         betax[ind] =  W[ind] * y1;
-  //         betay[ind] = -W[ind] * x1;
-  //         betaz[ind] =  0.;
+  //         betax[ind] +=  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
+  //         betay[ind] += -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
+  //         betaz[ind] +=  0.;
   //       }
 
   //     } /* for i */
@@ -592,137 +891,11 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   // }     /* for k */
 
 
+  free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
+  free(dW_dr_1); free(dW_dth_1);
 
-  for (int k = 0; k < cctk_lsh[2]; ++k) {
-    for (int j = 0; j < cctk_lsh[1]; ++j) {
-      for (int i = 0; i < cctk_lsh[0]; ++i) {
-
-        const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
-
-        const CCTK_REAL x1  = x[ind] +40;
-        const CCTK_REAL y1  = y[ind] +40;
-        const CCTK_REAL z1  = z[ind] +40;
-
-        // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;
-        const CCTK_REAL rr  = sqrt(rr2);
-
-        const CCTK_REAL rho2 = x1*x1 + y1*y1;
-        const CCTK_REAL rho  = sqrt(rho2);
-        
-
-        const CCTK_REAL ph = atan2(y1, x1);
-        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
-        // but can this lead to nan depending on the C implementation?
-
-        const CCTK_REAL cosph  = cos(ph);
-        const CCTK_REAL sinph  = sin(ph);
-
-        const CCTK_REAL cosmph = cos(mm*ph);
-        const CCTK_REAL sinmph = sin(mm*ph);
-
-        const CCTK_REAL psi4 = exp(2. * F1[ind]);
-        const CCTK_REAL psi2 = sqrt(psi4);
-        const CCTK_REAL psi1 = sqrt(psi2);
-
-        const CCTK_REAL h_rho2 = exp(2. * (F2[ind] - F1[ind])) - 1.;
-
-        // add non-axisymmetric perturbation on conformal factor
-        const CCTK_REAL argpert_cf = (rr - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
-
-        const CCTK_REAL conf_fac = psi4 * pert_cf;
-
-        // 3-metric
-        gxx[ind] += conf_fac * (1. + h_rho2 * sinph * sinph) - 1;
-        gxy[ind] += -conf_fac * h_rho2 * sinph * cosph;
-        gxz[ind] += 0;
-        gyy[ind] += conf_fac * (1. + h_rho2 * cosph * cosph) - 1;
-        gyz[ind] += 0;
-        gzz[ind] += conf_fac - 1;
-
-        /*
-          d/drho = rho/r * d/dr  +    z/r^2 * d/dth
-          d/dz   =   z/r * d/dr  -  rho/r^2 * d/dth
-
-          Kxx = 0.5 * 2xy/rho        * exp(2F2-F0) * dW/drho   = 0.5 * rho * sin(2phi) * exp(2F2-F0) * dW/drho
-          Kyy = - Kxx
-          Kzz = 0
-          Kxy =-0.5 * (x^2-y^2)/rho  * exp(2F2-F0) * dW/drho   = 0.5 * rho * cos(2phi) * exp(2F2-F0) * dW/drho
-          Kxz = 0.5 * y * exp(2F2-F0) * dW/dz
-          Kyz =-0.5 * x * exp(2F2-F0) * dW/dz
-        */
-
-        /*
-          Close to the axis and the origin, Kij = 0.
-          The "coordinate" part of the expressions above behave like rho (or r).
-          Let's first consider a threshold of rho < 1e-8. The sphere r < 1e-8 is included in this cylinder.
-          In this case, we just set d/drho and d/dz = 0 as proxies.
-        */
-
-        CCTK_REAL dW_drho, dW_dz;
-        const CCTK_REAL exp_auxi = exp(2. * F2[ind] - F0[ind]);
-
-        if (rho < 1e-8) {
-          dW_drho = 0.;
-          dW_dz   = 0.;
-        }
-        else {
-          dW_drho = rho/rr * dW_dr[ind]  +   z1/rr2 * dW_dth[ind];
-          dW_dz   =  z1/rr * dW_dr[ind]  -  rho/rr2 * dW_dth[ind];
-        }
-
-        // extrinsic curvature
-        kxx[ind] +=  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-        kxy[ind] += -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
-        kxz[ind] +=  0.5 *  y1 * exp_auxi * dW_dz;
-        kyy[ind] += -kxx[ind];
-        kyz[ind] += -0.5 *  x1 * exp_auxi * dW_dz;
-        kzz[ind] +=  0.;
-
-          
-
-        // let's add a perturbation to the scalar field as well
-        const CCTK_REAL argpert_phi = (rr - R0pert_phi)/Sigmapert_phi;
-        const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );
-
-        const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
-
-        // scalar fields
-        phi1[ind]  += phi0_l * (coswt * cosmph + sinwt * sinmph);
-        phi2[ind]  += phi0_l * (coswt * sinmph - sinwt * cosmph);
-
-        const CCTK_REAL alph = exp(F0[ind]);
-
-        // No regularization needed for the BS, the lapse is non-zero
-        Kphi1[ind] += 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
-        Kphi2[ind] += 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
-        
-
-        // lapse
-        if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
-        else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
-          alp[ind] += alph - 1;
-          if (alp[ind] < SMALL)
-            alp[ind] += SMALL;
-        }
-
-        // shift
-        if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-          betax[ind] +=  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
-          betay[ind] += -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
-          betaz[ind] +=  0.;
-        }
-
-      } /* for i */
-    }   /* for j */
-  }     /* for k */
-
-
-
-  free(F1); free(F2); free(F0); free(phi0); free(W);
-  free(dW_dr); free(dW_dth);
+  free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
+  free(dW_dr_2); free(dW_dth_2);
 
   return;
 }

@@ -556,7 +556,7 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
 
         // let's add a perturbation to the scalar field as well
         const CCTK_REAL argpert_phi = (rr - R0pert_phi)/Sigmapert_phi;
-        const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );
+        const CCTK_REAL pert_phi = 1. + Apert_phi * cos(4 * phi0[ind]);
 
         const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
 
@@ -569,6 +569,9 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         // No regularization needed for the BS, the lapse is non-zero
         Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
         Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
+
+        Kphi1[ind] *= pert_phi
+        Kphi2[ind] *= pert_phi
         
 
         // lapse

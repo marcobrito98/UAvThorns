@@ -570,8 +570,8 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         Kphi1[ind] = 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
         Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
 
-        Kphi1[ind] *= pert_phi
-        Kphi2[ind] *= pert_phi
+        Kphi1[ind] *= pert_phi;
+        Kphi2[ind] *= pert_phi;
         
 
         // lapse

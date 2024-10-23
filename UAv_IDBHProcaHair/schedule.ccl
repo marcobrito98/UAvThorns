@@ -1,0 +1,25 @@
+# Schedule definitions for thorn UAv_IDBHProcaHair
+
+if (CCTK_Equals(initial_data, "HairyBH"))
+{
+  SCHEDULE UAv_IDBHProcaHair IN ADMBase_InitialData
+  {
+    LANG: C
+    OPTIONS: Local
+  } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
+}
+
+if (CCTK_Equals(initial_data, "ProcaBS"))
+{
+  SCHEDULE UAv_IDProcaBS IN ADMBase_InitialData
+  {
+    LANG: C
+    OPTIONS: Local
+  } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
+}
+
+schedule UAv_IDBHProcaHair_ParamCheck AT ParamCheck
+{
+  LANG: C
+  OPTIONS: global
+} "Check UAv_IDBHProcaHair parameters for consistency"

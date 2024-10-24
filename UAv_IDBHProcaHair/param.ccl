@@ -7,21 +7,21 @@ SHARES: ADMBase
 
 EXTENDS KEYWORD initial_data
 {
-  "HairyBH"   :: "HairyBH initial data"
-  "ProcaBS"  :: "Proca boson star initial data"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial data"
+  "ProcaBS"        :: "Proca boson star initial data"
 }
 
 EXTENDS KEYWORD initial_lapse
 {
-  "HairyBH"   :: "HairyBH initial lapse profile"
-  "ProcaBS"  :: "Proca boson star initial lapse profile"
-  "psi^n"     :: "psi^n initial lapse profile"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial lapse profile"
+  "ProcaBS"        :: "Proca boson star initial lapse profile"
+  "psi^n"          :: "psi^n initial lapse profile"
 }
 
 EXTENDS KEYWORD initial_shift
 {
-  "HairyBH"   :: "HairyBH initial shift profile"
-  "ProcaBS"  :: "Proca boson star initial shift profile"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
+  "ProcaBS"        :: "Proca boson star initial shift profile"
 }
 
 
@@ -37,7 +37,7 @@ REAL C0 "parameter for R to X coordinate transformation"
   (0:* :: "greater than zero"
 } 1.0
 
-INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in HairyBH initial data."
+INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in ProcaHairyBH initial data."
 {
   0:2 :: "0, 1 or 2"
 } 2 

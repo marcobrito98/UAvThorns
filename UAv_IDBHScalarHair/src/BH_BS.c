@@ -488,7 +488,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL r  = RR * (1 + 0.25 * rH/RR) * (1 + 0.25 * rH/RR);
 
-        const CCTK_REAL costh  = z1/RR;
+        const CCTK_REAL costh  = z1_2/RR;
         const CCTK_REAL costh2 = costh*costh;
         const CCTK_REAL sinth2 = 1. - costh2;
         const CCTK_REAL sinth  = sqrt(sinth2);

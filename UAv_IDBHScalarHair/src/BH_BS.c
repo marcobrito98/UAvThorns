@@ -460,13 +460,13 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   output_arrays_1[5] = (void *) dW_dr_1;
   output_arrays_1[6] = (void *) dW_dth_1;
 
-  output_arrays_2[0] = (void *) F1_2;
-  output_arrays_2[1] = (void *) F2_2;
-  output_arrays_2[2] = (void *) F0_2;
-  output_arrays_2[3] = (void *) phi0_2;
-  output_arrays_2[4] = (void *) W_2;
-  output_arrays_2[5] = (void *) dW_dr_2;
-  output_arrays_2[6] = (void *) dW_dth_2;
+  // output_arrays_2[0] = (void *) F1_2;
+  // output_arrays_2[1] = (void *) F2_2;
+  // output_arrays_2[2] = (void *) F0_2;
+  // output_arrays_2[3] = (void *) phi0_2;
+  // output_arrays_2[4] = (void *) W_2;
+  // output_arrays_2[5] = (void *) dW_dr_2;
+  // output_arrays_2[6] = (void *) dW_dth_2;
 
 
 // Schwarzschild metric
@@ -508,10 +508,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         dW_dr_2[ind] = 0.;
 
         dW_dth_2[ind] = 0.;
-
-        // d2W_dth2_2[ind] = 0.;
-
-        // d2W_drth_2[ind] = 0.;
 
         phi0_2[ind] = 0.;
 

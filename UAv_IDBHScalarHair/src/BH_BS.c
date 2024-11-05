@@ -338,24 +338,24 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         X_g_1[ind]     = lX_1;
         theta_g_1[ind] = ltheta_1;
-        // const CCTK_REAL x1_2  = x[ind] - x0_2;
-        // const CCTK_REAL y1_2  = y[ind] - y0_2;
-        // const CCTK_REAL z1_2  = z[ind] - z0_2;
+        const CCTK_REAL x1_2  = x[ind] - x0_2;
+        const CCTK_REAL y1_2  = y[ind] - y0_2;
+        const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
 
-        // CCTK_REAL rr_2  = sqrt(rr2_2);
-        // /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
+        CCTK_REAL rr_2  = sqrt(rr2_2);
+        /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
         
-        // // From r to the X radial coordinate (used in input files)
-        // const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
+        // From r to the X radial coordinate (used in input files)
+        const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
 
-        // CCTK_REAL ltheta_2 = rr_2 < 1e-16 ? 0 : acos( z1_2/rr_2);    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
-        // if (ltheta_2 > 0.5*M_PI)    // symmetry along the equatorial plane
-        //   ltheta_2 = M_PI - ltheta_2;
+        CCTK_REAL ltheta_2 = rr_2 < 1e-16 ? 0 : acos( z1_2/rr_2);    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        if (ltheta_2 > 0.5*M_PI)    // symmetry along the equatorial plane
+          ltheta_2 = M_PI - ltheta_2;
 
-        // X_g_2[ind]     = lX_2;
-        // theta_g_2[ind] = ltheta_2;
+        X_g_2[ind]     = lX_2;
+        theta_g_2[ind] = ltheta_2;
       }
     }
   }
@@ -444,13 +444,13 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   output_array_type_codes_1[5] = CCTK_VARIABLE_REAL;
   output_array_type_codes_1[6] = CCTK_VARIABLE_REAL;
 
-  // output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // talvez por aqui tenho de por os campos a zero.
-  // output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // talvez por aqui tenho de por os campos a zero.
+  output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
+  output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
 
   output_arrays_1[0] = (void *) F1_1;
   output_arrays_1[1] = (void *) F2_1;
@@ -460,13 +460,13 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   output_arrays_1[5] = (void *) dW_dr_1;
   output_arrays_1[6] = (void *) dW_dth_1;
 
-  // output_arrays_2[0] = (void *) F1_2;
-  // output_arrays_2[1] = (void *) F2_2;
-  // output_arrays_2[2] = (void *) F0_2;
-  // output_arrays_2[3] = (void *) phi0_2;   // sem isto da segmentation fault, mas assim ele põe os dados do ficheiro.
-  // output_arrays_2[4] = (void *) W_2;
-  // output_arrays_2[5] = (void *) dW_dr_2;
-  // output_arrays_2[6] = (void *) dW_dth_2;
+  output_arrays_2[0] = (void *) F1_2;
+  output_arrays_2[1] = (void *) F2_2;
+  output_arrays_2[2] = (void *) F0_2;
+  output_arrays_2[3] = (void *) phi0_2;   // sem isto da segmentation fault, mas assim ele põe os dados do ficheiro.
+  output_arrays_2[4] = (void *) W_2;
+  output_arrays_2[5] = (void *) dW_dr_2;
+  output_arrays_2[6] = (void *) dW_dth_2;
 
 
 // Schwarzschild metric

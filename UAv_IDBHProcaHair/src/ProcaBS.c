@@ -11,7 +11,7 @@
 
 #define SMALL (1.e-9)
 
-void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
+void UAv_IDBHProcaHair_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 

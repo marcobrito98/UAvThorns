@@ -1,6 +1,6 @@
 # Schedule definitions for thorn UAv_IDBHProcaHair
 
-if (CCTK_Equals(initial_data, "HairyBH"))
+if (CCTK_Equals(initial_data, "ProcaHairyBH"))
 {
   SCHEDULE UAv_IDBHProcaHair IN ADMBase_InitialData
   {

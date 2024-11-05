@@ -23,7 +23,7 @@ static bool is_empty(const char *s)
   return true;
 }
 
-void UAv_ID_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
+void UAv_IDBHProcaHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
                CCTK_REAL F1[], CCTK_REAL F2[], CCTK_REAL F0[], CCTK_REAL W[],
                CCTK_REAL H1[], CCTK_REAL H2[], CCTK_REAL H3[], CCTK_REAL V[])
 {
@@ -68,11 +68,20 @@ void UAv_ID_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REA
     // tensor in the input files, which may assume G = 1,
     // whereas for ComplexProcaEvolve thorns it is assumed that 4 pi G = 1.
     if (normalization_Tmunu == 0) { // 4 pi G = 1 in input file
-      phi0[NF] *= 1;
+      H1[NF] *= 1;
+      H2[NF] *= 1;
+      H3[NF] *= 1;
+       V[NF] *= 1;
     } else if (normalization_Tmunu == 1) { // G = 1 in input file
-      phi0[NF] *= 2.0*sqrt(M_PI);
+      H1[NF] *= 2.0*sqrt(M_PI);
+      H2[NF] *= 2.0*sqrt(M_PI);
+      H3[NF] *= 2.0*sqrt(M_PI);
+       V[NF] *= 2.0*sqrt(M_PI);
     } else if (normalization_Tmunu == 2) { // G = 1 and Tmunu has factor of 0.5 in input file
-      phi0[NF] *= sqrt(2.0*M_PI);
+      H1[NF] *= sqrt(2.0*M_PI);
+      H2[NF] *= sqrt(2.0*M_PI);
+      H3[NF] *= sqrt(2.0*M_PI);
+       V[NF] *= sqrt(2.0*M_PI);
     }
 
     NF++;

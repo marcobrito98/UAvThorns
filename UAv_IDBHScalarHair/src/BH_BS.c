@@ -632,15 +632,15 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rho_2  = sqrt(rho2_2);
         
 
-        // const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
-        // // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
-        // // but can this lead to nan depending on the C implementation?
+        const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
+        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
+        // but can this lead to nan depending on the C implementation?
 
-        // const CCTK_REAL cosph_2  = cos(ph_2);
-        // const CCTK_REAL sinph_2  = sin(ph_2);
+        const CCTK_REAL cosph_2  = cos(ph_2);
+        const CCTK_REAL sinph_2  = sin(ph_2);
 
-        // const CCTK_REAL cosmph_2 = cos(mm*ph_2);
-        // const CCTK_REAL sinmph_2 = sin(mm*ph_2);
+        const CCTK_REAL cosmph_2 = cos(mm*ph_2);
+        const CCTK_REAL sinmph_2 = sin(mm*ph_2);
         //////////////////////////////////////////
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);

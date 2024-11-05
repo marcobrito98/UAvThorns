@@ -509,9 +509,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         dW_dth_2[ind] = 0.;
 
-        d2W_dth2_2[ind] = 0.;
+        // d2W_dth2_2[ind] = 0.;
 
-        d2W_drth_2[ind] = 0.;
+        // d2W_drth_2[ind] = 0.;
 
         phi0_2[ind] = 0.;
 

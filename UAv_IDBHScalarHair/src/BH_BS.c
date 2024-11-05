@@ -444,13 +444,13 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   output_array_type_codes_1[5] = CCTK_VARIABLE_REAL;
   output_array_type_codes_1[6] = CCTK_VARIABLE_REAL;
 
-  output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
-  output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // talvez por aqui tenho de por os campos a zero.
-  output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
-  output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
-  output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
-  output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
-  output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // talvez por aqui tenho de por os campos a zero.
+  // output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
+  // output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
 
   output_arrays_1[0] = (void *) F1_1;
   output_arrays_1[1] = (void *) F2_1;

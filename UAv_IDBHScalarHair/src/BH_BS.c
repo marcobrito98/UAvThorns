@@ -476,9 +476,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-        const CCTK_REAL x1  = x[ind] - x0_2;
-        const CCTK_REAL y1  = y[ind] - y0_2;
-        const CCTK_REAL z1  = z[ind] - z0_2;
+        const CCTK_REAL x1_2  = x[ind] - x0_2;
+        const CCTK_REAL y1_2  = y[ind] - y0_2;
+        const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         const CCTK_REAL rho2 = x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho  = sqrt(rho2);
@@ -497,23 +497,23 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
-        F1[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
+        F1_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
 
-        F2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
+        F2_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
 
-        F0[ind] = (1.0/2.0) * log(pow(1 - rH/(4 * RR),2)/pow(1 + rH/(4 * RR),2));
+        F0_2[ind] = (1.0/2.0) * log(pow(1 - rH/(4 * RR),2)/pow(1 + rH/(4 * RR),2));
 
-        W[ind] = 0.;
+        W_2[ind] = 0.;
 
-        dW_dr[ind] = 0.;
+        dW_dr_2[ind] = 0.;
 
-        dW_dth[ind] = 0.;
+        dW_dth_2[ind] = 0.;
 
-        d2W_dth2[ind] = 0.;
+        d2W_dth2_2[ind] = 0.;
 
-        d2W_drth[ind] = 0.;
+        d2W_drth_2[ind] = 0.;
 
-        phi0[ind] = 0.;
+        phi0_2[ind] = 0.;
 
       }
     }

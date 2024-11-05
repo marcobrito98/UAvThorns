@@ -777,7 +777,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         CCTK_REAL phi2_1  = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
         
 
-              //star 2
+              //BH 2
         CCTK_REAL phi1_2  = phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
         CCTK_REAL phi2_2  = phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
         /////////////////////////////

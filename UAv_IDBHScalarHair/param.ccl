@@ -11,6 +11,7 @@ EXTENDS KEYWORD initial_data
   "HairyBH"   :: "HairyBH initial data"
   "ScalarBS"  :: "Scalar boson star initial data"
   "TwinScalarBS" :: "Twin scalar boson star initial data"
+  "BH_BS"     :: "Boson star black hole collision"
 }
 
 EXTENDS KEYWORD initial_lapse

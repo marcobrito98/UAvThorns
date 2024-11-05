@@ -445,7 +445,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   output_array_type_codes_1[6] = CCTK_VARIABLE_REAL;
 
   // output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // talvez por aqui tenho de por os campos a zero.
+  // output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // nao posso tirar este senao da interpolation error.
   // output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
   // output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
   // output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
@@ -816,134 +816,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
       } /* for i */
     }   /* for j */
   }     /* for k */
-
-
-
-  // for (int k = 0; k < cctk_lsh[2]; ++k) {
-  //   for (int j = 0; j < cctk_lsh[1]; ++j) {
-  //     for (int i = 0; i < cctk_lsh[0]; ++i) {
-
-  //       const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
-
-  //       const CCTK_REAL x1  = x[ind] +40;
-  //       const CCTK_REAL y1  = y[ind] +40;
-  //       const CCTK_REAL z1  = z[ind] +40;
-
-  //       // For the Boson Star, r = R, no coordinate change needed.
-  //       const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;
-  //       const CCTK_REAL rr  = sqrt(rr2);
-
-  //       const CCTK_REAL rho2 = x1*x1 + y1*y1;
-  //       const CCTK_REAL rho  = sqrt(rho2);
-        
-
-  //       const CCTK_REAL ph = atan2(y1, x1);
-  //       // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
-  //       // but can this lead to nan depending on the C implementation?
-
-  //       const CCTK_REAL cosph  = cos(ph);
-  //       const CCTK_REAL sinph  = sin(ph);
-
-  //       const CCTK_REAL cosmph = cos(mm*ph);
-  //       const CCTK_REAL sinmph = sin(mm*ph);
-
-  //       const CCTK_REAL psi4 = exp(2. * F1[ind]);
-  //       const CCTK_REAL psi2 = sqrt(psi4);
-  //       const CCTK_REAL psi1 = sqrt(psi2);
-
-  //       const CCTK_REAL h_rho2 = exp(2. * (F2[ind] - F1[ind])) - 1.;
-
-  //       // add non-axisymmetric perturbation on conformal factor
-  //       const CCTK_REAL argpert_cf = (rr - R0pert_conf_fac)/Sigmapert_conf_fac;
-  //       const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
-
-  //       const CCTK_REAL conf_fac = psi4 * pert_cf;
-
-  //       // 3-metric
-  //       gxx[ind] += conf_fac * (1. + h_rho2 * sinph * sinph) - 1;
-  //       gxy[ind] += -conf_fac * h_rho2 * sinph * cosph;
-  //       gxz[ind] += 0;
-  //       gyy[ind] += conf_fac * (1. + h_rho2 * cosph * cosph) - 1;
-  //       gyz[ind] += 0;
-  //       gzz[ind] += conf_fac - 1;
-
-  //       /*
-  //         d/drho = rho/r * d/dr  +    z/r^2 * d/dth
-  //         d/dz   =   z/r * d/dr  -  rho/r^2 * d/dth
-
-  //         Kxx = 0.5 * 2xy/rho        * exp(2F2-F0) * dW/drho   = 0.5 * rho * sin(2phi) * exp(2F2-F0) * dW/drho
-  //         Kyy = - Kxx
-  //         Kzz = 0
-  //         Kxy =-0.5 * (x^2-y^2)/rho  * exp(2F2-F0) * dW/drho   = 0.5 * rho * cos(2phi) * exp(2F2-F0) * dW/drho
-  //         Kxz = 0.5 * y * exp(2F2-F0) * dW/dz
-  //         Kyz =-0.5 * x * exp(2F2-F0) * dW/dz
-  //       */
-
-  //       /*
-  //         Close to the axis and the origin, Kij = 0.
-  //         The "coordinate" part of the expressions above behave like rho (or r).
-  //         Let's first consider a threshold of rho < 1e-8. The sphere r < 1e-8 is included in this cylinder.
-  //         In this case, we just set d/drho and d/dz = 0 as proxies.
-  //       */
-
-  //       CCTK_REAL dW_drho, dW_dz;
-  //       const CCTK_REAL exp_auxi = exp(2. * F2[ind] - F0[ind]);
-
-  //       if (rho < 1e-8) {
-  //         dW_drho = 0.;
-  //         dW_dz   = 0.;
-  //       }
-  //       else {
-  //         dW_drho = rho/rr * dW_dr[ind]  +   z1/rr2 * dW_dth[ind];
-  //         dW_dz   =  z1/rr * dW_dr[ind]  -  rho/rr2 * dW_dth[ind];
-  //       }
-
-  //       // extrinsic curvature
-  //       kxx[ind] +=  0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-  //       kxy[ind] += -0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
-  //       kxz[ind] +=  0.5 *  y1 * exp_auxi * dW_dz;
-  //       kyy[ind] += -kxx[ind];
-  //       kyz[ind] += -0.5 *  x1 * exp_auxi * dW_dz;
-  //       kzz[ind] +=  0.;
-
-          
-
-  //       // let's add a perturbation to the scalar field as well
-  //       const CCTK_REAL argpert_phi = (rr - R0pert_phi)/Sigmapert_phi;
-  //       const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );
-
-  //       const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
-
-  //       // scalar fields
-  //       phi1[ind]  += phi0_l * (coswt * cosmph + sinwt * sinmph);
-  //       phi2[ind]  += phi0_l * (coswt * sinmph - sinwt * cosmph);
-
-  //       const CCTK_REAL alph = exp(F0[ind]);
-
-  //       // No regularization needed for the BS, the lapse is non-zero
-  //       Kphi1[ind] += 0.5 * (mm * W[ind] - omega_BS) / alph * phi2[ind];
-  //       Kphi2[ind] += 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
-        
-
-  //       // lapse
-  //       if (CCTK_EQUALS(initial_lapse, "psi^n"))
-  //         alp[ind] += pow(psi1, initial_lapse_psi_exponent) - 1;
-  //       else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
-  //         alp[ind] += alph - 1;
-  //         if (alp[ind] < SMALL)
-  //           alp[ind] += SMALL;
-  //       }
-
-  //       // shift
-  //       if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-  //         betax[ind] +=  W[ind] * y1;//tenho de subtrair alguma coisa? W = 0 neste caso.
-  //         betay[ind] += -W[ind] * x1;//acho que não. vão estar nos cross terms da metrica.
-  //         betaz[ind] +=  0.;
-  //       }
-
-  //     } /* for i */
-  //   }   /* for j */
-  // }     /* for k */
 
 
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);

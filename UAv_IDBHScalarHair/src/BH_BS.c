@@ -641,7 +641,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         //////////////////////////////////////////
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi4_2 = pow(1 + rH/(4 * rr2_2),4);
+        const CCTK_REAL psi4_2 = pow(1 + rH/(4 * rr_2),4);
         const CCTK_REAL psi2_1 = sqrt(psi4_1);
         const CCTK_REAL psi2_2 = sqrt(psi4_2);
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
@@ -707,7 +707,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
       
         CCTK_REAL dW_drho_1, dW_dz_1;
-        CCTK_REAL dW_drho_2, dW_dz_2;
+        // CCTK_REAL dW_drho_2, dW_dz_2;
         const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
         // const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
 
@@ -783,7 +783,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         phi2[ind]  = phi2_1 + phi2_2;
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = exp(F0_2[ind]);
+        const CCTK_REAL alph_2 = (1-rH/(4*rr_2))/(1+rH/(4*rr_2));
 
         // No regularization needed for the BS, the lapse is non-zero
 
@@ -809,8 +809,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         // shift
         if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-          betax[ind] =  W_1[ind] * y1_1 + W_2[ind] * y1_2;
-          betay[ind] = -W_1[ind] * x1_1 -W_2[ind] * x1_2;
+          betax[ind] =  0.;
+          betay[ind] = 0.;
           betaz[ind] =  0.;
         }
 

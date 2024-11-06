@@ -11,7 +11,7 @@
 
 #define SMALL (1.e-9)
 
-void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
+void UAv_IDBHScalarHair_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 
 
@@ -40,7 +40,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   Wbar_in  = (CCTK_REAL *) malloc(maxNF * sizeof(CCTK_REAL));
 
   // we get the data from the input file
-  UAv_ID_read_data(&NF, &NX, Xtmp, thtmp, F1_in, F2_in, F0_in, phi0_in, Wbar_in);
+  UAv_IDBHScalarHair_read_data(&NF, &NX, Xtmp, thtmp, F1_in, F2_in, F0_in, phi0_in, Wbar_in);
 
   Ntheta = NF/NX;
 

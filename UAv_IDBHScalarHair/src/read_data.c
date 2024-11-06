@@ -23,7 +23,7 @@ static bool is_empty(const char *s)
   return true;
 }
 
-void UAv_ID_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
+void UAv_IDBHScalarHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
                CCTK_REAL F1[], CCTK_REAL F2[], CCTK_REAL F0[], CCTK_REAL phi0[], CCTK_REAL W[])
 {
   DECLARE_CCTK_PARAMETERS;

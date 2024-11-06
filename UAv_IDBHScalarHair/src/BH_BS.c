@@ -648,7 +648,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL psi1_2 = sqrt(psi2_2);
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
-        const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
+        // const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
 
         // add non-axisymmetric perturbation on conformal factor
         const CCTK_REAL argpert_cf_1 = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
@@ -709,7 +709,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         CCTK_REAL dW_drho_1, dW_dz_1;
         CCTK_REAL dW_drho_2, dW_dz_2;
         const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
-        const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
+        // const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
 
         if (rho_1 < 1e-8) {
           dW_drho_1 = 0.;
@@ -721,14 +721,14 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         }
 
 
-        if (rho_2 < 1e-8) {
-          dW_drho_2 = 0.;
-          dW_dz_2   = 0.;
-        }
-        else {
-          dW_drho_2 = rho_2/rr_2 * dW_dr_2[ind]  +   z1_2/rr2_2 * dW_dth_2[ind];
-          dW_dz_2   =  z1_2/rr_2 * dW_dr_2[ind]  -  rho_2/rr2_2 * dW_dth_2[ind];
-        }
+        // if (rho_2 < 1e-8) {
+        //   dW_drho_2 = 0.;
+        //   dW_dz_2   = 0.;
+        // }
+        // else {
+        //   dW_drho_2 = rho_2/rr_2 * dW_dr_2[ind]  +   z1_2/rr2_2 * dW_dth_2[ind];
+        //   dW_dz_2   =  z1_2/rr_2 * dW_dr_2[ind]  -  rho_2/rr2_2 * dW_dth_2[ind];
+        // }
 
         //Boson star 1
         CCTK_REAL kxx_1  = 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
@@ -790,8 +790,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
         CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
 
-        CCTK_REAL Kphi1_2 = 0.5 * (mm * W_2[ind] - omega_BS) / alph_2 * phi2_2;
-        CCTK_REAL Kphi2_2 = 0.5 * (omega_BS - mm * W_2[ind]) / alph_2 * phi1_2;
+        CCTK_REAL Kphi1_2 = 0.;
+        CCTK_REAL Kphi2_2 = 0.;
 
 
         Kphi1[ind] = Kphi1_1 + Kphi1_2;

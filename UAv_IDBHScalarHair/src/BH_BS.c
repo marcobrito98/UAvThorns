@@ -542,17 +542,18 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
     "interpolation screwed up!");
   }
 
-    /* do the actual interpolation, and check for error returns */
-  int status_2 = CCTK_InterpLocalUniform(N_dims, operator_handle,
-                                       param_table_handle,
-                                       origin, delta,
-                                       N_interp_points,
-                                       CCTK_VARIABLE_REAL,
-                                       N_input_arrays, input_array_dims,
-                                       input_array_type_codes,
-                                       input_arrays,
-                                       N_output_arrays, output_array_type_codes_2,
-                                       output_arrays_2);
+  //   /* do the actual interpolation, and check for error returns */
+  // int status_2 = CCTK_InterpLocalUniform(N_dims, operator_handle,
+  //                                      param_table_handle,
+  //                                      origin, delta,
+  //                                      N_interp_points,
+  //                                      CCTK_VARIABLE_REAL,
+  //                                      interp_coords_2,
+  //                                      N_input_arrays, input_array_dims,
+  //                                      input_array_type_codes,
+  //                                      input_arrays,
+  //                                      N_output_arrays, output_array_type_codes_2,
+  //                                      output_arrays_2);
   if (status_2 < 0) {
     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
     "interpolation screwed up!");

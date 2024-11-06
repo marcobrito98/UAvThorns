@@ -416,9 +416,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   CCTK_INT output_array_type_codes_1[N_output_arrays];
   void *output_arrays_2[N_output_arrays];
   CCTK_INT output_array_type_codes_2[N_output_arrays];
-  CCTK_REAL *F1_1, *F2_1, *F0_1, *phi0_1, *W_1, *F1_2, *F2_2, *F0_2, *phi0_2, *W_2;
+  CCTK_REAL *F1_1, *F2_1, *F0_1, *phi0_1, *W_1;
   CCTK_REAL *dW_dr_1, *dW_dth_1;
-  CCTK_REAL *dW_dr_2, *dW_dth_2;
 
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F2_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -766,7 +765,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind] * pert_phi_1;
-        const CCTK_REAL phi0_l_2 = phi0_2[ind] * pert_phi_2;
+        const CCTK_REAL phi0_l_2 = 0.;
 
         // scalar fields
 

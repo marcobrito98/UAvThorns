@@ -310,9 +310,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   X_g_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   theta_g_1 = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
-  CCTK_REAL *X_g_2, *theta_g_2;
-  X_g_2     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  theta_g_2 = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // CCTK_REAL *X_g_2, *theta_g_2;
+  // X_g_2     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // theta_g_2 = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
@@ -338,24 +338,24 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         X_g_1[ind]     = lX_1;
         theta_g_1[ind] = ltheta_1;
-        const CCTK_REAL x1_2  = x[ind] - x0_2;
-        const CCTK_REAL y1_2  = y[ind] - y0_2;
-        const CCTK_REAL z1_2  = z[ind] - z0_2;
+        // const CCTK_REAL x1_2  = x[ind] - x0_2;
+        // const CCTK_REAL y1_2  = y[ind] - y0_2;
+        // const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        // const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
 
-        CCTK_REAL rr_2  = sqrt(rr2_2);
-        /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
+        // CCTK_REAL rr_2  = sqrt(rr2_2);
+        // /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
         
-        // From r to the X radial coordinate (used in input files)
-        const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
+        // // From r to the X radial coordinate (used in input files)
+        // const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
 
-        CCTK_REAL ltheta_2 = rr_2 < 1e-16 ? 0 : acos( z1_2/rr_2);    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
-        if (ltheta_2 > 0.5*M_PI)    // symmetry along the equatorial plane
-          ltheta_2 = M_PI - ltheta_2;
+        // CCTK_REAL ltheta_2 = rr_2 < 1e-16 ? 0 : acos( z1_2/rr_2);    // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        // if (ltheta_2 > 0.5*M_PI)    // symmetry along the equatorial plane
+        //   ltheta_2 = M_PI - ltheta_2;
 
-        X_g_2[ind]     = lX_2;
-        theta_g_2[ind] = ltheta_2;
+        // X_g_2[ind]     = lX_2;
+        // theta_g_2[ind] = ltheta_2;
       }
     }
   }
@@ -380,9 +380,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   interp_coords_1[0] = (const void *) X_g_1;
   interp_coords_1[1] = (const void *) theta_g_1;
 
-  const void *interp_coords_2[N_dims];
-  interp_coords_2[0] = (const void *) X_g_2;
-  interp_coords_2[1] = (const void *) theta_g_2;
+  // const void *interp_coords_2[N_dims];
+  // interp_coords_2[0] = (const void *) X_g_2;
+  // interp_coords_2[1] = (const void *) theta_g_2;
 
 
   /* input arrays */
@@ -428,13 +428,13 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   dW_dr_1       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dth_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   
-  F1_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  F2_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  F0_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  phi0_2        = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  W_2           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  dW_dr_2       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  dW_dth_2      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // F1_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // F2_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // F0_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // phi0_2        = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // W_2           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // dW_dr_2       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  // dW_dth_2      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
   output_array_type_codes_1[0] = CCTK_VARIABLE_REAL;
   output_array_type_codes_1[1] = CCTK_VARIABLE_REAL;
@@ -469,52 +469,54 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   // output_arrays_2[6] = (void *) dW_dth_2;
 
 
-// Schwarzschild metric
-  for (int k = 0; k < cctk_lsh[2]; ++k) {
-    for (int j = 0; j < cctk_lsh[1]; ++j) {
-      for (int i = 0; i < cctk_lsh[0]; ++i) {
+// // Schwarzschild metric
+//   for (int k = 0; k < cctk_lsh[2]; ++k) {
+//     for (int j = 0; j < cctk_lsh[1]; ++j) {
+//       for (int i = 0; i < cctk_lsh[0]; ++i) {
 
-        const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
+//         const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-        const CCTK_REAL x1_2  = x[ind] - x0_2;
-        const CCTK_REAL y1_2  = y[ind] - y0_2;
-        const CCTK_REAL z1_2  = z[ind] - z0_2;
+//         const CCTK_REAL x1_2  = x[ind] - x0_2;
+//         const CCTK_REAL y1_2  = y[ind] - y0_2;
+//         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        const CCTK_REAL rho2 = x1_2*x1_2 + y1_2*y1_2;
-        // const CCTK_REAL rho  = sqrt(rho2);
+//         const CCTK_REAL rho2 = x1_2*x1_2 + y1_2*y1_2;
+//         // const CCTK_REAL rho  = sqrt(rho2);
 
-        const CCTK_REAL RR2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-        const CCTK_REAL RR  = sqrt(RR2);
+//         const CCTK_REAL RR2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+//         const CCTK_REAL RR  = sqrt(RR2);
 
-        const CCTK_REAL r  = RR * (1 + 0.25 * rH/RR) * (1 + 0.25 * rH/RR);
+//         const CCTK_REAL r  = RR * (1 + 0.25 * rH/RR) * (1 + 0.25 * rH/RR);
 
-        const CCTK_REAL costh  = z1_2/RR;
-        const CCTK_REAL costh2 = costh*costh;
-        const CCTK_REAL sinth2 = 1. - costh2;
-        const CCTK_REAL sinth  = sqrt(sinth2);
+//         const CCTK_REAL costh  = z1_2/RR;
+//         const CCTK_REAL costh2 = costh*costh;
+//         const CCTK_REAL sinth2 = 1. - costh2;
+//         const CCTK_REAL sinth  = sqrt(sinth2);
 
-        /* note that there are divisions by RR in the following expressions.
-           divisions by zero should be avoided by choosing a non-zero value for
-           z0 (for instance) */
+//         /* note that there are divisions by RR in the following expressions.
+//            divisions by zero should be avoided by choosing a non-zero value for
+//            z0 (for instance) */
 
-        F1_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
+//         F1_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
 
-        F2_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
+//         F2_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
 
-        F0_2[ind] = (1.0/2.0) * log(pow(1 - rH/(4 * RR),2)/pow(1 + rH/(4 * RR),2));
+//         F0_2[ind] = (1.0/2.0) * log(pow(1 - rH/(4 * RR),2)/pow(1 + rH/(4 * RR),2));
 
-        W_2[ind] = 0.;
+//         W_2[ind] = 0.;
 
-        dW_dr_2[ind] = 0.;
+//         dW_dr_2[ind] = 0.;
 
-        dW_dth_2[ind] = 0.;
+//         dW_dth_2[ind] = 0.;
 
-        phi0_2[ind] = 0.;
+//         phi0_2[ind] = 0.;
 
-      }
-    }
-  }
+//       }
+//     }
+//   }
 
+
+// escrever a metrica a mao no sitio dela.
 
   /* handle and settings for the interpolation routine */
   int operator_handle, param_table_handle;
@@ -640,7 +642,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         //////////////////////////////////////////
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi4_2 = exp(2. * F1_2[ind]);
+        const CCTK_REAL psi4_2 = pow(1 + rH/(4 * rr2_2),4);
         const CCTK_REAL psi2_1 = sqrt(psi4_1);
         const CCTK_REAL psi2_2 = sqrt(psi4_2);
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
@@ -799,7 +801,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] = pow(psi1_1, initial_lapse_psi_exponent) + pow(psi1_2, initial_lapse_psi_exponent) - 1;
+          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
         else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
           alp[ind] = alph_1 + alph_2 - 1;
           if (alp[ind] < SMALL)

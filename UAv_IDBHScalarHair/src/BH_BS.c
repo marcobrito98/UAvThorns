@@ -548,7 +548,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
                                        origin, delta,
                                        N_interp_points,
                                        CCTK_VARIABLE_REAL,
-                                       interp_coords_2,
                                        N_input_arrays, input_array_dims,
                                        input_array_type_codes,
                                        input_arrays,
@@ -559,7 +558,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
     "interpolation screwed up!");
   }
 
-  free(X_g_1); free(theta_g_1); free(X_g_2); free(theta_g_2);
+  free(X_g_1); free(theta_g_1);
   free(Xtmp); free(thtmp);
   free(F1_in); free(F2_in); free(F0_in); free(phi0_in); free(Wbar_in);
   free(W_in); free(dW_dr_in); free(dW_dth_in);

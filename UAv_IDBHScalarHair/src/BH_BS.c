@@ -554,10 +554,10 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   //                                      input_arrays,
   //                                      N_output_arrays, output_array_type_codes_2,
   //                                      output_arrays_2);
-  if (status_2 < 0) {
-    CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-    "interpolation screwed up!");
-  }
+  // if (status_2 < 0) {
+  //   CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+  //   "interpolation screwed up!");
+  // }
 
   free(X_g_1); free(theta_g_1);
   free(Xtmp); free(thtmp);

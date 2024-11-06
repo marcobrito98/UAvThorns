@@ -822,8 +822,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
   free(dW_dr_1); free(dW_dth_1);
 
-  free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
-  free(dW_dr_2); free(dW_dth_2);
+  // free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
+  // free(dW_dr_2); free(dW_dth_2);
 
   return;
 }

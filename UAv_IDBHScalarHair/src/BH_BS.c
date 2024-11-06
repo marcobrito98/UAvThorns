@@ -665,17 +665,17 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // Boson Star 1
         CCTK_REAL gxx_1 = conf_fac_1 * (1. + h_rho2_1 * sinph_1 * sinph_1);
         CCTK_REAL gxy_1 = -conf_fac_1 * h_rho2_1 * sinph_1 * cosph_1;
-        CCTK_REAL gxz_1 = 0;
+        CCTK_REAL gxz_1 = 0.;
         CCTK_REAL gyy_1 = conf_fac_1 * (1. + h_rho2_1 * cosph_1 * cosph_1);
-        CCTK_REAL gyz_1 = 0;
+        CCTK_REAL gyz_1 = 0.;
         CCTK_REAL gzz_1 = conf_fac_1;
 
           // Black Hole 2
         CCTK_REAL gxx_2 = conf_fac_2;
         CCTK_REAL gxy_2 = 0.;
-        CCTK_REAL gxz_2 = 0;
+        CCTK_REAL gxz_2 = 0.;
         CCTK_REAL gyy_2 = conf_fac_2;
-        CCTK_REAL gyz_2 = 0;
+        CCTK_REAL gyz_2 = 0.;
         CCTK_REAL gzz_2 = conf_fac_2;
 
         //Superposition

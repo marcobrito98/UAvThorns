@@ -622,7 +622,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         // For the Boson Star, r = R, no coordinate change needed.????
-        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;//DAR BOOST!!!
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
         const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
@@ -661,27 +661,36 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         // 3-metric
 
-        // Boson Star 1
-        CCTK_REAL gxx_1 = conf_fac_1 * (1. + h_rho2_1 * sinph_1 * sinph_1);
-        CCTK_REAL gxy_1 = -conf_fac_1 * h_rho2_1 * sinph_1 * cosph_1;
-        CCTK_REAL gxz_1 = 0.;
-        CCTK_REAL gyy_1 = conf_fac_1 * (1. + h_rho2_1 * cosph_1 * cosph_1);
-        CCTK_REAL gyz_1 = 0.;
-        CCTK_REAL gzz_1 = conf_fac_1;
+        // // Boson Star 1
+        // CCTK_REAL gxx_1 = conf_fac_1 * (1. + h_rho2_1 * sinph_1 * sinph_1); //this other term is zero h_rho2_1=0
+        // CCTK_REAL gxy_1 = -conf_fac_1 * h_rho2_1 * sinph_1 * cosph_1;
+        // CCTK_REAL gxz_1 = 0.;
+        // CCTK_REAL gyy_1 = conf_fac_1 * (1. + h_rho2_1 * cosph_1 * cosph_1);
+        // CCTK_REAL gyz_1 = 0.;
+        // CCTK_REAL gzz_1 = conf_fac_1;
 
-          // Black Hole 2
-        CCTK_REAL gxx_2 = conf_fac_2;
-        CCTK_REAL gxy_2 = 0.;
-        CCTK_REAL gxz_2 = 0.;
-        CCTK_REAL gyy_2 = conf_fac_2;
-        CCTK_REAL gyz_2 = 0.;
-        CCTK_REAL gzz_2 = conf_fac_2;
+        //   // Black Hole 2 (boost wil be given in total metric)
+        // CCTK_REAL gxx_2 = conf_fac_2;
+        // CCTK_REAL gxy_2 = 0.;
+        // CCTK_REAL gxz_2 = 0.;
+        // CCTK_REAL gyy_2 = conf_fac_2;
+        // CCTK_REAL gyz_2 = 0.;
+        // CCTK_REAL gzz_2 = conf_fac_2;
 
-        //Superposition
-        gxx[ind] = gxx_1 + gxx_2 - 1;
+        const CCTK_REAL bh_v2 = bh_v*bh_v
+        const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
+        const CCTK_REAL alpha02 = alpha0*alpha0;
+        const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
+        const CCTK_REAL dconf = - (rH/2.0) / (2 * rr2_2);
+        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi03 * dpsi0) / (-bh_v2 * alpha02 + psi04);
+
+
+
+        //Superposition (boosted black hole x direction, non spinning star at least)
+        gxx[ind] = (gxx_1 + gxx_2 - 1)*(1/(1-bh_v*bh_v))*(1-bh_v*bh_v*pow(3-conf_fac_2+conf_fac_1,2)*pow(conf_fac_1+conf_fac_2-1,-6));
         gxy[ind] = gxy_1 + gxy_2;
         gxz[ind] = gxz_1 + gxz_2;
-        gyy[ind] = gyy_1 + gyy_2 - 1;
+        gyy[ind] = gyy_1 + gyy_2 - 1; //o que temos aqui efetivamente e a sobreposicao de fatores conformes
         gyz[ind] = gyz_1 + gyz_2;
         gzz[ind] = gzz_1 + gzz_2 - 1;
 
@@ -738,7 +747,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         CCTK_REAL kyz_1  = -0.5 * x1_1 * exp_auxi_1 * dW_dz_1;
         CCTK_REAL kzz_1 = 0.;
 
-        //Boson star 2
+        //Black hole 2
 
         CCTK_REAL kxx_2  = 0.;
         CCTK_REAL kxy_2  = 0.;
@@ -751,7 +760,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         kxx[ind] = kxx_1 + kxx_2;
         kxy[ind] = kxy_1 + kxy_2;
         kxz[ind] = kxz_1 + kxz_2;
-        kyy[ind] = kyy_1 + kyy_2;
+        kyy[ind] = (1/(1-bh_v*bh_v))*sqrt((1/(1-bh_v*bh_v))* (1 - bh_v*bh_v * pow(1 - 2 * (rH/2.0) / (rh/2.0 + 2 * r_bh),2) / conf_fac_2))*x1_2*bh_v / rH * (2*); //acho que leva parentesis no denominador do pow(1-2etc)
         kyz[ind] = kyz_1 + kyz_2;
         kzz[ind] = kzz_1 + kzz_2;
 

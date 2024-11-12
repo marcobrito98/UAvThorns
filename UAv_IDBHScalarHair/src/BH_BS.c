@@ -622,7 +622,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         // For the Boson Star, r = R, no coordinate change needed.????
-        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;//DAR BOOST!!!
+        const CCTK_REAL gamma2=(1/(1.-bh_v2));
+        const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
         const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
@@ -677,13 +678,16 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // CCTK_REAL gyz_2 = 0.;
         // CCTK_REAL gzz_2 = conf_fac_2;
 
-        const CCTK_REAL bh_v2 = bh_v*bh_v
+
+        const CCTK_REAL bh_v2 = bh_v*bh_v;
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
         const CCTK_REAL dconf = - (rH/2.0) / (2 * rr2_2);
-        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi03 * dpsi0) / (-bh_v2 * alpha02 + psi04);
+        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * psi1_2) / (-bh_v2 * alpha02 + conf_fac_2);
 
+        const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
+        const CCTK_REAL B0 = sqrt(B02);
 
 
         //Superposition (boosted black hole x direction, non spinning star at least)

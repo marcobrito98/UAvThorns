@@ -696,7 +696,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         gxz[ind] = 0.;
         gyy[ind] = pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
         gyz[ind] = 0.;
-        gzz[ind] = pow(psi1_1+psi2_2-1,4);
+        gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
 
       

@@ -621,7 +621,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_2  = y[ind] - y0_2;
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // For the Boson Star, r = R, no coordinate change needed.????
+        // For the Boson Star, r = R, no coordinate change needed.
+        const CCTK_REAL bh_v2 = bh_v*bh_v;
         const CCTK_REAL gamma2=(1/(1.-bh_v2));
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
@@ -679,43 +680,23 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // CCTK_REAL gzz_2 = conf_fac_2;
 
 
-        const CCTK_REAL bh_v2 = bh_v*bh_v;
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
         const CCTK_REAL dconf = - (rH/2.0) / (2 * rr2_2);
-        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * psi1_2) / (-bh_v2 * alpha02 + conf_fac_2);
+        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dconf) / (-bh_v2 * alpha02 + conf_fac_2);
 
         const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
         const CCTK_REAL B0 = sqrt(B02);
 
 
         //Superposition (boosted black hole x direction, non spinning star at least)
-        gxx[ind] = (gxx_1 + gxx_2 - 1)*(1/(1-bh_v*bh_v))*(1-bh_v*bh_v*pow(3-conf_fac_2+conf_fac_1,2)*pow(conf_fac_1+conf_fac_2-1,-6));
-        gxy[ind] = gxy_1 + gxy_2;
-        gxz[ind] = gxz_1 + gxz_2;
-        gyy[ind] = gyy_1 + gyy_2 - 1; //o que temos aqui efetivamente e a sobreposicao de fatores conformes
-        gyz[ind] = gyz_1 + gyz_2;
-        gzz[ind] = gzz_1 + gzz_2 - 1;
-
-        /*
-          d/drho = rho/r * d/dr  +    z/r^2 * d/dth
-          d/dz   =   z/r * d/dr  -  rho/r^2 * d/dth
-
-          Kxx = 0.5 * 2xy/rho        * exp(2F2-F0) * dW/drho   = 0.5 * rho * sin(2phi) * exp(2F2-F0) * dW/drho
-          Kyy = - Kxx
-          Kzz = 0
-          Kxy =-0.5 * (x^2-y^2)/rho  * exp(2F2-F0) * dW/drho   = 0.5 * rho * cos(2phi) * exp(2F2-F0) * dW/drho
-          Kxz = 0.5 * y * exp(2F2-F0) * dW/dz
-          Kyz =-0.5 * x * exp(2F2-F0) * dW/dz
-        */
-
-        /*
-          Close to the axis and the origin, Kij = 0.
-          The "coordinate" part of the expressions above behave like rho (or r).
-          Let's first consider a threshold of rho < 1e-8. The sphere r < 1e-8 is included in this cylinder.
-          In this case, we just set d/drho and d/dz = 0 as proxies.
-        */
+        gxx[ind] = pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
+        gxy[ind] = 0.;
+        gxz[ind] = 0.;
+        gyy[ind] = pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
+        gyz[ind] = 0.;
+        gzz[ind] = pow(psi1_1+psi2_2-1,4);
 
 
       
@@ -743,30 +724,30 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         //   dW_dz_2   =  z1_2/rr_2 * dW_dr_2[ind]  -  rho_2/rr2_2 * dW_dth_2[ind];
         // }
 
-        //Boson star 1
-        CCTK_REAL kxx_1  = 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        CCTK_REAL kxy_1  = -0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        CCTK_REAL kxz_1  = 0.5 * y1_1 * exp_auxi_1 * dW_dz_1;
-        CCTK_REAL kyy_1  = -0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        CCTK_REAL kyz_1  = -0.5 * x1_1 * exp_auxi_1 * dW_dz_1;
-        CCTK_REAL kzz_1 = 0.;
+        // //Boson star 1
+        // CCTK_REAL kxx_1  = 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        // CCTK_REAL kxy_1  = -0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        // CCTK_REAL kxz_1  = 0.5 * y1_1 * exp_auxi_1 * dW_dz_1;
+        // CCTK_REAL kyy_1  = -0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+        // CCTK_REAL kyz_1  = -0.5 * x1_1 * exp_auxi_1 * dW_dz_1;
+        // CCTK_REAL kzz_1 = 0.;
 
-        //Black hole 2
+        // //Black hole 2
 
-        CCTK_REAL kxx_2  = 0.;
-        CCTK_REAL kxy_2  = 0.;
-        CCTK_REAL kxz_2  = 0.;
-        CCTK_REAL kyy_2  = 0.;
-        CCTK_REAL kyz_2  = 0.;
-        CCTK_REAL kzz_2 = 0.;
+        // CCTK_REAL kxx_2  = 0.;
+        // CCTK_REAL kxy_2  = 0.;
+        // CCTK_REAL kxz_2  = 0.;
+        // CCTK_REAL kyy_2  = 0.;
+        // CCTK_REAL kyz_2  = 0.;
+        // CCTK_REAL kzz_2 = 0.;
 
-        // extrinsic curvature (this will be zero due to W=0)
-        kxx[ind] = kxx_1 + kxx_2;
-        kxy[ind] = kxy_1 + kxy_2;
-        kxz[ind] = kxz_1 + kxz_2;
-        kyy[ind] = (1/(1-bh_v*bh_v))*sqrt((1/(1-bh_v*bh_v))* (1 - bh_v*bh_v * pow(1 - 2 * (rH/2.0) / (rh/2.0 + 2 * r_bh),2) / conf_fac_2))*x1_2*bh_v / rH * (2*); //acho que leva parentesis no denominador do pow(1-2etc)
-        kyz[ind] = kyz_1 + kyz_2;
-        kzz[ind] = kzz_1 + kzz_2;
+        // extrinsic curvature (this will be zero due to W=0, at least the BS part)
+        kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
+        kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
+        kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
+        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kyz[ind] = 0;
+        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
 
           
 

@@ -672,12 +672,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
 
         //Superposition (boosted black hole x direction, non spinning star at least)
-        gxx[ind] = pow(1 + rH/(4 * sqrt(x1_2*x1_2+y1_2*y1_2+z1_2*z1_2)),4);//pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
+        gxx[ind] = pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
         gxy[ind] = 0.;
         gxz[ind] = 0.;
-        gyy[ind] = pow(1 + rH/(4 * sqrt(x1_2*x1_2+y1_2*y1_2+z1_2*z1_2)),4);//pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
+        gyy[ind] = pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
         gyz[ind] = 0.;
-        gzz[ind] = pow(1 + rH/(4 * sqrt(x1_2*x1_2+y1_2*y1_2+z1_2*z1_2)),4);//pow(psi1_1+psi1_2-1,4);
+        gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
 
       
@@ -723,12 +723,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // CCTK_REAL kzz_2 = 0.;
 
         // extrinsic curvature (this will be zero due to W=0, at least the BS part)
-        kxx[ind] = 0;//gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
-        kxy[ind] = 0;//B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
-        kxz[ind] = 0;//B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
-        kyy[ind] = 0;//2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
+        kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
+        kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
+        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
         kyz[ind] = 0;
-        kzz[ind] = 0;//2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
 
           
 

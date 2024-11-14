@@ -621,9 +621,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_2  = y[ind] - y0_2;
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL bh_v2 = bh_v*bh_v;
-        const CCTK_REAL gamma2=(1/(1.-bh_v2));
+        const CCTK_REAL gamma2=(1. / (1. - bh_v2));
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
@@ -660,24 +659,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL conf_fac_1 = psi4_1 * pert_cf_1;
         const CCTK_REAL conf_fac_2 = psi4_2 * pert_cf_2;
-
-        // 3-metric
-
-        // // Boson Star 1
-        // CCTK_REAL gxx_1 = conf_fac_1 * (1. + h_rho2_1 * sinph_1 * sinph_1); //this other term is zero h_rho2_1=0
-        // CCTK_REAL gxy_1 = -conf_fac_1 * h_rho2_1 * sinph_1 * cosph_1;
-        // CCTK_REAL gxz_1 = 0.;
-        // CCTK_REAL gyy_1 = conf_fac_1 * (1. + h_rho2_1 * cosph_1 * cosph_1);
-        // CCTK_REAL gyz_1 = 0.;
-        // CCTK_REAL gzz_1 = conf_fac_1;
-
-        //   // Black Hole 2 (boost wil be given in total metric)
-        // CCTK_REAL gxx_2 = conf_fac_2;
-        // CCTK_REAL gxy_2 = 0.;
-        // CCTK_REAL gxz_2 = 0.;
-        // CCTK_REAL gyy_2 = conf_fac_2;
-        // CCTK_REAL gyz_2 = 0.;
-        // CCTK_REAL gzz_2 = conf_fac_2;
 
 
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
@@ -742,12 +723,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // CCTK_REAL kzz_2 = 0.;
 
         // extrinsic curvature (this will be zero due to W=0, at least the BS part)
-        kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
-        kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
-        kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
-        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kxx[ind] = 0;//gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
+        kxy[ind] = 0;//B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
+        kxz[ind] = 0;//B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
+        kyy[ind] = 0;//2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
         kyz[ind] = 0;
-        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kzz[ind] = 0;//2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
 
           
 

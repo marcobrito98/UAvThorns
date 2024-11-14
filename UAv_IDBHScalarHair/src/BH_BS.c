@@ -622,7 +622,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         const CCTK_REAL bh_v2 = bh_v*bh_v;
-        const CCTK_REAL gamma2=(1. / (1. - bh_v2));
+        const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
@@ -657,8 +657,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL argpert_cf_2 = (rr_2 - R0pert_conf_fac)/Sigmapert_conf_fac;
         const CCTK_REAL pert_cf_2 = 1. + Apert_conf_fac * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_cf_2*argpert_cf_2);
 
-        const CCTK_REAL conf_fac_1 = psi4_1 * pert_cf_1;
-        const CCTK_REAL conf_fac_2 = psi4_2 * pert_cf_2;
+        const CCTK_REAL conf_fac_1 = psi4_1;// * pert_cf_1;
+        const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
 
 
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
@@ -739,7 +739,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
         const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
 
-        const CCTK_REAL phi0_l_1 = phi0_1[ind] * pert_phi_1;
+        const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;
 
         // scalar fields

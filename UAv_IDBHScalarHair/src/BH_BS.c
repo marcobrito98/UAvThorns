@@ -680,48 +680,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
 
-      
-        // CCTK_REAL dW_drho_1, dW_dz_1;
-        // // CCTK_REAL dW_drho_2, dW_dz_2;
-        // // const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
-        // // const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
-
-        // if (rho_1 < 1e-8) {
-        //   dW_drho_1 = 0.;
-        //   dW_dz_1   = 0.;
-        // }
-        // else {
-        //   dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
-        //   dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
-        // }
-
-
-        // if (rho_2 < 1e-8) {
-        //   dW_drho_2 = 0.;
-        //   dW_dz_2   = 0.;
-        // }
-        // else {
-        //   dW_drho_2 = rho_2/rr_2 * dW_dr_2[ind]  +   z1_2/rr2_2 * dW_dth_2[ind];
-        //   dW_dz_2   =  z1_2/rr_2 * dW_dr_2[ind]  -  rho_2/rr2_2 * dW_dth_2[ind];
-        // }
-
-        // //Boson star 1
-        // CCTK_REAL kxx_1  = 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        // CCTK_REAL kxy_1  = -0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        // CCTK_REAL kxz_1  = 0.5 * y1_1 * exp_auxi_1 * dW_dz_1;
-        // CCTK_REAL kyy_1  = -0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-        // CCTK_REAL kyz_1  = -0.5 * x1_1 * exp_auxi_1 * dW_dz_1;
-        // CCTK_REAL kzz_1 = 0.;
-
-        // //Black hole 2
-
-        // CCTK_REAL kxx_2  = 0.;
-        // CCTK_REAL kxy_2  = 0.;
-        // CCTK_REAL kxz_2  = 0.;
-        // CCTK_REAL kyy_2  = 0.;
-        // CCTK_REAL kyz_2  = 0.;
-        // CCTK_REAL kzz_2 = 0.;
-
         // extrinsic curvature (this will be zero due to W=0, at least the BS part)
         kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
         kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;

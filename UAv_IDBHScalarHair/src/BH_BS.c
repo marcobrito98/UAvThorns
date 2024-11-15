@@ -621,7 +621,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_2  = y[ind] - y0_2;
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        const CCTK_REAL bh_v2 = 0;//bh_v*bh_v;
+        const CCTK_REAL bh_v2 = bh_v*bh_v;
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
@@ -723,12 +723,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // CCTK_REAL kzz_2 = 0.;
 
         // extrinsic curvature (this will be zero due to W=0, at least the BS part)
-        kxx[ind] = gamma2 * B0 * x1_2 * 0 / rr_2 * (2 * dalpha0 - common);
-        kxy[ind] = B0 * 0 / rr_2 * (dalpha0 - common)*y1_2;
-        kxz[ind] = B0 * 0 / rr_2 * (dalpha0 - common)*z1_2;
-        kyy[ind] = 2 * gamma2 * x1_2 * 0 * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
+        kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
+        kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
+        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
         kyz[ind] = 0;
-        kzz[ind] = 2 * gamma2 * x1_2 * 0 * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
 
           
 

@@ -515,7 +515,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 //   }
 
 
-// escrever a metrica a mao no sitio dela.
+
 
   /* handle and settings for the interpolation routine */
   int operator_handle, param_table_handle;
@@ -626,19 +626,19 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
-        const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
-        const CCTK_REAL rho_2  = sqrt(rho2_2);
+        // const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
+        // const CCTK_REAL rho_2  = sqrt(rho2_2);
         
 
-        const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
+        // const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
         // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // but can this lead to nan depending on the C implementation?
 
-        const CCTK_REAL cosph_2  = cos(ph_2);
-        const CCTK_REAL sinph_2  = sin(ph_2);
+        // const CCTK_REAL cosph_2  = cos(ph_2);
+        // const CCTK_REAL sinph_2  = sin(ph_2);
 
-        const CCTK_REAL cosmph_2 = cos(mm*ph_2);
-        const CCTK_REAL sinmph_2 = sin(mm*ph_2);
+        // const CCTK_REAL cosmph_2 = cos(mm*ph_2);
+        // const CCTK_REAL sinmph_2 = sin(mm*ph_2);
         //////////////////////////////////////////
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
@@ -648,7 +648,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
         const CCTK_REAL psi1_2 = sqrt(psi2_2);
 
-        const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
+        // const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
         // const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
 
         // add non-axisymmetric perturbation on conformal factor
@@ -681,19 +681,19 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
 
       
-        CCTK_REAL dW_drho_1, dW_dz_1;
-        // CCTK_REAL dW_drho_2, dW_dz_2;
-        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
-        // const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
+        // CCTK_REAL dW_drho_1, dW_dz_1;
+        // // CCTK_REAL dW_drho_2, dW_dz_2;
+        // // const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+        // // const CCTK_REAL exp_auxi_2 = exp(2. * F2_2[ind] - F0_2[ind]);
 
-        if (rho_1 < 1e-8) {
-          dW_drho_1 = 0.;
-          dW_dz_1   = 0.;
-        }
-        else {
-          dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
-          dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
-        }
+        // if (rho_1 < 1e-8) {
+        //   dW_drho_1 = 0.;
+        //   dW_dz_1   = 0.;
+        // }
+        // else {
+        //   dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+        //   dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+        // }
 
 
         // if (rho_2 < 1e-8) {
@@ -732,12 +732,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
           
 
-        // let's add a perturbation to the scalar field as well
-        const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
-        const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
+        // // let's add a perturbation to the scalar field as well
+        // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
+        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
         
-        const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
-        const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+        // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
+        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;

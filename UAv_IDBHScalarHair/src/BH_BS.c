@@ -652,10 +652,10 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
 
         // add non-axisymmetric perturbation on conformal factor
-        const CCTK_REAL argpert_cf_1 = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf_1 = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf_1*argpert_cf_1);
-        const CCTK_REAL argpert_cf_2 = (rr_2 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf_2 = 1. + Apert_conf_fac * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_cf_2*argpert_cf_2);
+        // const CCTK_REAL argpert_cf_1 = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
+        // const CCTK_REAL pert_cf_1 = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf_1*argpert_cf_1);
+        // const CCTK_REAL argpert_cf_2 = (rr_2 - R0pert_conf_fac)/Sigmapert_conf_fac;
+        // const CCTK_REAL pert_cf_2 = 1. + Apert_conf_fac * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_cf_2*argpert_cf_2);
 
         const CCTK_REAL conf_fac_1 = psi4_1;// * pert_cf_1;
         const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
@@ -750,8 +750,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         
 
               //BH 2
-        CCTK_REAL phi1_2  = phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
-        CCTK_REAL phi2_2  = phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
+        CCTK_REAL phi1_2  = 0;//phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
+        CCTK_REAL phi2_2  = 0;//phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
         /////////////////////////////
 
         phi1[ind]  = phi1_1 + phi1_2;

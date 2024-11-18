@@ -625,7 +625,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);~
-        printf("%.2f\n",bh_v)
+        printf(" velocity of thing %.2f\n",bh_v)
 
         // const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);

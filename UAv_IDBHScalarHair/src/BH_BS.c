@@ -664,7 +664,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
-        const CCTK_REAL dconf = - (rH/2.0) / (2 * rr2_2);
+        const CCTK_REAL dconf = - rH / (4 * rr2_2);
         const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dconf) / (-bh_v2 * alpha02 + conf_fac_2);
 
         const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);

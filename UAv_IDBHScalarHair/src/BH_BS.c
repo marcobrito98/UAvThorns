@@ -673,7 +673,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
 
         //Superposition (boosted black hole x direction, non spinning star at least)
-        gxx[ind] = pow(psi1_2,4)*gamma2*(1-bh_v2*pow(2-psi1_2,2)*pow(psi1_2-1,-6));
+        gxx[ind] = pow(psi1_2,4)*gamma2*(1-bh_v2*pow(2-psi1_2,2)*pow(psi1_2,-6));
         gxy[ind] = 0.;
         gxz[ind] = 0.;
         gyy[ind] = pow(psi1_2,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes

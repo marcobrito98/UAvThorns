@@ -664,8 +664,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
-        const CCTK_REAL dconf = - rH/ (4 * rr2_2);
-
+        const CCTK_REAL dconf = - (rH/2.0) / (2 * rr2_2);
         const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dconf) / (-bh_v2 * alpha02 + conf_fac_2);
 
         const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
@@ -673,12 +672,12 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
 
 
         //Superposition (boosted black hole x direction, non spinning star at least)
-        gxx[ind] = pow(psi1_2,4)*gamma2*(1-bh_v2*pow(2-psi1_2,2)*pow(psi1_2,-6));
+        gxx[ind] = pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
         gxy[ind] = 0.;
         gxz[ind] = 0.;
-        gyy[ind] = pow(psi1_2,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
+        gyy[ind] = pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
         gyz[ind] = 0.;
-        gzz[ind] = pow(psi1_2,4);
+        gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
 
         // extrinsic curvature (this will be zero due to W=0, at least the BS part)
@@ -717,7 +716,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         phi2[ind]  = phi2_1 + phi2_2;
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = alpha0;
+        const CCTK_REAL alph_2 = (1-rH/(4*rr_2))/(1+rH/(4*rr_2));
 
         // No regularization needed for the BS, the lapse is non-zero
 

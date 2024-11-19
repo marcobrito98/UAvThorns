@@ -46,7 +46,7 @@ REAL C0 "parameter for R to X coordinate transformation"
 
 REAL bh_v "velocity of the black hole"
 {
-  (-1:1) :: "greater than zero and smaller than 1"
+  (-1:1) :: "greater than -1 and smaller than 1"
 } 0.0
 
 

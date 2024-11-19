@@ -666,8 +666,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
-        const CCTK_REAL dconf = - rH / (4 * rr2_2);
-        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dconf) / (-bh_v2 * alpha02 + conf_fac_2);
+        const CCTK_REAL dpsi = - rH / (4 * rr2_2);
+        const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dpsi) / (-bh_v2 * alpha02 + conf_fac_2);
 
         const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
         const CCTK_REAL B0 = sqrt(B02);
@@ -686,9 +686,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
         kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
         kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
-        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dpsi / (psi1_2 * B0 * rr_2);
         kyz[ind] = 0;
-        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dconf / (psi1_2 * B0 * rr_2);
+        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dpsi / (psi1_2 * B0 * rr_2);
 
           
 

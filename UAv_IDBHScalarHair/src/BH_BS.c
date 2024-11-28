@@ -625,8 +625,6 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
-        // printf(" velocity of thing %.2f\n",bh_v);
-        // printf(" velocity of thing^2 %.2f\n",bh_v2);
 
         // const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);
@@ -662,8 +660,8 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL conf_fac_1 = psi4_1;// * pert_cf_1;
         const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
 
-
-        const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); //esta correto. manipulacao algebrica
+        //auxiliar variables to compute metric in isotropic coordinates
+        const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); 
         const CCTK_REAL alpha02 = alpha0*alpha0;
         const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
         const CCTK_REAL dpsi = - rH / (4 * rr2_2);
@@ -673,7 +671,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL B0 = sqrt(B02);
 
 
-        //Superposition (boosted black hole x direction, non spinning star at least)
+        //Superposition (boosted black hole x direction, non spinning star)
         gxx[ind] = pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
         gxy[ind] = 0.;
         gxz[ind] = 0.;
@@ -682,7 +680,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
 
-        // extrinsic curvature (this will be zero due to W=0, at least the BS part)
+        // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters)
         kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
         kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
         kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;

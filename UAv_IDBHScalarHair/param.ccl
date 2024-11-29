@@ -66,7 +66,12 @@ INT maxNF "maximum number of lines allowed in the input file"
 } 100000
 
 
-REAL rH "Horizon radius parameter. Incompatible with the Scalar Boson Star."
+REAL rH "Horizon radius parameter. Incompatible with the Scalar Boson Star and BH_BS."
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL bh_mass "BH mass parameter. Incompatible with the Scalar Boson Star and HairyBH."
 {
   0:* :: "non-negative"
 } 0.0

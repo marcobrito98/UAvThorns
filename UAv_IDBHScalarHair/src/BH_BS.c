@@ -468,51 +468,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
   // output_arrays_2[6] = (void *) dW_dth_2;
 
 
-// // Schwarzschild metric
-//   for (int k = 0; k < cctk_lsh[2]; ++k) {
-//     for (int j = 0; j < cctk_lsh[1]; ++j) {
-//       for (int i = 0; i < cctk_lsh[0]; ++i) {
 
-//         const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
-
-//         const CCTK_REAL x1_2  = x[ind] - x0_2;
-//         const CCTK_REAL y1_2  = y[ind] - y0_2;
-//         const CCTK_REAL z1_2  = z[ind] - z0_2;
-
-//         const CCTK_REAL rho2 = x1_2*x1_2 + y1_2*y1_2;
-//         // const CCTK_REAL rho  = sqrt(rho2);
-
-//         const CCTK_REAL RR2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-//         const CCTK_REAL RR  = sqrt(RR2);
-
-//         const CCTK_REAL r  = RR * (1 + 0.25 * rH/RR) * (1 + 0.25 * rH/RR);
-
-//         const CCTK_REAL costh  = z1_2/RR;
-//         const CCTK_REAL costh2 = costh*costh;
-//         const CCTK_REAL sinth2 = 1. - costh2;
-//         const CCTK_REAL sinth  = sqrt(sinth2);
-
-//         /* note that there are divisions by RR in the following expressions.
-//            divisions by zero should be avoided by choosing a non-zero value for
-//            z0 (for instance) */
-
-//         F1_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
-
-//         F2_2[ind] = (1.0/2.0) * log(pow(1 + rH/(4 * RR),4));
-
-//         F0_2[ind] = (1.0/2.0) * log(pow(1 - rH/(4 * RR),2)/pow(1 + rH/(4 * RR),2));
-
-//         W_2[ind] = 0.;
-
-//         dW_dr_2[ind] = 0.;
-
-//         dW_dth_2[ind] = 0.;
-
-//         phi0_2[ind] = 0.;
-
-//       }
-//     }
-//   }
 
 
 
@@ -642,7 +598,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         //////////////////////////////////////////
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi4_2 = pow(1 + rH/(4 * rr_2),4);
+        const CCTK_REAL psi4_2 = pow(1 + bh_mass/(2 * rr_2),4);
         const CCTK_REAL psi2_1 = sqrt(psi4_1);
         const CCTK_REAL psi2_2 = sqrt(psi4_2);
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
@@ -661,10 +617,10 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
 
         //auxiliar variables to compute metric in isotropic coordinates
-        const CCTK_REAL alpha0 = 1 - rH / (rH/2.0 + 2 * rr_2); 
+        const CCTK_REAL alpha0 = 1 - 2*bh_mass / (bh_mass + 2 * rr_2); 
         const CCTK_REAL alpha02 = alpha0*alpha0;
-        const CCTK_REAL dalpha0 = 2 * rH / pow(rH/2.0 + 2 * rr_2, 2);
-        const CCTK_REAL dpsi = - rH / (4 * rr2_2);
+        const CCTK_REAL dalpha0 = 4 * bh_mass / pow(bh_mass + 2 * rr_2, 2);
+        const CCTK_REAL dpsi = - bh_mass / (2 * rr2_2);
         const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dpsi) / (-bh_v2 * alpha02 + conf_fac_2);
 
         const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
@@ -716,7 +672,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         phi2[ind]  = phi2_1 + phi2_2;
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = (1-rH/(4*rr_2))/(1+rH/(4*rr_2));
+        const CCTK_REAL alph_2 = (1-bh_mass/(2*rr_2))/(1+bh_mass/(2*rr_2));
 
         // No regularization needed for the BS, the lapse is non-zero
 

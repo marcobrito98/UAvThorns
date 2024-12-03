@@ -690,15 +690,15 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
           alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "TwinScalarBS")) {
+        else if (CCTK_EQUALS(initial_lapse, "BS_BH")) {
           alp[ind] = alph_1 + alph_2 - 1;
           if (alp[ind] < SMALL)
             alp[ind] = SMALL;
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "TwinScalarBS")) {
-          betax[ind] =  0.;
+        if (CCTK_EQUALS(initial_shift, "BS_BH")) {
+          betax[ind] =  (alpha02-conf_fac_2)/(conf_fac_2-alpha02*bh_v2) * bh_v;
           betay[ind] = 0.;
           betaz[ind] =  0.;
         }

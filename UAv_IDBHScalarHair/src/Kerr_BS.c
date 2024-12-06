@@ -695,9 +695,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2_2*bh_spin*bh_spin * costh2) ;
 
-        const CCTK_REAL psi4   = rho2 / rr2_2_2 ;
-        const CCTK_REAL psi2   = sqrt(psi4) ;
-        const CCTK_REAL psi1   = sqrt(psi2) ;
+        const CCTK_REAL psi4_2   = rho2 / rr2_2_2 ;
+        const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
+        const CCTK_REAL psi1_2   = sqrt(psi2_2) ;
+        const CCTK_REAL conf_fac_2 = psi4_2;
 
 
         // non-axisymmetric perturbation.
@@ -705,19 +706,19 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   
 
         // 3-metric
-        gxx[ind] = psi4 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;
-        gxy[ind] = - psi4 * bh_spin*bh_spin * hh * x1_2*y1_2;
+        gxx[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;
+        gxy[ind] = - psi4_2 * bh_spin*bh_spin * hh * x1_2*y1_2;
         gxz[ind] = 0;
-        gyy[ind] = psi4 * ( 1. + bh_spin*bh_spin * hh * x1_2*x1_2 );
+        gyy[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * x1_2*x1_2 );
         gyz[ind] = 0;
-        gzz[ind] = psi4 ;
+        gzz[ind] = psi4_2 ;
 
 
-        const CCTK_REAL alpha  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
+        const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
                  1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
-        const CCTK_REAL alpha2 = alpha*alpha ;
+        const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-        const CCTK_REAL HF     = - bh_spin*bh_spin*bh_spin * alpha * sigma/rho * costh  ;  // we are dividing by sinth2
+        const CCTK_REAL HF     = - bh_spin*bh_spin*bh_spin * alpha0 * sigma/rho * costh  ;  // we are dividing by sinth2
         const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
 
         const CCTK_REAL aux    =  rho2 * (rBL*rBL - bh_spin*bh_spin) + 2.*rBL*rBL * (rBL*rBL + bh_spin*bh_spin);

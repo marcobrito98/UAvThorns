@@ -15,7 +15,7 @@ void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 
 
-void UAv_ID_BH_BS(CCTK_ARGUMENTS)
+void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
@@ -582,11 +582,11 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         const CCTK_REAL rr_2  = sqrt(rr2_2);
 
-        // const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
-        // const CCTK_REAL rho_2  = sqrt(rho2_2);
+        const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
+        const CCTK_REAL rho_2  = sqrt(rho2_2);
         
 
-        const CCTK_REAL theta_2 = acos(z1_2, rr_2);
+        const CCTK_REAL theta_2 = acos(z1_2/rr_2);
         const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
         // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // but can this lead to nan depending on the C implementation?
@@ -600,9 +600,9 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         //////////////////////////////////////////
 
 
-        const CCTK_REAL r_BL = rr_2 * (1 + (bh_mass + pow(bh_a,2))/(2*rr_2))*(1+(bh_mass - pow(bh_a,2))/(2*rr_2));
-        const CCTK_REAL rho_kerr2 = pow(r_BL,2) + pow(bh_a,2)*pow(cos(theta_2),2);
-        const CCTK_REAL delta_kerr = pow(r_BL,2) - 2*bh_mass*r_BL + pow(bh_a,2);
+        const CCTK_REAL r_BL = rr_2 * (1 + (bh_mass + pow(bh_spin,2))/(2*rr_2))*(1+(bh_mass - pow(bh_spin,2))/(2*rr_2));
+        const CCTK_REAL rho_kerr2 = pow(r_BL,2) + pow(bh_spin,2)*pow(cos(theta_2),2);
+        const CCTK_REAL delta_kerr = pow(r_BL,2) - 2*bh_mass*r_BL + pow(bh_spin,2);
 
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
         const CCTK_REAL psi4_2 = rho_kerr2/rr2_2;
@@ -616,7 +616,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL sigma = 2*bh_mass*r_BL/rho_kerr2;
         const CCTK_REAL h = (1+sigma)/(rho_kerr2*rr2_2)
 
-        //parei aqui!!!!!
+
         
 
 
@@ -632,35 +632,45 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         const CCTK_REAL conf_fac_1 = psi4_1;// * pert_cf_1;
         const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
 
-        //auxiliar variables to compute metric in isotropic coordinates
-        // const CCTK_REAL alpha0 = 1 - 2*bh_mass / (bh_mass + 2 * rr_2); 
-        // const CCTK_REAL alpha02 = alpha0*alpha0;
-        // const CCTK_REAL dalpha0 = 4 * bh_mass / pow(bh_mass + 2 * rr_2, 2);
-        // const CCTK_REAL dpsi = - bh_mass / (2 * rr2_2);
-        // const CCTK_REAL common = 0.5 * alpha0 * (-2 * bh_v2 * alpha0 * dalpha0 + 4 * psi1_2*psi2_2 * dpsi) / (-bh_v2 * alpha02 + conf_fac_2);
-
-        // const CCTK_REAL B02 = gamma2 * (1 - bh_v2 * alpha02 / conf_fac_2);
-        // const CCTK_REAL B0 = sqrt(B02);
+        const CCTK_REAL rhor = 0.5*sqrt(bh_mass*bh_mass -bh_spin*bh_spin);
+        const CCTK_REAL alpha0 = ((rr_2+rhor)*(rr_2-rhor))/(rr_2*sqrt(r_BL*r_BL + bh_spin*bh_spin*(1. +sigma*pow(sin(theta_2),2)))); 
+        const CCTK_REAL alpha02 = alpha0*alpha0;
+        const CCTK_REAL G = (r_BL*r_BL - bh_spin*bh_spin)*rho_kerr2 + 2*r_BL*r_BL*(r_BL*r_BL+bh_spin*bh_spin);
+        const CCTK_REAL HE = bh_spin*bh_mass*G/(pow(sqrt(rho_kerr2),3)*sqrt(r_BL*r_BL+bh_spin*bh_spin*(1+sigma*pow(sin(theta_2),2))));
+        const CCTK_REAL HF = -alpha0*sigma*pow(bh_spin,3)*cos(theta_2)*pow(sin(theta_2),2)/sqrt(rho_kerr2);
 
 
+        const CCTK_REAL Axx = 2.*(HE/rr2_2)*(x1_2/rr_2)*(-y1_2/rr2_2) + \
+                                              2.*(HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2))*(-y1_2/rr_2);
 
+        const CCTK_REAL Axy =    (HE/rr2_2)*(x1_2/rr_2 * x1/rr2_2 + y1_2/rr_2*(-y1_2/rr2_2)) + \
+                                              (HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2) * x1_2/rr2_2 +z1_2*y1_2/(rr_2*rr2_2) * (-y1_2/rr2_2));
+
+        const CCTK_REAL Axz = (HE/rr2_2) * (z1_2/rr_2)*(-y1_2/rr2_2) + \
+                                              (HF/rr_2)*(-pow(sin(theta_2),2)/rr_2)*(-y1_2/rr2_2);
+
+        const CCTK_REAL Ayy = 2.*(HE/rr2_2)*(y1_2/rr_2)*(x1_2/rr2_2) + \
+                                              2.*(HF/rr_2)*(z1_2*y1_2/(rr_2*rr2_2))*(x1_2/rr_2);
+                                          
+        const CCTK_REAL Ayz = (HE/rr2_2) * (z1_2/rr_2) * (x1_2/rr2_2) + \
+                                                 (HF/rr_2) * (-pow(sin(theta_2),2)/rr_2)*(x1_2/rr2_2);
 
         //Superposition (boosted black hole x direction, non spinning star)
-        gxx[ind] = pow(psi1_1+psi1_2-1,4)*gamma2*(1-bh_v2*pow(3-psi1_1-psi1_2,2)*pow(psi1_1+psi1_2-1,-6));
-        gxy[ind] = 0.;
+        gxx[ind] = conf_fac_2 * ( 1. + bh_spin * bh_spin * h * y1_2 * y1_2 );//*gamma2 + 4*gamma2*bh_v*bh_spin*sigma*pow(sin(theta_2),2)*y1_2;
+        gxy[ind] = -conf_fac_2 * bh_spin * bh_spin * h * y1_2 * x1_2;
         gxz[ind] = 0.;
-        gyy[ind] = pow(psi1_1+psi1_2-1,4); //o que temos aqui efetivamente e a sobreposicao de fatores conformes
+        gyy[ind] = conf_fac_2 * ( 1. + bh_spin*bh_spin * h * x1_2 * x1_2 );
         gyz[ind] = 0.;
-        gzz[ind] = pow(psi1_1+psi1_2-1,4);
+        gzz[ind] = conf_fac_2;
 
 
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters)
-        kxx[ind] = gamma2 * B0 * x1_2 * bh_v / rr_2 * (2 * dalpha0 - common);
-        kxy[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*y1_2;
-        kxz[ind] = B0 * bh_v / rr_2 * (dalpha0 - common)*z1_2;
-        kyy[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dpsi / (psi1_2 * B0 * rr_2);
-        kyz[ind] = 0;
-        kzz[ind] = 2 * gamma2 * x1_2 * bh_v * alpha0 * dpsi / (psi1_2 * B0 * rr_2);
+        kxx[ind] = (Axx / psi2_2);//*gamma2 + ;
+        kxy[ind] = Axy / psi2_2;
+        kxz[ind] = Axz / psi2_2;
+        kyy[ind] = Ayy / psi2_2;
+        kyz[ind] = Ayz / psi2_2;
+        kzz[ind] = 0.;
 
           
 
@@ -690,7 +700,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         phi2[ind]  = phi2_1 + phi2_2;
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = (1-bh_mass/(2*rr_2))/(1+bh_mass/(2*rr_2));
+        const CCTK_REAL alph_2 = alpha0;
 
         // No regularization needed for the BS, the lapse is non-zero
 

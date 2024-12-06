@@ -12,6 +12,7 @@ EXTENDS KEYWORD initial_data
   "ScalarBS"  :: "Scalar boson star initial data"
   "TwinScalarBS" :: "Twin scalar boson star initial data"
   "BH_BS"     :: "Boson star black hole collision"
+  "Kerr_BS"     :: "Boson star Kerr black hole collision"
 }
 
 EXTENDS KEYWORD initial_lapse

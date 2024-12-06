@@ -643,7 +643,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Axx = 2.*(HE/rr2_2)*(x1_2/rr_2)*(-y1_2/rr2_2) + \
                                               2.*(HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2))*(-y1_2/rr_2);
 
-        const CCTK_REAL Axy =    (HE/rr2_2)*(x1_2/rr_2 * x1/rr2_2 + y1_2/rr_2*(-y1_2/rr2_2)) + \
+        const CCTK_REAL Axy =    (HE/rr2_2)*(x1_2/rr_2 * x1_2/rr2_2 + y1_2/rr_2*(-y1_2/rr2_2)) + \
                                               (HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2) * x1_2/rr2_2 +z1_2*y1_2/(rr_2*rr2_2) * (-y1_2/rr2_2));
 
         const CCTK_REAL Axz = (HE/rr2_2) * (z1_2/rr_2)*(-y1_2/rr2_2) + \

@@ -52,6 +52,10 @@ REAL bh_v "velocity of the black hole"
   (-1:1) :: "greater than -1 and smaller than 1"
 } 0.0
 
+REAL bh_spin "spin of the black hole"
+{
+  (-1:1) :: "greater than -1 and smaller than 1"
+} 0.0
 
 INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in HairyBH initial data."
 {

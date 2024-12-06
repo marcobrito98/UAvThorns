@@ -342,9 +342,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL y1_2  = y[ind] - y0_2;
         // const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // const CCTK_REAL rr2_2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        // const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
 
-        // CCTK_REAL rr_2  = sqrt(rr2_2_2);
+        // CCTK_REAL rr_2  = sqrt(rr2_2);
         // /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
         
         // // From r to the X radial coordinate (used in input files)
@@ -579,8 +579,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        const CCTK_REAL rr2_2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
-        const CCTK_REAL rr_2  = sqrt(rr2_2_2);
+        const CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
+        const CCTK_REAL rr_2  = sqrt(rr2_2);
 
         // const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);
@@ -605,7 +605,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL delta_kerr = pow(r_BL,2) - 2*bh_mass*r_BL + pow(bh_spin,2);
 
         // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        // const CCTK_REAL psi4_2 = rho_kerr2_2/rr2_2_2;
+        // const CCTK_REAL psi4_2 = rho_kerr2_2/rr2_2;
         // const CCTK_REAL psi2_1 = sqrt(psi4_1);
         // const CCTK_REAL psi2_2 = sqrt(psi4_2);
         // const CCTK_REAL psi1_1 = sqrt(psi2_1);
@@ -614,7 +614,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         // const CCTK_REAL sigma = 2*bh_mass*r_BL/rho_kerr2_2;
-        // const CCTK_REAL h = (1+sigma)/(rho_kerr2_2*rr2_2_2);
+        // const CCTK_REAL h = (1+sigma)/(rho_kerr2_2*rr2_2);
 
 
         
@@ -640,20 +640,20 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL HF = -alpha0*sigma*pow(bh_spin,3)*cos(theta_2)*pow(sin(theta_2),2)/sqrt(rho_kerr2_2);
 
 
-        // const CCTK_REAL Axx = 2.*(HE/rr2_2_2)*(x1_2/rr_2)*(-y1_2/rr2_2_2) + \
-        //                                       2.*(HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2_2))*(-y1_2/rr_2);
+        // const CCTK_REAL Axx = 2.*(HE/rr2_2)*(x1_2/rr_2)*(-y1_2/rr2_2) + \
+        //                                       2.*(HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2))*(-y1_2/rr_2);
 
-        // const CCTK_REAL Axy =    (HE/rr2_2_2)*(x1_2/rr_2 * x1_2/rr2_2_2 + y1_2/rr_2*(-y1_2/rr2_2_2)) + \
-        //                                       (HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2_2) * x1_2/rr2_2_2 +z1_2*y1_2/(rr_2*rr2_2_2) * (-y1_2/rr2_2_2));
+        // const CCTK_REAL Axy =    (HE/rr2_2)*(x1_2/rr_2 * x1_2/rr2_2 + y1_2/rr_2*(-y1_2/rr2_2)) + \
+        //                                       (HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2) * x1_2/rr2_2 +z1_2*y1_2/(rr_2*rr2_2) * (-y1_2/rr2_2));
 
-        // const CCTK_REAL Axz = (HE/rr2_2_2) * (z1_2/rr_2)*(-y1_2/rr2_2_2) + \
-        //                                       (HF/rr_2)*(-pow(sin(theta_2),2)/rr_2)*(-y1_2/rr2_2_2);
+        // const CCTK_REAL Axz = (HE/rr2_2) * (z1_2/rr_2)*(-y1_2/rr2_2) + \
+        //                                       (HF/rr_2)*(-pow(sin(theta_2),2)/rr_2)*(-y1_2/rr2_2);
 
-        // const CCTK_REAL Ayy = 2.*(HE/rr2_2_2)*(y1_2/rr_2)*(x1_2/rr2_2_2) + \
-        //                                       2.*(HF/rr_2)*(z1_2*y1_2/(rr_2*rr2_2_2))*(x1_2/rr_2);
+        // const CCTK_REAL Ayy = 2.*(HE/rr2_2)*(y1_2/rr_2)*(x1_2/rr2_2) + \
+        //                                       2.*(HF/rr_2)*(z1_2*y1_2/(rr_2*rr2_2))*(x1_2/rr_2);
                                           
-        // const CCTK_REAL Ayz = (HE/rr2_2_2) * (z1_2/rr_2) * (x1_2/rr2_2_2) + \
-        //                                          (HF/rr_2) * (-pow(sin(theta_2),2)/rr_2)*(x1_2/rr2_2_2);
+        // const CCTK_REAL Ayz = (HE/rr2_2) * (z1_2/rr_2) * (x1_2/rr2_2) + \
+        //                                          (HF/rr_2) * (-pow(sin(theta_2),2)/rr_2)*(x1_2/rr2_2);
 
         const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin*bh_spin ;
         const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
@@ -671,11 +671,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y_R    = y1_2/rr_2 ;
         const CCTK_REAL z_R    = z1_2/rr_2 ;
 
-        const CCTK_REAL sinth2ph_x = -y1_2/rr2_2_2 ;
-        const CCTK_REAL sinth2ph_y =  x1_2/rr2_2_2 ;
+        const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
+        const CCTK_REAL sinth2ph_y =  x1_2/rr2_2 ;
 
-        const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2_2) ; 
-        const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2_2) ; 
+        const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
         const CCTK_REAL sinthth_z  = -sinth2/rr_2 ; 
 
         const CCTK_REAL sinthx_th  = x1_2 * costh ;
@@ -685,15 +685,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
-        const CCTK_REAL RRrBL  = rr2_2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
+        const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
 
         const CCTK_REAL rho2   = rBL*rBL + bh_spin*bh_spin * costh2 ;
         const CCTK_REAL rho    = sqrt(rho2) ;
 
         // sigma = (2.*bh_mass*rBL - charge*charge) / rho2 ;
-        const CCTK_REAL sigma  = (2.*bh_mass*RRrBL) * rr_2 / (RRrBL*RRrBL + rr2_2_2*bh_spin*bh_spin * costh2) ;
+        const CCTK_REAL sigma  = (2.*bh_mass*RRrBL) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
-        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2_2*bh_spin*bh_spin * costh2) ;
+        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
         const CCTK_REAL psi4_2   = rho2 / rr2_2 ;
         const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
@@ -706,7 +706,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         // non-axisymmetric perturbation.
-        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2_2/deltakerr2_2 ) ; */
+        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
   
 
         // 3-metric

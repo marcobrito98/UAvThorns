@@ -695,9 +695,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2_2*bh_spin*bh_spin * costh2) ;
 
-        const CCTK_REAL psi4_2   = rho2 / rr2_2_2 ;
+        const CCTK_REAL psi4_2   = rho2 / rr2_2 ;
         const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
         const CCTK_REAL psi1_2   = sqrt(psi2_2) ;
+        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+        
         const CCTK_REAL conf_fac_2 = psi4_2;
 
 

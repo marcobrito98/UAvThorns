@@ -614,7 +614,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         const CCTK_REAL sigma = 2*bh_mass*r_BL/rho_kerr2;
-        const CCTK_REAL h = (1+sigma)/(rho_kerr2*rr2_2)
+        const CCTK_REAL h = (1+sigma)/(rho_kerr2*rr2_2);
 
 
         

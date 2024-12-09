@@ -804,7 +804,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // shift
         if (CCTK_EQUALS(initial_shift, "BH_BS")) {
-          betax[ind] =  (alpha02-conf_fac_2)/(conf_fac_2-alpha02*bh_v2) * bh_v;
+          betax[ind] =  0.;
           betay[ind] = 0.;
           betaz[ind] =  0.;
         }

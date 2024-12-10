@@ -714,9 +714,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
         // 3-metric
-        gxx[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) +2*gamma2*bh_v*bh_spin*sigma*y1_2/rr2_2 + \
+        gxx[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;//+2*gamma2*bh_v*bh_spin*sigma*y1_2/rr2_2 + \
         gamma2*bh_v2*(-alpha02 + pow(bh_spin*sigma*sinth2,2))/(rr2_2*sinth2*(1+bh_spin*bh_spin*hh*hh*rr2_2*sinth2));
-        gxy[ind] = - gamma2*psi4_2 * bh_spin*bh_spin * hh * x1_2*y1_2 - gamma2*bh_v*bh_spin*sigma*x1_2/rr2_2;
+        gxy[ind] = - gamma2*psi4_2 * bh_spin*bh_spin * hh * x1_2*y1_2;// - gamma2*bh_v*bh_spin*sigma*x1_2/rr2_2;
         gxz[ind] = 0;
         gyy[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * gamma2*x1_2*x1_2 );
         gyz[ind] = 0;
@@ -756,9 +756,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters)
-        kxx[ind] = gamma2*(Axx / psi2_2) + 2*gamma2*bh_v*Kxt;
-        kxy[ind] = gamma*Axy / psi2_2 + gamma*bh_v*Kyt;
-        kxz[ind] = gamma*Axz / psi2_2 + gamma*bh_v*Kzt;
+        kxx[ind] = gamma2*(Axx / psi2_2);// + 2*gamma2*bh_v*Kxt;
+        kxy[ind] = gamma*Axy / psi2_2;// + gamma*bh_v*Kyt;
+        kxz[ind] = gamma*Axz / psi2_2;// + gamma*bh_v*Kzt;
         kyy[ind] = Ayy / psi2_2;
         kyz[ind] = Ayz / psi2_2;
         kzz[ind] = 0.;

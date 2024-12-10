@@ -733,12 +733,22 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
 
         const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
-
+        
+        const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
         const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
         const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
+        const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
+        const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*rho2kerr*sinth2/pow(rho2kerr,2);
+
         const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*h*rr2_2*sinth2);
+        const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
+        const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr2_2*(rBL+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
+                                        (-bh_spin2-rBL*rBL+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
+
         const CCTK_REAL betauphi = betadphi/gammaphiphi;
-        const CCTK_REAL betauphi_th = 
+        const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(betadphi,2);
+        //falta fazer da derivada de R
+
         
         const CCTK_REAL KRt = (2*rr_2*(-bh_spin*sigma*sinth2)/(rBL*rBL + bh_spin2 - delta_metric*bh_spin2*sinth2) + \
         (bh_spin*bh_mass*sinth2*(bh_spin2-bh_mass*bh_mass+4*rr2_2)*(2*rBL*rBL*(bh_spin2-4*bh_mass*rBL+3*rBL*rBL)-bh_spin2-3*rBL*rBL)+bh_spin2*(bh_spin2-rBL*rBL)*costh2*(bh_spin2*cos(2*theta_2)-bh_spin2+2))/(4*rho2kerr*rho2kerr*pow(bh_spin2+rBL*rBL-bh_spin2*delta_metric*sinth2,2)))/(-2*alpha0);

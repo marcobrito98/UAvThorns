@@ -588,7 +588,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rho_2  = sqrt(rho2_2);
         
 
-        // const CCTK_REAL theta_2 = acos(z1_2/rr_2);
+        const CCTK_REAL theta_2 = acos(z1_2/rr_2);
         // const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
         // // If x1_2=y1_2=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // // but can this lead to nan depending on the C implementation?
@@ -737,10 +737,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
         
         const CCTK_REAL KRt = (rr_2*(-bh_spin*sigma*sinth2)/(rBL*rBL + bh_spin2 - delta_metric*bh_spin2*sinth2) + \
-        rr2_2*(bh_spin*bh_mass*(rBL*rBL -bh_spin2)*(bh_spin2-bh_mass*bh_mass+4*rr2_2)(2-bh_spin2+bh_spin2*cos(2*theta_2))*sinth2)/(4*rr2_2*pow(bh_spin2+rBL*rBL-bh_spin2*delta_metric*sinth2,2)))/(-2*alpha0);
+        rr2_2*(bh_spin*bh_mass*(rBL*rBL -bh_spin2)*(bh_spin2-bh_mass*bh_mass+4*rr2_2)*(2-bh_spin2+bh_spin2*cos(2*theta_2))*sinth2)/(4*rr2_2*pow(bh_spin2+rBL*rBL-bh_spin2*delta_metric*sinth2,2)))/(-2*alpha0);
 
         const CCTK_REAL Ktht = ((4*bh_spin*bh_mass*rBL*sinth*costh*rr2_2*(-pow(bh_spin2+rBL*rBL,4)+pow(bh_spin*sinth,4)*delta_metric)) / \
-        pow(rho_kerr2_2*(-bh_spin2*sinth2*delta_metric+bh_spin2+rBL*rBL),2))/(-2*alpha0);
+        pow(rho2kerr*(-bh_spin2*sinth2*delta_metric+bh_spin2+rBL*rBL),2))/(-2*alpha0);
 
         const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
         const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;

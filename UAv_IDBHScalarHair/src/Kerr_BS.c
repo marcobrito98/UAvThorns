@@ -756,9 +756,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters)
-        kxx[ind] = gamma2*(Axx / psi2_2);// + 2*gamma2*bh_v*Kxt;
-        kxy[ind] = gamma*Axy / psi2_2;// + gamma*bh_v*Kyt;
-        kxz[ind] = gamma*Axz / psi2_2;// + gamma*bh_v*Kzt;
+        kxx[ind] = gamma2*(Axx / psi2_2) + 2*gamma2*bh_v*Kxt;
+        kxy[ind] = gamma*Axy / psi2_2 + gamma*bh_v*Kyt;
+        kxz[ind] = gamma*Axz / psi2_2 + gamma*bh_v*Kzt;
         kyy[ind] = Ayy / psi2_2;
         kyz[ind] = Ayz / psi2_2;
         kzz[ind] = 0.;

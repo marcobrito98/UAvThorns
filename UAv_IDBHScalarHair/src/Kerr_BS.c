@@ -739,7 +739,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL KRt = (rr_2*(-bh_spin*sigma*sinth2)/(rBL*rBL + bh_spin2 - delta_metric*bh_spin2*sinth2) + \
         rr2_2*(bh_spin*bh_mass*(rBL*rBL -bh_spin2)*(bh_spin2-bh_mass*bh_mass+4*rr2_2)*(2-bh_spin2+bh_spin2*cos(2*theta_2))*sinth2)/(4*rr2_2*pow(bh_spin2+rBL*rBL-bh_spin2*delta_metric*sinth2,2)))/(-2*alpha0);
 
-        const CCTK_REAL Ktht = ((4*bh_spin*bh_mass*rBL*sinth*costh*rr2_2*(-bh_spin2*(bh_spin2+rBL*rBL)sinth2-(bh_spin2+rBL*rBL)*rho2kerr+pow(bh_spin*sinth,4)*delta_metric)) / \
+        const CCTK_REAL Ktht = ((4*bh_spin*bh_mass*rBL*sinth*costh*rr2_2*(-bh_spin2*(bh_spin2+rBL*rBL)*sinth2-(bh_spin2+rBL*rBL)*rho2kerr+pow(bh_spin*sinth,4)*delta_metric)) / \
         pow(rho2kerr*(-bh_spin2*sinth2*delta_metric+bh_spin2+rBL*rBL),2))/(-2*alpha0);
 
         const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;

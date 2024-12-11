@@ -693,9 +693,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
         // sigma = (2.*bh_mass*rBL - charge*charge) / rho2kerr ;
-        const CCTK_REAL sigma  = (2.*bh_mass*RRrBL) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin2 * costh2) ;
+        const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
 
-        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin2 * costh2) ;
+        const CCTK_REAL hh     = (1 + sigma) / (rr2_2*rho2kerr) ;
 
         const CCTK_REAL psi4_2   = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
@@ -707,7 +707,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // non-axisymmetric perturbation.
         /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
         
-        const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
+        const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 

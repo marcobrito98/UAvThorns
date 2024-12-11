@@ -672,7 +672,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
         const CCTK_REAL y_R    = y1_2/rr_2 ;
         const CCTK_REAL z_R    = z1_2/rr_2 ;
-
+                                                              //nestas variáveis poderá haver gammas unaccounted for?
         const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
         const CCTK_REAL sinth2ph_y =  gamma*x1_2/rr2_2 ;
 
@@ -711,31 +711,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-        const CCTK_REAL gtt =
-        const CCTK_REAL gxt =
-
-
-
-        // 3-metric
-        gxx[ind] = gamma2*psi4_2 * ( 1. + bh_spin2 * hh * y1_2*y1_2 ) + 2*gamma2*bh_v*bh_spin*sigma*y1_2/rr2_2 + \
-                    gamma2*bh_v2*(-alpha02 + pow(bh_spin*sigma*sinth,2)/(psi4_2*rr2_2*(1+bh_spin2*hh*rr2_2*sinth2)));
-        gxy[ind] = - psi4_2 * bh_spin2 * hh * gamma2 * x1_2*y1_2 - gamma2*bh_v*bh_spin*sigma*x1_2/rr2_2;
-        gxz[ind] = 0;
-        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
-        gyz[ind] = 0;
-        gzz[ind] = psi4_2 ;
-
-
-        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
-        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
-
-        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
-
-        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
-
-        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
-        
         const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
         const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
         const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
@@ -751,7 +726,37 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(betadphi,2);
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(betadphi,2);
 
-        
+
+
+        //capital Ks refer to the unboosted frame.
+
+        const CCTK_REAL Gtt = -alpha02 + betadphi*betauphi;
+        const CCTK_REAL Gxt = bh_spin*sigma*y1_2/rr2_2;
+        const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
+        const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
+        const CCTK_REAL Gty = -bh_spin*sigma**x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
+
+
+        // 3-metric
+        gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
+        gxy[ind] = gamma2*Gxy+gamma2*bh_v*Gty;
+        gxz[ind] = 0;
+        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
+        gyz[ind] = 0;
+        gzz[ind] = psi4_2 ;
+
+
+        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
+        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
+
+        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
+
+        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
+
+        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+
+        //capital Ks refer to the unboosted frame.
         const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
         const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
 

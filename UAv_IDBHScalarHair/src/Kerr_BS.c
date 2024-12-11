@@ -734,7 +734,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gxt = bh_spin*sigma*y1_2/rr2_2;
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
-        const CCTK_REAL Gty = -bh_spin*sigma**x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
+        const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
 
 
         // 3-metric

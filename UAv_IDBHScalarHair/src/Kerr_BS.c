@@ -711,6 +711,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
+        const CCTK_REAL gtt =
+        const CCTK_REAL gxt =
+
+
+
         // 3-metric
         gxx[ind] = gamma2*psi4_2 * ( 1. + bh_spin2 * hh * y1_2*y1_2 ) + 2*gamma2*bh_v*bh_spin*sigma*y1_2/rr2_2 + \
                     gamma2*bh_v2*(-alpha02 + pow(bh_spin*sigma*sinth,2)/(psi4_2*rr2_2*(1+bh_spin2*hh*rr2_2*sinth2)));

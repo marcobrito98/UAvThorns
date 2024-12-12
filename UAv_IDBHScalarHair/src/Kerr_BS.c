@@ -691,6 +691,11 @@ void check_nan_or_inf(const char* var_name, double value) {
         check_nan_or_inf("Gxx",Gxx);
         check_nan_or_inf("Gty",Gty);
         check_nan_or_inf("Gxy",Gxy);
+        check_nan_or_inf("delta_metric",delta_metric);
+        check_nan_or_inf("alpha0",alpha0);
+        check_nan_or_inf("hh",hh);
+        check_nan_or_inf("sigma",sigma);
+
         // check_nan_or_inf("fff",fff);
 
 

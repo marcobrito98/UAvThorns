@@ -670,7 +670,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
         const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
 
-        printf("%.6f",ff)
+        printf("%.6f",ff);
 
         void check_nan(const char* var_name, double value) {
         if (isnan(value)) {

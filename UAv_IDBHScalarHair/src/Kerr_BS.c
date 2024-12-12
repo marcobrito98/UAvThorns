@@ -753,7 +753,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         kxz[ind] = gamma*Axz / psi2_2 + gamma*bh_v*Kzt;
         kyy[ind] = Ayy / psi2_2;
         kyz[ind] = Ayz / psi2_2;
-        kzz[ind] = 1/0;
+        kzz[ind] = 1/(bh_spin-bh_spin);
 
         
         check_nan_or_inf("kxx",kxx[ind]);

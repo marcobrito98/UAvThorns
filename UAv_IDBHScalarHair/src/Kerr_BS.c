@@ -659,8 +659,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(betadphi,2);//podem ser estes que estejam a dar erro.
         // printf("%.6f",dbetauphi_dth);
         // printf("%.6f",dbetauphi_dR);//nao parece haver nans
-        // printf("%.6f",rho2kerr);//nao parece ser
-        printf("%.6f",betauphi);
+        printf("%.6f",betadphi);
 
         //capital Ks refer to the unboosted frame.
 

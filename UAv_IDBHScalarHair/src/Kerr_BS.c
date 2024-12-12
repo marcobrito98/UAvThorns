@@ -668,9 +668,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // printf("%.6f",dbetauphi_dth);
         // printf("%.6f",dbetauphi_dR);//nao parece haver nans
         check_nan("betauphi",betauphi);
-        check_nan("betauphi",betadphi);
-        check_nan("betauphi",dbetauphi_dR);
-        check_nan("betauphi",dbetauphi_dth);
+        check_nan("betadphi",betadphi);
+        check_nan("dbetauphi_dR",dbetauphi_dR);
+        check_nan("dbetauphi_dth",dbetauphi_dth);
 
 
         //capital Ks refer to the unboosted frame.
@@ -680,6 +680,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
         const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
+
+        check_nan("Gtt",Gtt);
+        check_nan("Gxt",Gxt);
+        check_nan("Gxx",Gxx);
+        check_nan("Gty",Gty);
+        check_nan("Gxy",Gxy);
 
 
         // 3-metric

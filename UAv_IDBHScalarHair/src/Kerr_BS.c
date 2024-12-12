@@ -668,7 +668,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
         const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
-        const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
+        // const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
 
         // printf("%.6f",fff);
 
@@ -682,16 +682,16 @@ void check_nan_or_inf(const char* var_name, double value) {
     }
 }
 
-        // check_nan_or_inf("betauphi",betauphi);
-        // check_nan_or_inf("betadphi",betadphi);
-        // check_nan_or_inf("dbetauphi_dR",dbetauphi_dR);
-        // check_nan_or_inf("dbetauphi_dth",dbetauphi_dth);
-        // check_nan_or_inf("Gtt",Gtt);
-        // check_nan_or_inf("Gxt",Gxt);
-        // check_nan_or_inf("Gxx",Gxx);
-        // check_nan_or_inf("Gty",Gty);
-        // check_nan_or_inf("Gxy",Gxy);
-        check_nan_or_inf("fff",fff);
+        check_nan_or_inf("betauphi",betauphi);
+        check_nan_or_inf("betadphi",betadphi);
+        check_nan_or_inf("dbetauphi_dR",dbetauphi_dR);
+        check_nan_or_inf("dbetauphi_dth",dbetauphi_dth);
+        check_nan_or_inf("Gtt",Gtt);
+        check_nan_or_inf("Gxt",Gxt);
+        check_nan_or_inf("Gxx",Gxx);
+        check_nan_or_inf("Gty",Gty);
+        check_nan_or_inf("Gxy",Gxy);
+        // check_nan_or_inf("fff",fff);
 
 
         // 3-metric

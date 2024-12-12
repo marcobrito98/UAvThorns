@@ -589,73 +589,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
 
         const CCTK_REAL theta_2 = acos(z1_2/rr_2);
-        // const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
-        // // If x1_2=y1_2=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
-        // // but can this lead to nan depending on the C implementation?
-        
-
-        // // const CCTK_REAL cosph_2  = cos(ph_2);
-        // // const CCTK_REAL sinph_2  = sin(ph_2);
-
-        // // const CCTK_REAL cosmph_2 = cos(mm*ph_2);
-        // // const CCTK_REAL sinmph_2 = sin(mm*ph_2);
-        // //////////////////////////////////////////
-
-
-        // const CCTK_REAL r_BL = rr_2 * (1 + (bh_mass + pow(bh_spin,2))/(2*rr_2))*(1+(bh_mass - pow(bh_spin,2))/(2*rr_2));
-        // const CCTK_REAL rho_kerr2_2 = pow(r_BL,2) + pow(bh_spin,2)*pow(cos(theta_2),2);
-        // const CCTK_REAL delta_kerr = pow(r_BL,2) - 2*bh_mass*r_BL + pow(bh_spin,2);
-
-        // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        // const CCTK_REAL psi4_2 = rho_kerr2_2/rr2_2;
-        // const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        // const CCTK_REAL psi2_2 = sqrt(psi4_2);
-        // const CCTK_REAL psi1_1 = sqrt(psi2_1);
-        // const CCTK_REAL psi1_2 = sqrt(psi2_2);
-
-
-
-        // const CCTK_REAL sigma = 2*bh_mass*r_BL/rho_kerr2_2;
-        // const CCTK_REAL h = (1+sigma)/(rho_kerr2_2*rr2_2);
-
-
-        
-
-
-        // // const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
-        // // const CCTK_REAL h_rho2_2 = exp(2. * (F2_2[ind] - F1_2[ind])) - 1.;
-
-        // // add non-axisymmetric perturbation on conformal factor
-        // // const CCTK_REAL argpert_cf_1 = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        // // const CCTK_REAL pert_cf_1 = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf_1*argpert_cf_1);
-        // // const CCTK_REAL argpert_cf_2 = (rr_2 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        // // const CCTK_REAL pert_cf_2 = 1. + Apert_conf_fac * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_cf_2*argpert_cf_2);
-
-        // const CCTK_REAL conf_fac_1 = psi4_1;// * pert_cf_1;
-        // const CCTK_REAL conf_fac_2 = psi4_2;// * pert_cf_2;
-
-        // const CCTK_REAL rhor = 0.5*sqrt(bh_mass*bh_mass -bh_spin2);
-        // const CCTK_REAL alpha0 = ((rr_2+rhor)*(rr_2-rhor))/(rr_2*sqrt(r_BL*r_BL + bh_spin2*(1. +sigma*pow(sin(theta_2),2)))); 
-        // const CCTK_REAL alpha02 = alpha0*alpha0;
-        // const CCTK_REAL G = (r_BL*r_BL - bh_spin2)*rho_kerr2_2 + 2*r_BL*r_BL*(r_BL*r_BL+bh_spin2);
-        // const CCTK_REAL HE = bh_spin*bh_mass*G/(pow(sqrt(rho_kerr2_2),3)*sqrt(r_BL*r_BL+bh_spin2*(1+sigma*pow(sin(theta_2),2))));
-        // const CCTK_REAL HF = -alpha0*sigma*pow(bh_spin,3)*cos(theta_2)*pow(sin(theta_2),2)/sqrt(rho_kerr2_2);
-
-
-        // const CCTK_REAL Axx = 2.*(HE/rr2_2)*(x1_2/rr_2)*(-y1_2/rr2_2) + \
-        //                                       2.*(HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2))*(-y1_2/rr_2);
-
-        // const CCTK_REAL Axy =    (HE/rr2_2)*(x1_2/rr_2 * x1_2/rr2_2 + y1_2/rr_2*(-y1_2/rr2_2)) + \
-        //                                       (HF/rr_2)*(z1_2*x1_2/(rr_2*rr2_2) * x1_2/rr2_2 +z1_2*y1_2/(rr_2*rr2_2) * (-y1_2/rr2_2));
-
-        // const CCTK_REAL Axz = (HE/rr2_2) * (z1_2/rr_2)*(-y1_2/rr2_2) + \
-        //                                       (HF/rr_2)*(-pow(sin(theta_2),2)/rr_2)*(-y1_2/rr2_2);
-
-        // const CCTK_REAL Ayy = 2.*(HE/rr2_2)*(y1_2/rr_2)*(x1_2/rr2_2) + \
-        //                                       2.*(HF/rr_2)*(z1_2*y1_2/(rr_2*rr2_2))*(x1_2/rr_2);
-                                          
-        // const CCTK_REAL Ayz = (HE/rr2_2) * (z1_2/rr_2) * (x1_2/rr2_2) + \
-        //                                          (HF/rr_2) * (-pow(sin(theta_2),2)/rr_2)*(x1_2/rr2_2);
 
         const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
         const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
@@ -672,7 +605,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
         const CCTK_REAL y_R    = y1_2/rr_2 ;
         const CCTK_REAL z_R    = z1_2/rr_2 ;
-                                                              //nestas variáveis poderá haver gammas unaccounted for?
+
         const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
         const CCTK_REAL sinth2ph_y =  gamma*x1_2/rr2_2 ;
 
@@ -692,14 +625,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2 ;
         const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
-        // sigma = (2.*bh_mass*rBL - charge*charge) / rho2kerr ;
         const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
 
         const CCTK_REAL hh     = (1 + sigma) / (rr2_2*rho2kerr) ;
 
-        const CCTK_REAL psi4_2   = rho2kerr / rr2_2 ;
-        const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
-        const CCTK_REAL psi1_2   = sqrt(psi2_2) ;
+        const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
+        const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
+        const CCTK_REAL psi1_2 = sqrt(psi2_2) ;
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
         const CCTK_REAL psi2_1 = sqrt(psi4_1);
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
@@ -727,8 +659,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(betadphi,2);//podem ser estes que estejam a dar erro.
         // printf("%.6f",dbetauphi_dth);
         // printf("%.6f",dbetauphi_dR);//nao parece haver nans
-        printf("%.6f",rho2kerr);
-
+        // printf("%.6f",rho2kerr);//nao parece ser
+        printf("%.6f",betauphi);
 
         //capital Ks refer to the unboosted frame.
 

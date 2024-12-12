@@ -679,7 +679,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
         const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
-        const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
+        // const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
 
         // printf("%.6f",fff);
 
@@ -699,7 +699,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("hh",hh);
         check_nan_or_inf("sigma",sigma);
 
-        check_nan_or_inf("fff",fff);
+        // check_nan_or_inf("fff",fff);
 
 
         // 3-metric
@@ -709,6 +709,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
         gyz[ind] = 0;
         gzz[ind] = psi4_2 ;
+
+        check_nan_or_inf("gxx",gxx[ind]);
+        check_nan_or_inf("gxy",gxy[ind]);
+        check_nan_or_inf("gxz",gxz[ind]);
+        check_nan_or_inf("gyy",gyy[ind]);
+        check_nan_or_inf("gyz",gyz[ind]);
+        check_nan_or_inf("gzz",gzz[ind]);
 
 
         const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2

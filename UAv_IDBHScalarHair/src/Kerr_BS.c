@@ -686,7 +686,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         check_nan_or_inf("betauphi",betauphi);
         check_nan_or_inf("betadphi",betadphi);
-        check_nan_or_inf("1(betadphi",1./betadphi);
+        check_nan_or_inf("1/sinth2",1./sinth2);
         check_nan_or_inf("gammaphiphi",gammaphiphi);
         check_nan_or_inf("dbetadphi_dth",dbetadphi_dth);
         check_nan_or_inf("dbetadphi_dR",dbetadphi_dR);

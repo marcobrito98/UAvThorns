@@ -15,6 +15,14 @@ void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 
 
+void check_nan(const char* var_name, double value) {
+    if (isnan(value)) {
+        fprintf(stderr, "Error: %s is NaN\n", var_name);
+        abort(); // Break execution
+    }
+}
+
+
 void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
@@ -659,7 +667,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(betadphi,2);//podem ser estes que estejam a dar erro.
         // printf("%.6f",dbetauphi_dth);
         // printf("%.6f",dbetauphi_dR);//nao parece haver nans
-        printf("%.6f",betadphi);
+        check_nan("betauphi",betauphi)
+        check_nan("betauphi",betadphi)
+        check_nan("betauphi",dbetauphi_dR)
+        check_nan("betauphi",dbetauphi_dth)
+
 
         //capital Ks refer to the unboosted frame.
 

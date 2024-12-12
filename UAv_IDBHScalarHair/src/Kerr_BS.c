@@ -15,14 +15,6 @@ void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 
 
-void check_nan(const char* var_name, double value) {
-    if (isnan(value)) {
-        fprintf(stderr, "Error: %s is NaN\n", var_name);
-        abort(); // Break execution
-    }
-}
-
-
 void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
@@ -682,6 +674,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
         const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
 
+        void check_nan(const char* var_name, double value) {
+        if (isnan(value)) {
+        fprintf(stderr, "Error: %s is NaN\n", var_name);
+        abort(); // Break execution
+        }
+        }
+
+        check_nan("betauphi",betauphi);
+        check_nan("betadphi",betadphi);
+        check_nan("dbetauphi_dR",dbetauphi_dR);
+        check_nan("dbetauphi_dth",dbetauphi_dth);
         check_nan("Gtt",Gtt);
         check_nan("Gxt",Gxt);
         check_nan("Gxx",Gxx);

@@ -698,6 +698,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("alpha0",alpha0);
         check_nan_or_inf("hh",hh);
         check_nan_or_inf("sigma",sigma);
+        check_nan_or_inf("psi4_2",psi4_2);
 
         // check_nan_or_inf("fff",fff);
 
@@ -754,7 +755,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         kyz[ind] = Ayz / psi2_2;
         kzz[ind] = 0.;
 
-          
+        
+        check_nan_or_inf("kxx",kxx[ind]);
+        check_nan_or_inf("kxy",kxy[ind]);
+        check_nan_or_inf("kxz",kxz[ind]);
+        check_nan_or_inf("kyy",kyy[ind]);
+        check_nan_or_inf("kyz",kyz[ind]);
+        check_nan_or_inf("kzz",kzz[ind]);  
 
         // // let's add a perturbation to the scalar field as well
         // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;

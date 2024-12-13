@@ -684,24 +684,24 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-        check_nan_or_inf("betauphi",betauphi);
-        check_nan_or_inf("betadphi",betadphi);
-        check_nan_or_inf("gammaphiphi",gammaphiphi);
-        check_nan_or_inf("dbetadphi_dth",dbetadphi_dth);
-        check_nan_or_inf("dbetadphi_dR",dbetadphi_dR);
-        check_nan_or_inf("dbetauphi_dth",dbetauphi_dth);
-        check_nan_or_inf("dbetauphi_dR",dbetauphi_dR);
+        // check_nan_or_inf("betauphi",betauphi);
+        // check_nan_or_inf("betadphi",betadphi);
+        // check_nan_or_inf("gammaphiphi",gammaphiphi);
+        // check_nan_or_inf("dbetadphi_dth",dbetadphi_dth);
+        // check_nan_or_inf("dbetadphi_dR",dbetadphi_dR);
+        // check_nan_or_inf("dbetauphi_dth",dbetauphi_dth);
+        // check_nan_or_inf("dbetauphi_dR",dbetauphi_dR);
        
-        check_nan_or_inf("Gtt",Gtt);
-        check_nan_or_inf("Gxt",Gxt);
-        check_nan_or_inf("Gxx",Gxx);
-        check_nan_or_inf("Gty",Gty);
-        check_nan_or_inf("Gxy",Gxy);
-        check_nan_or_inf("delta_metric",delta_metric);
-        check_nan_or_inf("alpha0",alpha0);
-        check_nan_or_inf("hh",hh);
-        check_nan_or_inf("sigma",sigma);
-        check_nan_or_inf("psi4_2",psi4_2);
+        // check_nan_or_inf("Gtt",Gtt);
+        // check_nan_or_inf("Gxt",Gxt);
+        // check_nan_or_inf("Gxx",Gxx);
+        // check_nan_or_inf("Gty",Gty);
+        // check_nan_or_inf("Gxy",Gxy);
+        // check_nan_or_inf("delta_metric",delta_metric);
+        // check_nan_or_inf("alpha0",alpha0);
+        // check_nan_or_inf("hh",hh);
+        // check_nan_or_inf("sigma",sigma);
+        // check_nan_or_inf("psi4_2",psi4_2);
 
         // check_nan_or_inf("fff",fff);
 

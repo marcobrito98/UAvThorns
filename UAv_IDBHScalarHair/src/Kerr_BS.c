@@ -666,8 +666,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                         (-bh_spin2-rBL*rBL+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
 
         const CCTK_REAL betauphi = betadphi/gammaphiphi;
-        const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(betadphi,2);//podem ser estes que estejam a dar erro.
-        const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(betadphi,2);//podem ser estes que estejam a dar erro.
+        const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
+        const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
        
 
 

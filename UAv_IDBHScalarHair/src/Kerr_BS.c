@@ -637,7 +637,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
         const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
-
+                                                                  //no codigo original esta escrito doutra maneira. sera que e por motivos computacionais
         const CCTK_REAL hh     = (1 + sigma) / (rr2_2*rho2kerr) ;
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
@@ -731,6 +731,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
 
         const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+
+        //ate aqui as variaveis auxiliares parecem corretas
+
 
         //capital Ks refer to the unboosted frame.
         const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);

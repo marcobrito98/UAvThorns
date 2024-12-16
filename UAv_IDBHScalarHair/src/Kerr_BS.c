@@ -662,8 +662,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
         const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
         const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr2_2*(rBL+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
-                                        (-bh_spin2-rBL*rBL+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);//será que as derivadas estão bem??
-
+                                        2*(-bh_spin2-rBL*rBL+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);//será que as derivadas estão bem??
+//faltava um 2 acima no segundo termo
         const CCTK_REAL betauphi = betadphi/gammaphiphi;
         const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);

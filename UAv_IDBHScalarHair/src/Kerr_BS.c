@@ -731,7 +731,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
 
-        //ate aqui as variaveis auxiliares parecem corretas
 
 
         //capital Ks refer to the unboosted frame.

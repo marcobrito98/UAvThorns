@@ -676,8 +676,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gtt = -alpha02 + betadphi*betauphi;
         const CCTK_REAL Gxt = bh_spin*sigma*y1_2/rr2_2;
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
-        const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*x1_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
-        const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2; //tem de levar depois um factor de gamma extra devido a presenca do x1_2
+        const CCTK_REAL Gxy = -bh_spin2*hh*y1_2*gamma*x1_2; 
+        const CCTK_REAL Gty = -bh_spin*sigma*gamma*x1_2/rr2_2;
         // const CCTK_REAL fff = bh_mass/(bh_spin-bh_spin);
 
         // printf("%.6f",fff);
@@ -708,7 +708,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxy[ind] = gamma2*Gxy+gamma2*bh_v*Gty;
+        gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
         gxz[ind] = 0;
         gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
         gyz[ind] = 0;

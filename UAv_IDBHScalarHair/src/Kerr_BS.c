@@ -753,7 +753,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-
+        //K esta errado. tinha usado foliacao errada.
 
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters)
         kxx[ind] = gamma2*(Axx / psi2_2) + 2*gamma2*bh_v*Kxt;

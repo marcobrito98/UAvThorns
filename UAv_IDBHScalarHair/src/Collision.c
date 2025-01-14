@@ -630,12 +630,12 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         CCTK_REAL gzz_2 = conf_fac_2;
 
         //Superposition
-        gxx[ind] = gxx_1 + gxx_2 - 1.011182762384759;//for the special case of n=0, w=98, l=0
+        gxx[ind] = gxx_1 + gxx_2 - 1;//for the special case of n=0, w=98, l=0
         gxy[ind] = gxy_1 + gxy_2;
         gxz[ind] = gxz_1 + gxz_2;
-        gyy[ind] = gyy_1 + gyy_2 - 1.011182762384759;
+        gyy[ind] = gyy_1 + gyy_2 - 1;
         gyz[ind] = gyz_1 + gyz_2;
-        gzz[ind] = gzz_1 + gzz_2 - 1.011182762384759;
+        gzz[ind] = gzz_1 + gzz_2 - 1;
 
         /*
           d/drho = rho/r * d/dr  +    z/r^2 * d/dth

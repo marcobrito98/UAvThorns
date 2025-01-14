@@ -571,7 +571,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
         phi1[ind]  = phi0_l * (coswt * cosmph + sinwt * sinmph);
         phi2[ind]  = phi0_l * (coswt * sinmph - sinwt * cosmph);
 
-        const CCTK_REAL alph = exp(F0[ind]) * (RR - 0.25*rH) / (RR + 0.25*rH);
+        const CCTK_REAL alph = exp(F0[ind]) * den / (RR + 0.25*rH);
 
         // if at R ~ rH/4 we need to regularize the division by R - rH/4
         // That's the same as for the extrinsic curvature above, with f(R) = W - OmegaH

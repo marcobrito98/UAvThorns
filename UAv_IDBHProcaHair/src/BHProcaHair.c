@@ -89,6 +89,18 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   dWbar_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dWbar_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   d2Wbar_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  
+  // Same for H3 and V
+  
+  CCTK_REAL *dH3_dr_in, *dH3_dth_in, *d2H3_drth_in;
+  dH3_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH3_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2H3_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  
+  CCTK_REAL *dV_dr_in, *dV_dth_in, *d2V_drth_in;
+  dV_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dV_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2V_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   // We'll use A_r rather than the input A_x
   // Notation here: A ~ H1 dx + ... = H1r dr + ...    (input file has the first one: H1)
@@ -384,8 +396,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
   const CCTK_INT N_dims  = 2;   // 2-D interpolation
 
-  const CCTK_INT N_input_arrays  = 11;
-  const CCTK_INT N_output_arrays = 11;
+  const CCTK_INT N_input_arrays  = 17;
+  const CCTK_INT N_output_arrays = 17;
 
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
@@ -419,6 +431,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   input_array_type_codes[8] = CCTK_VARIABLE_REAL;
   input_array_type_codes[9] = CCTK_VARIABLE_REAL;
   input_array_type_codes[10]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[11]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[12]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[13]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[14]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[15]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[16]= CCTK_VARIABLE_REAL;
 
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
@@ -434,12 +452,20 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   input_arrays[8] = (const void *) H2_in;
   input_arrays[9] = (const void *) H3_in;
   input_arrays[10]= (const void *) V_in;
+  input_arrays[11]= (const void *) dH3_dr_in;
+  input_arrays[12]= (const void *) dH3_dth_in;
+  input_arrays[13]= (const void *) d2H3_drth_in;
+  input_arrays[14]= (const void *) dV_dr_in;
+  input_arrays[15]= (const void *) dV_dth_in;
+  input_arrays[16]= (const void *) d2V_drth_in;
 
   /* output arrays */
   void *output_arrays[N_output_arrays];
   CCTK_INT output_array_type_codes[N_output_arrays];
   CCTK_REAL *F1, *F2, *F0, *Wbar, *H1r, *H2, *H3, *V;
   CCTK_REAL *dWbar_dr, *dWbar_dth, *d2Wbar_drth;
+  CCTK_REAL *dH3_dr, *dH3_dth, *d2H3_drth;
+  CCTK_REAL *dV_dr, *dV_dth, *d2V_drth;
 
   F1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -452,6 +478,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   H2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   H3          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   V           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH3_dr      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH3_dth     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  d2H3_drth   = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dV_dr       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dV_dth      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  d2V_drth    = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
   output_array_type_codes[0] = CCTK_VARIABLE_REAL;
   output_array_type_codes[1] = CCTK_VARIABLE_REAL;
@@ -464,6 +496,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   output_array_type_codes[8] = CCTK_VARIABLE_REAL;
   output_array_type_codes[9] = CCTK_VARIABLE_REAL;
   output_array_type_codes[10]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[11]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[12]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[13]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[14]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[15]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[16]= CCTK_VARIABLE_REAL;
 
   output_arrays[0] = (void *) F1;
   output_arrays[1] = (void *) F2;
@@ -476,6 +514,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   output_arrays[8] = (void *) H2;
   output_arrays[9] = (void *) H3;
   output_arrays[10]= (void *) V;
+  output_arrays[11]= (void *) dH3_dr;
+  output_arrays[12]= (void *) dH3_dth;
+  output_arrays[13]= (void *) d2H3_drth;
+  output_arrays[14]= (void *) dV_dr;
+  output_arrays[15]= (void *) dV_dth;
+  output_arrays[16]= (void *) d2V_drth;
 
 
   /* handle and settings for the interpolation routine */
@@ -508,6 +552,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   free(H1_in); free(H2_in); free(H3_in); free(V_in);
   free(dWbar_dr_in); free(dWbar_dth_in); free(d2Wbar_drth_in);
   free(H1r_in);
+  free(dH3_dr_in); free(dH3_dth_in); free(d2H3_drth_in);
+  free(dV_dr_in); free(dV_dth_in); free(d2V_drth_in);
 
 
   /* printf("F1 = %g\n", F1[0]); */
@@ -663,7 +709,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         
         // lapse value (field initialization below)
-        const CCTK_REAL alph = exp(F0[ind]) * (RR - 0.25*rH) / (RR + 0.25*rH);
+        const CCTK_REAL alph = exp(F0[ind]) * den / (RR + 0.25*rH);
 
 
         // // TODO: see naming and if we do perturbation like on Ai, if it transfers to Ei...
@@ -695,8 +741,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         A2y[ind] = y1/RR * H1R * harm_im + costh*sinph/RR * H2[ind] * harm_im + cosph/RR * H3[ind] * harm_re;
         
         // A_z
-        A1z[ind] = (z1/RR * H1R * harm_re - sinth/RR * H2[ind]) * harm_re;
-        A2z[ind] = (z1/RR * H1R * harm_im - sinth/RR * H2[ind]) * harm_im;
+        A1z[ind] = (z1/RR * H1R - sinth/RR * H2[ind]) * harm_re;
+        A2z[ind] = (z1/RR * H1R - sinth/RR * H2[ind]) * harm_im;
 
         // A_\phi
         /*
@@ -704,12 +750,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
                 = -i * e^{i (m ph - w t)} * (V + W H3 sinth) / alpha
           
           if at R ~ rH/4 we need to regularize the division by R - rH/4
-          That's the same as for the extrinsic curvature above, with f(R) = V + W H3 sinth
+          That's the same as for the extrinsic curvature above, with f(R) = V + W H3 sinth  (= 0 on horizon)
         */
         if (fabs(eps) < 1e-4) {
-          // Ahor = \xi^\mu A_\mu = V + W H3 sinth
-          const CCTK_REAL dAhor_dr = 0; // TODO complete that
-          const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * dAhor_dr;
+          // f(R) = V + W H3 sinth
+          const CCTK_REAL df_dr = dV_dr[ind] + dW_dr * H3[ind] * sinth + W * dH3_dr[ind] * sinth;
+          const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * df_dr;
 
           Aphi1[ind] =  reg * harm_im;
           Aphi2[ind] = -reg * harm_re;
@@ -720,14 +766,111 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         // ----- Electric fields -----
         
-        // TODO
-        
         // First, E_i in (R, th, ph) coordinates
-        CCTK_REAL EdR, Edth, Edph;
+        CCTK_REAL E1d_R, E2d_R, E1d_th, E2d_th, E1d_ph_o_sinth, E2d_ph_o_sinth;
 
-        // E_ph = - m * (V + OmegaH * H3 * sinth) / alpha * e^{i(m phi - w t)}
-        // On the horizon, V + OmegaH * H3 * sinth vanishes
+        // E_R
+        /*
+          E_R = i * e^{i(m phi - w t)} * aux^2 * e^{-F_0} * [-m * (W - OmegaH) H1r + dV/dr + W sinth dH3/dr]
+
+          aux contribution is canceled with inverse metric below.
+        */
+
+        E1d_R = -exp(-F0[ind]) * (- mm * (W - OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_im;
+        E2d_R =  exp(-F0[ind]) * (- mm * (W - OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_re;
+
+        // E_th
+        /*
+          E_th = i * e^{i(m phi - w t)} / alpha * [- m * (W - OmegaH) * H2 + dV/dth + W * d(H3 * sinth)/dth]
+          if at R ~ rH/4 we need to regularize the division by R - rH/4
+          That's the same as for A_\phi, with 
+            1) f(R) = W - OmegaH
+            2) f(R) = dV/dth + W d(H3 sinth)/dth   (= 0 on horizon, it coincides with d(V + OmegaH H3 sinth)/dth there)
+        */
+       if (fabs(eps) < 1e-4) {
+          // f(R) = dV/dth + W d(H3 sinth)/dth
+          const CCTK_REAL df_dr = d2V_drth[ind] + dW_dr * (sinth * dH3_dth[ind] + costh * H3[ind]) + W * (sinth * d2H3_drth[ind] + costh * dH3_dr[ind]);
+          const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * (- mm * H2[ind] * dW_dr + df_dr );
+
+          E1d_th = -reg * harm_im;
+          E2d_th =  reg * harm_re;
+        } else {
+          E1d_th = -(- mm * (W - OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_im;
+          E2d_th =  (- mm * (W - OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_re;
+        }
+
+        // E_ph / sinth
+        /*
+          E_ph = - m * (V + OmegaH * H3 * sinth) / alpha * e^{i(m phi - w t)}
+
+          We include here the division by sinth which arises when computing E^ph.
+          
+          if at R ~ rH/4 we need to regularize the division by R - rH/4
+          That's the same as for A_\phi, with f(R) = V + OmegaH H3 sinth   (= 0 on horizon)
+
+          on the axis sinth=0, we need to regularize the division by sinth
+          We have V(theta=0) = 0, so with l'Hôpital's rule
+          V / sinth ~ dV/dth
+
+          On the horizon we need to combine both. In that case, f(R) = dV/dth + OmegaH H3   (corresponds to d(V + OmegaH H3 sinth)/dth = 0)
+
+          Using abusive shorthands for Ahor = \xi^\mu A_\mu    \propto    V + OmegaH H3 sinth
+        */
+        if (fabs(eps) < 1e-4 && fabs(sinth) < 1e-8) {
+          const CCTK_REAL d2Ahor_drth = d2V_drth[ind] + OmegaH * dH3_dr[ind];
+          const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * d2Ahor_drth;
+
+          E1d_ph_o_sinth = - mm * reg * harm_re;
+          E2d_ph_o_sinth = - mm * reg * harm_im;
+
+        } else if (fabs(eps) < 1e-4) {
+          const CCTK_REAL dAhor_dr_o_sinth = dV_dr[ind] / sinth + OmegaH * dH3_dr[ind];
+          const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * dAhor_dr_o_sinth;
+
+          E1d_ph_o_sinth = - mm * reg * harm_re;
+          E2d_ph_o_sinth = - mm * reg * harm_im;
         
+        } else if (fabs(sinth) < 1e-8) {
+          E1d_ph_o_sinth = - mm * (dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = - mm * (dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_im;
+        
+        } else {
+          E1d_ph_o_sinth = - mm * (V[ind] / sinth + OmegaH * H3[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = - mm * (V[ind] / sinth + OmegaH * H3[ind]) / alph * harm_im;
+        }
+
+
+        // E^i components
+        // Spherical auxiliaries
+        
+        // E^R/R = e^{-2*F1} / aux^4 * E_R / R
+        // aux contribution not included in E_R above
+        const CCTK_REAL E1u_R_o_R = exp(-2*F1[ind]) / aux2 * E1d_R / RR;
+        const CCTK_REAL E2u_R_o_R = exp(-2*F1[ind]) / aux2 * E2d_R / RR;
+
+        // E^th = e^{-2*F1} / aux^4 / R^2 * E_th
+        const CCTK_REAL E1u_th = exp(-2*F1[ind]) / RR2 / aux4 * E1d_th;
+        const CCTK_REAL E2u_th = exp(-2*F1[ind]) / RR2 / aux4 * E2d_th;
+
+        // E^ph = e^{-2*F2} / aux^4 / R^2 / sinth^2 * E_ph
+        // We compute R * sinth * E^ph. The other division by sinth is managed with E_ph above 
+        const CCTK_REAL RsinthE1u_ph = exp(-2*F2[ind]) / aux4 / RR * E1d_ph_o_sinth;
+        const CCTK_REAL RsinthE2u_ph = exp(-2*F2[ind]) / aux4 / RR * E2d_ph_o_sinth;
+
+
+        // Finally Cartesian components
+        // E^x
+        E1x[ind] = x1 * E1u_R_o_R + z1 * cosph * E1u_th - sinph * RsinthE1u_ph;
+        E2x[ind] = x1 * E2u_R_o_R + z1 * cosph * E2u_th - sinph * RsinthE2u_ph;
+
+        // E^y
+        E1y[ind] = y1 * E1u_R_o_R + z1 * sinph * E1u_th + cosph * RsinthE1u_ph;
+        E2y[ind] = y1 * E2u_R_o_R + z1 * sinph * E2u_th + cosph * RsinthE2u_ph;
+
+        // E^z
+        E1z[ind] = z1 * E1u_R_o_R - RR * sinth * E1u_th;
+        E2z[ind] = z1 * E2u_R_o_R - RR * sinth * E2u_th;
+
 
 
 
@@ -759,6 +902,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   free(F1); free(F2); free(F0); free(Wbar);
   free(H1r); free(H2); free(H3); free(V);
   free(dWbar_dr); free(dWbar_dth); free(d2Wbar_drth);
+  free(dH3_dr); free(dH3_dth); free(d2H3_drth);
+  free(dV_dr); free(dV_dth); free(d2V_drth);
 
   return;
 }

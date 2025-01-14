@@ -772,7 +772,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
 
-  printf(" value of x %f",x[200]);
+  printf(" value of x %f",x[1]);
 
 
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);

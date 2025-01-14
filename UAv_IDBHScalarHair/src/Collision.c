@@ -772,7 +772,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
 
-  printf("%f",x0_2[100])
+  printf("%f",x0_2[100]);
 
 
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);

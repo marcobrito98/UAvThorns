@@ -570,7 +570,7 @@ for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
             printf("x[%d] = %f, y[%d] = %f, z[%d] = %f\n", ind, x[ind], ind, y[ind], ind, z[ind]);
 
 
-            if ((fabs(x0_2-x[ind]) < 10) && (fabs(y0_2-y[ind]) < 10) && (fabs(z0_2-z[ind]) < 10)) {
+            if ((fabs(x0_2-x[ind]) < 10.0) && (fabs(y0_2-y[ind]) < 10.0) && (fabs(z0_2-z[ind]) < 10.0)) {
                 correction = exp(2 * F1_1[ind]);
                 found = 1; // Mark as found
                 break; // Exit the innermost loop

@@ -557,11 +557,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
   end_loops:
 
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
+
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
@@ -799,6 +795,11 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
   // printf(" value of x %f",x[1]);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
 
 
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);

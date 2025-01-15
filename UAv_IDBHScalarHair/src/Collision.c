@@ -536,6 +536,32 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
 
+  CCTK_REAL correction = 0.0;
+
+  for (int k = 0; k < cctk_lsh[2]; ++k) {
+    for (int j = 0; j < cctk_lsh[1]; ++j) {
+      for (int i = 0; i < cctk_lsh[0]; ++i) {
+
+        const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
+
+        if (abs(x0_2-x[ind]) < 1e-8) {  //para o caso de simetria esferica e quando as duas estrelas estao a mesma distancia da origem
+          
+          correction = exp(2*F1_1[ind]);
+
+          goto end_loops;
+
+        }
+      }
+    }
+  }
+
+  end_loops:
+
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction);
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {

@@ -566,6 +566,9 @@ for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
         for (int i = 0; i < cctk_lsh[0] && !found; ++i) {
 
             const CCTK_INT ind  = CCTK_GFINDEX3D(cctkGH, i, j, k);
+            printf("x0_2 = %f, y0_2 = %f, z0_2 = %f\n", x0_2, y0_2, z0_2);
+            printf("x[%d] = %f, y[%d] = %f, z[%d] = %f\n", ind, x[ind], ind, y[ind], ind, z[ind]);
+
 
             if ((fabs(x0_2-x[ind]) < 10) && (fabs(y0_2-y[ind]) < 10) && (fabs(z0_2-z[ind]) < 10)) {
                 correction = exp(2 * F1_1[ind]);

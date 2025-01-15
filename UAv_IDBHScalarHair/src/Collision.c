@@ -536,7 +536,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
 
-  CCTK_REAL correction = 0.0;
+  // CCTK_REAL correction = 0.0;
 
   // for (int k = 0; k < cctk_lsh[2]; ++k) {
   //   for (int j = 0; j < cctk_lsh[1]; ++j) {

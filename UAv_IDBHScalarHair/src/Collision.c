@@ -567,7 +567,7 @@ for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
 
             const CCTK_INT ind  = CCTK_GFINDEX3D(cctkGH, i, j, k);
 
-            if ((abs(x0_2-x[ind]) < 10) && (abs(y0_2-y[ind]) < 10) && (abs(z0_2-x[ind]) < 10)) {
+            if ((abs(x0_2-x[ind]) < 10) && (abs(y0_2-y[ind]) < 10) && (abs(z0_2-z[ind]) < 10)) {
                 correction = exp(2 * F1_1[ind]);
                 found = 1; // Mark as found
                 break; // Exit the innermost loop

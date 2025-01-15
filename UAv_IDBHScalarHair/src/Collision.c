@@ -798,7 +798,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
   // printf(" value of x %f",x[1]);
-  printf("a correcao e %f",correction);
+  printf("a correcao e %f",correction); 
   printf("a correcao e %f",correction);
   printf("a correcao e %f",correction);
   printf("a correcao e %f",correction);

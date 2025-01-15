@@ -538,25 +538,52 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
   CCTK_REAL correction = 0.0;
 
-  for (int k = 0; k < cctk_lsh[2]; ++k) {
-    for (int j = 0; j < cctk_lsh[1]; ++j) {
-      for (int i = 0; i < cctk_lsh[0]; ++i) {
+  // for (int k = 0; k < cctk_lsh[2]; ++k) {
+  //   for (int j = 0; j < cctk_lsh[1]; ++j) {
+  //     for (int i = 0; i < cctk_lsh[0]; ++i) {
 
-        const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
+  //       const CCTK_INT ind  = CCTK_GFINDEX3D (cctkGH, i, j, k);
 
-        if ((abs(x0_2-x[ind]) < 1e-8) && (abs(y0_2-y[ind]) < 1e-8) && (abs(z0_2-x[ind]) < 1e-8)) {  //para o caso de quando as duas estrelas estao a mesma distancia da origem
+  //       if ((abs(x0_2-x[ind]) < 1e-8) && (abs(y0_2-y[ind]) < 1e-8) && (abs(z0_2-x[ind]) < 1e-8)) {  //para o caso de quando as duas estrelas estao a mesma distancia da origem
           
-          correction = exp(2*F1_1[ind]);
+  //         correction = exp(2*F1_1[ind]);
 
-          goto end_loops;
+  //         goto end_loops;
 
+  //       }
+  //     }
+  //   }
+  // }
+
+  // end_loops:
+
+
+int found = 0; // Flag to indicate if the condition is met
+CCTK_REAL correction = 0.0; // Variable to store the correction value
+
+for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
+    for (int j = 0; j < cctk_lsh[1] && !found; ++j) {
+        for (int i = 0; i < cctk_lsh[0] && !found; ++i) {
+
+            const CCTK_INT ind  = CCTK_GFINDEX3D(cctkGH, i, j, k);
+
+            if (abs(x0 - x[ind]) < 1e-8) {
+                correction = exp(2 * F1_1[ind]);
+                found = 1; // Mark as found
+                break; // Exit the innermost loop
+            }
         }
-      }
     }
-  }
+}
 
-  end_loops:
+// Check if the condition was never met
+if (!found) {
+    fprintf(stderr, "Error: Condition was never met. Program will terminate.\n");
+    exit(EXIT_FAILURE); // Exit the program with failure status
+}
 
+
+printf("a correcao e %f",correction);
 
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
@@ -797,11 +824,11 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
   // printf(" value of x %f",x[1]);
-  printf("a correcao e %f",correction);   
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
-  printf("a correcao e %f",correction);
+  // printf("a correcao e %f",correction);   
+  // printf("a correcao e %f",correction);
+  // printf("a correcao e %f",correction);
+  // printf("a correcao e %f",correction);
+  // printf("a correcao e %f",correction);
 
 
   free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);

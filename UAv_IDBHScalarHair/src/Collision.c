@@ -660,7 +660,6 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
         gzz[ind] = gzz_1 + gzz_2 - correction;
 
 
-        printf("a correcao e %f",correction);
 
         /*
           d/drho = rho/r * d/dr  +    z/r^2 * d/dth

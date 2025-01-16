@@ -365,6 +365,8 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
   /* now for the interpolation */
 
+  //_3 variables refer to an extra interpolation to use the new superposition formula
+
   const CCTK_INT N_dims  = 2;   // 2-D interpolation
 
   const CCTK_INT N_input_arrays  = 7;
@@ -406,7 +408,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
   const void *interp_coords_3[N_dims];
-  interp_coords_3[0] = (const void *) X_g_3; //AQUI TENHO DE CRIAR UM ARRAY SO COM UM TERMO, O X QUE EU QUERO. TEM DE SER CONVERTIDO DE r. Para theta tambem
+  interp_coords_3[0] = (const void *) X_g_3;
   interp_coords_3[1] = (const void *) theta_g_3;
 
 
@@ -643,6 +645,9 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
 
 // printf("a correcao e %f",correction);
+
+const CCTK_REAL correction=exp(2*F1_3[0]);
+printf("correction = %f",correction)
 
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {

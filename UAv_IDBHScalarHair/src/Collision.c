@@ -394,7 +394,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   interp_coords_2[1] = (const void *) theta_g_2;
 
 
-  const CCTK_REAL centerx = fabs(x0_2) / (C0 + fabs(x0_2)); //como as estrelas sao iguais e esfericas, tenho de ver a distancia entre elas. visto que estao a mesma distancia da origem
+  const CCTK_REAL centerx = fabs(2*x0_2) / (C0 + fabs(2*x0_2)); //como as estrelas sao iguais e esfericas, tenho de ver a distancia entre elas. visto que estao a mesma distancia da origem
   //basta fazer 2xo_2=raio de extracao.
 
   CCTK_REAL X_g_3[1]={centerx};

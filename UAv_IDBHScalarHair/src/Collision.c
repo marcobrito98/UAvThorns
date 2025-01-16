@@ -441,7 +441,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 
   void *output_arrays_3[N_output_arrays_3];
   CCTK_INT output_array_type_codes_3[N_output_arrays_3];
-  CCTK_REAL *F1_3
+  CCTK_REAL *F1_3;
 
 
 

@@ -391,15 +391,15 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   interp_coords_2[0] = (const void *) X_g_2;
   interp_coords_2[1] = (const void *) theta_g_2;
 
-  // CCTK_REAL X_g_3[1]={0.5};
-  // CCTK_REAL theta_g_3[1]={0.0};
+  CCTK_REAL X_g_3[1]={0.5};
+  CCTK_REAL theta_g_3[1]={0.0};
 
-  CCTK_REAL *X_g_3, *theta_g_3;
-  X_g_3     = (CCTK_REAL *) malloc(N_interp_points_3);
-  theta_g_3 = (CCTK_REAL *) malloc(N_interp_points_3);
+  // CCTK_REAL *X_g_3, *theta_g_3;
+  // X_g_3     = (CCTK_REAL *) malloc(N_interp_points_3);
+  // theta_g_3 = (CCTK_REAL *) malloc(N_interp_points_3);
 
-  X_g_3[0]=0.5;
-  theta_g_3[0]=0.0;
+  // X_g_3[0]=0.5;
+  // theta_g_3[0]=0.0;
 
  
   printf("x escolhido %f \n",X_g_3[0]);

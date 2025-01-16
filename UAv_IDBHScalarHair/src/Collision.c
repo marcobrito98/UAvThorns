@@ -395,8 +395,8 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   // CCTK_REAL theta_g_3[1]={0.0};
 
   CCTK_REAL *X_g_3, *theta_g_3;
-  X_g_3     = (CCTK_REAL *) malloc(N_interp_points_3 );
-  theta_g_3 = (CCTK_REAL *) malloc(N_interp_points_3 );
+  X_g_3     = (CCTK_REAL *) malloc(N_interp_points_3);
+  theta_g_3 = (CCTK_REAL *) malloc(N_interp_points_3);
 
   X_g_3[0]=0.5;
   theta_g_3[0]=0.0;
@@ -469,7 +469,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   dW_dr_2       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dth_2      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
-  F1_3          = (CCTK_REAL *) malloc(N_interp_points_3 );
+  F1_3          = (CCTK_REAL *) malloc(N_interp_points_3 * sizeof(CCTK_REAL));
 
 
   output_array_type_codes_1[0] = CCTK_VARIABLE_REAL;
@@ -506,7 +506,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   output_arrays_2[5] = (void *) dW_dr_2;
   output_arrays_2[6] = (void *) dW_dth_2;
 
-  output_arrays_2[0] = (void *) F1_3;
+  output_arrays_3[0] = (void *) F1_3;
 
 
   /* handle and settings for the interpolation routine */

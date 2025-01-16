@@ -305,6 +305,9 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   /* now we need to interpolate onto the actual grid points. first let's store
      the grid points themselves in the coordinates (X, theta). */
   const CCTK_INT N_interp_points = cctk_lsh[0]*cctk_lsh[1]*cctk_lsh[2]; // total points
+  
+    const CCTK_INT N_interp_points_3 = 1; // total points
+
 
   CCTK_REAL *X_g_1, *theta_g_1;
   X_g_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -367,6 +370,10 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   const CCTK_INT N_input_arrays  = 7;
   const CCTK_INT N_output_arrays = 7;
 
+
+  const CCTK_INT N_input_arrays_3  = 1;
+  const CCTK_INT N_output_arrays_3 = 1;
+
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
   CCTK_REAL origin[N_dims];
@@ -383,6 +390,17 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   const void *interp_coords_2[N_dims];
   interp_coords_2[0] = (const void *) X_g_2;
   interp_coords_2[1] = (const void *) theta_g_2;
+
+  CCTK_REAL X_g_3[1]={0.5};
+  CCTK_REAL theta_g_3[1]={0.0};
+ 
+  printf("x escolhido %f",X_g_3[0]);
+
+
+  const void *interp_coords_3[N_dims];
+  interp_coords_3[0] = (const void *) X_g_3; //AQUI TENHO DE CRIAR UM ARRAY SO COM UM TERMO, O X QUE EU QUERO. TEM DE SER CONVERTIDO DE r. Para theta tambem
+  interp_coords_3[1] = (const void *) theta_g_3;
+
 
 
   /* input arrays */
@@ -420,6 +438,13 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   CCTK_REAL *dW_dr_1, *dW_dth_1;
   CCTK_REAL *dW_dr_2, *dW_dth_2;
 
+
+  void *output_arrays_3[N_output_arrays_3];
+  CCTK_INT output_array_type_codes_3[N_output_arrays_3];
+  CCTK_REAL *F1_3
+
+
+
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F2_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F0_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -435,6 +460,9 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   W_2           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dr_2       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dth_2      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+
+  F1_3          = (CCTK_REAL *) malloc(N_interp_points_3 * sizeof(CCTK_REAL));
+
 
   output_array_type_codes_1[0] = CCTK_VARIABLE_REAL;
   output_array_type_codes_1[1] = CCTK_VARIABLE_REAL;
@@ -452,6 +480,8 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
   output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
 
+  output_array_type_codes_3[0] = CCTK_VARIABLE_REAL;
+
   output_arrays_1[0] = (void *) F1_1;
   output_arrays_1[1] = (void *) F2_1;
   output_arrays_1[2] = (void *) F0_1;
@@ -467,6 +497,8 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   output_arrays_2[4] = (void *) W_2;
   output_arrays_2[5] = (void *) dW_dr_2;
   output_arrays_2[6] = (void *) dW_dth_2;
+
+  output_arrays_2[0] = (void *) F1_3;
 
 
   /* handle and settings for the interpolation routine */
@@ -506,6 +538,22 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
                                        N_output_arrays, output_array_type_codes_2,
                                        output_arrays_2);
   if (status_2 < 0) {
+    CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+    "interpolation screwed up!");
+  }
+
+    int status_3 = CCTK_InterpLocalUniform(N_dims, operator_handle,
+                                       param_table_handle,
+                                       origin, delta,
+                                       N_interp_points_3,
+                                       CCTK_VARIABLE_REAL,
+                                       interp_coords_3,
+                                       N_input_arrays_3, input_array_dims,
+                                       input_array_type_codes,
+                                       input_arrays,
+                                       N_output_arrays_3, output_array_type_codes_3,
+                                       output_arrays_3);
+  if (status_3 < 0) {
     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
     "interpolation screwed up!");
   }
@@ -558,32 +606,32 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
   // end_loops:
 
 
-int found = 0; // Flag to indicate if the condition is met
-CCTK_REAL correction = 0.0; // Variable to store the correction value
+// int found = 0; // Flag to indicate if the condition is met
+// CCTK_REAL correction = 0.0; // Variable to store the correction value
 
-for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
-    for (int j = 0; j < cctk_lsh[1] && !found; ++j) {
-        for (int i = 0; i < cctk_lsh[0] && !found; ++i) {
+// for (int k = 0; k < cctk_lsh[2] && !found; ++k) {
+//     for (int j = 0; j < cctk_lsh[1] && !found; ++j) {
+//         for (int i = 0; i < cctk_lsh[0] && !found; ++i) {
 
-            const CCTK_INT ind  = CCTK_GFINDEX3D(cctkGH, i, j, k);
-            // printf("x0_2 = %f, y0_2 = %f, z0_2 = %f\n", x0_2, y0_2, z0_2);
-            printf("x[%d] = %f, y[%d] = %f, z[%d] = %f\n", ind, x[ind], ind, y[ind], ind, z[ind]);
+//             const CCTK_INT ind  = CCTK_GFINDEX3D(cctkGH, i, j, k);
+//             // printf("x0_2 = %f, y0_2 = %f, z0_2 = %f\n", x0_2, y0_2, z0_2);
+//             printf("x[%d] = %f, y[%d] = %f, z[%d] = %f\n", ind, x[ind], ind, y[ind], ind, z[ind]);
 
 
-            if ((fabs(x0_2-x[ind]) < 10.0) && (fabs(y0_2-y[ind]) < 10.0) && (fabs(z0_2-z[ind]) < 10.0)) {
-                correction = exp(2 * F1_1[ind]);
-                found = 1; // Mark as found
-                break; // Exit the innermost loop
-            }
-        }
-    }
-}
+//             if ((fabs(x0_2-x[ind]) < 10.0) && (fabs(y0_2-y[ind]) < 10.0) && (fabs(z0_2-z[ind]) < 10.0)) {
+//                 correction = exp(2 * F1_1[ind]);
+//                 found = 1; // Mark as found
+//                 break; // Exit the innermost loop
+//             }
+//         }
+//     }
+// }
 
-// Check if the condition was never met
-if (!found) {
-    fprintf(stderr, "Error: Condition was never met. Program will terminate.\n");
-    exit(EXIT_FAILURE); // Exit the program with failure status
-}
+// // Check if the condition was never met
+// if (!found) {
+//     fprintf(stderr, "Error: Condition was never met. Program will terminate.\n");
+//     exit(EXIT_FAILURE); // Exit the program with failure status
+// }
 
 
 printf("a correcao e %f",correction);
@@ -682,12 +730,12 @@ printf("a correcao e %f",correction);
         CCTK_REAL gzz_2 = conf_fac_2;
 
         //Superposition
-        gxx[ind] = gxx_1 + gxx_2 - correction;//for the special case of n=0, w=98, l=0
+        gxx[ind] = gxx_1 + gxx_2 - 1;
         gxy[ind] = gxy_1 + gxy_2;
         gxz[ind] = gxz_1 + gxz_2;
-        gyy[ind] = gyy_1 + gyy_2 - correction;
+        gyy[ind] = gyy_1 + gyy_2 - 1;
         gyz[ind] = gyz_1 + gyz_2;
-        gzz[ind] = gzz_1 + gzz_2 - correction;
+        gzz[ind] = gzz_1 + gzz_2 - 1;
 
 
 

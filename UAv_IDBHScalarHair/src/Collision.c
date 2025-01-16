@@ -634,7 +634,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 // }
 
 
-printf("a correcao e %f",correction);
+// printf("a correcao e %f",correction);
 
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {

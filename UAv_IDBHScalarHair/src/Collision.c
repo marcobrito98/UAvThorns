@@ -651,7 +651,7 @@ void UAv_IDTwinScalarBS(CCTK_ARGUMENTS)
 // printf("a correcao e %f",correction);
 
 const CCTK_REAL correction=exp(2*F1_3[0]);
-printf("correction = %f \n",correction);
+printf("correction = %.9f \n",correction);
 
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {

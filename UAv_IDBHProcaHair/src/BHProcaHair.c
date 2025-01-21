@@ -129,37 +129,63 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   for (int jj = 0; jj < Ntheta; jj++) {
     for (int i = 0; i < NX; i++) {
 
-      CCTK_INT j, jm1, jm2, jp1, jp2;
+      CCTK_INT j, jm1, jm2, jp1, jp2, jp3, jp4;
       /* let's use the fact that the solution is axi-symmetric (and that
          theta[0] = 0) for the boundary points in j */
       if (jj == 0) {
         j   = jj;
         jp1 = jj+1;
         jp2 = jj+2;
+        jp3 = jj+3;
+        jp4 = jj+4;
         jm1 = jj+1;
         jm2 = jj+2;
       } else if (jj == 1) {
         j   = jj;
         jp1 = jj+1;
         jp2 = jj+2;
+        jp3 = jj+3;
+        jp4 = jj+4;
         jm1 = jj-1;
         jm2 = jj;
+      } else if (jj == Ntheta - 4) { // Shouldn't be needed here, but just in case
+        j   = jj;
+        jm1 = jj-1;
+        jm2 = jj-2;
+        jp1 = jj+1;
+        jp2 = jj+2;
+        jp3 = jj+3;
+        jp4 = jj+2; 
+      } else if (jj == Ntheta - 3) { // Shouldn't be needed here, but just in case
+        j   = jj;
+        jm1 = jj-1;
+        jm2 = jj-2;
+        jp1 = jj+1;
+        jp2 = jj+2;
+        jp3 = jj+1;
+        jp4 = jj; 
       } else if (jj == Ntheta - 2) {
         j   = jj;
         jm1 = jj-1;
         jm2 = jj-2;
         jp1 = jj+1;
         jp2 = jj;
+        jp3 = jj-1; // Shouldn't be needed here, but just in case
+        jp4 = jj-2; // Shouldn't be needed here, but just in case
       } else if (jj == Ntheta - 1) {
         j   = jj;
         jm1 = jj-1;
         jm2 = jj-2;
         jp1 = jj-1;
         jp2 = jj-2;
+        jp3 = jj-3; // Shouldn't be needed here, but just in case
+        jp4 = jj-4; // Shouldn't be needed here, but just in case
       } else {
         j   = jj;
         jp1 = jj+1;
         jp2 = jj+2;
+        jp3 = jj+3; // Shouldn't be needed here, but just in case
+        jp4 = jj+4; // Shouldn't be needed here, but just in case
         jm1 = jj-1;
         jm2 = jj-2;
       }
@@ -178,41 +204,57 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       const CCTK_INT indim2jm2 = i-2 + jm2*NX;
       const CCTK_INT indim2jp1 = i-2 + jp1*NX;
       const CCTK_INT indim2jp2 = i-2 + jp2*NX;
+      const CCTK_INT indim2jp3 = i-2 + jp3*NX;
+      const CCTK_INT indim2jp4 = i-2 + jp4*NX;
 
       const CCTK_INT indim1jm1 = i-1 + jm1*NX;
       const CCTK_INT indim1jm2 = i-1 + jm2*NX;
       const CCTK_INT indim1jp1 = i-1 + jp1*NX;
       const CCTK_INT indim1jp2 = i-1 + jp2*NX;
+      const CCTK_INT indim1jp3 = i-1 + jp3*NX;
+      const CCTK_INT indim1jp4 = i-1 + jp4*NX;
 
       const CCTK_INT indjm1 = i + jm1*NX;
       const CCTK_INT indjm2 = i + jm2*NX;
       const CCTK_INT indjp1 = i + jp1*NX;
       const CCTK_INT indjp2 = i + jp2*NX;
+      const CCTK_INT indjp3 = i + jp3*NX;
+      const CCTK_INT indjp4 = i + jp4*NX;
 
       const CCTK_INT indip1jm1 = i+1 + jm1*NX;
       const CCTK_INT indip1jm2 = i+1 + jm2*NX;
       const CCTK_INT indip1jp1 = i+1 + jp1*NX;
       const CCTK_INT indip1jp2 = i+1 + jp2*NX;
+      const CCTK_INT indip1jp3 = i+1 + jp3*NX;
+      const CCTK_INT indip1jp4 = i+1 + jp4*NX;
 
       const CCTK_INT indip2jm1 = i+2 + jm1*NX;
       const CCTK_INT indip2jm2 = i+2 + jm2*NX;
       const CCTK_INT indip2jp1 = i+2 + jp1*NX;
       const CCTK_INT indip2jp2 = i+2 + jp2*NX;
+      const CCTK_INT indip2jp3 = i+2 + jp3*NX;
+      const CCTK_INT indip2jp4 = i+2 + jp4*NX;
       
       const CCTK_INT indip3jm1 = i+3 + jm1*NX;
       const CCTK_INT indip3jm2 = i+3 + jm2*NX;
       const CCTK_INT indip3jp1 = i+3 + jp1*NX;
       const CCTK_INT indip3jp2 = i+3 + jp2*NX;
+      const CCTK_INT indip3jp3 = i+3 + jp3*NX;
+      const CCTK_INT indip3jp4 = i+3 + jp4*NX;
       
       const CCTK_INT indip4jm1 = i+4 + jm1*NX;
       const CCTK_INT indip4jm2 = i+4 + jm2*NX;
       const CCTK_INT indip4jp1 = i+4 + jp1*NX;
       const CCTK_INT indip4jp2 = i+4 + jp2*NX;
+      const CCTK_INT indip4jp3 = i+4 + jp3*NX;
+      const CCTK_INT indip4jp4 = i+4 + jp4*NX;
 
       const CCTK_INT indip5jm1 = i+5 + jm1*NX;
       const CCTK_INT indip5jm2 = i+5 + jm2*NX;
       const CCTK_INT indip5jp1 = i+5 + jp1*NX;
       const CCTK_INT indip5jp2 = i+5 + jp2*NX;
+      const CCTK_INT indip5jp3 = i+5 + jp3*NX;
+      const CCTK_INT indip5jp4 = i+5 + jp4*NX;
       
 
 
@@ -225,7 +267,30 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       const CCTK_REAL Wbar_th = (-Wbar_in[indjp2] + 8 * Wbar_in[indjp1] - 8 * Wbar_in[indjm1] + Wbar_in[indjm2]) *
         oodth12;
 
+      // 1st derivative with 4th order accuracy (central stencils)
+      const CCTK_REAL H3_th = (-H3_in[indjp2] + 8 * H3_in[indjp1] - 8 * H3_in[indjm1] + H3_in[indjm2]) *
+        oodth12;
+
+
+      // Apparently dV/dth (th=0) != 0, which can't be captured by centered finite differences and th=0 symmetry
+      CCTK_REAL V_th;
+      if (jj==0) {
+        // 1st derivative with 4th order accuracy (forward stencils)
+        V_th = (- 25 * V_in[ind] + 48 * V_in[indjp1] - 36 * V_in[indjp2] + 16 * V_in[indjp3] - 3 * V_in[indjp4]) *
+          oodth12;
+      } else if (jj==1) {
+        // 1st derivative with 4th order accuracy (mixed stencils)
+        V_th = (- 3 * V_in[indjm1] - 10 * V_in[ind] + 18 * V_in[indjp1] - 6 * V_in[indjp2] + V_in[indjp3]) * 
+          oodth12;
+      } else {
+        // 1st derivative with 4th order accuracy (centered stencils)
+        V_th = (-V_in[indjp2] + 8 * V_in[indjp1] - 8 * V_in[indjm1] + V_in[indjm2]) *
+          oodth12;
+      }
+
       CCTK_REAL Wbar_X, Wbar_Xth;
+      CCTK_REAL H3_X, H3_Xth;
+      CCTK_REAL V_X, V_Xth;
       CCTK_REAL H1_X = 0.;
 
       /*
@@ -259,11 +324,85 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
                   -  156 * Wbar_in[indip3jm2] +  61 * Wbar_in[indip4jm2] - 10 * Wbar_in[indip5jm2]
         ) * oodXsqdth144;
         
+        // Same for H3
+
+        // 2nd derivative with 4th order accuracy (forward stencils)
+        H3_X = (45 * H3_in[ind] - 154 * H3_in[indip1] + 214 * H3_in[indip2] 
+                  - 156 * H3_in[indip3] + 61 * H3_in[indip4] - 10 * H3_in[indip5]) * oodXsq12;
+        
+        // mixed derivatives with 4th order accuracy (central stencils in j (1st der) and forward in i (2nd der))
+        H3_Xth = ( 
+              -  45 * H3_in[indjp2] +  154 * H3_in[indip1jp2] -  214 * H3_in[indip2jp2]
+                  +  156 * H3_in[indip3jp2] -  61 * H3_in[indip4jp2] + 10 * H3_in[indip5jp2]
+              + 360 * H3_in[indjp1] - 1232 * H3_in[indip1jp1] + 1712 * H3_in[indip2jp1]
+                  - 1248 * H3_in[indip3jp1] + 488 * H3_in[indip4jp1] - 80 * H3_in[indip5jp1]
+              - 360 * H3_in[indjm1] + 1232 * H3_in[indip1jm1] - 1712 * H3_in[indip2jm1]
+                  + 1248 * H3_in[indip3jm1] - 488 * H3_in[indip4jm1] + 80 * H3_in[indip5jm1] 
+              +  45 * H3_in[indjm2] -  154 * H3_in[indip1jm2] +  214 * H3_in[indip2jm2]
+                  -  156 * H3_in[indip3jm2] +  61 * H3_in[indip4jm2] - 10 * H3_in[indip5jm2]
+        ) * oodXsqdth144;
+
+        // V
+
+        // 2nd derivative with 4th order accuracy (forward stencils)
+        V_X = (45 * V_in[ind] - 154 * V_in[indip1] + 214 * V_in[indip2] 
+                  - 156 * V_in[indip3] + 61 * V_in[indip4] - 10 * V_in[indip5]) * oodXsq12;
+        
+        // For V, near the axis, we need non-centered stencils because dV/dth != 0
+        // mixed derivatives with 4th order accuracy (forward stencils in i (2nd der))
+        if (jj==0) {
+          // 1st derivative with 4th order forward stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth = ( 
+                - 1125 * V_in[ind]    + 3850 * V_in[indip1]    -  5350 * V_in[indip2]
+                    + 3900 * V_in[indip3]    - 1525 * V_in[indip4]    + 250 * V_in[indip5]
+                + 2160 * V_in[indjp1] - 7392 * V_in[indip1jp1] + 10272 * V_in[indip2jp1]
+                    - 7488 * V_in[indip3jp1] + 2928 * V_in[indip4jp1] - 480 * V_in[indip5jp1]
+                - 1620 * V_in[indjp2] + 5544 * V_in[indip1jp2] -  7704 * V_in[indip2jp2]
+                    + 5616 * V_in[indip3jp2] - 2196 * V_in[indip4jp2] + 360 * V_in[indip5jp2]
+                +  720 * V_in[indjp3] - 2464 * V_in[indip1jp3] +  3424 * V_in[indip2jp3]
+                    - 2496 * V_in[indip3jp3] +  976 * V_in[indip4jp3] - 160 * V_in[indip5jp3]
+                -  135 * V_in[indjp4] +  462 * V_in[indip1jp4] -   642 * V_in[indip2jp4]
+                    +  468 * V_in[indip3jp4] -  183 * V_in[indip4jp4] +  30 * V_in[indip5jp4]
+          ) * oodXsqdth144;
+        } else if (jj==1) {
+          // 1st derivative with 4th order stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth = ( 
+                - 135 * V_in[indjm1] +  462 * V_in[indip1jm1] -  642 * V_in[indip2jm1]
+                    +  468 * V_in[indip3jm1] -  183 * V_in[indip4jm1] +  30 * V_in[indip5jm1]
+                - 450 * V_in[ind]    + 1540 * V_in[indip1]    - 2140 * V_in[indip2]
+                    + 1560 * V_in[indip3]    -  610 * V_in[indip4]    + 100 * V_in[indip5]
+                + 810 * V_in[indjp1] - 2772 * V_in[indip1jp1] + 3852 * V_in[indip2jp1]
+                    - 2808 * V_in[indip3jp1] + 1098 * V_in[indip4jp1] - 180 * V_in[indip5jp1]
+                - 270 * V_in[indjp2] +  924 * V_in[indip1jp2] - 1284 * V_in[indip2jp2]
+                    +  936 * V_in[indip3jp2] -  366 * V_in[indip4jp2] +  60 * V_in[indip5jp2]
+                +  45 * V_in[indjp3] -  154 * V_in[indip1jp3] +  214 * V_in[indip2jp3]
+                    -  156 * V_in[indip3jp3] +   61 * V_in[indip4jp3] -  10 * V_in[indip5jp3]
+          ) * oodXsqdth144;
+        } else {
+          V_Xth = ( 
+            // 1st derivative with 4th order central stencils for j
+                -  45 * V_in[indjp2] +  154 * V_in[indip1jp2] -  214 * V_in[indip2jp2]
+                    +  156 * V_in[indip3jp2] -  61 * V_in[indip4jp2] + 10 * V_in[indip5jp2]
+                + 360 * V_in[indjp1] - 1232 * V_in[indip1jp1] + 1712 * V_in[indip2jp1]
+                    - 1248 * V_in[indip3jp1] + 488 * V_in[indip4jp1] - 80 * V_in[indip5jp1]
+                - 360 * V_in[indjm1] + 1232 * V_in[indip1jm1] - 1712 * V_in[indip2jm1]
+                    + 1248 * V_in[indip3jm1] - 488 * V_in[indip4jm1] + 80 * V_in[indip5jm1] 
+                +  45 * V_in[indjm2] -  154 * V_in[indip1jm2] +  214 * V_in[indip2jm2]
+                    -  156 * V_in[indip3jm2] +  61 * V_in[indip4jm2] - 10 * V_in[indip5jm2]
+          ) * oodXsqdth144;
+        }
+
+
+        // A_r
 
         // For X=0 <=> x=0 <=> r=r_h, we need to compute dA_x/dx (cf below)
         // 1st derivative with 4th order accuracy (forward stencils)
         H1_X = (- 25 * H1_in[ind] + 48 * H1_in[indip1] - 36 * H1_in[indip2] + 16 * H1_in[indip3] - 3 * H1_in[indip4]) * oodX12;
         
+      
+      
       } else if (i == 1) {
         // 1st derivative, 4th order accuracy
         Wbar_X = (- 3 * Wbar_in[indim1] - 10 * Wbar_in[ind] + 18 * Wbar_in[indip1] - 6 * Wbar_in[indip2] + Wbar_in[indip3]) * oodX12;
@@ -276,11 +415,80 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           -  3 * Wbar_in[indim1jm2] - 10 * Wbar_in[indjm2] +  18 * Wbar_in[indip1jm2] -  6 * Wbar_in[indip2jm2] +     Wbar_in[indip3jm2]
         ) * oodXdth144;
         
+        // 1st derivative, 4th order accuracy
+        H3_X = (- 3 * H3_in[indim1] - 10 * H3_in[ind] + 18 * H3_in[indip1] - 6 * H3_in[indip2] + H3_in[indip3]) * oodX12;
+
+        // 1st derivative, 4th order accuracy (central stencils in j)
+        H3_Xth = (
+             3 * H3_in[indim1jp2] + 10 * H3_in[indjp2] -  18 * H3_in[indip1jp2] +  6 * H3_in[indip2jp2] -     H3_in[indip3jp2]
+          - 24 * H3_in[indim1jp1] - 80 * H3_in[indjp1] + 144 * H3_in[indip1jp1] - 48 * H3_in[indip2jp1] + 8 * H3_in[indip3jp1]
+          + 24 * H3_in[indim1jm1] + 80 * H3_in[indjm1] - 144 * H3_in[indip1jm1] + 48 * H3_in[indip2jm1] - 8 * H3_in[indip3jm1]
+          -  3 * H3_in[indim1jm2] - 10 * H3_in[indjm2] +  18 * H3_in[indip1jm2] -  6 * H3_in[indip2jm2] +     H3_in[indip3jm2]
+        ) * oodXdth144;
+        
+        // 1st derivative, 4th order accuracy
+        V_X = (- 3 * V_in[indim1] - 10 * V_in[ind] + 18 * V_in[indip1] - 6 * V_in[indip2] + V_in[indip3]) * oodX12;
+
+        // For V, near the axis, we need non-centered stencils because dV/dth != 0
+        // mixed 1st derivatives with 4th order accuracy
+        if (jj==0) {
+          // 1st derivative with 4th order forward stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth = (
+               75 * V_in[indim1]    + 250 * V_in[ind]    - 450 * V_in[indip1]    + 150 * V_in[indip2]    - 25 * V_in[indip3]
+            - 144 * V_in[indim1jp1] - 480 * V_in[indjp1] + 864 * V_in[indip1jp1] - 288 * V_in[indip2jp1] + 48 * V_in[indip3jp1]
+            + 108 * V_in[indim1jp2] + 360 * V_in[indjp2] - 648 * V_in[indip1jp2] + 216 * V_in[indip2jp2] - 36 * V_in[indip3jp2]
+            -  48 * V_in[indim1jp3] - 160 * V_in[indjp3] + 288 * V_in[indip1jp3] -  96 * V_in[indip2jp3] + 16 * V_in[indip3jp3]  
+            +   9 * V_in[indim1jp4] +  30 * V_in[indjp4] -  54 * V_in[indip1jp4] +  18 * V_in[indip2jp4] -  3 * V_in[indip3jp4]
+          ) * oodXdth144;
+        } else if (jj==1) {
+          // 1st derivative with 4th order stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth = (
+               9 * V_in[indim1jm1] +  30 * V_in[indjm1] -  54 * V_in[indip1jm1] +  18 * V_in[indip2jm1] -  3 * V_in[indip3jm1]
+            + 30 * V_in[indim1]    + 100 * V_in[ind]    - 180 * V_in[indip1]    +  60 * V_in[indip2]    - 10 * V_in[indip3]
+            - 54 * V_in[indim1jp1] - 180 * V_in[indjp1] + 324 * V_in[indip1jp1] - 108 * V_in[indip2jp1] + 18 * V_in[indip3jp1]
+            + 18 * V_in[indim1jp2] +  60 * V_in[indjp2] - 108 * V_in[indip1jp2] +  36 * V_in[indip2jp2] -  6 * V_in[indip3jp2]
+            -  3 * V_in[indim1jp3] -  10 * V_in[indjp3] +  18 * V_in[indip1jp3] -   6 * V_in[indip2jp3] +      V_in[indip3jp3]
+          ) * oodXdth144;
+        } else {
+          // 1st derivative with 4th order central stencils for j
+          V_Xth = (
+               3 * V_in[indim1jp2] + 10 * V_in[indjp2] -  18 * V_in[indip1jp2] +  6 * V_in[indip2jp2] -     V_in[indip3jp2]
+            - 24 * V_in[indim1jp1] - 80 * V_in[indjp1] + 144 * V_in[indip1jp1] - 48 * V_in[indip2jp1] + 8 * V_in[indip3jp1]
+            + 24 * V_in[indim1jm1] + 80 * V_in[indjm1] - 144 * V_in[indip1jm1] + 48 * V_in[indip2jm1] - 8 * V_in[indip3jm1]
+            -  3 * V_in[indim1jm2] - 10 * V_in[indjm2] +  18 * V_in[indip1jm2] -  6 * V_in[indip2jm2] +     V_in[indip3jm2]
+          ) * oodXdth144;
+        }
+
+
+
       } else if (i == NX - 2) {
         // 1st derivative with 2nd order accuracy (central stencils)
         Wbar_X = (-Wbar_in[indim1] + Wbar_in[indip1]) * 0.5 * oodX;
 
         Wbar_Xth  = ( Wbar_in[indip1jp1] - Wbar_in[indip1jm1] - Wbar_in[indim1jp1] + Wbar_in[indim1jm1] ) * oodXdth4;
+        
+        // 1st derivative with 2nd order accuracy (central stencils)
+        H3_X = (-H3_in[indim1] + H3_in[indip1]) * 0.5 * oodX;
+
+        H3_Xth  = ( H3_in[indip1jp1] - H3_in[indip1jm1] - H3_in[indim1jp1] + H3_in[indim1jm1] ) * oodXdth4;
+
+        // 1st derivative with 2nd order accuracy (central stencils)
+        V_X = (-V_in[indim1] + V_in[indip1]) * 0.5 * oodX;
+
+        // For V, near the axis, we need non-centered stencils because dV/dth != 0
+        // mixed 1st derivatives with 2nd order accuracy
+        if (jj==0) {
+          // 1st derivative with 2nd order forward stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth  = ( - 3*V_in[indip1] + 4*V_in[indip1jp1] - V_in[indip1jp2] 
+                     + 3*V_in[indim1] - 4*V_in[indim1jp1] + V_in[indim1jp2] ) * oodXdth4;
+        } else {
+          // 1st derivative with 2nd order central stencils for j
+          V_Xth  = ( V_in[indip1jp1] - V_in[indip1jm1] - V_in[indim1jp1] + V_in[indim1jm1] ) * oodXdth4;
+        }
+
 
       } else if (i == NX - 1) {
         /* last radial point */
@@ -288,6 +496,16 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (backward stencils)
         Wbar_X = (Wbar_in[indim2] - 4*Wbar_in[indim1] + 3*Wbar_in[ind]) * 0.5 * oodX;
         Wbar_Xth = 0.; // we don't actually use this variable at large r, so just
+                       // set it to zero
+        
+        // 1st derivative with 2nd order accuracy (backward stencils)
+        H3_X = (H3_in[indim2] - 4*H3_in[indim1] + 3*H3_in[ind]) * 0.5 * oodX;
+        H3_Xth = 0.; // we don't actually use this variable at large r, so just
+                     // set it to zero
+
+        // 1st derivative with 2nd order accuracy (backward stencils)
+        V_X = (V_in[indim2] - 4*V_in[indim1] + 3*V_in[ind]) * 0.5 * oodX;
+        V_Xth = 0.; // we don't actually use this variable at large r, so just
                     // set it to zero
 
       } else {
@@ -299,6 +517,49 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
          - 8*Wbar_in[indim2jm1] + 64*Wbar_in[indim1jm1] - 64*Wbar_in[indip1jm1] + 8*Wbar_in[indip2jm1]
          +   Wbar_in[indim2jm2] -  8*Wbar_in[indim1jm2] +  8*Wbar_in[indip1jm2] -   Wbar_in[indip2jm2] ) * oodXdth144;
 
+        // 4th order accurate stencils
+        H3_X    = (-H3_in[indip2] + 8 * H3_in[indip1] - 8 * H3_in[indim1] + H3_in[indim2]) * oodX12;
+        H3_Xth  = (
+            -H3_in[indim2jp2] +  8*H3_in[indim1jp2] -  8*H3_in[indip1jp2] +   H3_in[indip2jp2]
+         + 8*H3_in[indim2jp1] - 64*H3_in[indim1jp1] + 64*H3_in[indip1jp1] - 8*H3_in[indip2jp1]
+         - 8*H3_in[indim2jm1] + 64*H3_in[indim1jm1] - 64*H3_in[indip1jm1] + 8*H3_in[indip2jm1]
+         +   H3_in[indim2jm2] -  8*H3_in[indim1jm2] +  8*H3_in[indip1jm2] -   H3_in[indip2jm2] ) * oodXdth144;
+
+        // 4th order accurate stencils
+        V_X    = (-V_in[indip2] + 8 * V_in[indip1] - 8 * V_in[indim1] + V_in[indim2]) * oodX12;
+        // For V, near the axis, we need non-centered stencils because dV/dth != 0
+        // mixed 1st derivatives with 4th order accuracy
+        if (jj==0) {
+          // 1st derivative with 4th order forward stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth  = (
+            - 25 * V_in[indim2]    + 200 * V_in[indim1]    - 200 * V_in[indip1]    + 25 * V_in[indip2]
+            + 48 * V_in[indim2jp1] - 384 * V_in[indim1jp1] + 384 * V_in[indip1jp1] - 48 * V_in[indip2jp1]
+            - 36 * V_in[indim2jp2] + 288 * V_in[indim1jp2] - 288 * V_in[indip1jp2] + 36 * V_in[indip2jp2]
+            + 16 * V_in[indim2jp3] - 128 * V_in[indim1jp3] + 128 * V_in[indip1jp3] - 16 * V_in[indip2jp3]
+            -  3 * V_in[indim2jp4] +  24 * V_in[indim1jp4] -  24 * V_in[indip1jp4] +  3 * V_in[indip2jp4]
+          ) * oodXdth144;
+        } else if (jj==1) {
+          // 1st derivative with 4th order stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth  = (
+            -  3 * V_in[indim2jm1] +  24 * V_in[indim1jm1] -  24 * V_in[indip1jm1] +  3 * V_in[indip2jm1]
+            - 10 * V_in[indim2]    +  80 * V_in[indim1]    -  80 * V_in[indip1]    + 10 * V_in[indip2]
+            + 18 * V_in[indim2jp1] - 144 * V_in[indim1jp1] + 144 * V_in[indip1jp1] - 18 * V_in[indip2jp1]
+            -  6 * V_in[indim2jp2] +  48 * V_in[indim1jp2] -  48 * V_in[indip1jp2] +  6 * V_in[indip2jp2]
+            +      V_in[indim2jp3] -   8 * V_in[indim1jp3] +   8 * V_in[indip1jp3] -      V_in[indip2jp3]
+          ) * oodXdth144;
+        } else {
+          // 1st derivative with 4th order central stencils for j
+          // /!\ Reverse order of j points compared to the rest
+          V_Xth  = (
+              -V_in[indim2jp2] +  8*V_in[indim1jp2] -  8*V_in[indip1jp2] +   V_in[indip2jp2]
+           + 8*V_in[indim2jp1] - 64*V_in[indim1jp1] + 64*V_in[indip1jp1] - 8*V_in[indip2jp1]
+           - 8*V_in[indim2jm1] + 64*V_in[indim1jm1] - 64*V_in[indip1jm1] + 8*V_in[indip2jm1]
+           +   V_in[indim2jm2] -  8*V_in[indim1jm2] +  8*V_in[indip1jm2] -   V_in[indip2jm2] ) * oodXdth144;
+        }
+
+
       }
 
       // from the X coordinate used in the input files to the x coordinate
@@ -306,6 +567,14 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       if (i == NX - 1) {
         dWbar_dr_in[ind]    = 0.; // Sensibly, dWbar_dr_in should vanish (dXdr == 0, Wbar_X bounded)
         d2Wbar_drth_in[ind] = 0.; // Wbar_Xth is set to 0 above anyway
+
+        // Same for H3, V
+        dH3_dr_in[ind]    = 0.;
+        d2H3_drth_in[ind] = 0.;
+
+        dV_dr_in[ind]    = 0.;
+        d2V_drth_in[ind] = 0.;
+
 
         H1r_in[ind]          = 0.; // A_r = 0 at infinity
 
@@ -328,6 +597,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         dWbar_dr_in[ind]    = dXdr * Wbar_X;
         d2Wbar_drth_in[ind] = dXdr * Wbar_Xth;
+        
+        dH3_dr_in[ind]    = dXdr * H3_X;
+        d2H3_drth_in[ind] = dXdr * H3_Xth;
+        
+        dV_dr_in[ind]    = dXdr * V_X;
+        d2V_drth_in[ind] = dXdr * V_Xth;
 
         // A_r = dx/dr * A_x = r/x * A_x
         // at x=0, A_r ~ r * dA_x/dx
@@ -339,9 +614,13 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       } // if/else i == NX - 1
 
       dWbar_dth_in[ind]   = Wbar_th;
+      dH3_dth_in[ind]     = H3_th;
+      dV_dth_in[ind]      = V_th;
 
-      fprintf (debugfile, "%.15f %.15f %.15f ", 
-                  Wbar_in[ind], dWbar_dr_in[ind], d2Wbar_drth_in[ind]);
+      fprintf (debugfile, "%.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f ", 
+                  Wbar_in[ind], dWbar_dr_in[ind], dWbar_dth_in[ind], d2Wbar_drth_in[ind],
+                  H3_in[ind], dH3_dr_in[ind], dH3_dth_in[ind], d2H3_drth_in[ind],
+                  V_in[ind], dV_dr_in[ind], dV_dth_in[ind], d2V_drth_in[ind]);
     } // for i
     fprintf (debugfile, "\n");
   } // for jj
@@ -713,7 +992,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         const CCTK_REAL alph = exp(F0[ind]) * den / (RR + 0.25*rH);
 
 
-        // // TODO: see naming and if we do perturbation like on Ai, if it transfers to Ei...
+        // // TODO: see naming and if we do perturbation like on Ai, if it transfers to Ei... It may be best to put it in harm_re/im
         // // let's add a perturbation to the scalar field as well
         // const CCTK_REAL argpert_phi = (RR - R0pert_phi)/Sigmapert_phi;
         // const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );

@@ -18,7 +18,7 @@ void UAv_Track_origin (CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if (do_analysis_every < 0) return;
+  if (do_analysis_every <= 0) return;
   if (cctk_iteration % do_analysis_every != 0) return;
 
   // Track the coordinates of the origin from the chosen grid scalars

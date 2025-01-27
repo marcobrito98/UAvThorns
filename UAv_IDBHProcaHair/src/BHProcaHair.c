@@ -107,14 +107,14 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   CCTK_REAL *H1r_in;
   H1r_in          = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
-  // Some auxi file for debug
-  FILE* debugfile = fopen ("testdebug.txt", "w");
-  if (debugfile == NULL) {
-    CCTK_VError (__LINE__, __FILE__, CCTK_THORNSTRING,
-    "Unable to open file %s\n", "testdebug.txt");
-  } else {
-    CCTK_VInfo(CCTK_THORNSTRING, "Write test file %s", "testdebug.txt");
-  }
+  // // Some auxi file for debug
+  // FILE* debugfile = fopen ("testdebug.txt", "w");
+  // if (debugfile == NULL) {
+  //   CCTK_VError (__LINE__, __FILE__, CCTK_THORNSTRING,
+  //   "Unable to open file %s\n", "testdebug.txt");
+  // } else {
+  //   CCTK_VInfo(CCTK_THORNSTRING, "Write test file %s", "testdebug.txt");
+  // }
 
   const CCTK_REAL oodX       = 1. / dX;
   // const CCTK_REAL oodXsq     = oodX * oodX;
@@ -397,7 +397,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         // A_r
 
-        // For X=0 <=> x=0 <=> r=r_h, we need to compute dA_x/dx (cf below)
+        // For X=0 <=> x=0 <=> r=r_h, we need to compute dA_x/dX (cf below)
         // 1st derivative with 4th order accuracy (forward stencils)
         H1_X = (- 25 * H1_in[ind] + 48 * H1_in[indip1] - 36 * H1_in[indip2] + 16 * H1_in[indip3] - 3 * H1_in[indip4]) * oodX12;
         
@@ -558,8 +558,6 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
            - 8*V_in[indim2jm1] + 64*V_in[indim1jm1] - 64*V_in[indip1jm1] + 8*V_in[indip2jm1]
            +   V_in[indim2jm2] -  8*V_in[indim1jm2] +  8*V_in[indip1jm2] -   V_in[indip2jm2] ) * oodXdth144;
         }
-
-
       }
 
       // from the X coordinate used in the input files to the x coordinate
@@ -588,7 +586,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         CCTK_REAL drxdr;
         if (i == 0) { // rx == 0 (X == 0)
-          // Including here additional C0 contribution from L´Hôpital's rule: d(dr/dx)/dX = dx/dX * d2r/dx2 = C0 / rH at i==0
+          // Including here additional C0 contribution from L'Hôpital's rule: d(dr/dx)/dX = dx/dX * d2r/dx2 = C0 / rH at i==0
           drxdr = rH / C0;
         } else {
           drxdr = sqrt(rH*rH + rx*rx)/rx;
@@ -604,10 +602,16 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         dV_dr_in[ind]    = dXdr * V_X;
         d2V_drth_in[ind] = dXdr * V_Xth;
 
-        // A_r = dx/dr * A_x = r/x * A_x
-        // at x=0, A_r ~ r * dA_x/dx
+        // A_r
+        /*
+          A_r = dx/dr * A_x = r/x * A_x
+          
+          At x=0, we need to regularize
+            A_r ~ (dA_x/dX) / d(dr/dx)/dX    
+          the latter term being "drxdr" computed above to include L'Hôpital's rule in that case
+        */
         if (i==0) { // rx == 0 (X == 0)
-          H1r_in[ind] = dXdr * H1_X;
+          H1r_in[ind] = drxdr * H1_X;
         } else {
           H1r_in[ind] = drxdr * H1_in[ind];
         }
@@ -617,15 +621,15 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       dH3_dth_in[ind]     = H3_th;
       dV_dth_in[ind]      = V_th;
 
-      fprintf (debugfile, "%.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f ", 
-                  Wbar_in[ind], dWbar_dr_in[ind], dWbar_dth_in[ind], d2Wbar_drth_in[ind],
-                  H3_in[ind], dH3_dr_in[ind], dH3_dth_in[ind], d2H3_drth_in[ind],
-                  V_in[ind], dV_dr_in[ind], dV_dth_in[ind], d2V_drth_in[ind]);
+      // fprintf (debugfile, "%.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f ", 
+      //             Wbar_in[ind], dWbar_dr_in[ind], dWbar_dth_in[ind], d2Wbar_drth_in[ind],
+      //             H3_in[ind], dH3_dr_in[ind], dH3_dth_in[ind], d2H3_drth_in[ind],
+      //             V_in[ind], dV_dr_in[ind], dV_dth_in[ind], d2V_drth_in[ind]);
     } // for i
-    fprintf (debugfile, "\n");
+    // fprintf (debugfile, "\n");
   } // for jj
 
-  fclose(debugfile);
+  // fclose(debugfile);
 
 
   /* now we need to interpolate onto the actual grid points. first let's store
@@ -844,7 +848,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
 
   /* now we finally write the metric and all 3+1 quantities. first we write the
-     3-metric, lapse and scalar fields */
+     3-metric and extrinsic curvature, then Proca fields, then lapse and shift */
 
   const CCTK_REAL tt = cctk_time;
   const CCTK_REAL omega = mm * OmegaH;
@@ -1041,7 +1045,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           Aphi2[ind] = -reg * harm_re;
         } else {
           Aphi1[ind] = (V[ind] + W * sinth * H3[ind]) / alph * harm_im;
-          Aphi2[ind] = (V[ind] + W * sinth * H3[ind]) / alph * harm_re;
+          Aphi2[ind] =-(V[ind] + W * sinth * H3[ind]) / alph * harm_re;
         }
 
         // ----- Electric fields -----

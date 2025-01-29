@@ -236,7 +236,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
 
         CCTK_REAL drxdr;
         if (i == 0) { // rx == 0 (X == 0)
-          // Including here additional C0 contribution from L´Hôpital's rule: d(dr/dx)/dX = dx/dX * d2r/dx2 = C0 / rH at i==0
+          // Including here additional C0 contribution from L'Hôpital's rule: d(dr/dx)/dX = dx/dX * d2r/dx2 = C0 / rH at i==0
           drxdr = rH / C0;
         } else {
           drxdr = sqrt(rH*rH + rx*rx)/rx;

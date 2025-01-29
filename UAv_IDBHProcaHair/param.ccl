@@ -27,7 +27,11 @@ EXTENDS KEYWORD initial_shift
 
 PRIVATE:
 
-STRING infilename "file to read the input data from"
+# These parameters shouldn't be used anyway after initial data has been read/generated, so don't need to be STEERABLE.
+# However, for convenience, we make the input file STEERABLE because it allows the use of aliases like $ENV{HOME} while
+# still allowing a restart from checkpoint on a different machine.
+
+STRING infilename "file to read the input data from" STEERABLE=RECOVER
 {
   ".*"  ::  "any valid file name"
 } ""

@@ -17,10 +17,12 @@ void UAv_Kerr_test(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
+  /*
   const CCTK_REAL dxsq = CCTK_DELTA_SPACE(0)*CCTK_DELTA_SPACE(0);
   const CCTK_REAL dysq = CCTK_DELTA_SPACE(1)*CCTK_DELTA_SPACE(1);
   const CCTK_REAL dzsq = CCTK_DELTA_SPACE(2)*CCTK_DELTA_SPACE(2);
-
+  */
+ 
   /* let's create arrays for the F1, F2, F0, phi0, W functions */
   const CCTK_INT N_points = cctk_lsh[0]*cctk_lsh[1]*cctk_lsh[2]; // total points
 
@@ -111,8 +113,10 @@ void UAv_Kerr_test(CCTK_ARGUMENTS)
         const CCTK_REAL RR2 = x1*x1 + y1*y1 + z1*z1;
         const CCTK_REAL RR  = sqrt(RR2);
 
+        /*
         const CCTK_REAL rho2 = x1*x1 + y1*y1;
         const CCTK_REAL rho  = sqrt(rho2);
+        */
 
         const CCTK_REAL costh  = z1/RR;
         const CCTK_REAL costh2 = costh*costh;
@@ -174,16 +178,29 @@ void UAv_Kerr_test(CCTK_ARGUMENTS)
         const CCTK_REAL KRph_o_Rsinth2 = -0.5 * exp(2. * F2[ind] - F0[ind]) * aux6 * RR * dW_dr[ind];
 
         const CCTK_REAL den = RR - 0.25 * rH;
+        const CCTK_REAL eps = den/RR; // epsilon = 1 - rh/(4R) : small parameter close to the horizon
+        const CCTK_REAL eps_o_1meps = eps/(1 - eps);
+
 
         // dW/dth / sin(th) 1/(R - rH/4)
         CCTK_REAL dWdth_o_sinth_den;
 
-        // if at the rho = 0 axis we need to regularize the division by sin(th)
-        if (rho < sqrt(dxsq + dysq) * 0.25)
-          dWdth_o_sinth_den = d2W_dth2[ind] / den;
-        // if at R ~ rH/4 we need to regularize the division by R - rH/4
-        else if ( fabs(den) < sqrt(dxsq + dysq + dzsq) * 0.125 )
-          dWdth_o_sinth_den = (1. - 0.25*0.25 * rH*rH / RR2) * d2W_drth[ind] / sinth;
+        // Axis and horizon regularizations
+        //    if at the rho = 0 axis, no need to regularize the division by sin(th), Kij=0 
+        //    (also valid in the vicinity of the horizon straight on the axis).
+        //    We just need to avoid dividing by sinth=0 at machine precision, otherwise for now it seems the normal operation is enough.
+        //    The threshold is chosen such that rho/z1 (~ rho/RR = sinth) < 1e-8, because it enters as a square in the computation of RR.
+        if (fabs(sinth) < 1e-8)
+          dWdth_o_sinth_den = 0.;
+        //    if at R ~ rH/4 we need to regularize the division by R - rH/4. With f(R) = dWdth
+        //    f(R) ~ f(rH/4)  +  df_dR(R=rH/4) * (R-rH/4)  +  1/2 * d2f_dR2(R=rH/4) * (R-rH/4)^2  +  1/6 * d3f_dR3(R=rH/4) * (R-rH/4)^3
+        //         ~     0    +       0                    +  ... !=0
+        //    f(R) / (R-rH/4) ~ [4R/rH * (1-4R/rH) - (4R/rH)^2 * (1-4R/rH)^2] * df_dr(R=rH/4)
+        //                    ~ [...] * df_dr(R)      FURTHER ASSUMING df_dr - df_dr(rH/4) ~ (r(R)-rH)*d2f_dr2(rH/4) should be small 
+        //                                            (at worst like the order 3 above?)
+        //    [...] = eps/(1-eps) - (eps/(1-eps))^2
+        else if (fabs(eps) < 1e-4)
+          dWdth_o_sinth_den = (eps_o_1meps - eps_o_1meps*eps_o_1meps) * d2W_drth[ind] / sinth;
         else
           dWdth_o_sinth_den = dW_dth[ind] / (den * sinth);
 
@@ -221,6 +238,8 @@ void UAv_Kerr_test(CCTK_ARGUMENTS)
         const CCTK_REAL omega = mm * OmegaH;
 
         // scalar fields
+        // Not taking care about the regularization here because there's actually no field
+        // and alpha can't be 0 because of test above
         phi1[ind]  = phi0_l * (cos(omega * tt) * cosmph + sin(omega * tt) * sinmph);
         phi2[ind]  = phi0_l * (cos(omega * tt) * sinmph - sin(omega * tt) * cosmph);
         Kphi1[ind] = 0.5 * mm * (W[ind] - OmegaH) / alph * phi2[ind];

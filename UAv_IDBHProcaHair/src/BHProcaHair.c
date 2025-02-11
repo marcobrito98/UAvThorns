@@ -83,29 +83,45 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   }
 
 
-  // now we need to take the derivatives of the Wbar function and store their values
+  // To take care properly of z=0 symmetry (i.e. theta <-> pi-theta) in interpolation
+  // we need to extend the arrays to z<0 values.
+  // For convenience, we keep Ntheta as the number of points in the input half-space.
 
-  CCTK_REAL *dWbar_dr_in, *dWbar_dth_in, *d2Wbar_drth_in;
-  dWbar_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  dWbar_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  d2Wbar_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  
-  // Same for H3 and V
-  
-  CCTK_REAL *dH3_dr_in, *dH3_dth_in, *d2H3_drth_in;
-  dH3_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  dH3_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  d2H3_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  
-  CCTK_REAL *dV_dr_in, *dV_dth_in, *d2V_drth_in;
-  dV_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  dV_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  d2V_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  NF = NX * (2*Ntheta - 1);
+
+  CCTK_REAL *F1_extd, *F2_extd, *F0_extd, *Wbar_extd, *H2_extd, *H3_extd, *V_extd;
+  F1_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  F2_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  F0_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  Wbar_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  H2_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  H3_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  V_extd     = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   // We'll use A_r rather than the input A_x
   // Notation here: A ~ H1 dx + ... = H1r dr + ...    (input file has the first one: H1)
-  CCTK_REAL *H1r_in;
-  H1r_in          = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  CCTK_REAL *H1r_extd;
+  H1r_extd          = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+
+  // now we need to take the derivatives of the Wbar function and store their values
+
+  CCTK_REAL *dWbar_dr_extd, *dWbar_dth_extd, *d2Wbar_drth_extd;
+  dWbar_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dWbar_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2Wbar_drth_extd = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  
+  // Same for H3 and V
+  
+  CCTK_REAL *dH3_dr_extd, *dH3_dth_extd, *d2H3_drth_extd;
+  dH3_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH3_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2H3_drth_extd = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  
+  CCTK_REAL *dV_dr_extd, *dV_dth_extd, *d2V_drth_extd;
+  dV_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dV_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2V_drth_extd = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+
 
   // // Some auxi file for debug
   // FILE* debugfile = fopen ("testdebug.txt", "w");
@@ -125,6 +141,9 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   const CCTK_REAL oodXdth144 = 1. / (144. * dX * dtheta);
   // const CCTK_REAL oodXsqdth2 = 1. / (2.  * dX * dX * dtheta);
   const CCTK_REAL oodXsqdth144 = oodX * oodXdth144;
+
+
+  // First loop on z>=0 half-space (i.e. input values of 0 <= theta <= pi/2)
 
   for (int jj = 0; jj < Ntheta; jj++) {
     for (int i = 0; i < NX; i++) {
@@ -256,6 +275,15 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       const CCTK_INT indip5jp3 = i+5 + jp3*NX;
       const CCTK_INT indip5jp4 = i+5 + jp4*NX;
       
+
+      // Just copy input values of ansatz functions
+      F1_extd[ind]   = F1_in[ind];
+      F2_extd[ind]   = F2_in[ind];
+      F0_extd[ind]   = F0_in[ind];
+      Wbar_extd[ind] = Wbar_in[ind];
+      H2_extd[ind]   = H2_in[ind];
+      H3_extd[ind]   = H3_in[ind];
+      V_extd[ind]    = V_in[ind];
 
 
       const CCTK_REAL lX = X[i];
@@ -563,18 +591,18 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       // from the X coordinate used in the input files to the x coordinate
       // We need to be careful at X == 1 for radial derivatives (coordinate change is singular)
       if (i == NX - 1) {
-        dWbar_dr_in[ind]    = 0.; // Sensibly, dWbar_dr_in should vanish (dXdr == 0, Wbar_X bounded)
-        d2Wbar_drth_in[ind] = 0.; // Wbar_Xth is set to 0 above anyway
+        dWbar_dr_extd[ind]    = 0.; // Sensibly, dWbar_dr_in should vanish (dXdr == 0, Wbar_X bounded)
+        d2Wbar_drth_extd[ind] = 0.; // Wbar_Xth is set to 0 above anyway
 
         // Same for H3, V
-        dH3_dr_in[ind]    = 0.;
-        d2H3_drth_in[ind] = 0.;
+        dH3_dr_extd[ind]    = 0.;
+        d2H3_drth_extd[ind] = 0.;
 
-        dV_dr_in[ind]    = 0.;
-        d2V_drth_in[ind] = 0.;
+        dV_dr_extd[ind]    = 0.;
+        d2V_drth_extd[ind] = 0.;
 
 
-        H1r_in[ind]          = 0.; // A_r = 0 at infinity
+        H1r_extd[ind]          = 0.; // A_r = 0 at infinity
 
       } else {
         const CCTK_REAL rx = C0*lX/(1. - lX);
@@ -593,14 +621,14 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         }
         const CCTK_REAL dXdr = dXdrx * drxdr;
 
-        dWbar_dr_in[ind]    = dXdr * Wbar_X;
-        d2Wbar_drth_in[ind] = dXdr * Wbar_Xth;
+        dWbar_dr_extd[ind]    = dXdr * Wbar_X;
+        d2Wbar_drth_extd[ind] = dXdr * Wbar_Xth;
         
-        dH3_dr_in[ind]    = dXdr * H3_X;
-        d2H3_drth_in[ind] = dXdr * H3_Xth;
+        dH3_dr_extd[ind]    = dXdr * H3_X;
+        d2H3_drth_extd[ind] = dXdr * H3_Xth;
         
-        dV_dr_in[ind]    = dXdr * V_X;
-        d2V_drth_in[ind] = dXdr * V_Xth;
+        dV_dr_extd[ind]    = dXdr * V_X;
+        d2V_drth_extd[ind] = dXdr * V_Xth;
 
         // A_r
         /*
@@ -611,15 +639,15 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           the latter term being "drxdr" computed above to include L'Hôpital's rule in that case
         */
         if (i==0) { // rx == 0 (X == 0)
-          H1r_in[ind] = drxdr * H1_X;
+          H1r_extd[ind] = drxdr * H1_X;
         } else {
-          H1r_in[ind] = drxdr * H1_in[ind];
+          H1r_extd[ind] = drxdr * H1_in[ind];
         }
       } // if/else i == NX - 1
 
-      dWbar_dth_in[ind]   = Wbar_th;
-      dH3_dth_in[ind]     = H3_th;
-      dV_dth_in[ind]      = V_th;
+      dWbar_dth_extd[ind]   = Wbar_th;
+      dH3_dth_extd[ind]     = H3_th;
+      dV_dth_extd[ind]      = V_th;
 
       // fprintf (debugfile, "%.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f ", 
       //             Wbar_in[ind], dWbar_dr_in[ind], dWbar_dth_in[ind], d2Wbar_drth_in[ind],
@@ -630,6 +658,50 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   } // for jj
 
   // fclose(debugfile);
+
+
+  // Second loop on z<0 half-space (completion by symmetry)
+
+  // Even parity: F1, F2, F0, Wbar, H1, H3, V and their r derivatives
+  // Odd parity:  H2, and theta derivatives of even functions
+
+  for (int jj = 1; jj < Ntheta; jj++) { // don't repeat theta == pi/2
+    for (int i = 0; i < NX; i++) {
+
+      // j or jsym == Ntheta - 1  is theta == pi/2
+      const CCTK_INT j    = Ntheta - 1 + jj;
+      const CCTK_INT jsym = Ntheta - 1 - jj; 
+
+      const CCTK_INT ind    = i + j   *NX;
+      const CCTK_INT indsym = i + jsym*NX;
+
+      // Even
+      F1_extd[ind]       = F1_extd[indsym];
+      F2_extd[ind]       = F2_extd[indsym];
+      F0_extd[ind]       = F0_extd[indsym];
+      H1r_extd[ind]      = H1r_extd[indsym];
+      
+      Wbar_extd[ind]     = Wbar_extd[indsym];
+      H3_extd[ind]       = H3_extd[indsym];
+      V_extd[ind]        = V_extd[indsym];
+
+      dWbar_dr_extd[ind] = dWbar_dr_extd[indsym];
+      dH3_dr_extd[ind]   = dH3_dr_extd[indsym];
+      dV_dr_extd[ind]    = dV_dr_extd[indsym];
+
+      // Odd
+      H2_extd[ind]          = - H2_extd[indsym];
+
+      dWbar_dth_extd[ind]   = - dWbar_dth_extd[indsym];
+      dH3_dth_extd[ind]     = - dH3_dth_extd[indsym];
+      dV_dth_extd[ind]      = - dV_dth_extd[indsym];
+      
+      d2Wbar_drth_extd[ind] = - d2Wbar_drth_extd[indsym];
+      d2H3_drth_extd[ind]   = - d2H3_drth_extd[indsym];
+      d2V_drth_extd[ind]    = - d2V_drth_extd[indsym];
+
+      } // for i
+  } // for jj
 
 
   /* now we need to interpolate onto the actual grid points. first let's store
@@ -666,9 +738,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         // and finally to the X radial coordinate (used in input files)
         const CCTK_REAL lX = rx / (C0 + rx);
 
-        CCTK_REAL ltheta = acos( z1/RR );
-        if (ltheta > 0.5*M_PI)    // symmetry along the equatorial plane
-          ltheta = M_PI - ltheta;
+        const CCTK_REAL ltheta = acos( z1/RR );
 
         X_g[ind]     = lX;
         theta_g[ind] = ltheta;
@@ -702,7 +772,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   CCTK_INT input_array_type_codes[N_input_arrays];
   CCTK_INT input_array_dims[N_dims];
   input_array_dims[0] = NX;
-  input_array_dims[1] = Ntheta;
+  input_array_dims[1] = 2*Ntheta-1;
 
   input_array_type_codes[0] = CCTK_VARIABLE_REAL;
   input_array_type_codes[1] = CCTK_VARIABLE_REAL;
@@ -725,23 +795,23 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
      is faster. */
-  input_arrays[0] = (const void *) F1_in;
-  input_arrays[1] = (const void *) F2_in;
-  input_arrays[2] = (const void *) F0_in;
-  input_arrays[3] = (const void *) Wbar_in;
-  input_arrays[4] = (const void *) dWbar_dr_in;
-  input_arrays[5] = (const void *) dWbar_dth_in;
-  input_arrays[6] = (const void *) d2Wbar_drth_in;
-  input_arrays[7] = (const void *) H1r_in;
-  input_arrays[8] = (const void *) H2_in;
-  input_arrays[9] = (const void *) H3_in;
-  input_arrays[10]= (const void *) V_in;
-  input_arrays[11]= (const void *) dH3_dr_in;
-  input_arrays[12]= (const void *) dH3_dth_in;
-  input_arrays[13]= (const void *) d2H3_drth_in;
-  input_arrays[14]= (const void *) dV_dr_in;
-  input_arrays[15]= (const void *) dV_dth_in;
-  input_arrays[16]= (const void *) d2V_drth_in;
+  input_arrays[0] = (const void *) F1_extd;
+  input_arrays[1] = (const void *) F2_extd;
+  input_arrays[2] = (const void *) F0_extd;
+  input_arrays[3] = (const void *) Wbar_extd;
+  input_arrays[4] = (const void *) dWbar_dr_extd;
+  input_arrays[5] = (const void *) dWbar_dth_extd;
+  input_arrays[6] = (const void *) d2Wbar_drth_extd;
+  input_arrays[7] = (const void *) H1r_extd;
+  input_arrays[8] = (const void *) H2_extd;
+  input_arrays[9] = (const void *) H3_extd;
+  input_arrays[10]= (const void *) V_extd;
+  input_arrays[11]= (const void *) dH3_dr_extd;
+  input_arrays[12]= (const void *) dH3_dth_extd;
+  input_arrays[13]= (const void *) d2H3_drth_extd;
+  input_arrays[14]= (const void *) dV_dr_extd;
+  input_arrays[15]= (const void *) dV_dth_extd;
+  input_arrays[16]= (const void *) d2V_drth_extd;
 
   /* output arrays */
   void *output_arrays[N_output_arrays];
@@ -834,10 +904,12 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   free(Xtmp); free(thtmp);
   free(F1_in); free(F2_in); free(F0_in); free(Wbar_in);
   free(H1_in); free(H2_in); free(H3_in); free(V_in);
-  free(dWbar_dr_in); free(dWbar_dth_in); free(d2Wbar_drth_in);
-  free(H1r_in);
-  free(dH3_dr_in); free(dH3_dth_in); free(d2H3_drth_in);
-  free(dV_dr_in); free(dV_dth_in); free(d2V_drth_in);
+  
+  free(F1_extd); free(F2_extd); free(F0_extd); free(Wbar_extd);
+  free(H1r_extd); free(H2_extd); free(H3_extd); free(V_extd);
+  free(dWbar_dr_extd); free(dWbar_dth_extd); free(d2Wbar_drth_extd);
+  free(dH3_dr_extd); free(dH3_dth_extd); free(d2H3_drth_extd);
+  free(dV_dr_extd); free(dV_dth_extd); free(d2V_drth_extd);
 
 
   /* printf("F1 = %g\n", F1[0]); */
@@ -885,8 +957,19 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
 
         const CCTK_REAL costh  = z1/RR;
         const CCTK_REAL costh2 = costh*costh;
-        const CCTK_REAL sinth2 = 1. - costh2;
-        const CCTK_REAL sinth  = sqrt(sinth2);
+        /*
+          For some grid points actually on the axis, it occurred that costh = 1-1e-16, resulting in sinth ~ 1.5e-7 instead of 0.
+          Thus we force it in that case. 
+          Even if there is a legit grid point such that theta ~ a few 1e-8, it should mean RR >> rho and the axis treatment should be fine.
+        */
+        CCTK_REAL sinth, sinth2;
+        if (1-costh2 < 1e-15) {
+          sinth2 = 0.;
+          sinth  = 0.;
+        } else {
+          sinth2 = 1. - costh2;
+          sinth  = sqrt(sinth2);
+        }
 
         /*
         const CCTK_REAL R_x = x1/RR;   // dR/dx
@@ -1071,7 +1154,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
             1) f(R) = W - OmegaH
             2) f(R) = dV/dth + W d(H3 sinth)/dth   (= 0 on horizon, it coincides with d(V + OmegaH H3 sinth)/dth there)
         */
-       if (fabs(eps) < 1e-4) {
+        if (fabs(eps) < 1e-4) {
           // f(R) = dV/dth + W d(H3 sinth)/dth
           const CCTK_REAL df_dr = d2V_drth[ind] + dW_dr * (sinth * dH3_dth[ind] + costh * H3[ind]) + W * (sinth * d2H3_drth[ind] + costh * dH3_dr[ind]);
           const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * (- mm * H2[ind] * dW_dr + df_dr );
@@ -1093,15 +1176,17 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           That's the same as for A_\phi, with f(R) = V + OmegaH H3 sinth   (= 0 on horizon)
 
           on the axis sinth=0, we need to regularize the division by sinth
-          We have V(theta=0) = 0, so with l'Hôpital's rule
-          V / sinth ~ dV/dth
+          We have V(theta=0,pi) = 0, so with l'Hôpital's rule
+          V / sinth ~ \pm dV/dth    for theta = 0, pi resp.
 
           On the horizon we need to combine both. In that case, f(R) = dV/dth + OmegaH H3   (corresponds to d(V + OmegaH H3 sinth)/dth = 0)
 
           Using abusive shorthands for Ahor = \xi^\mu A_\mu    \propto    V + OmegaH H3 sinth
         */
         if (fabs(eps) < 1e-4 && fabs(sinth) < 1e-8) {
-          const CCTK_REAL d2Ahor_drth = d2V_drth[ind] + OmegaH * dH3_dr[ind];
+          const CCTK_INT zsign = (costh>=0) ? 1 : -1; // costh==0 shouldn't happen on the axis for a grid point, this would mean RR==0 too...
+
+          const CCTK_REAL d2Ahor_drth = zsign * d2V_drth[ind] + OmegaH * dH3_dr[ind];
           const CCTK_REAL reg  = exp(-F0[ind]) * (RR + 0.25*rH) * (eps_o_1meps - eps_o_1meps*eps_o_1meps) * d2Ahor_drth;
 
           E1d_ph_o_sinth = - mm * reg * harm_re;
@@ -1115,8 +1200,10 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           E2d_ph_o_sinth = - mm * reg * harm_im;
         
         } else if (fabs(sinth) < 1e-8) {
-          E1d_ph_o_sinth = - mm * (dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_re;
-          E2d_ph_o_sinth = - mm * (dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_im;
+          const CCTK_INT zsign = (costh>=0) ? 1 : -1; // costh==0 shouldn't happen on the axis for a grid point, this would mean RR==0 too...
+
+          E1d_ph_o_sinth = - mm * (zsign * dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = - mm * (zsign * dV_dth[ind] + OmegaH * H3[ind]) / alph * harm_im;
         
         } else {
           E1d_ph_o_sinth = - mm * (V[ind] / sinth + OmegaH * H3[ind]) / alph * harm_re;

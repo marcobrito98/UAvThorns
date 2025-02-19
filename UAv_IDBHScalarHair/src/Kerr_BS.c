@@ -582,6 +582,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL cosmph_1 = cos(mm*ph_1);
         const CCTK_REAL sinmph_1 = sin(mm*ph_1);
 
+        const CCTK_REAL h_rho2 = exp(2. * (F2[ind] - F1[ind])) - 1.;
+
         //Black Hole B
 
         const CCTK_REAL x1_2  = x[ind] - x0_2;

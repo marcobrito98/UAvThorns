@@ -729,7 +729,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2 + psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
         gxz[ind] = 0;
         // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );~
-        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2 ) +psi4_1 * (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
+        gyy[ind] = psi4_2 * (1. + bh_spin2 * hh * x1_2*x1_2) +psi4_1 * (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
         gyz[ind] = 0;
         gzz[ind] = psi4_2+psi4_1 - 1;
 

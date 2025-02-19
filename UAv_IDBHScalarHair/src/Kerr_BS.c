@@ -724,14 +724,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         // gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxx[ind] =(psi4_1 + psi4_2 -1)*(1+bh_spin2*hh*y1_2*y1_2);;
+        gxx[ind] =psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + psi4_1 * (1. + h_rho2_1 * sinph_1 * sinph_1) - 1;
         // gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
-        gxy[ind] = -(psi4_1 + psi4_2 -1)*bh_spin2*hh*y1_2*x1_2;
+        gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2 + psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
         gxz[ind] = 0;
         // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );~
-        gyy[ind] = (psi4_1 + psi4_2 -1) * ( 1. + bh_spin2 * hh * x1_2*x1_2 );
+        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2 ) +psi4_1 * (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
         gyz[ind] = 0;
-        gzz[ind] = (psi4_1 + psi4_2 -1);
+        gzz[ind] = psi4_2+psi4_1 - 1;
 
         check_nan_or_inf("gxx",gxx[ind]);
         check_nan_or_inf("gxy",gxy[ind]);

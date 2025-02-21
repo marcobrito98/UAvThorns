@@ -89,7 +89,7 @@ REAL z0 "z coordinate of central point"
 } 0.0
 
 
-REAL Apert_conf_fac "maximum amplitude for conformal factor perturbation"
+REAL Apert_conf_fac "amplitude for conformal factor perturbation"
 {
   0:* :: "non-negative"
 } 0.0
@@ -105,18 +105,17 @@ REAL Sigmapert_conf_fac "spread for conformal factor perturbation. To be conceiv
 } 1.0
 
 
-# TODO: Keep this? How to name it?
-REAL Apert_phi "maximum amplitude for scalar perturbation"
+REAL Apert_Proca "amplitude for Proca field perturbation"
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL R0pert_phi "center radius for scalar perturbation. To be conceived in quasi-isotropic coordinate R"
+REAL R0pert_Proca "center radius for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL Sigmapert_phi "spread for scalar perturbation. To be conceived in quasi-isotropic coordinate R"
+REAL Sigmapert_Proca "spread for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
 {
   (0:* :: "positive"
 } 1.0

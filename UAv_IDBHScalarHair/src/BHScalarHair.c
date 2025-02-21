@@ -501,6 +501,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
         const CCTK_REAL d2W_drth = d2Wbar_drth[ind] / rrP - Wbar_r_power * dWbar_dth[ind] / rrPp1;
 
         // add non-axisymmetric perturbation on conformal factor
+        // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
         const CCTK_REAL argpert_cf = (RR - R0pert_conf_fac)/Sigmapert_conf_fac;
         const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
 
@@ -563,6 +564,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
           
 
         // let's add a perturbation to the scalar field as well
+        // NOTE: the derivative of the perturbation is not taken into account for the scalar field momentum
+        // TODO (?): Design perturbation more generically as ~ cos((m+1)\varphi)
         const CCTK_REAL argpert_phi = (RR - R0pert_phi)/Sigmapert_phi;
         const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );
 

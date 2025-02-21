@@ -1015,6 +1015,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         const CCTK_REAL d2W_drth = d2Wbar_drth[ind] / rrP - Wbar_r_power * dWbar_dth[ind] / rrPp1;
 
         // add non-axisymmetric perturbation on conformal factor
+        // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
         const CCTK_REAL argpert_cf = (RR - R0pert_conf_fac)/Sigmapert_conf_fac;
         const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
 
@@ -1079,19 +1080,18 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         const CCTK_REAL alph = exp(F0[ind]) * den / (RR + 0.25*rH);
 
 
-        // // TODO: see naming and if we do perturbation like on Ai, if it transfers to Ei... It may be best to put it in harm_re/im
-        // // let's add a perturbation to the scalar field as well
-        // const CCTK_REAL argpert_phi = (RR - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi = 1. + Apert_phi * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_phi*argpert_phi );
-
-        // const CCTK_REAL phi0_l = phi0[ind] * pert_phi;
+        // let's add a perturbation to the Proca field as well
+        // NOTE: the perturbation is added directed to every instance of e^{i m \varphi}, hence its derivatives are not taken into account
+        // TODO (?): Design perturbation more generically as ~ cos((m+1)\varphi)
+        const CCTK_REAL argpert_Proca = (RR - R0pert_Proca)/Sigmapert_Proca;
+        const CCTK_REAL pert_Proca = 1. + Apert_Proca * (x1*x1 - y1*y1)*mu*mu * exp( -0.5*argpert_Proca*argpert_Proca );
 
 
         // ----- Proca fields -----
 
         // Real and imaginay part of the harmonic dependence: exp[i(m\varphi - \omega t)]
-        const CCTK_REAL harm_re = (coswt * cosmph + sinwt * sinmph);
-        const CCTK_REAL harm_im = (coswt * sinmph - sinwt * cosmph);
+        const CCTK_REAL harm_re = (coswt * cosmph + sinwt * sinmph) * pert_Proca;
+        const CCTK_REAL harm_im = (coswt * sinmph - sinwt * cosmph) * pert_Proca;
 
         // Radial component in R coordinate
         // A_R = dr/dR * A_r 

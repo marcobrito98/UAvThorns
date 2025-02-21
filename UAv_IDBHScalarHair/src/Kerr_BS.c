@@ -649,7 +649,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2 ;
         const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
-        const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
+        const CCTK_REAL sigma  = (2.*bh_mass*RRrBL) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2);
         const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
@@ -726,15 +726,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         // gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxx[ind] =psi4_2*(1. + bh_spin2*hh*y1_2*y1_2);
+        gxx[ind] =pow(psi1_1+psi1_2-1,4)*(1. + bh_spin2*hh*y1_2*y1_2);
         // gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
-        gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2;
+        gxy[ind] = -pow(psi1_1+psi1_2-1,4)*bh_spin2*hh*y1_2*x1_2;
         //mesmo so com o bh negro continuo com os mesmos problemas.
         gxz[ind] = 0;
         // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
-        gyy[ind] = psi4_2* (1. + bh_spin2 * hh * x1_2*x1_2) ;
+        gyy[ind] = pow(psi1_1+psi1_2-1,4)* (1. + bh_spin2 * hh * x1_2*x1_2) ;
         gyz[ind] = 0;
-        gzz[ind] = psi4_2;
+        gzz[ind] = pow(psi1_1+psi1_2-1,4);
 
         check_nan_or_inf("gxx",gxx[ind]);
         check_nan_or_inf("gxy",gxy[ind]);
@@ -773,7 +773,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-        //K esta errado. tinha usado foliacao errada.
+        //K esta errado no caso do boost. tinha usado foliacao errada.
 
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters) No caso em repouso, estara correto? verificar.
         kxx[ind] = Axx / psi2_2;

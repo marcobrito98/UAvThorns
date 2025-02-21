@@ -726,14 +726,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         // gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxx[ind] =pow(psi1_1+psi1_2-1,4)*(1. + bh_spin2*hh*y1_2*y1_2);
+        gxx[ind] =psi4_2*(1. + bh_spin2*hh*y1_2*y1_2);
         // gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
-        gxy[ind] = -pow(psi1_2,4)*bh_spin2*hh*y1_2*x1_2;// deve ser o termo problematico. talvez testar a outra sobreposição (que nao contruibui para esta componente)
+        gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2;
+        //mesmo so com o bh negro continuo com os mesmos problemas.
         gxz[ind] = 0;
         // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
-        gyy[ind] = pow(psi1_1+psi1_2-1,4)* (1. + bh_spin2 * hh * x1_2*x1_2) ;
+        gyy[ind] = psi4_2* (1. + bh_spin2 * hh * x1_2*x1_2) ;
         gyz[ind] = 0;
-        gzz[ind] = pow(psi1_1+psi1_2-1,4);
+        gzz[ind] = psi4_2;
 
         check_nan_or_inf("gxx",gxx[ind]);
         check_nan_or_inf("gxy",gxy[ind]);

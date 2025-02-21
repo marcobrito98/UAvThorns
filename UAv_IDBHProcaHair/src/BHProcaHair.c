@@ -958,7 +958,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         const CCTK_REAL costh  = z1/RR;
         const CCTK_REAL costh2 = costh*costh;
         /*
-          For some grid points actually on the axis, it occurred that costh = 1-1e-16, resulting in sinth ~ 1.5e-7 instead of 0.
+          For some grid points actually on the axis, it occurred that costh = 1-1e-16, resulting in sinth ~ 1.5e-8 instead of 0.
           Thus we force it in that case. 
           Even if there is a legit grid point such that theta ~ a few 1e-8, it should mean RR >> rho and the axis treatment should be fine.
         */

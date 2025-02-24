@@ -564,10 +564,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_1  = y[ind] - y0;
         const CCTK_REAL z1_1  = z[ind] - z0;
 
-        const CCTK_REAL charge = 0.;
+        
 
         // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2_2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
         const CCTK_REAL rr_1  = sqrt(rr2_2_1);
 
         const CCTK_REAL rho2_1 = x1_1*x1_1 + y1_1*y1_1;
@@ -593,6 +593,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         // const CCTK_REAL bh_v2 = bh_v * bh_v;
+        const CCTK_REAL charge = 0.;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
         const CCTK_REAL deltakerr2 = bh_mass*bh_mass - bh_spin2 ;
         const CCTK_REAL deltakerr  = sqrt(deltakerr2) ;

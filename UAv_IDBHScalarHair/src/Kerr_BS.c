@@ -564,14 +564,23 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_1  = y[ind] - y0;
         const CCTK_REAL z1_1  = z[ind] - z0;
 
-        
-
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
         const CCTK_REAL rr_1  = sqrt(rr2_1);
 
         const CCTK_REAL rho2_1 = x1_1*x1_1 + y1_1*y1_1;
         const CCTK_REAL rho_1  = sqrt(rho2_1);
+        
+
+        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
+        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
+        // but can this lead to nan depending on the C implementation?
+
+        const CCTK_REAL cosph_1  = cos(ph_1);
+        const CCTK_REAL sinph_1  = sin(ph_1);
+
+        const CCTK_REAL cosmph_1 = cos(mm*ph_1);
+        const CCTK_REAL sinmph_1 = sin(mm*ph_1);
         
 
         const CCTK_REAL ph_1 = atan2(y1_1, x1_1);

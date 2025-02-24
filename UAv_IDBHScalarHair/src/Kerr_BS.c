@@ -381,9 +381,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
   CCTK_REAL origin[N_dims];
-  CCTK_REAL delta [N_dims];
+  CCTK_REAL deltakerr [N_dims];
   origin[0] = X[0];  origin[1] = theta[0];
-  delta[0]  = dX;    delta[1]  = dtheta;
+  deltakerr[0]  = dX;    deltakerr[1]  = dtheta;
 
   /* points onto which we want to interpolate, ie, the grid points themselves in
      (X, theta) coordinates (computed above) */
@@ -494,7 +494,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   /* do the actual interpolation, and check for error returns */
   int status_1 = CCTK_InterpLocalUniform(N_dims, operator_handle,
                                        param_table_handle,
-                                       origin, delta,
+                                       origin, deltakerr,
                                        N_interp_points,
                                        CCTK_VARIABLE_REAL,
                                        interp_coords_1,
@@ -511,7 +511,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   //   /* do the actual interpolation, and check for error returns */
   // int status_2 = CCTK_InterpLocalUniform(N_dims, operator_handle,
   //                                      param_table_handle,
-  //                                      origin, delta,
+  //                                      origin, deltakerr,
   //                                      N_interp_points,
   //                                      CCTK_VARIABLE_REAL,
   //                                      interp_coords_2,
@@ -591,6 +591,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
         // const CCTK_REAL bh_v2 = bh_v * bh_v;
+        const CCTK_REAL deltakerr2 = bh_mass*bh_mass - bh_spin2 ;
+        const CCTK_REAL deltakerr  = sqrt(deltakerr2) ;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
         // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         // const CCTK_REAL gamma = sqrt(gamma2);
@@ -608,8 +610,95 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL theta_2 = acos(z1_2/rr_2);
 
-        const CCTK_REAL deltakerr2 = bh_mass*bh_mass - bh_spin2 ;
-        const CCTK_REAL deltakerr  = sqrt(deltakerr2) ;
+
+
+        costh  = z1_2/rr_2 ;
+        costh2 = costh*costh ;
+        sinth2 = 1. - costh2 ;
+        sinth  = sqrt(sinth2) ;
+
+        R_x    = x1_2/rr_2 ;
+        R_y    = y1_2/rr_2 ;
+        R_z    = z1_2/rr_2 ;
+
+        x_R    = x1_2/rr_2 ;
+        y_R    = y1_2/rr_2 ;
+        z_R    = z1_2/rr_2 ;
+
+        sinth2ph_x = -y1_2/rr2_2 ;
+        sinth2ph_y =  x1_2/rr2_2 ;
+
+        sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
+        sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
+        sinthth_z  = -sinth2/rr_2 ; 
+
+        sinthx_th  = x1_2 * costh ;
+        sinthy_th  = y1_2 * costh ;
+        sinthz_th  = -rr_2 * sinth2 ;
+
+
+        rBL    = rr_2 + bh_mass + 0.25*deltakerr2 / rr_2 ;   // Boyer-Lindquist coordinate r
+
+        RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2 ;
+
+        rho2_2   = rBL*rBL + bh_spin*bh_spin * costh2 ;
+        rho_2    = sqrt(rho2_2) ;
+
+        // sigma = (2.*bh_mass*rBL - charge*charge) / rho2_2 ;
+        sigma  = (2.*bh_mass*RRrBL - charge*charge*rr_2) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
+
+        hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
+
+        psi4_2   = rho2_2 / rr2_2 ;
+        psi2_2   = sqrt(psi4_2) ;
+        psi1_2   = sqrt(psi2_2) ;
+
+
+        // non-axisymmetric perturbation.
+        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2 ) ; */
+        // pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*R0pert2/deltakerr2 ) ;
+
+        // 3-metric
+        gxx[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;
+        gxy[ind] = - psi4_2 * bh_spin*bh_spin * hh * x1_2*y1_2;
+        gxz[ind] = 0;
+        gyy[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * x1_2*x1_2 );
+        gyz[ind] = 0;
+        gzz[ind] = psi4_2 ;
+
+
+
+        alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
+                 1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
+        alpha02 = alpha0*alpha0 ;
+
+        HF     = - bh_spin*bh_spin*bh_spin * alpha0 * sigma/rho_2 * costh  ;  // we are dividing by sinth2
+        Athph  = HF / rr_2 ;                                        // we are dividing by sinth
+
+        aux    =  rho2_2 * (rBL*rBL - bh_spin*bh_spin) + 2.*rBL*rBL * (rBL*rBL + bh_spin*bh_spin)
+                - charge*charge/bh_mass * rBL * (2.*rho2_2 + bh_spin*bh_spin * sinth2) ;
+
+        HE     = bh_spin*bh_mass * aux / (rho_2*rho_2*rho_2) * 
+                 1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
+
+        ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+
+
+        Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+        Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+        Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
+        Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+        Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
+
+
+        kxx[ind] = Axx / psi2;
+        kxy[ind] = Axy / psi2;
+        kxz[ind] = Axz / psi2;
+        kyy[ind] = Ayy / psi2;
+        kyz[ind] = Ayz / psi2;
+        kzz[ind] = 0. ;
+
+        
 
         const CCTK_REAL costh  = z1_2/rr_2 ;
         const CCTK_REAL costh2 = costh*costh ;

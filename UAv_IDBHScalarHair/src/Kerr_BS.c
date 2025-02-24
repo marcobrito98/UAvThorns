@@ -209,7 +209,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
       } else {
         // 4th order accurate stencils
         Wbar_X    = (-Wbar_in[indip2] + 8 * Wbar_in[indip1] - 8 * Wbar_in[indim1] + Wbar_in[indim2]) * oodX12;
-      
+
       }
 
       // From the X coordinate used in the input files to the r coordinate (coincides with x for the Boson Star, rH=0).
@@ -227,7 +227,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         case 0:   // Wbar = W
           W_in[ind]        = Wbar_in[ind];
           break;
-        
+
         case 1:   // Wbar = r * W
           /*
           dWbar/dr = W + r * dW/dr
@@ -238,7 +238,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           */
           W_in[ind]        = Wbar_X / C0;
           break;
-        
+
         case 2:   // Wbar = r^2 * W
           /*
           dWbar/dr   = 2r * W + r^2 * dW/dr
@@ -253,7 +253,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           */
           W_in[ind]        = (0.5 * Wbar_XX - Wbar_X)/(C0*C0);
           break;
-        
+
         default:  // As of writing, this should be prevented by the scope of the parameter anyway
           CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
           "Unknown value of Wbar_r_power: %d. Aborting.", Wbar_r_power);
@@ -278,7 +278,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dXdr = C0/((C0 + rr)*(C0 + rr));
 
         const CCTK_REAL Wbar_r = dXdr * Wbar_X;
-        
+
         // Now translate from Wbar to W
         switch (Wbar_r_power) // We could put a generic power for the computation here I guess...
         {
@@ -287,13 +287,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dr_in[ind]    = Wbar_r;
           dW_dth_in[ind]   = Wbar_th;
           break;
-        
+
         case 1:   // Wbar = r * W
           W_in[ind]        = Wbar_in[ind] / rr;
           dW_dr_in[ind]    = (Wbar_r - W_in[ind]) / rr; // dW/dr  =  1/r * dWbar/dr - Wbar / r^2  =  (dWbar/dr - W) / r
           dW_dth_in[ind]   = Wbar_th / rr;
           break;
-        
+
         case 2: ; // Wbar = r^2 * W
           // empty statement after case to prevent compilation error on some gcc versions...
           const CCTK_REAL rr2_2 = rr*rr;
@@ -301,14 +301,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dr_in[ind]    = Wbar_r / rr2_2 - 2 * W_in[ind] / rr; // dW/dr  =  1/r^2 * dWbar/dr - 2 * Wbar / r^3  =  1/r^2 * dWbar/dr - 2 * W / r
           dW_dth_in[ind]   = Wbar_th / rr2_2;
           break;
-        
+
         default:  // As of writing, this should be prevented by the scope of the parameter anyway
           CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
           "Unknown value of Wbar_r_power: %d. Aborting.", Wbar_r_power);
           break;
         }
       } // if/else i==...
-    
+
     } // for i
   } // for jj
 
@@ -339,7 +339,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         CCTK_REAL rr_1  = sqrt(rr2_2_1);
         /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
-        
+
         // From r to the X radial coordinate (used in input files)
         const CCTK_REAL lX_1 = rr_1 / (C0 + rr_1);
 
@@ -357,7 +357,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // CCTK_REAL rr_2  = sqrt(rr2_2);
         // /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
-        
+
         // // From r to the X radial coordinate (used in input files)
         // const CCTK_REAL lX_2 = rr_2 / (C0 + rr_2);
 
@@ -380,10 +380,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
-     CCTK_REAL origin[N_dims];
-     CCTK_REAL delta [N_dims];
-     origin[0] = X[0];  origin[1] = theta[0];
-     delta[0]  = dX;    delta[1]  = dtheta;
+  CCTK_REAL origin[N_dims];
+  CCTK_REAL delta [N_dims];
+  origin[0] = X[0];  origin[1] = theta[0];
+  delta[0]  = dX;    delta[1]  = dtheta;
 
   /* points onto which we want to interpolate, ie, the grid points themselves in
      (X, theta) coordinates (computed above) */
@@ -437,7 +437,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   W_1           = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dr_1       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dW_dth_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
-  
+
   // F1_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   // F2_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   // F0_2          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));

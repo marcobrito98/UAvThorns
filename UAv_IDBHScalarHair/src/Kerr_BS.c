@@ -612,46 +612,46 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-        costh  = z1_2/rr_2 ;
-        costh2 = costh*costh ;
-        sinth2 = 1. - costh2 ;
-        sinth  = sqrt(sinth2) ;
+        const CCTK_REAL costh  = z1_2/rr_2 ;
+        const CCTK_REAL costh2 = costh*costh ;
+        const CCTK_REAL sinth2 = 1. - costh2 ;
+        const CCTK_REAL sinth  = sqrt(sinth2) ;
 
-        R_x    = x1_2/rr_2 ;
-        R_y    = y1_2/rr_2 ;
-        R_z    = z1_2/rr_2 ;
+        const CCTK_REAL  R_x    = x1_2/rr_2 ;
+        const CCTK_REAL R_y    = y1_2/rr_2 ;
+        const CCTK_REAL  R_z    = z1_2/rr_2 ;
 
-        x_R    = x1_2/rr_2 ;
-        y_R    = y1_2/rr_2 ;
-        z_R    = z1_2/rr_2 ;
+        const CCTK_REAL  x_R    = x1_2/rr_2 ;
+        const CCTK_REAL  y_R    = y1_2/rr_2 ;
+        const CCTK_REAL  z_R    = z1_2/rr_2 ;
 
-        sinth2ph_x = -y1_2/rr2_2 ;
-        sinth2ph_y =  x1_2/rr2_2 ;
+        const CCTK_REAL  sinth2ph_x = -y1_2/rr2_2 ;
+        const CCTK_REAL  sinth2ph_y =  x1_2/rr2_2 ;
 
-        sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
-        sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
-        sinthth_z  = -sinth2/rr_2 ; 
+        const CCTK_REAL  sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL  sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL  sinthth_z  = -sinth2/rr_2 ; 
 
-        sinthx_th  = x1_2 * costh ;
-        sinthy_th  = y1_2 * costh ;
-        sinthz_th  = -rr_2 * sinth2 ;
+        const CCTK_REAL  sinthx_th  = x1_2 * costh ;
+        const CCTK_REAL  sinthy_th  = y1_2 * costh ;
+        const CCTK_REAL  sinthz_th  = -rr_2 * sinth2 ;
 
 
-        rBL    = rr_2 + bh_mass + 0.25*deltakerr2 / rr_2 ;   // Boyer-Lindquist coordinate r
+        const CCTK_REAL  rBL    = rr_2 + bh_mass + 0.25*deltakerr2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
-        RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2 ;
+        const CCTK_REAL   RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2 ;
 
-        rho2_2   = rBL*rBL + bh_spin*bh_spin * costh2 ;
-        rho_2    = sqrt(rho2_2) ;
+        const CCTK_REAL  rho2_2   = rBL*rBL + bh_spin*bh_spin * costh2 ;
+        const CCTK_REAL   rho_2    = sqrt(rho2_2) ;
 
         // sigma = (2.*bh_mass*rBL - charge*charge) / rho2_2 ;
-        sigma  = (2.*bh_mass*RRrBL - charge*charge*rr_2) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
+        const CCTK_REAL  sigma  = (2.*bh_mass*RRrBL - charge*charge*rr_2) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
-        hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
+        const CCTK_REAL    hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
-        psi4_2   = rho2_2 / rr2_2 ;
-        psi2_2   = sqrt(psi4_2) ;
-        psi1_2   = sqrt(psi2_2) ;
+        const CCTK_REAL   psi4_2   = rho2_2 / rr2_2 ;
+        const CCTK_REAL    psi2_2   = sqrt(psi4_2) ;
+        const CCTK_REAL  psi1_2   = sqrt(psi2_2) ;
 
 
         // non-axisymmetric perturbation.

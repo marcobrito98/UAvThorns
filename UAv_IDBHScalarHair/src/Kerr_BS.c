@@ -590,10 +590,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_2  = y[ind] - y0_2;
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        const CCTK_REAL bh_v2 = bh_v * bh_v;
+        // const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
-        const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        const CCTK_REAL gamma = sqrt(gamma2);
+        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
+        // const CCTK_REAL gamma = sqrt(gamma2);
         // const CCTK_REAL rr2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
         // const CCTK_REAL rr_2  = sqrt(rr2_2);
         const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
@@ -666,24 +666,24 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-        const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
-        const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
-        const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
-        const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
-        const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*(rBL*rBL-bh_spin2*costh2)*sinth2/pow(rho2kerr,2);
+        // const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
+        // const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
+        // const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
+        // const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
+        // const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*(rBL*rBL-bh_spin2*costh2)*sinth2/pow(rho2kerr,2);
 
-        const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
-        //const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
-        const CCTK_REAL dgammaphiphi_dth= (delta_metric+8*bh_mass*rBL*pow(bh_spin2+rBL*rBL,2)/pow(bh_spin2+2*rBL*rBL+bh_spin2*(costh2-sinth2),2))*2*costh*sinth;
-        //const CCTK_REAL dgammaphiphi_dth= 4*bh_spin2*bh_mass*rBL*(bh_spin2+rBL*rBL)*costh*sinth/pow(rho2kerr,2);
-        // const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr_2*(2*rBL*(bh_spin2+rBL*rBL)+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
-        //                                 2*(-pow(bh_spin2+rBL*rBL,2)+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
+        // const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
+        // //const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
+        // const CCTK_REAL dgammaphiphi_dth= (delta_metric+8*bh_mass*rBL*pow(bh_spin2+rBL*rBL,2)/pow(bh_spin2+2*rBL*rBL+bh_spin2*(costh2-sinth2),2))*2*costh*sinth;
+        // //const CCTK_REAL dgammaphiphi_dth= 4*bh_spin2*bh_mass*rBL*(bh_spin2+rBL*rBL)*costh*sinth/pow(rho2kerr,2);
+        // // const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr_2*(2*rBL*(bh_spin2+rBL*rBL)+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
+        // //                                 2*(-pow(bh_spin2+rBL*rBL,2)+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
 
-        const CCTK_REAL dgammaphiphi_dR= dr_dR*(2*rBL*(bh_spin2+rBL*rBL)*(rBL*rBL+bh_spin2*(costh2-sinth2))*sinth2 + \
-                                      2*bh_spin2*(rBL*(bh_spin2-bh_mass*rBL)+bh_spin2*(bh_mass-rBL)*costh2)*sinth2*sinth2)/pow(rho2kerr,2);
-        const CCTK_REAL betauphi = betadphi/gammaphiphi;
-        const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
-        const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
+        // const CCTK_REAL dgammaphiphi_dR= dr_dR*(2*rBL*(bh_spin2+rBL*rBL)*(rBL*rBL+bh_spin2*(costh2-sinth2))*sinth2 + \
+        //                               2*bh_spin2*(rBL*(bh_spin2-bh_mass*rBL)+bh_spin2*(bh_mass-rBL)*costh2)*sinth2*sinth2)/pow(rho2kerr,2);
+        // const CCTK_REAL betauphi = betadphi/gammaphiphi;
+        // const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
+        // const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
        
 
 
@@ -726,15 +726,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         // gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxx[ind] =pow(psi1_1+psi1_2-1,4)*(1. + bh_spin2*hh*y1_2*y1_2);
+        gxx[ind] = psi4_2*(1. + bh_spin2*hh*y1_2*y1_2);
         // gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
-        gxy[ind] = -pow(psi1_1+psi1_2-1,4)*bh_spin2*hh*y1_2*x1_2;
+        gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2;
         //mesmo so com o bh negro continuo com os mesmos problemas.
         gxz[ind] = 0;
         // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
-        gyy[ind] = pow(psi1_1+psi1_2-1,4)* (1. + bh_spin2 * hh * x1_2*x1_2) ;
+        gyy[ind] = psi4_2* (1. + bh_spin2 * hh * x1_2*x1_2) ;
         gyz[ind] = 0;
-        gzz[ind] = pow(psi1_1+psi1_2-1,4);
+        gzz[ind] = psi4_2;
 
         check_nan_or_inf("gxx",gxx[ind]);
         check_nan_or_inf("gxy",gxy[ind]);

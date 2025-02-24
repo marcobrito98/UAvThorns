@@ -668,27 +668,27 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-        alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
+        const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 *
                  1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
-        alpha02 = alpha0*alpha0 ;
+        const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-        HF     = - bh_spin*bh_spin*bh_spin * alpha0 * sigma/rho_2 * costh  ;  // we are dividing by sinth2
-        Athph  = HF / rr_2 ;                                        // we are dividing by sinth
+        const CCTK_REAL HF     = - bh_spin*bh_spin*bh_spin * alpha0 * sigma/rho_2 * costh  ;  // we are dividing by sinth2
+        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
 
-        aux    =  rho2_2 * (rBL*rBL - bh_spin*bh_spin) + 2.*rBL*rBL * (rBL*rBL + bh_spin*bh_spin)
+        const CCTK_REAL aux    =  rho2_2 * (rBL*rBL - bh_spin*bh_spin) + 2.*rBL*rBL * (rBL*rBL + bh_spin*bh_spin) \
                 - charge*charge/bh_mass * rBL * (2.*rho2_2 + bh_spin*bh_spin * sinth2) ;
 
-        HE     = bh_spin*bh_mass * aux / (rho_2*rho_2*rho_2) * 
+      const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rho_2*rho_2*rho_2) * 
                  1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
 
-        ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+      const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
 
 
-        Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
-        Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
-        Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
+      const CCTK_REAL  Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+      const CCTK_REAL  Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+      const CCTK_REAL  Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
+      const CCTK_REAL  Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+      const CCTK_REAL  Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
         kxx[ind] = Axx / psi2_2;

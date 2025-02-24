@@ -380,10 +380,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
-  CCTK_REAL origin[N_dims];
-  CCTK_REAL deltakerr [N_dims];
-  origin[0] = X[0];  origin[1] = theta[0];
-  deltakerr[0]  = dX;    deltakerr[1]  = dtheta;
+     CCTK_REAL origin[N_dims];
+     CCTK_REAL delta [N_dims];
+     origin[0] = X[0];  origin[1] = theta[0];
+     delta[0]  = dX;    delta[1]  = dtheta;
 
   /* points onto which we want to interpolate, ie, the grid points themselves in
      (X, theta) coordinates (computed above) */
@@ -494,7 +494,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   /* do the actual interpolation, and check for error returns */
   int status_1 = CCTK_InterpLocalUniform(N_dims, operator_handle,
                                        param_table_handle,
-                                       origin, deltakerr,
+                                       origin, delta,
                                        N_interp_points,
                                        CCTK_VARIABLE_REAL,
                                        interp_coords_1,
@@ -511,7 +511,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   //   /* do the actual interpolation, and check for error returns */
   // int status_2 = CCTK_InterpLocalUniform(N_dims, operator_handle,
   //                                      param_table_handle,
-  //                                      origin, deltakerr,
+  //                                      origin, delta,
   //                                      N_interp_points,
   //                                      CCTK_VARIABLE_REAL,
   //                                      interp_coords_2,

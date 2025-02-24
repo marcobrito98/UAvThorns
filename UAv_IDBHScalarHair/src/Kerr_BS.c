@@ -691,11 +691,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-        kxx[ind] = Axx / psi2;
-        kxy[ind] = Axy / psi2;
-        kxz[ind] = Axz / psi2;
-        kyy[ind] = Ayy / psi2;
-        kyz[ind] = Ayz / psi2;
+        kxx[ind] = Axx / psi2_2;
+        kxy[ind] = Axy / psi2_2;
+        kxz[ind] = Axz / psi2_2;
+        kyy[ind] = Ayy / psi2_2;
+        kyz[ind] = Ayz / psi2_2;
         kzz[ind] = 0. ;
 
         

@@ -550,7 +550,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
+  const CCTK_REAL bh_spin2= bh_spin*bh_spin;
+  const CCTK_REAL bh_mass2= bh_mass*bh_mass;
 
+  const CCTK_REAL rBLp  = bh_mass + sqrt( bh_mass2 - bh_spin2 );
+  const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
@@ -687,21 +691,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // kyz[ind] = Ayz / psi2_2;
         // kzz[ind] = 0. ;
 
-        CCTK_REAL x1_2, y1_2, z1_2;
-    x1_2 = x[ind] - pos_plus[0];
-    y1_2 = y[ind] - pos_plus[1];
-    z1_2 = z[ind] - pos_plus[2];
+    CCTK_REAL x1_2, y1_2, z1_2;
+    x1_2 = x[ind] - x0_2;
+    y1_2 = y[ind] - y0_2;
+    z1_2 = z[ind] - z0_2;
 
     CCTK_REAL rr_2, rr2_2;
     rr2_2 = x1_2 * x1_2 + y1_2 * y1_2 + z1_2 * z1_2;
-    if( rr2_2 < pow( eps_r, 2 ) ) 
-        rr2_2 = pow( eps_r, 2 );
     rr_2  = sqrt( rr2_2 );
 
     CCTK_REAL rho_2, rho2_2, rho3_2;
     rho2_2 = x1_2 * x1_2 + y1_2 * y1_2; 
-    if( rho2_2 < pow( eps_r, 2 ) )
-        rho2_2 = pow( eps_r, 2 );
     rho_2  = sqrt( rho2_2 );
     rho3_2 = rho2_2 * rho_2;
 
@@ -729,8 +729,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     Sigm2 = Sigm * Sigm;
     fctFF = ( rBL2 + bh_spin2 ) * ( rBL2 + bh_spin2 ) - Delt * bh_spin2 * sinth2;
 
-    CCTK_REAL psi4_2;
-    psi4_2 = Sigm / rr2_2;
+    
+    const CCTK_REAL psi4_2 = Sigm / rr2_2;
+    const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+    const CCTK_REAL psi2_1 = sqrt(psi4_1);
+    const CCTK_REAL psi2_2 = sqrt(psi4_2);
+    const CCTK_REAL psi1_1 = sqrt(psi2_1);
+    const CCTK_REAL psi1_2 = sqrt(psi2_2);
 
     CCTK_REAL fctGG, fctHH;
     fctGG = rBLm / ( rr2_2 * ( rBL - rBLm ) );
@@ -801,7 +806,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         phi1[ind]  = phi1_1 + phi1_2;
         phi2[ind]  = phi2_1 + phi2_2;
 
-
+        CCTK_REAL alpha0;
         alpha0=( 4.0*rr_2 - rBLp) * sqrt( rBL -rBLm )  / sqrt( 16.0*rr_2 * ( rBL2 + bh_spin2 * ( 1.0 + 2.0*bh_mass*rBL * sinth2 / Sigm ) ) );
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);

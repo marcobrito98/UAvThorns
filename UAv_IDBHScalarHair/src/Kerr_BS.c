@@ -809,8 +809,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         phi1[ind]  = phi1_1 + phi1_2;
         phi2[ind]  = phi2_1 + phi2_2;
 
-        CCTK_REAL alpha0;
-        alpha0=( 4.0*rr_2 - rBLp) * sqrt( rBL -rBLm )  / sqrt( 16.0*rr_2 * ( rBL2 + bh_spin2 * ( 1.0 + 2.0*bh_mass*rBL * sinth2 / Sigm ) ) );
+        
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
         const CCTK_REAL alph_2 = alpha0;

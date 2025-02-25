@@ -760,21 +760,21 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 ////    alpKQI = ( 4.0*rr_2 - rBLp) * sqrt( rBL -rBLm )  / sqrt( 16.0*rr_2 * ( rBL2 + bh_spin2 * ( 1.0 + 2.0*bh_mass*rBL * sinth2 / Sigm ) ) );
 //    CCTK_REAL alpKQI = alp[ind];
 
-    CCTK_REAL alpha0;
-    alpha0=( 4.0*rr_2 - rBLp) * sqrt( rBL -rBLm )  / sqrt( 16.0*rr_2 * ( rBL2 + bh_spin2 * ( 1.0 + 2.0*bh_mass*rBL * sinth2 / Sigm ) ) );
+    // CCTK_REAL alpha0;
+    // alpha0=( 4.0*rr_2 - rBLp) * sqrt( rBL -rBLm )  / sqrt( 16.0*rr_2 * ( rBL2 + bh_spin2 * ( 1.0 + 2.0*bh_mass*rBL * sinth2 / Sigm ) ) );
 
-    CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
-    auxKij    = 2.0 * rBL2 * ( rBL2 + bh_spin2 ) + Sigm * ( rBL2 - bh_spin2 );
-    facKij    = alpha0 * bh_spin * bh_mass * sinth2 / ( rr2_2 * rho3_2 * Delt * Sigm2 );
-    facKijRho = 2.0 * z1_2  * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
-    facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2  * rr_2 * drBLdR * auxKij;
+    // CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
+    // auxKij    = 2.0 * rBL2 * ( rBL2 + bh_spin2 ) + Sigm * ( rBL2 - bh_spin2 );
+    // facKij    = alpha0 * bh_spin * bh_mass * sinth2 / ( rr2_2 * rho3_2 * Delt * Sigm2 );
+    // facKijRho = 2.0 * z1_2  * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
+    // facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2  * rr_2 * drBLdR * auxKij;
 
-    kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho;
-    kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho;
-    kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ;
-    kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho;
-    kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ;
-    kzz[ind] =   0.0;
+    // kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho;
+    // kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho;
+    // kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ;
+    // kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho;
+    // kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ;
+    // kzz[ind] =   0.0;
 
         
         check_nan_or_inf("kxx",kxx[ind]);

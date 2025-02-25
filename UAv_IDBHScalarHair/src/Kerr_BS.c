@@ -583,16 +583,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL sinmph_1 = sin(mm*ph_1);
         
 
-        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
-        // If x1_2=y1_2=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
-        // but can this lead to nan depending on the C implementation?
-
-        const CCTK_REAL cosph_1  = cos(ph_1);
-        const CCTK_REAL sinph_1  = sin(ph_1);
-
-        const CCTK_REAL cosmph_1 = cos(mm*ph_1);
-        const CCTK_REAL sinmph_1 = sin(mm*ph_1);
-
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
         //Black Hole B

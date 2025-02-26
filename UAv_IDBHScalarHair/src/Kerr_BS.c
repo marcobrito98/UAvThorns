@@ -724,7 +724,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // 3-metric
         // gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxx[ind] = pow(psi1_1+psi1_2-1,4)*(1+bh_spin2*hh*y1_2*y1_2);;
+        gxx[ind] = pow(psi1_1+psi1_2-1,4)*(1+bh_spin2*hh*y1_2*y1_2);
         // gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
         gxy[ind] = -pow(psi1_1+psi1_2-1,4)*bh_spin2*hh*y1_2*x1_2;
         gxz[ind] = 0;

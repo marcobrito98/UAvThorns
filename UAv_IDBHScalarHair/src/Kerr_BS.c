@@ -1,4 +1,4 @@
-
+//este e o codigo copiado do kerrnewman.
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

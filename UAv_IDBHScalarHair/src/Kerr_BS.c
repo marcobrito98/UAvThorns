@@ -652,12 +652,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*R0pert2/deltakerr2 ) ;
 
         // 3-metric
-        gxx[ind] = pow(psi1_1+psi1_2-1.,4) * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;
-        gxy[ind] = - pow(psi1_1+psi1_2-1.,4) * bh_spin*bh_spin * hh * x1_2*y1_2;
+        gxx[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * y1_2*y1_2 ) ;
+        gxy[ind] = - psi4_2 * bh_spin*bh_spin * hh * x1_2*y1_2;
         gxz[ind] = 0;
-        gyy[ind] = pow(psi1_1+psi1_2-1.,4) * ( 1. + bh_spin*bh_spin * hh * x1_2*x1_2 );
+        gyy[ind] = psi4_2 * ( 1. + bh_spin*bh_spin * hh * x1_2*x1_2 );
         gyz[ind] = 0;
-        gzz[ind] = pow(psi1_1+psi1_2-1.,4) ;
+        gzz[ind] = psi4_2 ;
 
 
 

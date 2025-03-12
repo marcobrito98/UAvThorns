@@ -825,22 +825,26 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         Kphi1[ind] = Kphi1_1 + Kphi1_2;
         Kphi2[ind] = Kphi2_1 + Kphi2_2;
+
+
+        CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - (rBL*rBL + bh_spin2 - 2 * bh_mass * rBL) * bh_spin2 * sinth2;
+        CCTK_REAL bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
         
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
           alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "BH_BS")) {
+        else if (CCTK_EQUALS(initial_lapse, "Kerr_BS")) {
           alp[ind] = alph_1 + alph_2 - 1;
           if (alp[ind] < SMALL)
             alp[ind] = SMALL;
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "BH_BS")) {
-          betax[ind] =  0.;
-          betay[ind] = 0.;
-          betaz[ind] =  0.;
+        if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
+          betax[ind] =   y1_2*bphi;
+          betay[ind] = - x1_2*bphi;
+          betaz[ind] =   0.;
         }
 
       } /* for i */

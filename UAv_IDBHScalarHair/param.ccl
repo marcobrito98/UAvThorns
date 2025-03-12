@@ -23,6 +23,7 @@ EXTENDS KEYWORD initial_lapse
   "psi^n"     :: "psi^n initial lapse profile"
   "TwinScalarBS" :: "Twin scalar boson star initial lapse profile"
   "BH_BS" :: "Black hole plus scalar boson star initial lapse profile"
+  "Kerr_BS" :: "Kerr with boson star lapse"
 }
 
 EXTENDS KEYWORD initial_shift

@@ -769,7 +769,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
         CCTK_REAL bphi;
-        bphi = 2.0 * spin * mass * rBL / fctFF;
+        bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
 
         // shift
         if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {

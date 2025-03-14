@@ -768,6 +768,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             alp[ind] = SMALL;
         }
 
+        CCTK_REAL bphi;
+        bphi = 2.0 * spin * mass * rBL / fctFF;
+
         // shift
         if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
           betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.

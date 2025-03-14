@@ -598,10 +598,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2     = z[ind] - z0_2;
 
         const CCTK_REAL rr2_2    = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2 ;
+        if( rr2_2 < pow( eps_r, 2 ) ) 
+        rr2_2 = pow( eps_r, 2 );
         const CCTK_REAL rr_2     = sqrt(rr2_2) ;
 
         CCTK_REAL rho_2, rho2_2, rho3_2;
         rho2_2 = x1_2 * x1_2 + y1_2 * y1_2; 
+        if( rho2_2 < pow( eps_r, 2 ) )
+        rho2_2 = pow( eps_r, 2 );
         rho_2  = sqrt( rho2_2 );
         rho3_2 = rho2_2 * rho_2;
 
@@ -674,12 +678,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     /*=== conformal metric in Cartesian coords ===*/
     /*--------------------------------------------*/
 
-    gxx[ind] = psi4_2 * ( 1.0 + x1_2*x1_2 * fctGG + bh_spin2 * y1_2*y1_2 * fctHH );
-    gxy[ind] = psi4_2 * (       x1_2*y1_2 * fctGG - bh_spin2 * x1_2*y1_2 * fctHH );
-    gxz[ind] = psi4_2 * (       x1_2*z1_2 * fctGG );
-    gyy[ind] = psi4_2 * ( 1.0 + y1_2*y1_2 * fctGG + bh_spin2 * x1_2*x1_2 * fctHH );
-    gyz[ind] = psi4_2 * (       y1_2*z1_2 * fctGG );
-    gzz[ind] = psi4_2 * ( 1.0 + z1_2*z1_2 * fctGG );
+    gxx[ind] = pow(psi1_2+psi1_1-1,4) * ( 1.0 + x1_2*x1_2 * fctGG + bh_spin2 * y1_2*y1_2 * fctHH );
+    gxy[ind] = pow(psi1_2+psi1_1-1,4) * (       x1_2*y1_2 * fctGG - bh_spin2 * x1_2*y1_2 * fctHH );
+    gxz[ind] = pow(psi1_2+psi1_1-1,4) * (       x1_2*z1_2 * fctGG );
+    gyy[ind] = pow(psi1_2+psi1_1-1,4) * ( 1.0 + y1_2*y1_2 * fctGG + bh_spin2 * x1_2*x1_2 * fctHH );
+    gyz[ind] = pow(psi1_2+psi1_1-1,4) * (       y1_2*z1_2 * fctGG );
+    gzz[ind] = pow(psi1_2+psi1_1-1,4) * ( 1.0 + z1_2*z1_2 * fctGG );
 
     /*--------------------------------------------*/
 

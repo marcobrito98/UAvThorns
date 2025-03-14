@@ -677,10 +677,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
     gxx[ind] = psi4_2 * ( 1.0 + x1_2*x1_2 * fctGG + bh_spin2 * y1_2*y1_2 * fctHH );
     gxy[ind] = psi4_2 * (       x1_2*y1_2 * fctGG - bh_spin2 * x1_2*y1_2 * fctHH );
-    gxz[ind] = psi4_2 * (       x1_2*zz * fctGG );
+    gxz[ind] = psi4_2 * (       x1_2*z1_2 * fctGG );
     gyy[ind] = psi4_2 * ( 1.0 + y1_2*y1_2 * fctGG + bh_spin2 * x1_2*x1_2 * fctHH );
-    gyz[ind] = psi4_2 * (       y1_2*zz * fctGG );
-    gzz[ind] = psi4_2 * ( 1.0 + zz*zz * fctGG );
+    gyz[ind] = psi4_2 * (       y1_2*z1_2 * fctGG );
+    gzz[ind] = psi4_2 * ( 1.0 + z1_2*z1_2 * fctGG );
 
     /*--------------------------------------------*/
 
@@ -694,8 +694,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
     auxKij    = 2.0 * rBL2 * ( rBL2 + bh_spin2 ) + Sigm * ( rBL2 - bh_spin2 );
     facKij    = alpha0 * spin * bh_mass * sinth2 / ( rr2_2 * rho3_2 * Delt * Sigm2 );
-    facKijRho = 2.0 * zz  * bh_spin2 * rBL * Delt * ctheta * stheta - rho_2 * rr_2 * drBLdR * auxKij;
-    facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * ctheta * stheta + zz  * rr_2 * drBLdR * auxKij;
+    facKijRho = 2.0 * z1_2  * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
+    facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2  * rr_2 * drBLdR * auxKij;
 
     kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho;
     kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho;

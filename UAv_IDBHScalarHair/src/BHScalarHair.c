@@ -79,12 +79,25 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   }
 
 
+  // To take care properly of z=0 symmetry (i.e. theta <-> pi-theta) in interpolation
+  // of theta derivatives, we need to extend the arrays to z<0 values.
+  // For convenience, we keep Ntheta as the number of points in the input half-space.
+
+  NF = NX * (2*Ntheta - 1);
+
+  CCTK_REAL *F1_extd, *F2_extd, *F0_extd, *phi0_extd, *Wbar_extd;
+  F1_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  F2_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  F0_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  phi0_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  Wbar_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+
   // now we need to take the derivatives of the Wbar function and store their values
 
-  CCTK_REAL *dWbar_dr_in, *dWbar_dth_in, *d2Wbar_drth_in;
-  dWbar_dr_in    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  dWbar_dth_in   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
-  d2Wbar_drth_in = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  CCTK_REAL *dWbar_dr_extd, *dWbar_dth_extd, *d2Wbar_drth_extd;
+  dWbar_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dWbar_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  d2Wbar_drth_extd = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   const CCTK_REAL oodX       = 1. / dX;
   const CCTK_REAL oodXsq     = oodX * oodX;
@@ -93,6 +106,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   const CCTK_REAL oodXdth4   = 1. / (4.  * dX * dtheta);
   const CCTK_REAL oodXdth144 = 1. / (144. * dX * dtheta);
   const CCTK_REAL oodXsqdth2 = 1. / (2.  * dX * dX * dtheta);
+
+  // First loop on z>=0 half-space (i.e. input values of 0 <= theta <= pi/2)
 
   for (int jj = 0; jj < Ntheta; jj++) {
     for (int i = 0; i < NX; i++) {
@@ -171,6 +186,14 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       //const CCTK_INT indip3jp2 = i+3 + jp2*NX;
 
 
+      // Just copy input values of ansatz functions
+      F1_extd[ind]   = F1_in[ind];
+      F2_extd[ind]   = F2_in[ind];
+      F0_extd[ind]   = F0_in[ind];
+      phi0_extd[ind] = phi0_in[ind];
+      Wbar_extd[ind] = Wbar_in[ind];
+
+
       const CCTK_REAL lX = X[i];
       /* const CCTK_REAL lth = theta[j]; */
       /* printf("X[%3d] = %lf\n", i, lX); */
@@ -223,8 +246,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       // from the X coordinate used in the input files to the x coordinate
       // We need to be careful at X == 1 for radial derivatives (coordinate change is singular)
       if (i == NX - 1) {
-        dWbar_dr_in[ind]    = 0.; // Sensibly, dWbar_dr_in should vanish (dXdr == 0, Wbar_X bounded)
-        d2Wbar_drth_in[ind] = 0.; // Wbar_Xth is set to 0 above anyway
+        dWbar_dr_extd[ind]    = 0.; // Sensibly, dWbar_dr_in should vanish (dXdr == 0, Wbar_X bounded)
+        d2Wbar_drth_extd[ind] = 0.; // Wbar_Xth is set to 0 above anyway
 
       } else {
         const CCTK_REAL rx = C0*lX/(1. - lX);
@@ -243,13 +266,45 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
         }
         const CCTK_REAL dXdr = dXdrx * drxdr;
 
-        dWbar_dr_in[ind]    = dXdr * Wbar_X;
-        d2Wbar_drth_in[ind] = dXdr * Wbar_Xth;
+        dWbar_dr_extd[ind]    = dXdr * Wbar_X;
+        d2Wbar_drth_extd[ind] = dXdr * Wbar_Xth;
       }
 
-      dWbar_dth_in[ind]   = Wbar_th;
+      dWbar_dth_extd[ind]   = Wbar_th;
     }
   }
+
+
+  // Second loop on z<0 half-space (completion by symmetry)
+
+  // Even parity: F1, F2, F0, phi0, Wbar and their r derivatives
+  // Odd parity:  theta derivatives of even functions
+
+  for (int jj = 1; jj < Ntheta; jj++) { // don't repeat theta == pi/2
+    for (int i = 0; i < NX; i++) {
+
+      // j or jsym == Ntheta - 1  is theta == pi/2
+      const CCTK_INT j    = Ntheta - 1 + jj;
+      const CCTK_INT jsym = Ntheta - 1 - jj; 
+
+      const CCTK_INT ind    = i + j   *NX;
+      const CCTK_INT indsym = i + jsym*NX;
+
+      // Even
+      F1_extd[ind]       = F1_extd[indsym];
+      F2_extd[ind]       = F2_extd[indsym];
+      F0_extd[ind]       = F0_extd[indsym];
+      phi0_extd[ind]     = phi0_extd[indsym];
+
+      Wbar_extd[ind]     = Wbar_extd[indsym];
+      dWbar_dr_extd[ind] = dWbar_dr_extd[indsym];
+
+      // Odd
+      dWbar_dth_extd[ind]   = - dWbar_dth_extd[indsym];
+      d2Wbar_drth_extd[ind] = - d2Wbar_drth_extd[indsym];
+
+      } // for i
+  } // for jj
 
 
   /* now we need to interpolate onto the actual grid points. first let's store
@@ -286,9 +341,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
         // and finally to the X radial coordinate (used in input files)
         const CCTK_REAL lX = rx / (C0 + rx);
 
-        CCTK_REAL ltheta = acos( z1/RR );
-        if (ltheta > 0.5*M_PI)    // symmetry along the equatorial plane
-          ltheta = M_PI - ltheta;
+        const CCTK_REAL ltheta = acos( z1/RR );
 
         X_g[ind]     = lX;
         theta_g[ind] = ltheta;
@@ -322,7 +375,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   CCTK_INT input_array_type_codes[N_input_arrays];
   CCTK_INT input_array_dims[N_dims];
   input_array_dims[0] = NX;
-  input_array_dims[1] = Ntheta;
+  input_array_dims[1] = 2*Ntheta-1;
 
   input_array_type_codes[0] = CCTK_VARIABLE_REAL;
   input_array_type_codes[1] = CCTK_VARIABLE_REAL;
@@ -336,14 +389,14 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
      is faster. */
-  input_arrays[0] = (const void *) F1_in;
-  input_arrays[1] = (const void *) F2_in;
-  input_arrays[2] = (const void *) F0_in;
-  input_arrays[3] = (const void *) phi0_in;
-  input_arrays[4] = (const void *) Wbar_in;
-  input_arrays[5] = (const void *) dWbar_dr_in;
-  input_arrays[6] = (const void *) dWbar_dth_in;
-  input_arrays[7] = (const void *) d2Wbar_drth_in;
+  input_arrays[0] = (const void *) F1_extd;
+  input_arrays[1] = (const void *) F2_extd;
+  input_arrays[2] = (const void *) F0_extd;
+  input_arrays[3] = (const void *) phi0_extd;
+  input_arrays[4] = (const void *) Wbar_extd;
+  input_arrays[5] = (const void *) dWbar_dr_extd;
+  input_arrays[6] = (const void *) dWbar_dth_extd;
+  input_arrays[7] = (const void *) d2Wbar_drth_extd;
 
   /* output arrays */
   void *output_arrays[N_output_arrays];
@@ -406,7 +459,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   free(X_g); free(theta_g);
   free(Xtmp); free(thtmp);
   free(F1_in); free(F2_in); free(F0_in); free(phi0_in); free(Wbar_in);
-  free(dWbar_dr_in); free(dWbar_dth_in); free(d2Wbar_drth_in);
+  free(F1_extd); free(F2_extd); free(F0_extd); free(phi0_extd); free(Wbar_extd);
+  free(dWbar_dr_extd); free(dWbar_dth_extd); free(d2Wbar_drth_extd);
 
 
   /* printf("F1 = %g\n", F1[0]); */
@@ -417,7 +471,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
 
 
   /* now we finally write the metric and all 3+1 quantities. first we write the
-     3-metric, lapse and scalar fields */
+     3-metric and extrinsic curvature, then scalar fields, then lapse and shift */
 
   const CCTK_REAL tt = cctk_time;
   const CCTK_REAL omega = mm * OmegaH;
@@ -454,8 +508,19 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
 
         const CCTK_REAL costh  = z1/RR;
         const CCTK_REAL costh2 = costh*costh;
-        const CCTK_REAL sinth2 = 1. - costh2;
-        const CCTK_REAL sinth  = sqrt(sinth2);
+        /*
+          For some grid points actually on the axis, it occurred that costh = 1-1e-16, resulting in sinth ~ 1.5e-8 instead of 0.
+          Thus we force it in that case. 
+          Even if there is a legit grid point such that theta ~ a few 1e-8, it should mean RR >> rho and the axis treatment should be fine.
+        */
+        CCTK_REAL sinth, sinth2;
+        if (1-costh2 < 1e-15) {
+          sinth2 = 0.;
+          sinth  = 0.;
+        } else {
+          sinth2 = 1. - costh2;
+          sinth  = sqrt(sinth2);
+        }
 
         /*
         const CCTK_REAL R_x = x1/RR;   // dR/dx

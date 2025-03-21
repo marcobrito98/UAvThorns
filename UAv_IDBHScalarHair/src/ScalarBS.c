@@ -100,7 +100,6 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
   dW_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   const CCTK_REAL oodX       = 1. / dX;
-  // const CCTK_REAL oodXsq     = oodX * oodX;
   const CCTK_REAL oodX12     = 1. / (12. * dX);
   const CCTK_REAL oodXsq12   = oodX * oodX12;
   const CCTK_REAL oodth12    = 1. / (12. * dtheta);

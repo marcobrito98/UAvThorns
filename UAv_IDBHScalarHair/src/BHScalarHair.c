@@ -99,13 +99,24 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
   dWbar_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   d2Wbar_drth_extd = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
+
+  // // Some auxi file for debug
+  // FILE* debugfile = fopen ("testdebug.txt", "w");
+  // if (debugfile == NULL) {
+  //   CCTK_VError (__LINE__, __FILE__, CCTK_THORNSTRING,
+  //   "Unable to open file %s\n", "testdebug.txt");
+  // } else {
+  //   CCTK_VInfo(CCTK_THORNSTRING, "Write test file %s", "testdebug.txt");
+  // }
+
   const CCTK_REAL oodX       = 1. / dX;
-  const CCTK_REAL oodXsq     = oodX * oodX;
   const CCTK_REAL oodX12     = 1. / (12. * dX);
   const CCTK_REAL oodth12    = 1. / (12. * dtheta);
+  const CCTK_REAL oodXsq12   = oodX * oodX12;
   const CCTK_REAL oodXdth4   = 1. / (4.  * dX * dtheta);
   const CCTK_REAL oodXdth144 = 1. / (144. * dX * dtheta);
-  const CCTK_REAL oodXsqdth2 = 1. / (2.  * dX * dX * dtheta);
+  const CCTK_REAL oodXsqdth144 = oodX * oodXdth144;
+
 
   // First loop on z>=0 half-space (i.e. input values of 0 <= theta <= pi/2)
 
@@ -154,6 +165,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       const CCTK_INT indim2 = i-2 + j*NX;
       const CCTK_INT indip2 = i+2 + j*NX;
       const CCTK_INT indip3 = i+3 + j*NX;
+      const CCTK_INT indip4 = i+4 + j*NX;
+      const CCTK_INT indip5 = i+5 + j*NX;
 
       const CCTK_INT indim2jm1 = i-2 + jm1*NX;
       const CCTK_INT indim2jm2 = i-2 + jm2*NX;
@@ -181,10 +194,21 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       const CCTK_INT indip2jp2 = i+2 + jp2*NX;
       
       const CCTK_INT indip3jm1 = i+3 + jm1*NX;
-      //const CCTK_INT indip3jm2 = i+3 + jm2*NX;
+      const CCTK_INT indip3jm2 = i+3 + jm2*NX;
       const CCTK_INT indip3jp1 = i+3 + jp1*NX;
-      //const CCTK_INT indip3jp2 = i+3 + jp2*NX;
+      const CCTK_INT indip3jp2 = i+3 + jp2*NX;
+      
+      const CCTK_INT indip4jm1 = i+4 + jm1*NX;
+      const CCTK_INT indip4jm2 = i+4 + jm2*NX;
+      const CCTK_INT indip4jp1 = i+4 + jp1*NX;
+      const CCTK_INT indip4jp2 = i+4 + jp2*NX;
 
+      const CCTK_INT indip5jm1 = i+5 + jm1*NX;
+      const CCTK_INT indip5jm2 = i+5 + jm2*NX;
+      const CCTK_INT indip5jp1 = i+5 + jp1*NX;
+      const CCTK_INT indip5jp2 = i+5 + jp2*NX;
+
+      
 
       // Just copy input values of ansatz functions
       F1_extd[ind]   = F1_in[ind];
@@ -205,24 +229,57 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
 
       CCTK_REAL Wbar_X, Wbar_Xth;
 
-      if (i == 1 || i == NX - 2) {
-        // 1st derivative with 2nd order accuracy (central stencils)
-        Wbar_X = (-Wbar_in[indim1] + Wbar_in[indip1]) * 0.5 * oodX;
+      /*
+      Regarding finite differencing orders: plotting dWbar_dr, d2Wbar_drth, there were small discontinuities near r=r_H
+      during tests with the previous 2nd order accuracy for i==0 and i==1.
+      Those alleviate when moving to 4th order accuracy.
 
-        Wbar_Xth  = ( Wbar_in[indip1jp1] - Wbar_in[indip1jm1] - Wbar_in[indim1jp1] + Wbar_in[indim1jm1] ) * oodXdth4;
+      For i==NX-1 and i==NX-2, we keep 2nd order for now. The issue is not appearing as clearly,
+      and they represent points which are physically far, so maybe better to keep the computation more local.
+      */
 
-      } else if (i == 0) {
+      if (i == 0) {
         /* this point is X == 0, r == rH, R == rH/4. dWbar_dX goes to zero here. but
            since we're interested in dWbar_dr, and since drxdr diverges (here), we
            will use L'Hopital's rule. for that, we will write instead the 2nd
            derivative */
 
-        // 2nd derivative with 2nd order accuracy (forward stencils)
-        Wbar_X = (2*Wbar_in[ind] - 5*Wbar_in[indip1] + 4*Wbar_in[indip2] - Wbar_in[indip3]) * oodXsq;
+        // 2nd derivative with 4th order accuracy (forward stencils)
+        Wbar_X = (45 * Wbar_in[ind] - 154 * Wbar_in[indip1] + 214 * Wbar_in[indip2] 
+                  - 156 * Wbar_in[indip3] + 61 * Wbar_in[indip4] - 10 * Wbar_in[indip5]) * oodXsq12;
+        
+        // mixed derivatives with 4th order accuracy (central stencils in j (1st der) and forward in i (2nd der))
+        Wbar_Xth = ( 
+              -  45 * Wbar_in[indjp2] +  154 * Wbar_in[indip1jp2] -  214 * Wbar_in[indip2jp2]
+                  +  156 * Wbar_in[indip3jp2] -  61 * Wbar_in[indip4jp2] + 10 * Wbar_in[indip5jp2]
+              + 360 * Wbar_in[indjp1] - 1232 * Wbar_in[indip1jp1] + 1712 * Wbar_in[indip2jp1]
+                  - 1248 * Wbar_in[indip3jp1] + 488 * Wbar_in[indip4jp1] - 80 * Wbar_in[indip5jp1]
+              - 360 * Wbar_in[indjm1] + 1232 * Wbar_in[indip1jm1] - 1712 * Wbar_in[indip2jm1]
+                  + 1248 * Wbar_in[indip3jm1] - 488 * Wbar_in[indip4jm1] + 80 * Wbar_in[indip5jm1] 
+              +  45 * Wbar_in[indjm2] -  154 * Wbar_in[indip1jm2] +  214 * Wbar_in[indip2jm2]
+                  -  156 * Wbar_in[indip3jm2] +  61 * Wbar_in[indip4jm2] - 10 * Wbar_in[indip5jm2]
+        ) * oodXsqdth144;
+      
+      
+      } else if (i == 1) {
+        // 1st derivative, 4th order accuracy
+        Wbar_X = (- 3 * Wbar_in[indim1] - 10 * Wbar_in[ind] + 18 * Wbar_in[indip1] - 6 * Wbar_in[indip2] + Wbar_in[indip3]) * oodX12;
 
-        // mixed derivatives with 2nd order accuracy (central stencils in j (1st der) and forward in i (2nd der))
-        Wbar_Xth = ( 2*Wbar_in[indjp1] - 2*Wbar_in[indjm1] - 5*Wbar_in[indip1jp1] + 5*Wbar_in[indip1jm1]
-                    + 4*Wbar_in[indip2jp1] - 4*Wbar_in[indip2jm1] - Wbar_in[indip3jp1] + Wbar_in[indip3jm1]) * oodXsqdth2;
+        // 1st derivative, 4th order accuracy (central stencils in j)
+        Wbar_Xth = (
+             3 * Wbar_in[indim1jp2] + 10 * Wbar_in[indjp2] -  18 * Wbar_in[indip1jp2] +  6 * Wbar_in[indip2jp2] -     Wbar_in[indip3jp2]
+          - 24 * Wbar_in[indim1jp1] - 80 * Wbar_in[indjp1] + 144 * Wbar_in[indip1jp1] - 48 * Wbar_in[indip2jp1] + 8 * Wbar_in[indip3jp1]
+          + 24 * Wbar_in[indim1jm1] + 80 * Wbar_in[indjm1] - 144 * Wbar_in[indip1jm1] + 48 * Wbar_in[indip2jm1] - 8 * Wbar_in[indip3jm1]
+          -  3 * Wbar_in[indim1jm2] - 10 * Wbar_in[indjm2] +  18 * Wbar_in[indip1jm2] -  6 * Wbar_in[indip2jm2] +     Wbar_in[indip3jm2]
+        ) * oodXdth144;
+        
+
+      } else if (i == NX - 2) {
+        // 1st derivative with 2nd order accuracy (central stencils)
+        Wbar_X = (-Wbar_in[indim1] + Wbar_in[indip1]) * 0.5 * oodX;
+
+        Wbar_Xth  = ( Wbar_in[indip1jp1] - Wbar_in[indip1jm1] - Wbar_in[indim1jp1] + Wbar_in[indim1jm1] ) * oodXdth4;
+
         
       } else if (i == NX - 1) {
         /* last radial point */
@@ -230,7 +287,7 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (backward stencils)
         Wbar_X = (Wbar_in[indim2] - 4*Wbar_in[indim1] + 3*Wbar_in[ind]) * 0.5 * oodX;
         Wbar_Xth = 0.; // we don't actually use this variable at large r, so just
-                    // set it to zero
+                       // set it to zero
 
       } else {
         // 4th order accurate stencils
@@ -271,8 +328,14 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       }
 
       dWbar_dth_extd[ind]   = Wbar_th;
-      } // for i
+
+      // fprintf (debugfile, "%.15f %.15f %.15f %.15f ", 
+      //             Wbar_in[ind], dWbar_dr_extd[ind], dWbar_dth_extd[ind], d2Wbar_drth_extd[ind]);
+    } // for i
+    // fprintf (debugfile, "\n");
   } // for jj
+
+  // fclose(debugfile);
 
 
   // Second loop on z<0 half-space (completion by symmetry)

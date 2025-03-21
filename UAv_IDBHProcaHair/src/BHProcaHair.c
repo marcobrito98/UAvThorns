@@ -133,13 +133,11 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   // }
 
   const CCTK_REAL oodX       = 1. / dX;
-  // const CCTK_REAL oodXsq     = oodX * oodX;
   const CCTK_REAL oodX12     = 1. / (12. * dX);
   const CCTK_REAL oodth12    = 1. / (12. * dtheta);
   const CCTK_REAL oodXsq12   = oodX * oodX12;
   const CCTK_REAL oodXdth4   = 1. / (4.  * dX * dtheta);
   const CCTK_REAL oodXdth144 = 1. / (144. * dX * dtheta);
-  // const CCTK_REAL oodXsqdth2 = 1. / (2.  * dX * dX * dtheta);
   const CCTK_REAL oodXsqdth144 = oodX * oodXdth144;
 
 

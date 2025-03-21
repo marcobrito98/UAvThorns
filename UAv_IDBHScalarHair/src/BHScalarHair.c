@@ -271,8 +271,8 @@ void UAv_IDBHScalarHair(CCTK_ARGUMENTS)
       }
 
       dWbar_dth_extd[ind]   = Wbar_th;
-    }
-  }
+      } // for i
+  } // for jj
 
 
   // Second loop on z<0 half-space (completion by symmetry)

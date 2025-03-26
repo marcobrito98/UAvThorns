@@ -707,11 +707,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     facKijRho = 2.0 * z1_2  * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
     facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2  * rr_2 * drBLdR * auxKij;
 
-    kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho + 0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-    kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho - 0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
-    kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ + 0.5 *  y1 * exp_auxi * dW_dz;
-    kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho - 0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
-    kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ - 0.5 *  x1 * exp_auxi * dW_dz;
+    kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;
+    kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ - 0.5 *  x1_1 * exp_auxi_1 * dW_dz_1;
     kzz[ind] =   0.0;
 
     

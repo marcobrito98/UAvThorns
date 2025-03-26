@@ -685,10 +685,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     // gyz[ind] = pow(psi1_2+psi1_1-1,4) * (       y1_2*z1_2 * fctGG );
     // gzz[ind] = pow(psi1_2+psi1_1-1,4) * ( 1.0 + z1_2*z1_2 * fctGG );
 
-    gxx[ind] = psi4_2 * ( 1.0 + x1_2*x1_2 * fctGG + bh_spin2 * y1_2*y1_2 * fctHH ) + psi4_1 - 1;
-    gxy[ind] = psi4_2 * (       x1_2*y1_2 * fctGG - bh_spin2 * x1_2*y1_2 * fctHH );
+    gxx[ind] = psi4_2 * ( 1.0 + x1_2*x1_2 * fctGG + bh_spin2 * y1_2*y1_2 * fctHH ) + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;
+    gxy[ind] = psi4_2 * (       x1_2*y1_2 * fctGG - bh_spin2 * x1_2*y1_2 * fctHH ) - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
     gxz[ind] = psi4_2 * (       x1_2*z1_2 * fctGG );
-    gyy[ind] = psi4_2 * ( 1.0 + y1_2*y1_2 * fctGG + bh_spin2 * x1_2*x1_2 * fctHH ) + psi4_1 -1;
+    gyy[ind] = psi4_2 * ( 1.0 + y1_2*y1_2 * fctGG + bh_spin2 * x1_2*x1_2 * fctHH ) + psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) -1;
     gyz[ind] = psi4_2 * (       y1_2*z1_2 * fctGG );
     gzz[ind] = psi4_2 * ( 1.0 + z1_2*z1_2 * fctGG ) + psi4_1 - 1;
 
@@ -707,11 +707,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     facKijRho = 2.0 * z1_2  * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
     facKijZ   = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2  * rr_2 * drBLdR * auxKij;
 
-    kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho;
-    kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho;
-    kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ;
-    kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho;
-    kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ;
+    kxx[ind] =   2.0 * x1_2 * y1_2   * facKij * facKijRho + 0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+    kxy[ind] = ( y1_2*y1_2 - x1_2*x1_2 ) * facKij * facKijRho - 0.5 * rho * cos(2*ph) * exp_auxi * dW_drho;
+    kxz[ind] = - y1_2 * rho_2        * facKij * facKijZ + 0.5 *  y1 * exp_auxi * dW_dz;
+    kyy[ind] = - 2.0 * x1_2 * y1_2   * facKij * facKijRho - 0.5 * rho * sin(2*ph) * exp_auxi * dW_drho;
+    kyz[ind] =   x1_2 * rho_2        * facKij * facKijZ - 0.5 *  x1 * exp_auxi * dW_dz;
     kzz[ind] =   0.0;
 
     

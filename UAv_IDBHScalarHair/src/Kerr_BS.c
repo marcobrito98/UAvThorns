@@ -335,9 +335,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y1_1  = y[ind] - y0;
         const CCTK_REAL z1_1  = z[ind] - z0;
 
-        const CCTK_REAL rr2_2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
 
-        CCTK_REAL rr_1  = sqrt(rr2_2_1);
+        CCTK_REAL rr_1  = sqrt(rr2_1);
         /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
         
         // From r to the X radial coordinate (used in input files)
@@ -569,8 +569,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_1  = z[ind] - z0;
 
         // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2_2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
-        const CCTK_REAL rr_1  = sqrt(rr2_2_1);
+        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr_1  = sqrt(rr2_1);
 
         const CCTK_REAL rho2_1 = x1_1*x1_1 + y1_1*y1_1;
         const CCTK_REAL rho_1  = sqrt(rho2_1);

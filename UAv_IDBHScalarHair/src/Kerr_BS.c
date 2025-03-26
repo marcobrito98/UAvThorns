@@ -709,9 +709,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
     CCTK_REAL dW_drho_1, dW_dz_1;
-    const CCTK_REAL exp_auxi = exp(2. * F2_1[ind] - F0_1[ind]);
+    const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
 
-    if (rho < 1e-8) {
+    if (rho_1 < 1e-8) {
       dW_drho_1 = 0.;
       dW_dz_1   = 0.;
     }

@@ -776,8 +776,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-        //K estava errado. tinha usado foliacao errada.
-
+  
         // extrinsic curvature (this will be zero due to W=0 for the boson star. only BH matters) No caso em repouso, estara correto? verificar.
         kxx[ind] = Axx / psi2_2;
         kxy[ind] = Axy / psi2_2;

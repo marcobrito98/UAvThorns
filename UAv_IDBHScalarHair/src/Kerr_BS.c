@@ -594,7 +594,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL gamma = sqrt(gamma2);
         // const CCTK_REAL rr2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
         // const CCTK_REAL rr_2  = sqrt(rr2_2);
-        const CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
         if( rr2_2 < pow( eps_r, 2 ) ) {
         rr2_2 = pow( eps_r, 2 );
         }
@@ -603,7 +603,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);
-        const CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
+        CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
         if( rho2_2 < pow( eps_r, 2 ) ){
         rho2_2 = pow( eps_r, 2 );
         }

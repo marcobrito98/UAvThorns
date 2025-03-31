@@ -837,14 +837,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
           alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "BH_BS")) {
+        else if (CCTK_EQUALS(initial_lapse, "Kerr_BS")) {
           alp[ind] = alph_1 + alph_2 - 1;
           if (alp[ind] < SMALL)
             alp[ind] = SMALL;
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "BH_BS")) {
+        if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
           betax[ind] =  0.;
           betay[ind] = 0.;
           betaz[ind] =  0.;

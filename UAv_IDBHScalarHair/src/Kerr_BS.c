@@ -755,11 +755,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-    kxx[ind] =  Axx / psi2_2; + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kxy[ind] = Axy / psi2_2; - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kxz[ind] = Axz / psi2_2; + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;
-    kyy[ind] = Ayy / psi2_2; - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kyz[ind] = Ayz / psi2_2; - 0.5 *  x1_1 * exp_auxi_1 * dW_dz_1;
+    kxx[ind] =  Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;
+    kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi_1 * dW_dz_1;
     kzz[ind] =   0.0;
 
     

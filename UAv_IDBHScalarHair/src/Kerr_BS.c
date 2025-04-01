@@ -742,6 +742,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
+        CCTK_REAL dW_drho_1, dW_dz_1;
+        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+
+        if (rho_1 < 1e-8) {
+          dW_drho_1 = 0.;
+          dW_dz_1   = 0.;
+        }
+        else {
+          dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+          dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+        }
 
 
     kxx[ind] =  Axx / psi2_2; + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;

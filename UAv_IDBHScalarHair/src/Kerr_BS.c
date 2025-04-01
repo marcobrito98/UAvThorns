@@ -826,15 +826,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             alp[ind] = SMALL;
         }
 
-        // CCTK_REAL bphi;
-        // bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
+        CCTK_REAL bphi;
+        CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
+        CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
+        bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
 
-        // // shift
-        // if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
-        //   betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.
-        //   betay[ind] = - x1_2*bphi;
-        //   betaz[ind] =   0.;
-        // }
+        // shift
+        if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
+          betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.
+          betay[ind] = - x1_2*bphi;
+          betaz[ind] =   0.;
+        }
 
       } /* for i */
     }   /* for j */

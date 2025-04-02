@@ -1,30 +1,27 @@
-# Parameter definitions for thorn UAv_IDBHScalarHair
+# Parameter definitions for thorn UAv_IDBHProcaHair
 
-SHARES: ScalarBase
+SHARES: ComplexProcaBase
 USES CCTK_REAL mu
 
 SHARES: ADMBase
 
 EXTENDS KEYWORD initial_data
 {
-  "Kerr_test" :: "test with Kerr data"
-  "HairyBH"   :: "HairyBH initial data"
-  "ScalarBS"  :: "Scalar boson star initial data"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial data"
+  "ProcaBS"        :: "Proca boson star initial data"
 }
 
 EXTENDS KEYWORD initial_lapse
 {
-  "Kerr_test" :: "test with Kerr data"
-  "HairyBH"   :: "HairyBH initial lapse profile"
-  "ScalarBS"  :: "Scalar boson star initial lapse profile"
-  "psi^n"     :: "psi^n initial lapse profile"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial lapse profile"
+  "ProcaBS"        :: "Proca boson star initial lapse profile"
+  "psi^n"          :: "psi^n initial lapse profile"
 }
 
 EXTENDS KEYWORD initial_shift
 {
-  "Kerr_test" :: "test with Kerr data"
-  "HairyBH"   :: "HairyBH initial shift profile"
-  "ScalarBS"  :: "Scalar boson star initial shift profile"
+  "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
+  "ProcaBS"        :: "Proca boson star initial shift profile"
 }
 
 
@@ -44,7 +41,7 @@ REAL C0 "parameter for R to X coordinate transformation"
   (0:* :: "greater than zero"
 } 1.0
 
-INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in HairyBH initial data."
+INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in ProcaHairyBH initial data."
 {
   0:2 :: "0, 1 or 2"
 } 2 
@@ -60,25 +57,20 @@ INT maxNF "maximum number of lines allowed in the input file"
 } 100000
 
 
-REAL rH "Horizon radius parameter. Incompatible with the Scalar Boson Star."
+REAL rH "Horizon radius parameter. Incompatible with the Proca Boson Star."
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL OmegaH "Horizon angular velocity. Incompatible with the Scalar Boson Star."
+REAL OmegaH "Horizon angular velocity. Incompatible with the Proca Boson Star."
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL omega_BS "Scalar field angular frequency for the Boson Star. Incompatible with the Hairy Black Hole."
+REAL omega_BS "Proca field angular frequency for the Boson Star. Incompatible with the Hairy Black Hole."
 {
   0:* :: "non-negative"
 } 0.0
-
-REAL ct "ct parameter used for Kerr_test data"
-{
-  *:0 :: "negative"
-} -1.0
 
 
 REAL x0 "x coordinate of central point"
@@ -112,17 +104,18 @@ REAL Sigmapert_conf_fac "spread for conformal factor perturbation. To be conceiv
   (0:* :: "positive"
 } 1.0
 
-REAL Apert_phi "amplitude for scalar perturbation"
+
+REAL Apert_Proca "amplitude for Proca field perturbation"
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL R0pert_phi "center radius for scalar perturbation. To be conceived in quasi-isotropic coordinate R"
+REAL R0pert_Proca "center radius for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
 {
   0:* :: "non-negative"
 } 0.0
 
-REAL Sigmapert_phi "spread for scalar perturbation. To be conceived in quasi-isotropic coordinate R"
+REAL Sigmapert_Proca "spread for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
 {
   (0:* :: "positive"
 } 1.0

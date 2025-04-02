@@ -23,8 +23,9 @@ static bool is_empty(const char *s)
   return true;
 }
 
-void UAv_IDBHScalarHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
-               CCTK_REAL F1[], CCTK_REAL F2[], CCTK_REAL F0[], CCTK_REAL phi0[], CCTK_REAL W[])
+void UAv_IDBHProcaHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[], CCTK_REAL thtmp[],
+               CCTK_REAL F1[], CCTK_REAL F2[], CCTK_REAL F0[], CCTK_REAL W[],
+               CCTK_REAL H1[], CCTK_REAL H2[], CCTK_REAL H3[], CCTK_REAL V[])
 {
   DECLARE_CCTK_PARAMETERS;
 
@@ -60,18 +61,27 @@ void UAv_IDBHScalarHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp
     }
 
     /* printf("%s\n", buf); */
-    sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf",
-           &Xtmp[NF], &thtmp[NF], &F1[NF], &F2[NF], &F0[NF], &phi0[NF], &W[NF]);
+    sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+           &Xtmp[NF], &thtmp[NF], &F1[NF], &F2[NF], &F0[NF], &W[NF], &H1[NF], &H2[NF], &H3[NF], &V[NF]);
 
     // take into account different normalization used for the stress-energy
-    // tensor in the input files, which may assume 4 pi G = 1, whereas within ET
-    // (in particular ScalarEvolve) it is generally assumed that G = 1.
+    // tensor in the input files, which may assume G = 1,
+    // whereas for ComplexProcaEvolve thorns it is assumed that 4 pi G = 1.
     if (normalization_Tmunu == 0) { // 4 pi G = 1 in input file
-      phi0[NF] *= 0.5/sqrt(M_PI);
+      H1[NF] *= 1;
+      H2[NF] *= 1;
+      H3[NF] *= 1;
+       V[NF] *= 1;
     } else if (normalization_Tmunu == 1) { // G = 1 in input file
-      phi0[NF] *= 1;
+      H1[NF] *= 2.0*sqrt(M_PI);
+      H2[NF] *= 2.0*sqrt(M_PI);
+      H3[NF] *= 2.0*sqrt(M_PI);
+       V[NF] *= 2.0*sqrt(M_PI);
     } else if (normalization_Tmunu == 2) { // G = 1 and Tmunu has factor of 0.5 in input file
-      phi0[NF] *=1/sqrt(2.0);
+      H1[NF] *= sqrt(2.0*M_PI);
+      H2[NF] *= sqrt(2.0*M_PI);
+      H3[NF] *= sqrt(2.0*M_PI);
+       V[NF] *= sqrt(2.0*M_PI);
     }
 
     NF++;

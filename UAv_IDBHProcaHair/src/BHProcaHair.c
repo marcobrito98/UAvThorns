@@ -133,13 +133,11 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   // }
 
   const CCTK_REAL oodX       = 1. / dX;
-  // const CCTK_REAL oodXsq     = oodX * oodX;
   const CCTK_REAL oodX12     = 1. / (12. * dX);
   const CCTK_REAL oodth12    = 1. / (12. * dtheta);
   const CCTK_REAL oodXsq12   = oodX * oodX12;
   const CCTK_REAL oodXdth4   = 1. / (4.  * dX * dtheta);
   const CCTK_REAL oodXdth144 = 1. / (144. * dX * dtheta);
-  // const CCTK_REAL oodXsqdth2 = 1. / (2.  * dX * dX * dtheta);
   const CCTK_REAL oodXsqdth144 = oodX * oodXdth144;
 
 
@@ -602,7 +600,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         d2V_drth_extd[ind] = 0.;
 
 
-        H1r_extd[ind]          = 0.; // A_r = 0 at infinity
+        H1r_extd[ind] = 0.; // A_r = 0 at infinity
 
       } else {
         const CCTK_REAL rx = C0*lX/(1. - lX);
@@ -624,11 +622,11 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
         dWbar_dr_extd[ind]    = dXdr * Wbar_X;
         d2Wbar_drth_extd[ind] = dXdr * Wbar_Xth;
         
-        dH3_dr_extd[ind]    = dXdr * H3_X;
-        d2H3_drth_extd[ind] = dXdr * H3_Xth;
+        dH3_dr_extd[ind]      = dXdr * H3_X;
+        d2H3_drth_extd[ind]   = dXdr * H3_Xth;
         
-        dV_dr_extd[ind]    = dXdr * V_X;
-        d2V_drth_extd[ind] = dXdr * V_Xth;
+        dV_dr_extd[ind]       = dXdr * V_X;
+        d2V_drth_extd[ind]    = dXdr * V_Xth;
 
         // A_r
         /*

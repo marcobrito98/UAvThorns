@@ -921,7 +921,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
      3-metric and extrinsic curvature, then Proca fields, then lapse and shift */
 
   const CCTK_REAL tt = cctk_time;
-  const CCTK_REAL omega = mm * OmegaH;
+  const CCTK_REAL omega = OmegaH;
 
   const CCTK_REAL coswt = cos(omega * tt);
   const CCTK_REAL sinwt = sin(omega * tt);

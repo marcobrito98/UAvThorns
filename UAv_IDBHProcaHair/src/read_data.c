@@ -68,7 +68,7 @@ void UAv_IDBHProcaHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[
     // tensor in the input files, which may assume G = 1,
     // whereas for ComplexProcaEvolve thorns it is assumed that 4 pi G = 1.
     if (normalization_Tmunu == 0) { // 4 pi G = 1 in input file
-      H1[NF] *= (Xtmp[NF]/(1-Xtmp[NF]))*H1[NF];
+      H1[NF] *= 1;//(Xtmp[NF]/(1-Xtmp[NF]))*H1[NF];
       H2[NF] *= 1;
       H3[NF] *= 1;
        V[NF] *= 1;

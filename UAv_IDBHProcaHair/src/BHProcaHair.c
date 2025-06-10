@@ -1141,8 +1141,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           aux contribution is canceled with inverse metric below.
         */
 
-        E1d_R = -exp(-F0[ind]) * (- 1.0 * (mm * W - OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_im;
-        E2d_R =  exp(-F0[ind]) * (- 1.0 * (mm * W - OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_re;
+        E1d_R = -exp(-F0[ind]) * (- 1.0 * (mm * W + OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_im;
+        E2d_R =  exp(-F0[ind]) * (- 1.0 * (mm * W + OmegaH) * H1r[ind] + dV_dr[ind] + W * sinth * dH3_dr[ind]) * harm_re;
 
         // E_th
         /*
@@ -1160,8 +1160,8 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
           E1d_th = -reg * harm_im;
           E2d_th =  reg * harm_re;
         } else {
-          E1d_th = -(- 1.0 * (mm * W - OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_im;
-          E2d_th =  (- 1.0 * (mm * W - OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_re;
+          E1d_th = -(- 1.0 * (mm * W + OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_im;
+          E2d_th =  (- 1.0 * (mm * W + OmegaH) * H2[ind] + dV_dth[ind] + W * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_re;
         }
 
         // E_ph / sinth

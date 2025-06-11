@@ -677,11 +677,11 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       F1_extd[ind]       = F1_extd[indsym];
       F2_extd[ind]       = F2_extd[indsym];
       F0_extd[ind]       = F0_extd[indsym];
-      H1r_extd[ind]      = H1r_extd[indsym];
+      H1r_extd[ind]      = -H1r_extd[indsym];
       
       Wbar_extd[ind]     = Wbar_extd[indsym];
       H3_extd[ind]       = H3_extd[indsym];
-      V_extd[ind]        = V_extd[indsym];
+      V_extd[ind]        = -V_extd[indsym];
 
       dWbar_dr_extd[ind] = dWbar_dr_extd[indsym];
       dH3_dr_extd[ind]   = dH3_dr_extd[indsym];

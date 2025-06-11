@@ -87,7 +87,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
   // we need to extend the arrays to z<0 values.
   // For convenience, we keep Ntheta as the number of points in the input half-space.
 
-  NF = NX * (2*Ntheta - 1);
+  NF = NX * (Ntheta - 1);
 
   CCTK_REAL *F1_extd, *F2_extd, *F0_extd, *Wbar_extd, *H2_extd, *H3_extd, *V_extd;
   F1_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));

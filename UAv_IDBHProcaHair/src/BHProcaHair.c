@@ -688,7 +688,7 @@ void UAv_IDBHProcaHair(CCTK_ARGUMENTS)
       dV_dr_extd[ind]    = dV_dr_extd[indsym];
 
       // Odd
-      H2_extd[ind]          = - H2_extd[indsym];
+      H2_extd[ind]          = H2_extd[indsym];
 
       dWbar_dth_extd[ind]   = - dWbar_dth_extd[indsym];
       dH3_dth_extd[ind]     = - dH3_dth_extd[indsym];

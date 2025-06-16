@@ -754,7 +754,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
         }
 
-//just summing the extrinsic curvature contributions
+//qual a melhor receita de sobreposição de curvaturas extrinsecas?
     kxx[ind] = Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
     kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
     kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;

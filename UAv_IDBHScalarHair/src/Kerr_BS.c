@@ -779,6 +779,16 @@ for (int k = 0; k < nz; ++k) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
       int ind = IDX(i,j,k);
+      // If alphab_arr[ind] was set to SMALL due to invalid gboost[0][0], set K_ij to zero
+      if (alphab_arr[ind] == SMALL) {
+        kxx[ind] = 0.0;
+        kxy[ind] = 0.0;
+        kxz[ind] = 0.0;
+        kyy[ind] = 0.0;
+        kyz[ind] = 0.0;
+        kzz[ind] = 0.0;
+        continue;
+      }
       CCTK_REAL dbx_dx = 0.0, dbx_dy = 0.0, dbx_dz = 0.0;
       CCTK_REAL dby_dx = 0.0, dby_dy = 0.0, dby_dz = 0.0;
       CCTK_REAL dbz_dx = 0.0, dbz_dy = 0.0, dbz_dz = 0.0;

@@ -844,4 +844,4 @@ free(betabx); free(betaby); free(betabz); free(alphab_arr);
   // free(dW_dr_2); free(dW_dth_2);
 
   return;
-}
+} /* End of function UAv_ID_Kerr_BS */

@@ -596,10 +596,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
-        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        // const CCTK_REAL gamma = sqrt(gamma2);
-        // const CCTK_REAL rr2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-        // const CCTK_REAL rr_2  = sqrt(rr2_2);
+       
         CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
         if( rr2_2 < pow( eps_r, 2 ) ) {
         rr2_2 = pow( eps_r, 2 );
@@ -676,91 +673,100 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-        // const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
-        // const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
-        // const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
-        // const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
-        // const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*(rBL*rBL-bh_spin2*costh2)*sinth2/pow(rho2kerr,2);
+      // Unboosted 3+1 fields:
+  CCTK_REAL alpha  = alpha0;
+  CCTK_REAL beta_i[3] = {0.0, 0.0, 0.0};
+  beta_i[2] = 0.0; // no y-shift
+  beta_i[1] = 0.0; // no z-shift
+  beta_i[0] = 0.0; // will fill below if non-zero phi-shift
 
-        // const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
-        // //const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
-        // const CCTK_REAL dgammaphiphi_dth= (delta_metric+8*bh_mass*rBL*pow(bh_spin2+rBL*rBL,2)/pow(bh_spin2+2*rBL*rBL+bh_spin2*(costh2-sinth2),2))*2*costh*sinth;
-        // //const CCTK_REAL dgammaphiphi_dth= 4*bh_spin2*bh_mass*rBL*(bh_spin2+rBL*rBL)*costh*sinth/pow(rho2kerr,2);
-        // // const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr_2*(2*rBL*(bh_spin2+rBL*rBL)+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
-        // //                                 2*(-pow(bh_spin2+rBL*rBL,2)+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
+  // For Kerr, only beta_phi non-zero in spherical, here embed into Cartesian:
+  const CCTK_REAL beta_phi = - bh_spin*bh_spin * alpha0 * sigma/rhokerr * costh / rr_2;
+  // convert beta_phi e_phi to Cartesian:
+  beta_i[0] = -beta_phi * y1_2;  // beta_x = -beta_phi * y/r
+  beta_i[1] =  beta_phi * x1_2;  // beta_y =  beta_phi * x/r
 
-        // const CCTK_REAL dgammaphiphi_dR= dr_dR*(2*rBL*(bh_spin2+rBL*rBL)*(rBL*rBL+bh_spin2*(costh2-sinth2))*sinth2 + \
-        //                               2*bh_spin2*(rBL*(bh_spin2-bh_mass*rBL)+bh_spin2*(bh_mass-rBL)*costh2)*sinth2*sinth2)/pow(rho2kerr,2);
-        // const CCTK_REAL betauphi = betadphi/gammaphiphi;
-        // const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
-        // const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
-       
+  CCTK_REAL gamma_ij[3][3];
+  gamma_ij[0][0] = gxx[ind]; gamma_ij[0][1] = gxy[ind]; gamma_ij[0][2] = gxz[ind];
+  gamma_ij[1][0] = gxy[ind]; gamma_ij[1][1] = gyy[ind]; gamma_ij[1][2] = gyz[ind];
+  gamma_ij[2][0] = gxz[ind]; gamma_ij[2][1] = gyz[ind]; gamma_ij[2][2] = gzz[ind];
 
+  CCTK_REAL K_ij[3][3];
+  K_ij[0][0] = kxx[ind]; K_ij[0][1] = kxy[ind]; K_ij[0][2] = kxz[ind];
+  K_ij[1][0] = kxy[ind]; K_ij[1][1] = kyy[ind]; K_ij[1][2] = kyz[ind];
+  K_ij[2][0] = kxz[ind]; K_ij[2][1] = kyz[ind]; K_ij[2][2] = kzz[ind];
 
-       
+  // --- Step 1: Define Lorentz boost along x-axis ---
+  const CCTK_REAL v     = bh_v;
+  const CCTK_REAL gammaL= 1.0/sqrt(1.0 - v*v);
 
-        gxx[ind] = psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;
-        gxy[ind] =-psi4_2*bh_spin2*hh*y1_2*x1_2 - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
-        gxz[ind] = 0;
-        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
-        gyz[ind] = 0;
-        gzz[ind] = psi4_2 + psi4_1 - 1;
+  // Build 4-metric g[mu][nu]
+  CCTK_REAL g4[4][4] = {{0}};
+  // time-time
+  CCTK_REAL beta_sq = beta_i[0]*beta_i[0] + beta_i[1]*beta_i[1] + beta_i[2]*beta_i[2];
+  g4[0][0] = -(alpha*alpha - beta_sq);
+  for(int i=0;i<3;i++) {
+    g4[0][i+1] =  beta_i[i];
+    g4[i+1][0] =  beta_i[i];
+    for(int j=0;j<3;j++) g4[i+1][j+1] = gamma_ij[i][j];
+  }
 
-        check_nan_or_inf("gxx",gxx[ind]);
-        check_nan_or_inf("gxy",gxy[ind]);
-        check_nan_or_inf("gxz",gxz[ind]);
-        check_nan_or_inf("gyy",gyy[ind]);
-        check_nan_or_inf("gyz",gyz[ind]);
-        check_nan_or_inf("gzz",gzz[ind]);
-
-
-        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
-        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
-
-        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
-
-        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
-
-        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
-
-
-
-        // //capital Ks refer to the unboosted frame.
-        // const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
-        // const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
-
-        // // const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kxt = R_x*KRt + x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
-
-
-        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
-        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
-        const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
-
-        CCTK_REAL dW_drho_1, dW_dz_1;
-        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
-
-        if (rho_1 < 1e-8) {
-          dW_drho_1 = 0.;
-          dW_dz_1   = 0.;
+  // --- Step 2: Apply boost: gboost[A][B] = Lambda^mu_A Lambda^nu_B g4[mu][nu] ---
+  CCTK_REAL gboost[4][4] = {{0}};
+  for(int A=0; A<4; A++) {
+    for(int B=0; B<4; B++) {
+      for(int mu=0; mu<4; mu++) {
+        for(int nu=0; nu<4; nu++) {
+          // Lambda^mu_A
+          CCTK_REAL L1 = 0.0, L2 = 0.0;
+          if(mu < 2 && A < 2) L1 = (mu==A ? gammaL : -gammaL*v);
+          else if(mu==A)    L1 = 1.0;
+          if(nu < 2 && B < 2) L2 = (nu==B ? gammaL : -gammaL*v);
+          else if(nu==B)     L2 = 1.0;
+          gboost[A][B] += L1 * L2 * g4[mu][nu];
         }
-        else {
-          dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
-          dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
-        }
+      }
+    }
+  }
 
-//qual a melhor receita de sobreposição de curvaturas extrinsecas?
-    kxx[ind] = Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;
-    kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
-    kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi_1 * dW_dz_1;
-    kzz[ind] =   0.0;
+  // --- Step 3: Extract boosted 3+1 fields ---
+  // boosted lapse
+  const CCTK_REAL alphab = sqrt(-1.0 / gboost[0][0]);
+  // boosted shift
+  CCTK_REAL betab_i[3];
+  for(int i=0; i<3; i++) betab_i[i] = gboost[0][i+1];
+  // boosted spatial metric
+  CCTK_REAL gbar_ij[3][3];
+  for(int i=0;i<3;i++) for(int j=0;j<3;j++) gbar_ij[i][j] = gboost[i+1][j+1];
+
+  // Precompute Christoffel symbols of gbar_ij (Gamma^k_{ij}) via finite differences
+  // ... (existing FD macro) d_dx[k](), etc.
+  CCTK_REAL Christ[3][3][3];
+  compute_christoffel(gbar_ij, Christ);
+
+  // boosted extrinsic curvature
+  CCTK_REAL Kbar_ij[3][3];
+  for(int i=0;i<3;i++) {
+    for(int j=0;j<3;j++) {
+      CCTK_REAL Di_bj = 0.0, Dj_bi = 0.0;
+      // covariant derivative D_i betab_j
+      for(int k=0;k<3;k++) {
+        CCTK_REAL dp = d_dx[k](betab_i[j]);
+        Di_bj += dp - Christ[k][i][j] * betab_i[k];
+        dj = d_dx[k](betab_i[i]);
+        Dj_bi += dj - Christ[k][j][i] * betab_i[k];
+      }
+      Kbar_ij[i][j] = 0.5/alphab * (Di_bj + Dj_bi);
+    }
+  }
+
+  // Store boosted fields
+  gxx[ind] = gbar_ij[0][0]; gxy[ind] = gbar_ij[0][1]; gxz[ind] = gbar_ij[0][2];
+  gyy[ind] = gbar_ij[1][1]; gyz[ind] = gbar_ij[1][2]; gzz[ind] = gbar_ij[2][2];
+  kxx[ind] = Kbar_ij[0][0]; kxy[ind] = Kbar_ij[0][1]; kxz[ind] = Kbar_ij[0][2];
+  kyy[ind] = Kbar_ij[1][1]; kyz[ind] = Kbar_ij[1][2]; kzz[ind] = Kbar_ij[2][2];
+
+  // end of loop
 
     
 

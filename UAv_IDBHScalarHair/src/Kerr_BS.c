@@ -676,15 +676,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
       // Unboosted 3+1 fields:
   CCTK_REAL alpha  = alpha0;
   CCTK_REAL beta_i[3] = {0.0, 0.0, 0.0};
-  beta_i[2] = 0.0; // no y-shift
-  beta_i[1] = 0.0; // no z-shift
-  beta_i[0] = 0.0; // will fill below if non-zero phi-shift
 
   // For Kerr, only beta_phi non-zero in spherical, here embed into Cartesian:
   const CCTK_REAL beta_phi = - bh_spin*bh_spin * alpha0 * sigma/rhokerr * costh / rr_2;
-  // convert beta_phi e_phi to Cartesian:
-  beta_i[0] = -beta_phi * y1_2;  // beta_x = -beta_phi * y/r
-  beta_i[1] =  beta_phi * x1_2;  // beta_y =  beta_phi * x/r
+  beta_i[0] = -beta_phi * y1_2;
+  beta_i[1] =  beta_phi * x1_2;
 
   CCTK_REAL gamma_ij[3][3];
   gamma_ij[0][0] = gxx[ind]; gamma_ij[0][1] = gxy[ind]; gamma_ij[0][2] = gxz[ind];
@@ -700,29 +696,35 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL v     = bh_v;
   const CCTK_REAL gammaL= 1.0/sqrt(1.0 - v*v);
 
-  // Build 4-metric g[mu][nu]
+  // Build 4-metric g4[mu][nu]
   CCTK_REAL g4[4][4] = {{0}};
-  // time-time
   CCTK_REAL beta_sq = beta_i[0]*beta_i[0] + beta_i[1]*beta_i[1] + beta_i[2]*beta_i[2];
   g4[0][0] = -(alpha*alpha - beta_sq);
   for(int i=0;i<3;i++) {
-    g4[0][i+1] =  beta_i[i];
-    g4[i+1][0] =  beta_i[i];
+    g4[0][i+1] = beta_i[i];
+    g4[i+1][0] = beta_i[i];
     for(int j=0;j<3;j++) g4[i+1][j+1] = gamma_ij[i][j];
   }
 
-  // --- Step 2: Apply boost: gboost[A][B] = Lambda^mu_A Lambda^nu_B g4[mu][nu] ---
+  // --- Step 2: Apply boost ---
   CCTK_REAL gboost[4][4] = {{0}};
   for(int A=0; A<4; A++) {
     for(int B=0; B<4; B++) {
       for(int mu=0; mu<4; mu++) {
         for(int nu=0; nu<4; nu++) {
-          // Lambda^mu_A
           CCTK_REAL L1 = 0.0, L2 = 0.0;
-          if(mu < 2 && A < 2) L1 = (mu==A ? gammaL : -gammaL*v);
-          else if(mu==A)    L1 = 1.0;
-          if(nu < 2 && B < 2) L2 = (nu==B ? gammaL : -gammaL*v);
-          else if(nu==B)     L2 = 1.0;
+          if(mu==0 && A==0) L1 = gammaL;
+          else if(mu==1 && A==0) L1 = -gammaL*v;
+          else if(mu==0 && A==1) L1 = -gammaL*v;
+          else if(mu==1 && A==1) L1 = gammaL;
+          else if(mu==A) L1 = 1.0;
+
+          if(nu==0 && B==0) L2 = gammaL;
+          else if(nu==1 && B==0) L2 = -gammaL*v;
+          else if(nu==0 && B==1) L2 = -gammaL*v;
+          else if(nu==1 && B==1) L2 = gammaL;
+          else if(nu==B) L2 = 1.0;
+
           gboost[A][B] += L1 * L2 * g4[mu][nu];
         }
       }
@@ -730,33 +732,22 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   }
 
   // --- Step 3: Extract boosted 3+1 fields ---
-  // boosted lapse
   const CCTK_REAL alphab = sqrt(-1.0 / gboost[0][0]);
-  // boosted shift
   CCTK_REAL betab_i[3];
   for(int i=0; i<3; i++) betab_i[i] = gboost[0][i+1];
-  // boosted spatial metric
   CCTK_REAL gbar_ij[3][3];
   for(int i=0;i<3;i++) for(int j=0;j<3;j++) gbar_ij[i][j] = gboost[i+1][j+1];
 
-  // Precompute Christoffel symbols of gbar_ij (Gamma^k_{ij}) via finite differences
-  // ... (existing FD macro) d_dx[k](), etc.
-  CCTK_REAL Christ[3][3][3];
-  compute_christoffel(gbar_ij, Christ);
-
-  // boosted extrinsic curvature
+  // --- Step 4: Finite-difference to compute extrinsic curvature ---
   CCTK_REAL Kbar_ij[3][3];
   for(int i=0;i<3;i++) {
     for(int j=0;j<3;j++) {
-      CCTK_REAL Di_bj = 0.0, Dj_bi = 0.0;
-      // covariant derivative D_i betab_j
-      for(int k=0;k<3;k++) {
-        CCTK_REAL dp = d_dx[k](betab_i[j]);
-        Di_bj += dp - Christ[k][i][j] * betab_i[k];
-        dj = d_dx[k](betab_i[i]);
-        Dj_bi += dj - Christ[k][j][i] * betab_i[k];
-      }
-      Kbar_ij[i][j] = 0.5/alphab * (Di_bj + Dj_bi);
+      // Covariant derivative D_i beta_j + D_j beta_i (Christoffel-free form for uniform grid)
+      CCTK_REAL db_i_j = FD_DX(betab_i, ind, i) * (i==j ? 1.0 : 0.0)
+                      + FD_DX(betab_i, ind, j) * (i!=j ? 1.0 : 0.0);
+      CCTK_REAL db_j_i = FD_DX(betab_i, ind, j) * (i==j ? 1.0 : 0.0)
+                      + FD_DX(betab_i, ind, i) * (i!=j ? 1.0 : 0.0);
+      Kbar_ij[i][j] = 0.5 / alphab * (db_i_j + db_j_i);
     }
   }
 

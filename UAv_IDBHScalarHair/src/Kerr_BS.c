@@ -764,93 +764,98 @@ CCTK_REAL *betabz = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
       // Store boosted metric for later
       gxx[ind] = gbar_ij[0][0]; gxy[ind] = gbar_ij[0][1]; gxz[ind] = gbar_ij[0][2];
       gyy[ind] = gbar_ij[1][1]; gyz[ind] = gbar_ij[1][2]; gzz[ind] = gbar_ij[2][2];
-      kxx[ind] = Kbar_ij[0][0]; kxy[ind] = Kbar_ij[0][1]; kxz[ind] = Kbar_ij[0][2];
-      kyy[ind] = Kbar_ij[1][1]; kyz[ind] = Kbar_ij[1][2]; kzz[ind] = Kbar_ij[2][2];
+    }
+  }
+}
+// Now compute finite differences and Kbar_ij in a second loop
+for (int k = 0; k < nz; ++k) {
+  for (int j = 0; j < ny; ++j) {
+    for (int i = 0; i < nx; ++i) {
+      int ind = IDX(i,j,k);
+      // Compute derivatives, handle boundaries with one-sided differences
+      CCTK_REAL dbx_dx = 0.0, dbx_dy = 0.0, dbx_dz = 0.0;
+      CCTK_REAL dby_dx = 0.0, dby_dy = 0.0, dby_dz = 0.0;
+      CCTK_REAL dbz_dx = 0.0, dbz_dy = 0.0, dbz_dz = 0.0;
+      // x-derivatives
+      if (i == 0)
+        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i,j,k)]) / dx;
+      else if (i == nx-1)
+        dbx_dx = (betabx[IDX(i,j,k)] - betabx[IDX(i-1,j,k)]) / dx;
+      else
+        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
+      if (i == 0)
+        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i,j,k)]) / dx;
+      else if (i == nx-1)
+        dby_dx = (betaby[IDX(i,j,k)] - betaby[IDX(i-1,j,k)]) / dx;
+      else
+        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
+      if (i == 0)
+        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i,j,k)]) / dx;
+      else if (i == nx-1)
+        dbz_dx = (betabz[IDX(i,j,k)] - betabz[IDX(i-1,j,k)]) / dx;
+      else
+        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
+      // y-derivatives
+      if (j == 0)
+        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j,k)]) / dy;
+      else if (j == ny-1)
+        dbx_dy = (betabx[IDX(i,j,k)] - betabx[IDX(i,j-1,k)]) / dy;
+      else
+        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
+      if (j == 0)
+        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j,k)]) / dy;
+      else if (j == ny-1)
+        dby_dy = (betaby[IDX(i,j,k)] - betaby[IDX(i,j-1,k)]) / dy;
+      else
+        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
+      if (j == 0)
+        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j,k)]) / dy;
+      else if (j == ny-1)
+        dbz_dy = (betabz[IDX(i,j,k)] - betabz[IDX(i,j-1,k)]) / dy;
+      else
+        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
+      // z-derivatives
+      if (k == 0)
+        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k)]) / dz;
+      else if (k == nz-1)
+        dbx_dz = (betabx[IDX(i,j,k)] - betabx[IDX(i,j,k-1)]) / dz;
+      else
+        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
+      if (k == 0)
+        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k)]) / dz;
+      else if (k == nz-1)
+        dby_dz = (betaby[IDX(i,j,k)] - betaby[IDX(i,j,k-1)]) / dz;
+      else
+        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
+      if (k == 0)
+        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k)]) / dz;
+      else if (k == nz-1)
+        dbz_dz = (betabz[IDX(i,j,k)] - betabz[IDX(i,j,k-1)]) / dz;
+      else
+        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
+      // Retrieve alphab for this point (recompute or store in array if needed)
+      // For simplicity, recompute here:
+      CCTK_REAL gbar00 = gxx[ind];
+      CCTK_REAL alphab_here = sqrt(fabs(gbar00) > SMALL ? -1.0 / gbar00 : SMALL);
+      // Compute Kbar_ij
+      kxx[ind] = 0.5 / alphab_here * (dbx_dx + dbx_dx);
+      kxy[ind] = 0.5 / alphab_here * (dbx_dy + dby_dx);
+      kxz[ind] = 0.5 / alphab_here * (dbx_dz + dbz_dx);
+      kyy[ind] = 0.5 / alphab_here * (dby_dy + dby_dy);
+      kyz[ind] = 0.5 / alphab_here * (dby_dz + dbz_dy);
+      kzz[ind] = 0.5 / alphab_here * (dbz_dz + dbz_dz);
+      // NaN/Inf check
+      check_nan_or_inf("kxx",kxx[ind]);
+      check_nan_or_inf("kxy",kxy[ind]);
+      check_nan_or_inf("kxz",kxz[ind]);
+      check_nan_or_inf("kyy",kyy[ind]);
+      check_nan_or_inf("kyz",kyz[ind]);
+      check_nan_or_inf("kzz",kzz[ind]);
+    }
+  }
+}
+free(betabx); free(betaby); free(betabz);
 
-
-    
-
-        
-        check_nan_or_inf("kxx",kxx[ind]);
-        check_nan_or_inf("kxy",kxy[ind]);
-        check_nan_or_inf("kxz",kxz[ind]);
-        check_nan_or_inf("kyy",kyy[ind]);
-        check_nan_or_inf("kyz",kyz[ind]);
-        check_nan_or_inf("kzz",kzz[ind]);  
-
-        // // let's add a perturbation to the scalar field as well
-        // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
-        
-        // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
-
-        const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
-        const CCTK_REAL phi0_l_2 = 0.;
-
-        // scalar fields
-
-              //star 1
-        CCTK_REAL phi1_1  = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
-        CCTK_REAL phi2_1  = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
-        
-
-              //BH 2
-        CCTK_REAL phi1_2  = 0;//phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
-        CCTK_REAL phi2_2  = 0;//phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
-        /////////////////////////////
-
-        phi1[ind]  = phi1_1 + phi1_2;
-        phi2[ind]  = phi2_1 + phi2_2;
-
-        
-
-        const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = alpha0;
-
-        // No regularization needed for the BS, the lapse is non-zero
-
-        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
-        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
-
-        CCTK_REAL Kphi1_2 = 0.;
-        CCTK_REAL Kphi2_2 = 0.;
-
-
-        Kphi1[ind] = Kphi1_1 + Kphi1_2;
-        Kphi2[ind] = Kphi2_1 + Kphi2_2;
-
-
-        
-
-        // lapse
-        if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "Kerr_BS")) {
-          alp[ind] = alph_1 + alph_2 - 1;
-          if (alp[ind] < SMALL)
-            alp[ind] = SMALL;
-        }
-
-        CCTK_REAL bphi;
-        CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
-        CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
-        bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
-
-        // shift
-        if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
-          betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.
-          betay[ind] = - x1_2*bphi;
-          betaz[ind] =   0.;
-        }
-
-      } /* for i */
-    }   /* for j */
-  }     /* for k */
-
-
-  free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
-  free(dW_dr_1); free(dW_dth_1);
 
   // free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
   // free(dW_dr_2); free(dW_dth_2);

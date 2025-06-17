@@ -685,7 +685,7 @@ CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
         // non-axisymmetric perturbation.
-        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ;
+        //  pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ;
         
         const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
@@ -839,9 +839,11 @@ for (int k = 0; k < nz; ++k) {
 }
 free(betabx); free(betaby); free(betabz); free(alphab_arr);
 
+// Ensure all block comments are properly closed
 
-  // free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
-  // free(dW_dr_2); free(dW_dth_2);
+// Ensure all necessary cleanup and return statements are present
+free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
+free(dW_dr_1); free(dW_dth_1);
 
-  return;
+return;
 } /* End of function UAv_ID_Kerr_BS */

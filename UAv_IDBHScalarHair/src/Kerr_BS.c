@@ -685,7 +685,7 @@ CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
         // non-axisymmetric perturbation.
-        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
+        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ;
         
         const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
@@ -750,7 +750,11 @@ CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
   // --- Step 3: Extract boosted 3+1 fields ---
   // boosted lapse
   CCTK_REAL alphab = SMALL;
-  if (gboost[0][0] < -SMALL) alphab = sqrt(-1.0 / gboost[0][0]);
+  if (gboost[0][0] < -SMALL && !isnan(gboost[0][0]) && !isinf(gboost[0][0])) {
+    alphab = sqrt(-1.0 / gboost[0][0]);
+  } else {
+    fprintf(stderr, "Warning: Invalid gboost[0][0] at index %d\n", ind);
+  }
   alphab_arr[ind] = alphab;
   // boosted shift
   CCTK_REAL betab_i[3];
@@ -775,24 +779,48 @@ for (int k = 0; k < nz; ++k) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
       int ind = IDX(i,j,k);
-      if (i == 0 || i == nx-1 || j == 0 || j == ny-1 || k == 0 || k == nz-1) {
-        kxx[ind] = 0.0;
-        kxy[ind] = 0.0;
-        kxz[ind] = 0.0;
-        kyy[ind] = 0.0;
-        kyz[ind] = 0.0;
-        kzz[ind] = 0.0;
-        continue;
+      CCTK_REAL dbx_dx = 0.0, dbx_dy = 0.0, dbx_dz = 0.0;
+      CCTK_REAL dby_dx = 0.0, dby_dy = 0.0, dby_dz = 0.0;
+      CCTK_REAL dbz_dx = 0.0, dbz_dy = 0.0, dbz_dz = 0.0;
+      if (i == 0) {
+        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i,j,k)]) / dx;
+        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i,j,k)]) / dx;
+        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i,j,k)]) / dx;
+      } else if (i == nx-1) {
+        dbx_dx = (betabx[IDX(i,j,k)] - betabx[IDX(i-1,j,k)]) / dx;
+        dby_dx = (betaby[IDX(i,j,k)] - betaby[IDX(i-1,j,k)]) / dx;
+        dbz_dx = (betabz[IDX(i,j,k)] - betabz[IDX(i-1,j,k)]) / dx;
+      } else {
+        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
+        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
+        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
       }
-      CCTK_REAL dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
-      CCTK_REAL dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
-      CCTK_REAL dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
-      CCTK_REAL dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
-      CCTK_REAL dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
-      CCTK_REAL dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
-      CCTK_REAL dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
-      CCTK_REAL dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
-      CCTK_REAL dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
+      if (j == 0) {
+        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j,k)]) / dy;
+        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j,k)]) / dy;
+        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j,k)]) / dy;
+      } else if (j == ny-1) {
+        dbx_dy = (betabx[IDX(i,j,k)] - betabx[IDX(i,j-1,k)]) / dy;
+        dby_dy = (betaby[IDX(i,j,k)] - betaby[IDX(i,j-1,k)]) / dy;
+        dbz_dy = (betabz[IDX(i,j,k)] - betabz[IDX(i,j-1,k)]) / dy;
+      } else {
+        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
+        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
+        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
+      }
+      if (k == 0) {
+        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k)]) / dz;
+        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k)]) / dz;
+        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k)]) / dz;
+      } else if (k == nz-1) {
+        dbx_dz = (betabx[IDX(i,j,k)] - betabx[IDX(i,j,k-1)]) / dz;
+        dby_dz = (betaby[IDX(i,j,k)] - betaby[IDX(i,j,k-1)]) / dz;
+        dbz_dz = (betabz[IDX(i,j,k)] - betabz[IDX(i,j,k-1)]) / dz;
+      } else {
+        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
+        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
+        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
+      }
       CCTK_REAL alphab_here = alphab_arr[ind];
       kxx[ind] = 0.5 / alphab_here * (dbx_dx + dbx_dx);
       kxy[ind] = 0.5 / alphab_here * (dbx_dy + dby_dx);

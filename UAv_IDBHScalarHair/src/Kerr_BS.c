@@ -556,6 +556,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL rBLp  = bh_mass + sqrt( bh_mass2 - bh_spin2 );
   const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
+
+  const int nx = cctk_lsh[0];
+const int ny = cctk_lsh[1];
+const int nz = cctk_lsh[2];
+
+const CCTK_REAL dx = CCTK_DELTA_SPACE(0);
+const CCTK_REAL dy = CCTK_DELTA_SPACE(1);
+const CCTK_REAL dz = CCTK_DELTA_SPACE(2);
+
   #define FD_DX(field, i, j, k, dx) ((field[IDX((i)+1,j,k)] - field[IDX((i)-1,j,k)]) / (2.0 * dx))
   #define FD_DY(field, i, j, k, dy) ((field[IDX(i,(j)+1,k)] - field[IDX(i,(j)-1,k)]) / (2.0 * dy))
   #define FD_DZ(field, i, j, k, dz) ((field[IDX(i,j,(k)+1)] - field[IDX(i,j,(k)-1)]) / (2.0 * dz))

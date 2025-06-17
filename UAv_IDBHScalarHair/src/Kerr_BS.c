@@ -569,6 +569,7 @@ const CCTK_REAL dz = CCTK_DELTA_SPACE(2);
 CCTK_REAL *betabx = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
 CCTK_REAL *betaby = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
 CCTK_REAL *betabz = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
+CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
 
 #define IDX(i,j,k) ((i) + nx*((j) + ny*(k)))  // Adjust indexing as needed
 
@@ -748,7 +749,9 @@ CCTK_REAL *betabz = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
 
   // --- Step 3: Extract boosted 3+1 fields ---
   // boosted lapse
-  const CCTK_REAL alphab = sqrt(-1.0 / gboost[0][0]);
+  CCTK_REAL alphab = SMALL;
+  if (gboost[0][0] < -SMALL) alphab = sqrt(-1.0 / gboost[0][0]);
+  alphab_arr[ind] = alphab;
   // boosted shift
   CCTK_REAL betab_i[3];
   for(int q=0; q<3; q++) betab_i[q] = gboost[0][q+1];
@@ -772,79 +775,31 @@ for (int k = 0; k < nz; ++k) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
       int ind = IDX(i,j,k);
-      // Compute derivatives, handle boundaries with one-sided differences
-      CCTK_REAL dbx_dx = 0.0, dbx_dy = 0.0, dbx_dz = 0.0;
-      CCTK_REAL dby_dx = 0.0, dby_dy = 0.0, dby_dz = 0.0;
-      CCTK_REAL dbz_dx = 0.0, dbz_dy = 0.0, dbz_dz = 0.0;
-      // x-derivatives
-      if (i == 0)
-        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i,j,k)]) / dx;
-      else if (i == nx-1)
-        dbx_dx = (betabx[IDX(i,j,k)] - betabx[IDX(i-1,j,k)]) / dx;
-      else
-        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
-      if (i == 0)
-        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i,j,k)]) / dx;
-      else if (i == nx-1)
-        dby_dx = (betaby[IDX(i,j,k)] - betaby[IDX(i-1,j,k)]) / dx;
-      else
-        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
-      if (i == 0)
-        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i,j,k)]) / dx;
-      else if (i == nx-1)
-        dbz_dx = (betabz[IDX(i,j,k)] - betabz[IDX(i-1,j,k)]) / dx;
-      else
-        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
-      // y-derivatives
-      if (j == 0)
-        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j,k)]) / dy;
-      else if (j == ny-1)
-        dbx_dy = (betabx[IDX(i,j,k)] - betabx[IDX(i,j-1,k)]) / dy;
-      else
-        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
-      if (j == 0)
-        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j,k)]) / dy;
-      else if (j == ny-1)
-        dby_dy = (betaby[IDX(i,j,k)] - betaby[IDX(i,j-1,k)]) / dy;
-      else
-        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
-      if (j == 0)
-        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j,k)]) / dy;
-      else if (j == ny-1)
-        dbz_dy = (betabz[IDX(i,j,k)] - betabz[IDX(i,j-1,k)]) / dy;
-      else
-        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
-      // z-derivatives
-      if (k == 0)
-        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k)]) / dz;
-      else if (k == nz-1)
-        dbx_dz = (betabx[IDX(i,j,k)] - betabx[IDX(i,j,k-1)]) / dz;
-      else
-        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
-      if (k == 0)
-        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k)]) / dz;
-      else if (k == nz-1)
-        dby_dz = (betaby[IDX(i,j,k)] - betaby[IDX(i,j,k-1)]) / dz;
-      else
-        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
-      if (k == 0)
-        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k)]) / dz;
-      else if (k == nz-1)
-        dbz_dz = (betabz[IDX(i,j,k)] - betabz[IDX(i,j,k-1)]) / dz;
-      else
-        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
-      // Retrieve alphab for this point (recompute or store in array if needed)
-      // For simplicity, recompute here:
-      CCTK_REAL gbar00 = gxx[ind];
-      CCTK_REAL alphab_here = sqrt(fabs(gbar00) > SMALL ? -1.0 / gbar00 : SMALL);
-      // Compute Kbar_ij
+      if (i == 0 || i == nx-1 || j == 0 || j == ny-1 || k == 0 || k == nz-1) {
+        kxx[ind] = 0.0;
+        kxy[ind] = 0.0;
+        kxz[ind] = 0.0;
+        kyy[ind] = 0.0;
+        kyz[ind] = 0.0;
+        kzz[ind] = 0.0;
+        continue;
+      }
+      CCTK_REAL dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
+      CCTK_REAL dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
+      CCTK_REAL dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
+      CCTK_REAL dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
+      CCTK_REAL dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
+      CCTK_REAL dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
+      CCTK_REAL dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
+      CCTK_REAL dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
+      CCTK_REAL dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
+      CCTK_REAL alphab_here = alphab_arr[ind];
       kxx[ind] = 0.5 / alphab_here * (dbx_dx + dbx_dx);
       kxy[ind] = 0.5 / alphab_here * (dbx_dy + dby_dx);
       kxz[ind] = 0.5 / alphab_here * (dbx_dz + dbz_dx);
       kyy[ind] = 0.5 / alphab_here * (dby_dy + dby_dy);
       kyz[ind] = 0.5 / alphab_here * (dby_dz + dbz_dy);
       kzz[ind] = 0.5 / alphab_here * (dbz_dz + dbz_dz);
-      // NaN/Inf check
       check_nan_or_inf("kxx",kxx[ind]);
       check_nan_or_inf("kxy",kxy[ind]);
       check_nan_or_inf("kxz",kxz[ind]);
@@ -854,7 +809,7 @@ for (int k = 0; k < nz; ++k) {
     }
   }
 }
-free(betabx); free(betaby); free(betabz);
+free(betabx); free(betaby); free(betabz); free(alphab_arr);
 
 
   // free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);

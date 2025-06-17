@@ -565,10 +565,12 @@ const CCTK_REAL dx = CCTK_DELTA_SPACE(0);
 const CCTK_REAL dy = CCTK_DELTA_SPACE(1);
 const CCTK_REAL dz = CCTK_DELTA_SPACE(2);
 
-  #define FD_DX(field, i, j, k, dx) ((field[IDX((i)+1,j,k)] - field[IDX((i)-1,j,k)]) / (2.0 * dx))
-  #define FD_DY(field, i, j, k, dy) ((field[IDX(i,(j)+1,k)] - field[IDX(i,(j)-1,k)]) / (2.0 * dy))
-  #define FD_DZ(field, i, j, k, dz) ((field[IDX(i,j,(k)+1)] - field[IDX(i,j,(k)-1)]) / (2.0 * dz))
-  #define IDX(i,j,k) ((i) + nx*((j) + ny*(k)))  // Adjust indexing as needed
+// Allocate arrays for boosted shift
+CCTK_REAL *betabx = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
+CCTK_REAL *betaby = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
+CCTK_REAL *betabz = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
+
+#define IDX(i,j,k) ((i) + nx*((j) + ny*(k)))  // Adjust indexing as needed
 
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
@@ -749,34 +751,21 @@ const CCTK_REAL dz = CCTK_DELTA_SPACE(2);
   const CCTK_REAL alphab = sqrt(-1.0 / gboost[0][0]);
   // boosted shift
   CCTK_REAL betab_i[3];
-  for(int i=0; i<3; i++) betab_i[i] = gboost[0][i+1];
+  for(int q=0; q<3; q++) betab_i[q] = gboost[0][q+1];
   // boosted spatial metric
   CCTK_REAL gbar_ij[3][3];
-  for(int i=0;i<3;i++) for(int j=0;j<3;j++) gbar_ij[i][j] = gboost[i+1][j+1];
+  for(int q=0;q<3;q++) for(int r=0;r<3;r++) gbar_ij[q][r] = gboost[q+1][r+1];
 
-  // boosted extrinsic curvature
-  CCTK_REAL Kbar_ij[3][3];
-  for(int i=0;i<3;i++) {
-    for(int j=0;j<3;j++) {
-      // Covariant derivative D_i beta_j + D_j beta_i (Christoffel-free form for uniform grid)
-      CCTK_REAL db_i_j = 0.0, db_j_i = 0.0;
-      if (i == 0) db_i_j = FD_DX(betab_i, i, j, k, dx);
-      else if (i == 1) db_i_j = FD_DY(betab_i, i, j, k, dy);
-      else db_i_j = FD_DZ(betab_i, i, j, k, dz);
+      // Store boosted shift in grid arrays
+      betabx[ind] = betab_i[0];
+      betaby[ind] = betab_i[1];
+      betabz[ind] = betab_i[2];
 
-      if (j == 0) db_j_i = FD_DX(betab_i, i, j, k, dx);
-      else if (j == 1) db_j_i = FD_DY(betab_i, i, j, k, dy);
-      else db_j_i = FD_DZ(betab_i, i, j, k, dz);
-
-      Kbar_ij[i][j] = 0.5 / alphab * (db_i_j + db_j_i);
-    }
-  }
-
-  // Store boosted fields
-  gxx[ind] = gbar_ij[0][0]; gxy[ind] = gbar_ij[0][1]; gxz[ind] = gbar_ij[0][2];
-  gyy[ind] = gbar_ij[1][1]; gyz[ind] = gbar_ij[1][2]; gzz[ind] = gbar_ij[2][2];
-  kxx[ind] = Kbar_ij[0][0]; kxy[ind] = Kbar_ij[0][1]; kxz[ind] = Kbar_ij[0][2];
-  kyy[ind] = Kbar_ij[1][1]; kyz[ind] = Kbar_ij[1][2]; kzz[ind] = Kbar_ij[2][2];
+      // Store boosted metric for later
+      gxx[ind] = gbar_ij[0][0]; gxy[ind] = gbar_ij[0][1]; gxz[ind] = gbar_ij[0][2];
+      gyy[ind] = gbar_ij[1][1]; gyz[ind] = gbar_ij[1][2]; gzz[ind] = gbar_ij[2][2];
+      kxx[ind] = Kbar_ij[0][0]; kxy[ind] = Kbar_ij[0][1]; kxz[ind] = Kbar_ij[0][2];
+      kyy[ind] = Kbar_ij[1][1]; kyz[ind] = Kbar_ij[1][2]; kzz[ind] = Kbar_ij[2][2];
 
 
     

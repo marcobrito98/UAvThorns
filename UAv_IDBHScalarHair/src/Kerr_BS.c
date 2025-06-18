@@ -556,24 +556,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL rBLp  = bh_mass + sqrt( bh_mass2 - bh_spin2 );
   const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
-
-  const int nx = cctk_lsh[0];
-const int ny = cctk_lsh[1];
-const int nz = cctk_lsh[2];
-
-const CCTK_REAL dx = CCTK_DELTA_SPACE(0);
-const CCTK_REAL dy = CCTK_DELTA_SPACE(1);
-const CCTK_REAL dz = CCTK_DELTA_SPACE(2);
-
-// Allocate arrays for boosted shift
-CCTK_REAL *betabx = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
-CCTK_REAL *betaby = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
-CCTK_REAL *betabz = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
-CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
-
-#define IDX(i,j,k) ((i) + nx*((j) + ny*(k)))  // Adjust indexing as needed
-
-
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -614,7 +596,10 @@ CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
 
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
-       
+        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
+        // const CCTK_REAL gamma = sqrt(gamma2);
+        // const CCTK_REAL rr2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        // const CCTK_REAL rr_2  = sqrt(rr2_2);
         CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
         if( rr2_2 < pow( eps_r, 2 ) ) {
         rr2_2 = pow( eps_r, 2 );
@@ -685,175 +670,184 @@ CCTK_REAL *alphab_arr = (CCTK_REAL *)malloc(nx*ny*nz*sizeof(CCTK_REAL));
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
         // non-axisymmetric perturbation.
-        //  pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ;
+        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
         
         const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
-      // Unboosted 3+1 fields:
-  CCTK_REAL alpha  = alpha0;
-  CCTK_REAL beta_i[3] = {0.0, 0.0, 0.0};
-  beta_i[2] = 0.0; // no y-shift
-  beta_i[1] = 0.0; // no z-shift
-  beta_i[0] = 0.0; // will fill below if non-zero phi-shift
+        // const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
+        // const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
+        // const CCTK_REAL betadphi = -bh_spin*sigma*sinth2;
+        // const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
+        // const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*(rBL*rBL-bh_spin2*costh2)*sinth2/pow(rho2kerr,2);
 
-  // For Kerr, only beta_phi non-zero in spherical, here embed into Cartesian:
-  const CCTK_REAL beta_phi = - bh_spin*bh_spin * alpha0 * sigma/rhokerr * costh / rr_2;
-  // convert beta_phi e_phi to Cartesian:
-  beta_i[0] = -beta_phi * y1_2;  // beta_x = -beta_phi * y/r
-  beta_i[1] =  beta_phi * x1_2;  // beta_y =  beta_phi * x/r
+        // const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
+        // //const CCTK_REAL dgammaphiphi_dth= -2*bh_spin2*delta_metric*sinth*costh/rr2_2;
+        // const CCTK_REAL dgammaphiphi_dth= (delta_metric+8*bh_mass*rBL*pow(bh_spin2+rBL*rBL,2)/pow(bh_spin2+2*rBL*rBL+bh_spin2*(costh2-sinth2),2))*2*costh*sinth;
+        // //const CCTK_REAL dgammaphiphi_dth= 4*bh_spin2*bh_mass*rBL*(bh_spin2+rBL*rBL)*costh*sinth/pow(rho2kerr,2);
+        // // const CCTK_REAL dgammaphiphi_dR= dr_dR*2*(rr_2*(2*rBL*(bh_spin2+rBL*rBL)+bh_spin2*(bh_mass-rBL)*sinth2))/(rr2_2*rr_2) + \
+        // //                                 2*(-pow(bh_spin2+rBL*rBL,2)+bh_spin2*delta_metric*sinth2)/(rr2_2*rr_2);
 
-  CCTK_REAL gamma_ij[3][3];
-  gamma_ij[0][0] = gxx[ind]; gamma_ij[0][1] = gxy[ind]; gamma_ij[0][2] = gxz[ind];
-  gamma_ij[1][0] = gxy[ind]; gamma_ij[1][1] = gyy[ind]; gamma_ij[1][2] = gyz[ind];
-  gamma_ij[2][0] = gxz[ind]; gamma_ij[2][1] = gyz[ind]; gamma_ij[2][2] = gzz[ind];
+        // const CCTK_REAL dgammaphiphi_dR= dr_dR*(2*rBL*(bh_spin2+rBL*rBL)*(rBL*rBL+bh_spin2*(costh2-sinth2))*sinth2 + \
+        //                               2*bh_spin2*(rBL*(bh_spin2-bh_mass*rBL)+bh_spin2*(bh_mass-rBL)*costh2)*sinth2*sinth2)/pow(rho2kerr,2);
+        // const CCTK_REAL betauphi = betadphi/gammaphiphi;
+        // const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - betadphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
+        // const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - betadphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
+       
 
-  CCTK_REAL K_ij[3][3];
-  K_ij[0][0] = kxx[ind]; K_ij[0][1] = kxy[ind]; K_ij[0][2] = kxz[ind];
-  K_ij[1][0] = kxy[ind]; K_ij[1][1] = kyy[ind]; K_ij[1][2] = kyz[ind];
-  K_ij[2][0] = kxz[ind]; K_ij[2][1] = kyz[ind]; K_ij[2][2] = kzz[ind];
 
-  // --- Step 1: Define Lorentz boost along x-axis ---
-  const CCTK_REAL v     = bh_v;
-  const CCTK_REAL gammaL= 1.0/sqrt(1.0 - v*v);
+       
 
-  // Build 4-metric g[mu][nu]
-  CCTK_REAL g4[4][4] = {{0}};
-  // time-time
-  CCTK_REAL beta_sq = beta_i[0]*beta_i[0] + beta_i[1]*beta_i[1] + beta_i[2]*beta_i[2];
-  g4[0][0] = -(alpha*alpha - beta_sq);
-  for(int i=0;i<3;i++) {
-    g4[0][i+1] =  beta_i[i];
-    g4[i+1][0] =  beta_i[i];
-    for(int j=0;j<3;j++) g4[i+1][j+1] = gamma_ij[i][j];
-  }
+        gxx[ind] = psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;
+        gxy[ind] =-psi4_2*bh_spin2*hh*y1_2*x1_2 - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
+        gxz[ind] = 0;
+        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
+        gyz[ind] = 0;
+        gzz[ind] = psi4_2 + psi4_1 - 1;
 
-  // --- Step 2: Apply boost: gboost[A][B] = Lambda^mu_A Lambda^nu_B g4[mu][nu] ---
-  CCTK_REAL gboost[4][4] = {{0}};
-  for(int A=0; A<4; A++) {
-    for(int B=0; B<4; B++) {
-      for(int mu=0; mu<4; mu++) {
-        for(int nu=0; nu<4; nu++) {
-          // Lambda^mu_A
-          CCTK_REAL L1 = 0.0, L2 = 0.0;
-          if(mu < 2 && A < 2) L1 = (mu==A ? gammaL : -gammaL*v);
-          else if(mu==A)    L1 = 1.0;
-          if(nu < 2 && B < 2) L2 = (nu==B ? gammaL : -gammaL*v);
-          else if(nu==B)     L2 = 1.0;
-          gboost[A][B] += L1 * L2 * g4[mu][nu];
+        check_nan_or_inf("gxx",gxx[ind]);
+        check_nan_or_inf("gxy",gxy[ind]);
+        check_nan_or_inf("gxz",gxz[ind]);
+        check_nan_or_inf("gyy",gyy[ind]);
+        check_nan_or_inf("gyz",gyz[ind]);
+        check_nan_or_inf("gzz",gzz[ind]);
+
+
+        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
+        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
+
+        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
+
+        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
+
+        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+
+
+
+        // //capital Ks refer to the unboosted frame.
+        // const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
+        // const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
+
+        // // const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kxt = R_x*KRt + x1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
+
+
+        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+        const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
+        const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+        const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
+
+        CCTK_REAL dW_drho_1, dW_dz_1;
+        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+
+        if (rho_1 < 1e-8) {
+          dW_drho_1 = 0.;
+          dW_dz_1   = 0.;
         }
-      }
-    }
-  }
+        else {
+          dW_drho_1 = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+          dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+        }
 
-  // --- Step 3: Extract boosted 3+1 fields ---
-  // boosted lapse
-  CCTK_REAL alphab = SMALL;
-  if (gboost[0][0] < -SMALL && !isnan(gboost[0][0]) && !isinf(gboost[0][0])) {
-    alphab = sqrt(-1.0 / gboost[0][0]);
-  } else {
-    fprintf(stderr, "Warning: Invalid gboost[0][0] at index %d\n", ind);
-  }
-  alphab_arr[ind] = alphab;
-  // boosted shift
-  CCTK_REAL betab_i[3];
-  for(int q=0; q<3; q++) betab_i[q] = gboost[0][q+1];
-  // boosted spatial metric
-  CCTK_REAL gbar_ij[3][3];
-  for(int q=0;q<3;q++) for(int r=0;r<3;r++) gbar_ij[q][r] = gboost[q+1][r+1];
+//qual a melhor receita de sobreposição de curvaturas extrinsecas?
+    kxx[ind] = Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi_1 * dW_dz_1;
+    kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi_1 * dW_drho_1;
+    kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi_1 * dW_dz_1;
+    kzz[ind] =   0.0;
 
-      // Store boosted shift in grid arrays
-      betabx[ind] = betab_i[0];
-      betaby[ind] = betab_i[1];
-      betabz[ind] = betab_i[2];
+    
 
-      // Store boosted metric for later
-      gxx[ind] = gbar_ij[0][0]; gxy[ind] = gbar_ij[0][1]; gxz[ind] = gbar_ij[0][2];
-      gyy[ind] = gbar_ij[1][1]; gyz[ind] = gbar_ij[1][2]; gzz[ind] = gbar_ij[2][2];
-    }
-  }
+        
+        check_nan_or_inf("kxx",kxx[ind]);
+        check_nan_or_inf("kxy",kxy[ind]);
+        check_nan_or_inf("kxz",kxz[ind]);
+        check_nan_or_inf("kyy",kyy[ind]);
+        check_nan_or_inf("kyz",kyz[ind]);
+        check_nan_or_inf("kzz",kzz[ind]);  
+
+        // // let's add a perturbation to the scalar field as well
+        // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
+        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
+        
+        // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
+        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+
+        const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
+        const CCTK_REAL phi0_l_2 = 0.;
+
+        // scalar fields
+
+              //star 1
+        CCTK_REAL phi1_1  = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
+        CCTK_REAL phi2_1  = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
+        
+
+              //BH 2
+        CCTK_REAL phi1_2  = 0;//phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
+        CCTK_REAL phi2_2  = 0;//phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
+        /////////////////////////////
+
+        phi1[ind]  = phi1_1 + phi1_2;
+        phi2[ind]  = phi2_1 + phi2_2;
+
+        
+
+        const CCTK_REAL alph_1 = exp(F0_1[ind]);
+        const CCTK_REAL alph_2 = alpha0;
+
+        // No regularization needed for the BS, the lapse is non-zero
+
+        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
+        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
+
+        CCTK_REAL Kphi1_2 = 0.;
+        CCTK_REAL Kphi2_2 = 0.;
+
+
+        Kphi1[ind] = Kphi1_1 + Kphi1_2;
+        Kphi2[ind] = Kphi2_1 + Kphi2_2;
+
+
+        
+
+        // lapse
+        if (CCTK_EQUALS(initial_lapse, "psi^n"))
+          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
+        else if (CCTK_EQUALS(initial_lapse, "Kerr_BS")) {
+          alp[ind] = alph_1 + alph_2 - 1;
+          if (alp[ind] < SMALL)
+            alp[ind] = SMALL;
+        }
+
+        CCTK_REAL bphi;
+        CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
+        CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
+        bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
+
+        // shift
+        if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
+          betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.
+          betay[ind] = - x1_2*bphi;
+          betaz[ind] =   0.;
+        }
+
+      } /* for i */
+    }   /* for j */
+  }     /* for k */
+
+
+  free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
+  free(dW_dr_1); free(dW_dth_1);
+
+  // free(F1_2); free(F2_2); free(F0_2); free(phi0_2); free(W_2);
+  // free(dW_dr_2); free(dW_dth_2);
+
+  return;
 }
-// Now compute finite differences and Kbar_ij in a second loop
-for (int k = 0; k < nz; ++k) {
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
-      int ind = IDX(i,j,k);
-      // If alphab_arr[ind] was set to SMALL due to invalid gboost[0][0], set K_ij to zero
-      if (alphab_arr[ind] == SMALL) {
-        kxx[ind] = 0.0;
-        kxy[ind] = 0.0;
-        kxz[ind] = 0.0;
-        kyy[ind] = 0.0;
-        kyz[ind] = 0.0;
-        kzz[ind] = 0.0;
-        continue;
-      }
-      CCTK_REAL dbx_dx = 0.0, dbx_dy = 0.0, dbx_dz = 0.0;
-      CCTK_REAL dby_dx = 0.0, dby_dy = 0.0, dby_dz = 0.0;
-      CCTK_REAL dbz_dx = 0.0, dbz_dy = 0.0, dbz_dz = 0.0;
-      if (i == 0) {
-        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i,j,k)]) / dx;
-        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i,j,k)]) / dx;
-        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i,j,k)]) / dx;
-      } else if (i == nx-1) {
-        dbx_dx = (betabx[IDX(i,j,k)] - betabx[IDX(i-1,j,k)]) / dx;
-        dby_dx = (betaby[IDX(i,j,k)] - betaby[IDX(i-1,j,k)]) / dx;
-        dbz_dx = (betabz[IDX(i,j,k)] - betabz[IDX(i-1,j,k)]) / dx;
-      } else {
-        dbx_dx = (betabx[IDX(i+1,j,k)] - betabx[IDX(i-1,j,k)]) / (2.0*dx);
-        dby_dx = (betaby[IDX(i+1,j,k)] - betaby[IDX(i-1,j,k)]) / (2.0*dx);
-        dbz_dx = (betabz[IDX(i+1,j,k)] - betabz[IDX(i-1,j,k)]) / (2.0*dx);
-      }
-      if (j == 0) {
-        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j,k)]) / dy;
-        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j,k)]) / dy;
-        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j,k)]) / dy;
-      } else if (j == ny-1) {
-        dbx_dy = (betabx[IDX(i,j,k)] - betabx[IDX(i,j-1,k)]) / dy;
-        dby_dy = (betaby[IDX(i,j,k)] - betaby[IDX(i,j-1,k)]) / dy;
-        dbz_dy = (betabz[IDX(i,j,k)] - betabz[IDX(i,j-1,k)]) / dy;
-      } else {
-        dbx_dy = (betabx[IDX(i,j+1,k)] - betabx[IDX(i,j-1,k)]) / (2.0*dy);
-        dby_dy = (betaby[IDX(i,j+1,k)] - betaby[IDX(i,j-1,k)]) / (2.0*dy);
-        dbz_dy = (betabz[IDX(i,j+1,k)] - betabz[IDX(i,j-1,k)]) / (2.0*dy);
-      }
-      if (k == 0) {
-        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k)]) / dz;
-        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k)]) / dz;
-        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k)]) / dz;
-      } else if (k == nz-1) {
-        dbx_dz = (betabx[IDX(i,j,k)] - betabx[IDX(i,j,k-1)]) / dz;
-        dby_dz = (betaby[IDX(i,j,k)] - betaby[IDX(i,j,k-1)]) / dz;
-        dbz_dz = (betabz[IDX(i,j,k)] - betabz[IDX(i,j,k-1)]) / dz;
-      } else {
-        dbx_dz = (betabx[IDX(i,j,k+1)] - betabx[IDX(i,j,k-1)]) / (2.0*dz);
-        dby_dz = (betaby[IDX(i,j,k+1)] - betaby[IDX(i,j,k-1)]) / (2.0*dz);
-        dbz_dz = (betabz[IDX(i,j,k+1)] - betabz[IDX(i,j,k-1)]) / (2.0*dz);
-      }
-      CCTK_REAL alphab_here = alphab_arr[ind];
-      kxx[ind] = 0.5 / alphab_here * (dbx_dx + dbx_dx);
-      kxy[ind] = 0.5 / alphab_here * (dbx_dy + dby_dx);
-      kxz[ind] = 0.5 / alphab_here * (dbx_dz + dbz_dx);
-      kyy[ind] = 0.5 / alphab_here * (dby_dy + dby_dy);
-      kyz[ind] = 0.5 / alphab_here * (dby_dz + dbz_dy);
-      kzz[ind] = 0.5 / alphab_here * (dbz_dz + dbz_dz);
-      check_nan_or_inf("kxx",kxx[ind]);
-      check_nan_or_inf("kxy",kxy[ind]);
-      check_nan_or_inf("kxz",kxz[ind]);
-      check_nan_or_inf("kyy",kyy[ind]);
-      check_nan_or_inf("kyz",kyz[ind]);
-      check_nan_or_inf("kzz",kzz[ind]);
-    }
-  }
-}
-free(betabx); free(betaby); free(betabz); free(alphab_arr);
-
-// Ensure all block comments are properly closed
-
-// Ensure all necessary cleanup and return statements are present
-free(F1_1); free(F2_1); free(F0_1); free(phi0_1); free(W_1);
-free(dW_dr_1); free(dW_dth_1);
-
-return;
-} /* End of function UAv_ID_Kerr_BS */

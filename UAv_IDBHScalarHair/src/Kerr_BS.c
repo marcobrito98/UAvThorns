@@ -713,6 +713,28 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         (bh_spin2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(sigma + 
         (-1 + costh2)*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL))))/
         (2.*rr_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*costh2_z;
+
+        // Check for NaN or Inf in all these quantities
+        check_nan_or_inf("dr_dR", dr_dR);
+        check_nan_or_inf("costh2_x", costh2_x);
+        check_nan_or_inf("costh2_y", costh2_y);
+        check_nan_or_inf("costh2_z", costh2_z);
+
+        check_nan_or_inf("dsigma_dx", dsigma_dx);
+        check_nan_or_inf("dsigma_dy", dsigma_dy);
+        check_nan_or_inf("dsigma_dz", dsigma_dz);
+
+        check_nan_or_inf("dpsi4_2_dx", dpsi4_2_dx);
+        check_nan_or_inf("dpsi4_2_dy", dpsi4_2_dy);
+        check_nan_or_inf("dpsi4_2_dz", dpsi4_2_dz);
+
+        check_nan_or_inf("dhh_dx", dhh_dx);
+        check_nan_or_inf("dhh_dy", dhh_dy);
+        check_nan_or_inf("dhh_dz", dhh_dz);
+
+        check_nan_or_inf("dalpha_dx", dalpha_dx);
+        check_nan_or_inf("dalpha_dy", dalpha_dy);
+        check_nan_or_inf("dalpha_dz", dalpha_dz);
         
 
 

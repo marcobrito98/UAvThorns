@@ -694,9 +694,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dpsi4_2_dy = 2*rr_2*dr_dR*R_y+bh_spin2*costh2_y;
         const CCTK_REAL dpsi4_2_dz = 2*rr_2*dr_dR*R_z+bh_spin2*costh2_z;
 
-        const CCTK_REAL dhh_dx = (-((1 + sigma)*(2*rho2_2*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2_2*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2_2,2))*dr_dR*R_x + (-((1 + sigma)*bh_spin2) + rho2_2*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2_2,2))*costh2_x;
-        const CCTK_REAL dhh_dy = (-((1 + sigma)*(2*rho2_2*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2_2*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2_2,2))*dr_dR*R_y + (-((1 + sigma)*bh_spin2) + rho2_2*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2_2,2))*costh2_y;
-        const CCTK_REAL dhh_dz = (-((1 + sigma)*(2*rho2_2*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2_2*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2_2,2))*dr_dR*R_z + (-((1 + sigma)*bh_spin2) + rho2_2*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2_2,2))*costh2_z;
+        //algures devo ter confundido rhokerr com rho2_2.
+
+        const CCTK_REAL dhh_dx = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_x + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_x;
+        const CCTK_REAL dhh_dy = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_y + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_y;
+        const CCTK_REAL dhh_dz = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_z + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_z;
         
 
         

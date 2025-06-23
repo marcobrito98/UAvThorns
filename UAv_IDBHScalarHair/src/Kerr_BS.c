@@ -1367,13 +1367,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
     //BH curvature from mathematica
     // Auxiliary variables for kxx[ind]
-    CCTK_REAL bh_spin2 = bh_spin * bh_spin;
-    CCTK_REAL bh_spin3 = bh_spin2 * bh_spin;
+    // CCTK_REAL bh_spin2 = bh_spin * bh_spin;
+    // CCTK_REAL bh_spin3 = bh_spin2 * bh_spin;
     CCTK_REAL bh_spin4 = bh_spin2 * bh_spin2;
     CCTK_REAL bh_spin5 = bh_spin3 * bh_spin2;
     CCTK_REAL bh_spin6 = bh_spin3 * bh_spin3;
     CCTK_REAL bh_spin7 = bh_spin4 * bh_spin3;
-    CCTK_REAL x1_2_sq = x1_2 * x1_2;
+    // CCTK_REAL x1_2_sq = x1_2 * x1_2;
     CCTK_REAL x1_2_3 = x1_2_sq * x1_2;
     CCTK_REAL x1_2_4 = x1_2_3 * x1_2;
     CCTK_REAL x1_2_5 = x1_2_4 * x1_2;
@@ -1383,7 +1383,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     CCTK_REAL y1_2_4 = y1_2_3 * y1_2;
     CCTK_REAL y1_2_5 = y1_2_4 * y1_2;
     CCTK_REAL y1_2_6 = y1_2_5 * y1_2;
-    CCTK_REAL gamma2 = gamma * gamma;
+    // CCTK_REAL gamma2 = gamma * gamma;
     CCTK_REAL gamma3 = gamma2 * gamma;
     CCTK_REAL gamma4 = gamma2 * gamma2;
     CCTK_REAL gamma5 = gamma3 * gamma2;

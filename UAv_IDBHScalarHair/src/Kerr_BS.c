@@ -1347,7 +1347,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
       // Compute extrinsic curvature K_{ij}
-      CCTK_REAL new_lapse = alph_2; // or alpha0, depending on your convention
       kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]);
       kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]);
       kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]);

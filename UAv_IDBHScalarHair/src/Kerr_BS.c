@@ -1293,7 +1293,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // Auxiliary variables to shorten gxx[ind] expression
         CCTK_REAL psi4_2_cubed = pow(psi4_2, 3);
-        CCTK_REAL bh_spin2 = pow(bh_spin, 2);
         CCTK_REAL bh_spin3 = pow(bh_spin, 3);
         CCTK_REAL x1_2_sq = pow(x1_2, 2);
         CCTK_REAL y1_2_sq = pow(y1_2, 2);
@@ -1309,8 +1308,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL inner1 = bh_spin * x1_2 * gamma * sigma * (term1 - term2) / rr_2_sq;
         CCTK_REAL inner2 = bh_spin * y1_2 * sigma * (-term3 + term4) / rr_2_sq;
 
-        gxx[ind] = gamma * (gamma * (1 + bh_spin2 * y1_2_sq * hh) * psi4_2 - (bh_spin * bh_v * y1_2 * gamma * sigma) / rr_2_sq)
-               - bh_v * gamma * ((bh_spin * y1_2 * gamma * sigma) / rr_2_sq
+        gxx[ind] = gamma * (gamma * (1 + bh_spin2 * y1_2_sq * hh) * psi4_2 - (bh_spin * bh_v * y1_2 * gamma * sigma) / rr_2_sq) \
+               - bh_v * gamma * ((bh_spin * y1_2 * gamma * sigma) / rr_2_sq \
                - bh_v * gamma * (-pow(alpha0, 2) - inner1 + inner2));
         gxy[ind] =-(pow(bh_spin,2)*x1_2*y1_2*pow(gamma,2)*hh*psi4_2) + (bh_spin*bh_v*x1_2*pow(gamma,2)*sigma)/pow(rr_2,2);// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
         gxz[ind] = 0;

@@ -703,14 +703,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-
-        // const CCTK_REAL dhh_dx = (-256*gamma*x1_2*(7*pow(bh_mass,6) + 72*pow(bh_mass,5)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 24*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*pow(pow(bh_spin,2) - 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)),2) + 32*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-3*pow(bh_spin,2) + 20*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + 15*pow(bh_mass,4)*(-pow(bh_spin,2) + 20*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) - (pow(bh_spin,2) - 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)))*(pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2)) + pow(bh_mass,2)*(9*pow(bh_spin,4) + 720*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) - 8*pow(bh_spin,2)*(27*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2)) + 29*pow(z1_2,2)))))/pow(pow(bh_mass,4) + pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 8*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) + 8*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-pow(bh_spin,2) + 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + pow(bh_mass,2)*(-2*pow(bh_spin,2) + 24*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))),3);
-
-        // const CCTK_REAL dhh_dy = (-256*y1_2*(7*pow(bh_mass,6) + 72*pow(bh_mass,5)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 24*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*pow(pow(bh_spin,2) - 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)),2) + 32*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-3*pow(bh_spin,2) + 20*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + 15*pow(bh_mass,4)*(-pow(bh_spin,2) + 20*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) - (pow(bh_spin,2) - 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)))*(pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2)) + pow(bh_mass,2)*(9*pow(bh_spin,4) + 720*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) - 8*pow(bh_spin,2)*(27*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2)) + 29*pow(z1_2,2)))))/pow(pow(bh_mass,4) + pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 8*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) + 8*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-pow(bh_spin,2) + 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + pow(bh_mass,2)*(-2*pow(bh_spin,2) + 24*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))),3);
-        
-        // const CCTK_REAL dhh_dz = (-256*z1_2*(7*pow(bh_mass,6) + 72*pow(bh_mass,5)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 16*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-3*pow(bh_spin,2) + 40*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + pow(bh_mass,4)*(-13*pow(bh_spin,2) + 300*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + 24*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-pow(bh_spin,4) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2)) + (pow(bh_spin,2) + 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)))*(pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2)) + pow(bh_mass,2)*(5*pow(bh_spin,4) + 720*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) - 8*pow(bh_spin,2)*(5*pow(gamma,2)*pow(x1_2,2) + 5*pow(y1_2,2) + 7*pow(z1_2,2)))))/pow(pow(bh_mass,4) + pow(bh_spin,4) - 8*pow(bh_spin,2)*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) - pow(z1_2,2)) + 8*pow(bh_mass,3)*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2)) + 16*pow(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2),2) + 8*bh_mass*sqrt(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))*(-pow(bh_spin,2) + 4*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))) + pow(bh_mass,2)*(-2*pow(bh_spin,2) + 24*(pow(gamma,2)*pow(x1_2,2) + pow(y1_2,2) + pow(z1_2,2))),3);
-
-
         
 
         
@@ -748,7 +740,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("dalpha_dz", dalpha_dz);
         
 
-
+        const CCTK_REAL bphi = -bh_spin * sigma * sinth2;
+        const CCTK_REAL betad[4];
+        const CCTK_REAL betad[1] = -y1_2/rho2_2 * bphi;
+        const CCTK_REAL betad[2] =  x1_2*gamma/rho2_2 * bphi;
+        const CCTK_REAL betad[3] = 0.;
 
 
         // const CCTK_REAL delta_metric = rBL*rBL-2*bh_mass*rBL+bh_spin2;
@@ -771,13 +767,52 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
        
 
 
+       
 
-        gxx[ind] = gamma*(gamma*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2 - (bh_spin*bh_v*y1_2*gamma*sigma)/pow(rr_2,2)) - bh_v*gamma*((bh_spin*y1_2*gamma*sigma)/pow(rr_2,2) - bh_v*gamma*(-pow(alpha0,2) - (bh_spin*x1_2*gamma*sigma*((pow(bh_spin,3)*x1_2*pow(y1_2,2)*gamma*hh*pow(psi4_2,2)*sigma)/((pow(psi4_2,3) + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(psi4_2,3) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(psi4_2,3))*pow(rr_2,2)) - (bh_spin*x1_2*gamma*(pow(psi4_2,2) + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(psi4_2,2))*sigma)/((pow(psi4_2,3) + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(psi4_2,3) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(psi4_2,3))*pow(rr_2,2))))/pow(rr_2,2) + (bh_spin*y1_2*sigma*(-((pow(bh_spin,3)*pow(x1_2,2)*y1_2*pow(gamma,2)*hh*pow(psi4_2,2)*sigma)/((pow(psi4_2,3) + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(psi4_2,3) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(psi4_2,3))*pow(rr_2,2))) + (bh_spin*y1_2*(pow(psi4_2,2) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(psi4_2,2))*sigma)/((pow(psi4_2,3) + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(psi4_2,3) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(psi4_2,3))*pow(rr_2,2))))/pow(rr_2,2)));// + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;;
-        gxy[ind] =-(pow(bh_spin,2)*x1_2*y1_2*pow(gamma,2)*hh*psi4_2) + (bh_spin*bh_v*x1_2*pow(gamma,2)*sigma)/pow(rr_2,2);// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
+       
+
+
+        gxx[ind] = gamma*((bh_v*y1_2*bphi*gamma)/\
+                  (pow(y1_2,2) + pow(x1_2,2)*gamma2) + gamma*(1 + \
+                  bh_spin2*pow(y1_2,2)*hh)*psi4_2) - \
+                  bh_v*gamma*(-((y1_2*bphi*\
+                  gamma)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
+                  bh_v*gamma*((x1_2*bphi*gamma*(\
+                  -((bh_spin2*x1_2*pow(y1_2,2)*bphi(x1_2*gamma,y1_2,z1_2,bh_mass,\
+                  bh_spin,0)*gamma*hh*pow(psi4_2,2))/((pow(y1_2,2) + \
+                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
+                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
+                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))) + \
+                  (x1_2*bphi*gamma*(pow(psi4_2,\
+                  2) + bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,2)))/((pow(y1_2,2) + \
+                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
+                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
+                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))))/(pow(y1_\
+                  2,2) + pow(x1_2,2)*gamma2) - \
+                  (y1_2*bphi*((bh_spin2*\
+                  pow(x1_2,2)*y1_2*bphi*pow(\
+                  gamma,2)*hh*pow(psi4_2,2))/((pow(y1_2,2) + \
+                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
+                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
+                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3))) - \
+                  (y1_2*bphi*(pow(psi4_2,2) + \
+                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,2)))/((pow(y1_2,\
+                  2) + pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
+                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
+                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))))/(pow(y1_\
+                  2,2) + pow(x1_2,2)*gamma2) - (pow(-0.5*sqrt(pow(bh_mass,2) - \
+                  bh_spin2) + rr_2,2)*pow(sqrt(pow(bh_mass,2) - \
+                  bh_spin2)/2. + rr_2,2))/(pow(rr_2,2)*(pow(1 + (bh_mass - \
+                  sqrt(bh_spin2))/(2.*rr_2),2)*pow(1 + (bh_mass + \
+                  sqrt(bh_spin2))/(2.*rr_2),2)*pow(rr_2,2) + bh_spin2*(1 + \
+                  ((pow(y1_2,2) + pow(x1_2,2)*gamma2)*sigma)/pow(rr_2,2))))));// + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;;
+        gxy[ind] =-((bh_v*x1_2*bphi*gamma2)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
+                  bh_spin2*x1_2*y1_2*gamma2*hh*psi4_2;// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
         gxz[ind] = 0;
-        gyy[ind] = (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
+        gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
         gyz[ind] = 0;
         gzz[ind] = psi4_2; // + psi4_1 - 1;
+
 
         check_nan_or_inf("gxx",gxx[ind]);
         check_nan_or_inf("gxy",gxy[ind]);
@@ -787,15 +822,488 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("gzz",gzz[ind]);
 
 
-        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
-        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
 
-        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
 
-        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
 
-        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+         // Create an array g to store the metric components at each grid point
+        CCTK_REAL g[4][4];
+        g[0][0] = pow(gamma,2)*(-pow(alpha0,2) + pow(bh_v,2)*(1 + \
+                  pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2 + \
+                  (2*bh_spin*bh_v*y1_2*(pow(z1_2,2) - pow(rr_2,2))*sigma)/((pow(y1_2,2) \
+                  + pow(x1_2,2)*pow(gamma,2))*pow(rr_2,2)) + \
+                  (pow(bh_spin,2)*pow(pow(z1_2,2) - \
+                  pow(rr_2,2),2)*pow(sigma,2))/((pow(y1_2,2) + \
+                  pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                  pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)));
+        g[1][1] = gxx[ind];
+        g[1][2] = gxy[ind];
+        g[1][3] = gxz[ind];
+        g[2][1] = g[1][2];
+        g[2][2] = gyy[ind];
+        g[2][3] = gyz[ind];
+        g[3][1] = gxz[ind];
+        g[3][2] = gyz[ind];
+        g[3][3] = gzz[ind];
+
+
+
+        
+               // Declare variables for metric derivatives (to be filled in later)
+        CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
+        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
+        // Initialize metric derivatives explicitly (to be filled in later)
+        dg[1][1][1] = gamma2*((4*bh_spin*bh_v*x1_2*y1_2*gamma*(1 - \
+                      pow(z1_2,2)/rr2_2)*sigma)/pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2) - \
+                      (4*bh_spin*bh_v*y1_2*pow(z1_2,2)*sigma*R_x1_2)/((pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*pow(rr_2,3)) + \
+                      bh_spin2*pow(y1_2,2)*psi4_2*dhh_dx + (1 + \
+                      bh_spin2*pow(y1_2,2)*hh)*dpsi4_2_dx - (2*bh_spin*bh_v*y1_2*(1 - \
+                      pow(z1_2,2)/rr2_2)*dsigma_dx)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2) + \
+                      pow(bh_v,2)*((-2*bh_spin2*x1_2*pow(y1_2,2)*gamma*pow(pow(z1_2,2)\
+                       - rr2_2,2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,3)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,4)) - \
+                      (2*bh_spin2*pow(x1_2,3)*pow(gamma,3)*pow(pow(z1_2,2) - \
+                      rr2_2,2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,3)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,4)) + \
+                      (bh_spin2*x1_2*gamma*pow(pow(z1_2,2) - \
+                      rr2_2,2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,4)) - \
+                      (2*bh_spin2*pow(y1_2,2)*pow(z1_2,2)*(pow(z1_2,2) - \
+                      rr2_2)*pow(sigma,2)*R_x1_2)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,5)) - \
+                      (2*bh_spin2*pow(x1_2,2)*pow(z1_2,2)*gamma2*(pow(z1_2,2) - \
+                      rr2_2)*pow(sigma,2)*R_x1_2)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,5)) + \
+                      (2*pow(-pow(bh_mass,2) + bh_spin2 + \
+                      4*rr2_2,2)*R_x1_2)/(rr_2*(pow(pow(bh_mass,2) - \
+                      bh_spin2,2) + 8*(pow(bh_mass,3) - bh_mass*bh_spin2)*rr_2 \
+                      + 8*(3*pow(bh_mass,2) + bh_spin2)*rr2_2 + \
+                      32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) + \
+                      16*bh_spin2*(pow(y1_2,2) + pow(x1_2,2)*gamma2)*sigma)) - \
+                      (8*pow(sqrt(pow(bh_mass,2) - bh_spin2) - \
+                      2*rr_2,2)*(sqrt(pow(bh_mass,2) - bh_spin2)/2. + \
+                      rr_2)*R_x1_2)/(pow(pow(bh_mass,2) - bh_spin2 + 4*bh_mass*rr_2 + \
+                      4*rr2_2,2) + 16*bh_spin2*(rr2_2 + (pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*sigma)) + (16*(sqrt(pow(bh_mass,2) - \
+                      bh_spin2) - 2*rr_2)*pow(sqrt(pow(bh_mass,2) - \
+                      bh_spin2)/2. + rr_2,2)*R_x1_2)/(pow(pow(bh_mass,2) - \
+                      bh_spin2 + 4*bh_mass*rr_2 + 4*rr2_2,2) + \
+                      16*bh_spin2*(rr2_2 + (pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*sigma)) + \
+                      (bh_spin2*pow(y1_2,2)*pow(pow(z1_2,2) - \
+                      rr2_2,2)*sigma*dsigma_dx)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,4)) + \
+                      (bh_spin2*pow(x1_2,2)*gamma2*pow(pow(z1_2,2) - \
+                      rr2_2,2)*sigma*dsigma_dx)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*psi4_2*pow(rr_2,4)) + \
+                      (2*pow(-pow(bh_mass,2) + bh_spin2 + \
+                      4*rr2_2,2)*(16*bh_spin2*x1_2*gamma*rr_2*sigma - \
+                      (pow(pow(bh_mass,2) - bh_spin2,2) + 4*(pow(bh_mass,3) - \
+                      bh_mass*bh_spin2)*rr_2 - 16*bh_mass*pow(rr_2,3) - \
+                      16*pow(rr_2,4) + 16*bh_spin2*pow(y1_2,2)*sigma)*R_x1_2 + \
+                      8*bh_spin2*pow(y1_2,2)*rr_2*dsigma_dx + \
+                      8*bh_spin2*pow(x1_2,2)*gamma2*(-2*sigma*R_x1_2 + \
+                      rr_2*dsigma_dx)))/(rr_2*pow(pow(pow(bh_mass,2) - bh_spin2,2) + \
+                      8*(pow(bh_mass,3) - bh_mass*bh_spin2)*rr_2 + \
+                      8*(3*pow(bh_mass,2) + bh_spin2)*rr2_2 + \
+                      32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) + \
+                      16*bh_spin2*(pow(y1_2,2) + pow(x1_2,2)*gamma2)*sigma,2)) \
+                      + (bh_spin2*x1_2*gamma*(-pow(z1_2,2) + \
+                      rr2_2)*sigma*(x1_2*gamma*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma*dpsi4_2_dx + \
+                      psi4_2*(2*x1_2*pow(z1_2,2)*gamma*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*sigma*R_x1_2 + \
+                      pow(z1_2,2)*rr_2*(sigma*(3*bh_spin2*pow(x1_2,4)*pow(gamma,4)*hh \
+                      - pow(y1_2,2)*(1 + bh_spin2*pow(y1_2,2)*hh) + \
+                      pow(x1_2,2)*gamma2*(1 + 2*bh_spin2*pow(y1_2,2)*hh) + \
+                      bh_spin2*x1_2*pow(y1_2,4)*gamma*dhh_dx + \
+                      2*bh_spin2*pow(x1_2,3)*pow(y1_2,2)*pow(gamma,3)*dhh_dx + \
+                      bh_spin2*pow(x1_2,5)*pow(gamma,5)*dhh_dx) - \
+                      x1_2*gamma*(pow(y1_2,2) + pow(x1_2,2)*gamma2)*(1 + \
+                      bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*dsigma_dx) + \
+                      pow(rr_2,3)*(-(sigma*(3*bh_spin2*pow(x1_2,4)*pow(gamma,4)*hh - \
+                      pow(y1_2,2)*(1 + bh_spin2*pow(y1_2,2)*hh) + \
+                      pow(x1_2,2)*gamma2*(1 + 2*bh_spin2*pow(y1_2,2)*hh) + \
+                      bh_spin2*x1_2*pow(y1_2,4)*gamma*dhh_dx + \
+                      2*bh_spin2*pow(x1_2,3)*pow(y1_2,2)*pow(gamma,3)*dhh_dx + \
+                      bh_spin2*pow(x1_2,5)*pow(gamma,5)*dhh_dx)) + \
+                      x1_2*gamma*(pow(y1_2,2) + pow(x1_2,2)*gamma2)*(1 + \
+                      bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh)*dsigma_dx))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,3)*pow(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh,2)*pow(psi4_2,2)*pow(rr_2,5)) + \
+                      (bh_spin2*pow(y1_2,2)*(-pow(z1_2,2) + \
+                      rr2_2)*sigma*(4*bh_spin2*pow(x1_2,3)*pow(gamma,3)*hh*psi4_\
+                      2*rr_2*(pow(z1_2,2) - rr2_2)*sigma + 2*x1_2*gamma*(1 + \
+                      2*bh_spin2*pow(y1_2,2)*hh)*psi4_2*rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma + pow(y1_2,2)*((1 + \
+                      bh_spin2*pow(y1_2,2)*hh)*rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma*dpsi4_2_dx + psi4_2*(sigma*(2*pow(z1_2,2)*(1 + \
+                      bh_spin2*pow(y1_2,2)*hh)*R_x1_2 + \
+                      bh_spin2*pow(y1_2,2)*rr_2*(pow(z1_2,2) - rr2_2)*dhh_dx) + \
+                      (1 + bh_spin2*pow(y1_2,2)*hh)*rr_2*(-pow(z1_2,2) + \
+                      rr2_2)*dsigma_dx)) + pow(x1_2,2)*gamma2*((1 + \
+                      2*bh_spin2*pow(y1_2,2)*hh)*rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma*dpsi4_2_dx + psi4_2*(2*sigma*(pow(z1_2,2)*(1 + \
+                      2*bh_spin2*pow(y1_2,2)*hh)*R_x1_2 + \
+                      bh_spin2*pow(y1_2,2)*rr_2*(pow(z1_2,2) - rr2_2)*dhh_dx) + \
+                      (1 + 2*bh_spin2*pow(y1_2,2)*hh)*rr_2*(-pow(z1_2,2) + \
+                      rr2_2)*dsigma_dx)) + \
+                      bh_spin2*pow(x1_2,4)*pow(gamma,4)*(psi4_2*rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma*dhh_dx + hh*(rr_2*(pow(z1_2,2) - \
+                      rr2_2)*sigma*dpsi4_2_dx + psi4_2*(2*pow(z1_2,2)*sigma*R_x1_2 + \
+                      rr_2*(-pow(z1_2,2) + rr2_2)*dsigma_dx)))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2,3)*pow(1 + bh_spin2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*gamma2)*hh,2)*pow(psi4_2,2)*pow(rr_2,5)))); // dgxx_dx
+        dg[1][1][2] = pow(gamma,2)*((4*bh_spin*bh_v*pow(y1_2,2)*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*sigma)/pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2) - (2*bh_spin*bh_v*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*sigma)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2)) - \
+                      (4*bh_spin*bh_v*y1_2*pow(z1_2,2)*sigma*R_y1_2)/((pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*pow(rr_2,3)) + \
+                      pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + \
+                      pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy - (2*bh_spin*bh_v*y1_2*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*dsigma_dy)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2)) + \
+                      pow(bh_v,2)*((-2*pow(bh_spin,2)*pow(y1_2,3)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),3)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) - \
+                      (2*pow(bh_spin,2)*pow(x1_2,2)*y1_2*pow(gamma,2)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),3)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + \
+                      (pow(bh_spin,2)*y1_2*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*pow(sigma,2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) - \
+                      (2*pow(bh_spin,2)*pow(y1_2,2)*pow(z1_2,2)*(pow(z1_2,2) - \
+                      pow(rr_2,2))*pow(sigma,2)*R_y1_2)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,5)) - \
+                      (2*pow(bh_spin,2)*pow(x1_2,2)*pow(z1_2,2)*pow(gamma,2)*(pow(z1_2,2) - \
+                      pow(rr_2,2))*pow(sigma,2)*R_y1_2)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,5)) + \
+                      (2*pow(-pow(bh_mass,2) + pow(bh_spin,2) + \
+                      4*pow(rr_2,2),2)*R_y1_2)/(rr_2*(pow(pow(bh_mass,2) - \
+                      pow(bh_spin,2),2) + 8*(pow(bh_mass,3) - bh_mass*pow(bh_spin,2))*rr_2 \
+                      + 8*(3*pow(bh_mass,2) + pow(bh_spin,2))*pow(rr_2,2) + \
+                      32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) + \
+                      16*pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma)) - \
+                      (8*pow(sqrt(pow(bh_mass,2) - pow(bh_spin,2)) - \
+                      2*rr_2,2)*(sqrt(pow(bh_mass,2) - pow(bh_spin,2))/2. + \
+                      rr_2)*R_y1_2)/(pow(pow(bh_mass,2) - pow(bh_spin,2) + 4*bh_mass*rr_2 + \
+                      4*pow(rr_2,2),2) + 16*pow(bh_spin,2)*(pow(rr_2,2) + (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)) + (16*(sqrt(pow(bh_mass,2) - \
+                      pow(bh_spin,2)) - 2*rr_2)*pow(sqrt(pow(bh_mass,2) - \
+                      pow(bh_spin,2))/2. + rr_2,2)*R_y1_2)/(pow(pow(bh_mass,2) - \
+                      pow(bh_spin,2) + 4*bh_mass*rr_2 + 4*pow(rr_2,2),2) + \
+                      16*pow(bh_spin,2)*(pow(rr_2,2) + (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)) + \
+                      (pow(bh_spin,2)*pow(y1_2,2)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*sigma*dsigma_dy)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + \
+                      (pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*sigma*dsigma_dy)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + \
+                      (2*pow(-pow(bh_mass,2) + pow(bh_spin,2) + \
+                      4*pow(rr_2,2),2)*(16*bh_mass*pow(rr_2,3)*R_y1_2 + \
+                      16*pow(rr_2,4)*R_y1_2 - (pow(pow(bh_mass,2) - pow(bh_spin,2),2) + \
+                      16*pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)*R_y1_2 + \
+                      4*rr_2*(4*pow(bh_spin,2)*y1_2*sigma + (-pow(bh_mass,3) + \
+                      bh_mass*pow(bh_spin,2))*R_y1_2 + 2*pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*dsigma_dy)))/(rr_2*pow(pow(pow(bh_mass,2) - \
+                      pow(bh_spin,2),2) + 8*(pow(bh_mass,3) - bh_mass*pow(bh_spin,2))*rr_2 \
+                      + 8*(3*pow(bh_mass,2) + pow(bh_spin,2))*pow(rr_2,2) + \
+                      32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) + \
+                      16*pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma,2)) \
+                      + (pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*(-pow(z1_2,2) + \
+                      pow(rr_2,2))*sigma*((pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*(1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*(pow(z1_2,2) - \
+                      pow(rr_2,2))*sigma*dpsi4_2_dy + psi4_2*(2*pow(z1_2,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*sigma*R_y1_2 + \
+                      pow(z1_2,2)*rr_2*(sigma*(2*y1_2 + 4*pow(bh_spin,2)*y1_2*(pow(y1_2,2) \
+                      + pow(x1_2,2)*pow(gamma,2))*hh + pow(bh_spin,2)*pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*dhh_dy) - (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dy) + \
+                      pow(rr_2,3)*(-(sigma*(2*y1_2 + 4*pow(bh_spin,2)*y1_2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh + pow(bh_spin,2)*pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*dhh_dy)) + (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dy))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),3)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)) + \
+                      (pow(bh_spin,2)*y1_2*(-pow(z1_2,2) + \
+                      pow(rr_2,2))*sigma*(y1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*(1 \
+                      + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*(pow(z1_2,2) - \
+                      pow(rr_2,2))*sigma*dpsi4_2_dy + \
+                      psi4_2*(2*y1_2*pow(z1_2,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*sigma*R_y1_2 + \
+                      pow(z1_2,2)*rr_2*(sigma*(pow(y1_2,2) + \
+                      3*pow(bh_spin,2)*pow(y1_2,4)*hh + pow(bh_spin,2)*pow(y1_2,5)*dhh_dy + \
+                      pow(bh_spin,2)*pow(x1_2,4)*pow(gamma,4)*(-hh + y1_2*dhh_dy) + \
+                      pow(x1_2,2)*pow(gamma,2)*(-1 + 2*pow(bh_spin,2)*pow(y1_2,2)*hh + \
+                      2*pow(bh_spin,2)*pow(y1_2,3)*dhh_dy)) - y1_2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dy) + \
+                      pow(rr_2,3)*(-(sigma*(pow(y1_2,2) + 3*pow(bh_spin,2)*pow(y1_2,4)*hh + \
+                      pow(bh_spin,2)*pow(y1_2,5)*dhh_dy + \
+                      pow(bh_spin,2)*pow(x1_2,4)*pow(gamma,4)*(-hh + y1_2*dhh_dy) + \
+                      pow(x1_2,2)*pow(gamma,2)*(-1 + 2*pow(bh_spin,2)*pow(y1_2,2)*hh + \
+                      2*pow(bh_spin,2)*pow(y1_2,3)*dhh_dy))) + y1_2*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dy))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),3)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)))); // dgxx_dy
+        dg[1][1][3] = pow(gamma,2)*((4*bh_spin*bh_v*y1_2*z1_2*sigma*(rr_2 - \
+                      z1_2*R_z1_2))/((pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(rr_2,3)) \
+                      + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + \
+                      pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz - (2*bh_spin*bh_v*y1_2*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*dsigma_dz)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2)) + pow(bh_v,2)*((2*pow(-pow(bh_mass,2) + \
+                      pow(bh_spin,2) + 4*pow(rr_2,2),2)*R_z1_2)/(rr_2*(pow(pow(bh_mass,2) - \
+                      pow(bh_spin,2),2) + 8*(pow(bh_mass,3) - bh_mass*pow(bh_spin,2))*rr_2 \
+                      + 8*(3*pow(bh_mass,2) + pow(bh_spin,2))*pow(rr_2,2) + \
+                      32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) + \
+                      16*pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma)) - \
+                      (8*pow(sqrt(pow(bh_mass,2) - pow(bh_spin,2)) - \
+                      2*rr_2,2)*(sqrt(pow(bh_mass,2) - pow(bh_spin,2))/2. + \
+                      rr_2)*R_z1_2)/(pow(pow(bh_mass,2) - pow(bh_spin,2) + 4*bh_mass*rr_2 + \
+                      4*pow(rr_2,2),2) + 16*pow(bh_spin,2)*(pow(rr_2,2) + (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)) + (16*(sqrt(pow(bh_mass,2) - \
+                      pow(bh_spin,2)) - 2*rr_2)*pow(sqrt(pow(bh_mass,2) - \
+                      pow(bh_spin,2))/2. + rr_2,2)*R_z1_2)/(pow(pow(bh_mass,2) - \
+                      pow(bh_spin,2) + 4*bh_mass*rr_2 + 4*pow(rr_2,2),2) + \
+                      16*pow(bh_spin,2)*(pow(rr_2,2) + (pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)) - \
+                      (2*pow(bh_spin,2)*pow(y1_2,2)*z1_2*(pow(z1_2,2) - \
+                      pow(rr_2,2))*pow(sigma,2)*(-rr_2 + z1_2*R_z1_2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,5)) - \
+                      (2*pow(bh_spin,2)*pow(x1_2,2)*z1_2*pow(gamma,2)*(pow(z1_2,2) - \
+                      pow(rr_2,2))*pow(sigma,2)*(-rr_2 + z1_2*R_z1_2))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,5)) + \
+                      (pow(bh_spin,2)*pow(y1_2,2)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*sigma*dsigma_dz)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + \
+                      (pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*pow(pow(z1_2,2) - \
+                      pow(rr_2,2),2)*sigma*dsigma_dz)/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) - \
+                      (2*pow(-pow(bh_mass,2) + pow(bh_spin,2) + \
+                      4*pow(rr_2,2),2)*((pow(pow(bh_mass,2) - pow(bh_spin,2),2) + \
+                      4*(pow(bh_mass,3) - bh_mass*pow(bh_spin,2))*rr_2 - \
+                      16*bh_mass*pow(rr_2,3) - 16*pow(rr_2,4) + \
+                      16*pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma)*R_z1_2 - \
+                      8*pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*rr_2*dsigma_dz))/(rr_2*pow(pow(pow(bh_mass,\
+                      2) - pow(bh_spin,2),2) + 8*(pow(bh_mass,3) - \
+                      bh_mass*pow(bh_spin,2))*rr_2 + 8*(3*pow(bh_mass,2) + \
+                      pow(bh_spin,2))*pow(rr_2,2) + 32*bh_mass*pow(rr_2,3) + 16*pow(rr_2,4) \
+                      + 16*pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma,2)) + \
+                      (pow(bh_spin,2)*pow(y1_2,2)*(-pow(z1_2,2) + pow(rr_2,2))*sigma*((1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*(pow(z1_2,2) - \
+                      pow(rr_2,2))*sigma*dpsi4_2_dz + psi4_2*(2*pow(z1_2,2)*(1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*sigma*R_z1_2 + \
+                      pow(rr_2,3)*(-(pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma*dhh_dz) + (1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dz) + z1_2*rr_2*(sigma*(-2 - \
+                      2*pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh + \
+                      pow(bh_spin,2)*z1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dhh_dz) \
+                      - z1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dz))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)) + \
+                      (pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*(-pow(z1_2,2) + \
+                      pow(rr_2,2))*sigma*((1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*(pow(z1_2,2) - \
+                      pow(rr_2,2))*sigma*dpsi4_2_dz + psi4_2*(2*pow(z1_2,2)*(1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*sigma*R_z1_2 + \
+                      pow(rr_2,3)*(-(pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*sigma*dhh_dz) + (1 + \
+                      pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dz) + z1_2*rr_2*(sigma*(-2 - \
+                      2*pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh + \
+                      pow(bh_spin,2)*z1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dhh_dz) \
+                      - z1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh)*dsigma_dz))))/(pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)))); // dgxx_dz
+        dg[1][2][1] = bh_spin*gamma*(-(bh_spin*y1_2*hh*psi4_2) - \
+                      (2*bh_v*pow(x1_2,2)*pow(gamma,2)*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*sigma)/pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2) + (bh_v*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*sigma)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2)) + \
+                      (2*bh_v*x1_2*pow(z1_2,2)*gamma*sigma*R_x1_2)/((pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*pow(rr_2,3)) - \
+                      bh_spin*x1_2*y1_2*gamma*psi4_2*dhh_dx - \
+                      bh_spin*x1_2*y1_2*gamma*hh*dpsi4_2_dx + (bh_v*x1_2*gamma*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*dsigma_dx)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))); // dgxy_dx
+        dg[1][2][2] = bh_spin*x1_2*pow(gamma,2)*(-(bh_spin*hh*psi4_2) - (2*bh_v*y1_2*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*sigma)/pow(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2),2) + \
+                      (2*bh_v*pow(z1_2,2)*sigma*R_y1_2)/((pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*pow(rr_2,3)) - bh_spin*y1_2*psi4_2*dhh_dy - \
+                      bh_spin*y1_2*hh*dpsi4_2_dy + (bh_v*(1 - \
+                      pow(z1_2,2)/pow(rr_2,2))*dsigma_dy)/(pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))); // dgxy_dy
+        dg[1][2][3] = bh_spin*x1_2*pow(gamma,2)*(-(bh_spin*y1_2*(psi4_2*dhh_dz + \
+                      hh*dpsi4_2_dz)) + (2*bh_v*z1_2*sigma*(-rr_2 + z1_2*R_z1_2) + \
+                      bh_v*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*dsigma_dz)/((pow(y1_2,2) + \
+                      pow(x1_2,2)*pow(gamma,2))*pow(rr_2,3))); // dgxy_dz
+        dg[1][3][1] = 0.0; // dgxz_dx
+        dg[1][3][2] = 0.0; // dgxz_dy
+        dg[1][3][3] = 0.0; // dgxz_dz
+        dg[2][2][1] = (1/gamma)*(pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // dgyy_dx
+        dg[2][2][2] = pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dy + (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dy; // dgyy_dy
+        dg[2][2][3] = pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dz; // dgyy_dz
+        dg[2][3][1] = 0.0; // dgyz_dx
+        dg[2][3][2] = 0.0; // dgyz_dy
+        dg[2][3][3] = 0.0; // dgyz_dz
+        dg[3][3][1] = dpsi4_2_dx; // dgzz_dx
+        dg[3][3][2] = dpsi4_2_dy; // dgzz_dy
+        dg[3][3][3] = dpsi4_2_dz; // dgzz_dz
+        // Set symmetric components
+        dg[2][1][1] = dg[1][2][1]; // dgyx_dx = dgxy_dx
+        dg[2][1][2] = dg[1][2][2]; // dgyx_dy = dgxy_dy
+        dg[2][1][3] = dg[1][2][3]; // dgyx_dz = dgxy_dz
+        dg[3][1][1] = dg[1][3][1]; // dgzx_dx = dgxz_dx
+        dg[3][1][2] = dg[1][3][2]; // dgzx_dy = dgxz_dy
+        dg[3][1][3] = dg[1][3][3]; // dgzx_dz = dgxz_dz
+        dg[3][2][1] = dg[2][3][1]; // dgzy_dx = dgyz_dx
+        dg[3][2][2] = dg[2][3][2]; // dgzy_dy = dgyz_dy
+        dg[3][2][3] = dg[2][3][3]; // dgzy_dz = dgyz_dz
+
+        // Christoffel symbols of the spatial metric (only spatial indices 1..3)
+        CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
+        // Initialize to zero
+        // for (int i = 1; i <= 3; ++i)
+        //   for (int j = 1; j <= 3; ++j)
+        //     for (int k = 1; k <= 3; ++k)
+        //       Gamma[i][j][k] = 0.0;
+
+        // Compute inverse metric g^{ij} (spatial part only)
+        CCTK_REAL det_g =
+            g[1][1]*(g[2][2]*g[3][3] - g[2][3]*g[3][2])
+          - g[1][2]*(g[2][1]*g[3][3] - g[2][3]*g[3][1])
+          + g[1][3]*(g[2][1]*g[3][2] - g[2][2]*g[3][1]);
+
+        if (fabs(det_g) < 1e-16) {
+            // Abort execution due to singular metric
+            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+                   "Singular spatial metric (det_g = %e) at grid point (%d,%d,%d). Aborting.", det_g, i, j, k);
+            abort();
+        } else {
+            g_inv[1][1] =  (g[2][2]*g[3][3] - g[2][3]*g[3][2]) / det_g;
+            g_inv[1][2] = -(g[1][2]*g[3][3] - g[1][3]*g[3][2]) / det_g;
+            g_inv[1][3] =  (g[1][2]*g[2][3] - g[1][3]*g[2][2]) / det_g;
+            g_inv[2][1] = -(g[2][1]*g[3][3] - g[2][3]*g[3][1]) / det_g;
+            g_inv[2][2] =  (g[1][1]*g[3][3] - g[1][3]*g[3][1]) / det_g;
+            g_inv[2][3] = -(g[1][1]*g[2][3] - g[1][3]*g[2][1]) / det_g;
+            g_inv[3][1] =  (g[2][1]*g[3][2] - g[2][2]*g[3][1]) / det_g;
+            g_inv[3][2] = -(g[1][1]*g[3][2] - g[1][2]*g[3][1]) / det_g;
+            g_inv[3][3] =  (g[1][1]*g[2][2] - g[1][2]*g[2][1]) / det_g;
+        }
+
+        const CCTK_REAL betaup[4];
+        const CCTK_REAL betaup[1] = g_inv[1][1] * bx + g_inv[1][2] * by + g_inv[1][3] * bz;
+        const CCTK_REAL betaup[2] = g_inv[2][1] * bx + g_inv[2][2] * by + g_inv[2][3] * bz;
+        const CCTK_REAL betaup[3] = g_inv[3][1] * bx + g_inv[3][2] * by + g_inv[3][3] * bz;
+
+        const CCTK_REAL dbetad[4][4];
+        // Compute derivatives of the beta vector
+        dbetad[1][1] = (bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
+                       (pow(x1_2*gamma,2) + pow(y1_2,2))*pow(z1_2,2)*R_x1_2*gamma) + (pow(x1_2*gamma,2) + \
+                       pow(y1_2,2))*rr_2*(-pow(z1_2,2) + \
+                       pow(rr_2,2))*dsigma_dx))/(pow(pow(x1_2*gamma,2) + \
+                       pow(y1_2,2),2)*pow(rr_2,3)) ;
+
+        dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
+                       pow(rr_2,2)) + 2*y1_2*(pow(x1_2*gamma,2) + pow(y1_2,2))*pow(z1_2,2)*R_y1_2) \
+                       + bh_spin*y1_2*(pow(x1_2*gamma,2) + pow(y1_2,2))*rr_2*(-pow(z1_2,2) + \
+                       pow(rr_2,2))*dsigma_dy)/(pow(pow(x1_2*gamma,2) + pow(y1_2,2),2)*pow(rr_2,3));
+
+        dbetad[1][3] = (bh_spin*y1_2*((2*z1_2*sigma*(-rr_2 + z1_2*R_z1_2))/pow(rr_2,3) + (1 \
+                       - pow(z1_2,2)/pow(rr_2,2))*dsigma_dz))/(pow(x1_2*gamma,2) + pow(y1_2,2));
+
+        dbetad[2][1] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
+                       pow(rr_2,2)) - 2*x1_2*gamma*(pow(x1_2*gamma,2) + pow(y1_2,2))*pow(z1_2,2)*R_x1_2*gamma) \
+                       + bh_spin*x1_2*gamma*(pow(x1_2*gamma,2) + pow(y1_2,2))*rr_2*(pow(z1_2,2) - \
+                       pow(rr_2,2))*dsigma_dx)/(pow(pow(x1_2*gamma,2) + pow(y1_2,2),2)*pow(rr_2,3)) ;
+
+        dbetad[2][2] = (bh_spin*x1_2*gamma*(-2*sigma*(y1_2*pow(z1_2,2)*rr_2 - y1_2*pow(rr_2,3) + \
+                       (pow(x1_2*gamma,2) + pow(y1_2,2))*pow(z1_2,2)*R_y1_2) + (pow(x1_2*gamma,2) + \
+                       pow(y1_2,2))*rr_2*(pow(z1_2,2) - \
+                       pow(rr_2,2))*dsigma_dy))/(pow(pow(x1_2*gamma,2) + \
+                       pow(y1_2,2),2)*pow(rr_2,3));
+        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z1_2) + rr_2*(pow(z1_2,2) \
+                       - pow(rr_2,2))*dsigma_dz))/((pow(x1_2*gamma,2) + pow(y1_2,2))*pow(rr_2,3));
+        dbetad[3][1] = 0;
+        dbetad[3][2] = 0;
+        dbetad[3][3] = 0;
+        
+
+        // Compute Christoffel symbols (spatial part)
+        // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)
+        for (int i = 1; i <= 3; ++i) {
+          for (int j = 1; j <= 3; ++j) {
+            for (int k = 1; k <= 3; ++k) {
+              for (int l = 1; l <= 3; ++l) {
+                Gamma[i][j][k] = 0.5 * g_inv[i][l] * (dg[l][j][k] + dg[l][k][j] - dg[j][k][l]);
+              }
+            }
+          }
+        }
+
+        const CCTK_REAL new_lapse = sqrt(-g[0][0] + g[1][1] * betaup[1] * betaup[1] + g[2][2] * betaup[2] * betaup[2] + g[3][3] * betaup[3] * betaup[3]); 
+
+        //stationary metric, time derivatives are zero. 
+
+
+
+
+        // const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
+        // const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
+
+        // const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
+
+        // const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+        //          1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
+
+        // const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
 
 
 
@@ -827,14 +1335,28 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dz_1   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
         }
 
-    //BH curvature from mathematica
-    kxx[ind] = (pow(gamma,3)*(-2*bh_v*pow(rr_2,4)*(2*bh_spin*bh_v*y1_2*sigma*R_x + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*pow(rr_2,3)*dpsi4_2_dx - bh_spin*bh_v*y1_2*rr_2*dsigma_dx) + (2*pow(rr_2,2)*(-2*pow(bh_spin,2)*bh_v*x1_2*gamma*psi4_2*rr_2*pow(sigma,2) + pow(bh_spin,2)*bh_v*pow(y1_2,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*pow(sigma,2)*dpsi4_2_dx + pow(1 + pow(bh_spin,2)*pow(y1_2,2)*hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(-2*bh_spin*y1_2*sigma*R_x + 2*bh_v*alpha0*pow(rr_2,3)*dalpha_dx + bh_spin*y1_2*rr_2*dsigma_dx) + pow(bh_spin,2)*bh_v*pow(y1_2,2)*psi4_2*sigma*(sigma*(4*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 2*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*dsigma_dx) + pow(bh_spin,4)*pow(x1_2,4)*pow(gamma,4)*(bh_v*psi4_2*rr_2*pow(sigma,2)*dhh_dx + pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(-2*bh_spin*y1_2*sigma*R_x + 2*bh_v*alpha0*pow(rr_2,3)*dalpha_dx + bh_spin*y1_2*rr_2*dsigma_dx) + bh_v*hh*sigma*(rr_2*sigma*dpsi4_2_dx + psi4_2*(4*sigma*R_x - 2*rr_2*dsigma_dx))) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*(2*pow(bh_spin,2)*pow(y1_2,2)*pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(-2*bh_spin*y1_2*sigma*R_x + 2*bh_v*alpha0*pow(rr_2,3)*dalpha_dx + bh_spin*y1_2*rr_2*dsigma_dx) + bh_v*sigma*(rr_2*sigma*dpsi4_2_dx + 2*psi4_2*(sigma*(2*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - rr_2*dsigma_dx)) + hh*(2*pow(bh_spin,2)*bh_v*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dx + 4*pow(bh_spin,2)*bh_v*pow(y1_2,2)*psi4_2*sigma*(2*sigma*R_x - rr_2*dsigma_dx) + 2*pow(psi4_2,2)*pow(rr_2,2)*(-2*bh_spin*y1_2*sigma*R_x + 2*bh_v*alpha0*pow(rr_2,3)*dalpha_dx + bh_spin*y1_2*rr_2*dsigma_dx)))))/(pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)) + (bh_spin*x1_2*gamma*(bh_spin*bh_v*y1_2*hh*psi4_2*pow(rr_2,2) - sigma)*((pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + 2*bh_spin*bh_v*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*pow(bh_v,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(-(pow(bh_spin,2)*pow(bh_v,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*rr_2*pow(sigma,2)*dpsi4_2_dy) - pow(bh_spin,2)*pow(bh_v,2)*psi4_2*sigma*(4*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*R_y + rr_2*(sigma*(-2*y1_2 + pow(bh_spin,2)*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*dhh_dy) - 2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dsigma_dy)) + pow(bh_spin,2)*y1_2*pow(psi4_2,3)*pow(rr_2,5)*(y1_2*dhh_dy + 2*x1_2*gamma*dhh_dx) + pow(bh_spin,6)*y1_2*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,5)*(4*psi4_2 + y1_2*dpsi4_2_dy + 2*x1_2*gamma*dpsi4_2_dx) + pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*sigma*(y1_2*R_y + x1_2*gamma*R_x) + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + dpsi4_2_dy) - 2*bh_spin*bh_v*rr_2*(2*sigma + y1_2*dsigma_dy + x1_2*gamma*dsigma_dx)) + pow(bh_spin,4)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*(y1_2*R_y + x1_2*gamma*R_x) + y1_2*psi4_2*pow(rr_2,3)*(pow(bh_spin,2)*y1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dhh_dy + 2*(4 + pow(bh_spin,2)*x1_2*pow(y1_2,2)*gamma*dhh_dx + pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*dhh_dx)) + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dalpha_dy + (3*pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dpsi4_2_dy + 4*x1_2*y1_2*gamma*dpsi4_2_dx) - 2*bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*rr_2*(2*sigma + y1_2*dsigma_dy + x1_2*gamma*dsigma_dx)) + pow(bh_spin,2)*hh*(-(pow(bh_spin,2)*pow(bh_v,2)*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*rr_2*pow(sigma,2)*dpsi4_2_dy) - 2*pow(bh_spin,2)*pow(bh_v,2)*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*psi4_2*sigma*(2*sigma*R_y - rr_2*dsigma_dy) + 2*y1_2*pow(psi4_2,3)*pow(rr_2,5)*(pow(bh_spin,2)*y1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dhh_dy + 2*(1 + pow(bh_spin,2)*x1_2*pow(y1_2,2)*gamma*dhh_dx + pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*dhh_dx)) + pow(psi4_2,2)*pow(rr_2,2)*(8*bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*(y1_2*R_y + x1_2*gamma*R_x) + pow(rr_2,3)*(-4*pow(bh_v,2)*alpha0*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dalpha_dy + (3*pow(y1_2,2) + 2*pow(x1_2,2)*pow(gamma,2))*dpsi4_2_dy + 2*x1_2*y1_2*gamma*dpsi4_2_dx) - 4*bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*rr_2*(2*sigma + y1_2*dsigma_dy + x1_2*gamma*dsigma_dx)))) + bh_spin*x1_2*gamma*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*(bh_spin*y1_2*hh*psi4_2*pow(rr_2,2) - bh_v*sigma)*(2*pow(bh_spin,2)*pow(bh_v,2)*x1_2*gamma*psi4_2*rr_2*pow(sigma,2) + pow(bh_spin*y1_2 + pow(bh_spin,3)*pow(y1_2,3)*hh,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dx - pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*pow(sigma,2)*dpsi4_2_dx + pow(1 + pow(bh_spin,2)*pow(y1_2,2)*hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_x - 2*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx + pow(rr_2,3)*dpsi4_2_dx + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(rr_2,3)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx) - pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*psi4_2*sigma*(sigma*(4*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 2*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*dsigma_dx) + pow(bh_spin,4)*pow(x1_2,4)*pow(gamma,4)*(-(pow(bh_v,2)*psi4_2*rr_2*pow(sigma,2)*dhh_dx) + pow(bh_spin,2)*pow(y1_2,2)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,5)*dpsi4_2_dx + pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_x - 2*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dx + pow(rr_2,3)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx) - pow(bh_v,2)*hh*sigma*(rr_2*sigma*dpsi4_2_dx + psi4_2*(4*sigma*R_x - 2*rr_2*dsigma_dx))) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*(2*pow(bh_spin,4)*pow(y1_2,4)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,5)*dpsi4_2_dx + 2*pow(bh_spin,2)*pow(y1_2,2)*pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_x - 2*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dx + 2*pow(rr_2,3)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx) - pow(bh_v,2)*sigma*(rr_2*sigma*dpsi4_2_dx + 2*psi4_2*(sigma*(2*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - rr_2*dsigma_dx)) + 2*hh*(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dx - pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dx + 2*pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*psi4_2*sigma*(-2*sigma*R_x + rr_2*dsigma_dx) + pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_x - 2*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx + pow(rr_2,3)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx))))))/(pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,3)*(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))) + ((bh_v*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - bh_v*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + bh_spin*(1 + pow(bh_v,2))*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(pow(bh_spin,5)*pow(x1_2,5)*pow(gamma,5)*(bh_spin*y1_2*hh*psi4_2*pow(rr_2,2) - bh_v*sigma)*(-(pow(bh_v,2)*psi4_2*rr_2*pow(sigma,2)*dhh_dy) + pow(bh_spin,2)*y1_2*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,5)*(4*psi4_2 + y1_2*dpsi4_2_dy) + pow(hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dy + dpsi4_2_dy) - 2*bh_spin*bh_v*rr_2*(2*sigma + y1_2*dsigma_dy)) - pow(bh_v,2)*hh*sigma*(rr_2*sigma*dpsi4_2_dy + psi4_2*(4*sigma*R_y - 2*rr_2*dsigma_dy))) + pow(bh_spin,3)*pow(x1_2,3)*pow(gamma,3)*(2*pow(bh_spin,5)*pow(y1_2,4)*pow(hh,4)*pow(psi4_2,3)*pow(rr_2,7)*(4*psi4_2 + y1_2*dpsi4_2_dy) + pow(bh_v,3)*pow(sigma,2)*(rr_2*sigma*dpsi4_2_dy + 2*psi4_2*(sigma*(2*R_y + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dy) - rr_2*dsigma_dy)) - bh_v*hh*sigma*(2*pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dy - 2*pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dy + bh_spin*bh_v*y1_2*psi4_2*sigma*(-8*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*dpsi4_2_dy + 4*bh_spin*bh_v*y1_2*rr_2*dsigma_dy) + 2*pow(psi4_2,2)*pow(rr_2,2)*(6*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + dpsi4_2_dy) + bh_spin*bh_v*rr_2*(sigma*(-3 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) - 3*y1_2*dsigma_dy))) + 2*pow(bh_spin,3)*pow(y1_2,2)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,4)*(pow(psi4_2,2)*pow(rr_2,3)*(4 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) - bh_spin*bh_v*pow(y1_2,2)*rr_2*sigma*dpsi4_2_dy - 2*y1_2*psi4_2*(-2*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(pow(bh_v,2)*alpha0*dalpha_dy - dpsi4_2_dy) + bh_spin*bh_v*rr_2*(4*sigma + y1_2*dsigma_dy))) - 2*bh_spin*y1_2*pow(hh,2)*psi4_2*pow(rr_2,2)*(-(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dy) + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dy + 2*bh_spin*bh_v*y1_2*psi4_2*sigma*(4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-(pow(bh_v,2)*alpha0*dalpha_dy) + dpsi4_2_dy) - 2*bh_spin*bh_v*rr_2*(sigma + y1_2*dsigma_dy)) + pow(psi4_2,2)*pow(rr_2,2)*(-4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(2*pow(bh_v,2)*alpha0*dalpha_dy - dpsi4_2_dy) + bh_spin*bh_v*rr_2*(sigma*(8 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) + 2*y1_2*dsigma_dy)))) + bh_spin*x1_2*gamma*(pow(bh_spin,7)*pow(y1_2,6)*pow(hh,4)*pow(psi4_2,3)*pow(rr_2,7)*(4*psi4_2 + y1_2*dpsi4_2_dy) + bh_v*sigma*(-(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dy) + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dy + pow(bh_spin,2)*pow(bh_v,2)*y1_2*psi4_2*sigma*(4*y1_2*sigma*R_y + rr_2*(sigma*(-2 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) - 2*y1_2*dsigma_dy)) + pow(psi4_2,2)*pow(rr_2,2)*(-4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(2*pow(bh_v,2)*alpha0*dalpha_dy - dpsi4_2_dy) + 2*bh_spin*bh_v*rr_2*(sigma + y1_2*dsigma_dy))) + pow(bh_spin,5)*pow(y1_2,4)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,4)*(pow(psi4_2,2)*pow(rr_2,3)*(8 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) - bh_spin*bh_v*pow(y1_2,2)*rr_2*sigma*dpsi4_2_dy + y1_2*psi4_2*(4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + 3*dpsi4_2_dy) - 2*bh_spin*bh_v*rr_2*(4*sigma + y1_2*dsigma_dy))) - pow(bh_spin,3)*pow(y1_2,2)*pow(hh,2)*psi4_2*pow(rr_2,2)*(-2*pow(psi4_2,3)*pow(rr_2,5)*(2 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,3)*rr_2*pow(sigma,2)*dpsi4_2_dy + bh_spin*bh_v*pow(y1_2,2)*psi4_2*sigma*(8*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + 3*dpsi4_2_dy) - 4*bh_spin*bh_v*rr_2*(sigma + y1_2*dsigma_dy)) + y1_2*pow(psi4_2,2)*pow(rr_2,2)*(-8*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(4*pow(bh_v,2)*alpha0*dalpha_dy - 3*dpsi4_2_dy) + bh_spin*bh_v*rr_2*(sigma*(16 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) + 4*y1_2*dsigma_dy))) + bh_spin*y1_2*hh*(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,4)*pow(rr_2,7)*dhh_dy + pow(bh_spin,3)*pow(bh_v,3)*pow(y1_2,3)*rr_2*pow(sigma,3)*dpsi4_2_dy + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*psi4_2*pow(sigma,2)*(4*bh_spin*bh_v*y1_2*sigma*R_y - pow(rr_2,3)*dpsi4_2_dy - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dy) + pow(psi4_2,3)*pow(rr_2,4)*(4*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(-2*pow(bh_v,2)*alpha0*dalpha_dy + dpsi4_2_dy) - 2*bh_spin*bh_v*rr_2*(sigma*(4 + pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) + y1_2*dsigma_dy)) + bh_spin*bh_v*y1_2*pow(psi4_2,2)*pow(rr_2,2)*sigma*(-12*bh_spin*bh_v*y1_2*sigma*R_y + pow(rr_2,3)*(4*pow(bh_v,2)*alpha0*dalpha_dy - 3*dpsi4_2_dy) + bh_spin*bh_v*rr_2*(sigma*(10 - pow(bh_spin,2)*pow(y1_2,3)*dhh_dy) + 6*y1_2*dsigma_dy)))) + pow(bh_spin,6)*pow(x1_2,6)*pow(gamma,6)*hh*psi4_2*pow(rr_2,3)*(2*pow(bh_v,2)*alpha0*pow(hh,2)*pow(psi4_2,2)*pow(rr_2,4)*dalpha_dx + pow(bh_v,2)*psi4_2*pow(sigma,2)*dhh_dx + pow(bh_spin,2)*pow(y1_2,2)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,4)*dpsi4_2_dx + bh_v*hh*sigma*(-2*bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx + bh_v*sigma*dpsi4_2_dx) + pow(hh,2)*psi4_2*pow(rr_2,2)*(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx - psi4_2*pow(rr_2,2)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*sigma*dpsi4_2_dx)) - psi4_2*pow(rr_2,2)*(pow(bh_spin*y1_2 + pow(bh_spin,3)*pow(y1_2,3)*hh,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dx - pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*pow(sigma,2)*dpsi4_2_dx + pow(1 + pow(bh_spin,2)*pow(y1_2,2)*hh,2)*pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*bh_v*y1_2*sigma*R_x - 2*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx + pow(rr_2,3)*dpsi4_2_dx + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(rr_2,3)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx) - pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*psi4_2*sigma*(sigma*(4*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 2*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*rr_2*dsigma_dx)) + pow(bh_spin,4)*pow(x1_2,4)*pow(gamma,4)*psi4_2*pow(rr_2,3)*(pow(bh_v,2)*psi4_2*pow(sigma,2)*dhh_dx + 2*pow(bh_spin,4)*pow(y1_2,4)*pow(hh,4)*pow(psi4_2,2)*pow(rr_2,4)*dpsi4_2_dx + 2*bh_v*hh*sigma*(-2*bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx + pow(bh_spin,2)*bh_v*pow(y1_2,2)*psi4_2*sigma*dhh_dx + bh_v*sigma*dpsi4_2_dx) + pow(bh_spin,2)*pow(y1_2,2)*pow(hh,3)*psi4_2*pow(rr_2,2)*(4*pow(bh_v,2)*alpha0*psi4_2*pow(rr_2,2)*dalpha_dx + 2*pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx - psi4_2*pow(rr_2,2)*dpsi4_2_dx - 4*bh_spin*bh_v*y1_2*sigma*dpsi4_2_dx) + pow(hh,2)*(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,4)*dhh_dx - 4*bh_spin*bh_v*y1_2*psi4_2*pow(rr_2,2)*sigma*dpsi4_2_dx + 2*pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*pow(sigma,2)*dpsi4_2_dx + pow(psi4_2,2)*rr_2*(6*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx - 4*bh_spin*bh_v*y1_2*sigma*(R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 3*pow(rr_2,3)*dpsi4_2_dx + 2*bh_spin*bh_v*y1_2*rr_2*dsigma_dx))) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*pow(rr_2,2)*(pow(bh_spin,6)*pow(y1_2,6)*pow(hh,4)*pow(psi4_2,2)*pow(rr_2,5)*dpsi4_2_dx + bh_v*rr_2*sigma*(-2*bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx + 2*pow(bh_spin,2)*bh_v*pow(y1_2,2)*psi4_2*sigma*dhh_dx + bh_v*sigma*dpsi4_2_dx) + pow(bh_spin,4)*pow(y1_2,4)*pow(hh,3)*psi4_2*pow(rr_2,3)*(2*pow(bh_v,2)*alpha0*psi4_2*pow(rr_2,2)*dalpha_dx + pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,2)*pow(rr_2,2)*dhh_dx - psi4_2*pow(rr_2,2)*dpsi4_2_dx - 2*bh_spin*bh_v*y1_2*sigma*dpsi4_2_dx) + pow(bh_spin,2)*pow(y1_2,2)*pow(hh,2)*rr_2*(-4*bh_spin*bh_v*y1_2*psi4_2*pow(rr_2,2)*sigma*dpsi4_2_dx + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*pow(sigma,2)*dpsi4_2_dx + pow(psi4_2,2)*rr_2*(8*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx - 2*bh_spin*bh_v*y1_2*sigma*(4*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 5*pow(rr_2,3)*dpsi4_2_dx + 4*bh_spin*bh_v*y1_2*rr_2*dsigma_dx)) + hh*(-(pow(bh_spin,2)*pow(y1_2,2)*pow(psi4_2,3)*pow(rr_2,5)*dhh_dx) + 3*pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dx + pow(psi4_2,2)*pow(rr_2,2)*(6*pow(bh_v,2)*alpha0*pow(rr_2,3)*dalpha_dx - 4*bh_spin*bh_v*y1_2*sigma*(2*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 3*pow(rr_2,3)*dpsi4_2_dx + 4*bh_spin*bh_v*y1_2*rr_2*dsigma_dx) + bh_spin*bh_v*y1_2*psi4_2*sigma*(bh_spin*bh_v*y1_2*sigma*(4*R_x + pow(bh_spin,2)*pow(y1_2,2)*rr_2*dhh_dx) - 2*(pow(rr_2,3)*dpsi4_2_dx + bh_spin*bh_v*y1_2*rr_2*dsigma_dx))))))/(pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,3)*(-(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))))/(2.*pow(rr_2,7)*sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))));
-    kxy[ind] = -0.5*(sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))))*(2*bh_v*(-1 + pow(bh_v,2))*alpha0*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)*((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma)*dalpha_dy - bh_v*pow(alpha0,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4)*(2*bh_spin*bh_v*rr_2*sigma - bh_spin*pow(bh_v,3)*rr_2*sigma - 2*bh_spin*bh_v*y1_2*sigma*R_y + 2*bh_spin*pow(bh_v,3)*y1_2*sigma*R_y - 2*bh_spin*bh_v*x1_2*gamma*sigma*R_x - pow(bh_spin,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dy + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dy - pow(rr_2,3)*dpsi4_2_dy + pow(bh_v,2)*pow(rr_2,3)*dpsi4_2_dy + bh_spin*bh_v*y1_2*rr_2*dsigma_dy - bh_spin*pow(bh_v,3)*y1_2*rr_2*dsigma_dy - pow(bh_spin,2)*pow(bh_v,2)*x1_2*y1_2*gamma*psi4_2*pow(rr_2,3)*dhh_dx - pow(bh_spin,4)*pow(x1_2,2)*y1_2*pow(gamma,2)*pow(hh,2)*pow(rr_2,3)*((4 - 3*pow(bh_v,2))*psi4_2 + (y1_2 - pow(bh_v,2)*y1_2)*dpsi4_2_dy + x1_2*gamma*dpsi4_2_dx) + bh_spin*bh_v*x1_2*gamma*rr_2*dsigma_dx + pow(bh_spin,2)*hh*((-1 + pow(bh_v,2))*pow(y1_2,2)*pow(rr_2,3)*dpsi4_2_dy + pow(x1_2,2)*pow(gamma,2)*(2*bh_spin*bh_v*(-1 + pow(bh_v,2))*y1_2*sigma*R_y + (-1 + pow(bh_v,2))*pow(rr_2,3)*dpsi4_2_dy + bh_spin*bh_v*rr_2*(-((-2 + pow(bh_v,2))*sigma) - (-1 + pow(bh_v,2))*y1_2*dsigma_dy)) + y1_2*psi4_2*pow(rr_2,3)*(-2 + pow(bh_v,2) + pow(bh_spin,2)*(-1 + pow(bh_v,2))*pow(x1_2,2)*y1_2*pow(gamma,2)*dhh_dy - pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*dhh_dx) - x1_2*y1_2*gamma*pow(rr_2,3)*dpsi4_2_dx + bh_spin*bh_v*pow(x1_2,3)*pow(gamma,3)*(-2*sigma*R_x + rr_2*dsigma_dx))) - bh_spin*((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma)*(-(pow(bh_v,2)*pow(psi4_2,2)*pow(rr_2,3)*sigma) + bh_spin*pow(bh_v,3)*y1_2*psi4_2*rr_2*pow(sigma,2) - 2*y1_2*pow(psi4_2,2)*pow(rr_2,2)*sigma*R_y + 2*pow(bh_v,2)*y1_2*pow(psi4_2,2)*pow(rr_2,2)*sigma*R_y + 2*bh_spin*bh_v*pow(y1_2,2)*psi4_2*pow(sigma,2)*R_y - 2*bh_spin*pow(bh_v,3)*pow(y1_2,2)*psi4_2*pow(sigma,2)*R_y + 4*bh_spin*bh_v*pow(x1_2,2)*pow(gamma,2)*psi4_2*pow(sigma,2)*R_y - 4*bh_spin*pow(bh_v,3)*pow(x1_2,2)*pow(gamma,2)*psi4_2*pow(sigma,2)*R_y + 2*x1_2*gamma*pow(psi4_2,2)*pow(rr_2,2)*sigma*R_x - 2*bh_spin*bh_v*x1_2*y1_2*gamma*psi4_2*pow(sigma,2)*R_x - pow(bh_spin,2)*pow(y1_2,3)*pow(psi4_2,2)*pow(rr_2,3)*sigma*dhh_dy + pow(bh_spin,2)*pow(bh_v,2)*pow(y1_2,3)*pow(psi4_2,2)*pow(rr_2,3)*sigma*dhh_dy + pow(bh_spin,3)*bh_v*pow(y1_2,4)*psi4_2*rr_2*pow(sigma,2)*dhh_dy - pow(bh_spin,3)*pow(bh_v,3)*pow(y1_2,4)*psi4_2*rr_2*pow(sigma,2)*dhh_dy + 2*pow(bh_spin,3)*bh_v*pow(x1_2,2)*pow(y1_2,2)*pow(gamma,2)*psi4_2*rr_2*pow(sigma,2)*dhh_dy - 2*pow(bh_spin,3)*pow(bh_v,3)*pow(x1_2,2)*pow(y1_2,2)*pow(gamma,2)*psi4_2*rr_2*pow(sigma,2)*dhh_dy + pow(bh_spin,3)*bh_v*pow(x1_2,4)*pow(gamma,4)*psi4_2*rr_2*pow(sigma,2)*dhh_dy - pow(bh_spin,3)*pow(bh_v,3)*pow(x1_2,4)*pow(gamma,4)*psi4_2*rr_2*pow(sigma,2)*dhh_dy - y1_2*psi4_2*pow(rr_2,3)*sigma*dpsi4_2_dy + pow(bh_v,2)*y1_2*psi4_2*pow(rr_2,3)*sigma*dpsi4_2_dy + bh_spin*bh_v*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dy - bh_spin*pow(bh_v,3)*pow(y1_2,2)*rr_2*pow(sigma,2)*dpsi4_2_dy + bh_spin*bh_v*pow(x1_2,2)*pow(gamma,2)*rr_2*pow(sigma,2)*dpsi4_2_dy - bh_spin*pow(bh_v,3)*pow(x1_2,2)*pow(gamma,2)*rr_2*pow(sigma,2)*dpsi4_2_dy + y1_2*pow(psi4_2,2)*pow(rr_2,3)*dsigma_dy - pow(bh_v,2)*y1_2*pow(psi4_2,2)*pow(rr_2,3)*dsigma_dy - bh_spin*bh_v*pow(y1_2,2)*psi4_2*rr_2*sigma*dsigma_dy + bh_spin*pow(bh_v,3)*pow(y1_2,2)*psi4_2*rr_2*sigma*dsigma_dy - 2*bh_spin*bh_v*pow(x1_2,2)*pow(gamma,2)*psi4_2*rr_2*sigma*dsigma_dy + 2*bh_spin*pow(bh_v,3)*pow(x1_2,2)*pow(gamma,2)*psi4_2*rr_2*sigma*dsigma_dy + bh_spin*bh_v*x1_2*y1_2*gamma*pow(psi4_2,3)*pow(rr_2,5)*dhh_dx - pow(bh_spin,2)*pow(bh_v,2)*x1_2*pow(y1_2,2)*gamma*pow(psi4_2,2)*pow(rr_2,3)*sigma*dhh_dx + pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*pow(psi4_2,2)*pow(rr_2,3)*sigma*dhh_dx - pow(bh_spin,2)*pow(bh_v,2)*pow(x1_2,3)*pow(gamma,3)*pow(psi4_2,2)*pow(rr_2,3)*sigma*dhh_dx + x1_2*gamma*psi4_2*pow(rr_2,3)*sigma*dpsi4_2_dx - pow(bh_v,2)*x1_2*gamma*psi4_2*pow(rr_2,3)*sigma*dpsi4_2_dx + pow(bh_spin,5)*bh_v*y1_2*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*pow(hh,3)*pow(psi4_2,2)*pow(rr_2,5)*(psi4_2 + x1_2*gamma*dpsi4_2_dx) - x1_2*gamma*pow(psi4_2,2)*pow(rr_2,3)*dsigma_dx + bh_spin*bh_v*x1_2*y1_2*gamma*psi4_2*rr_2*sigma*dsigma_dx + bh_spin*hh*(-(pow(bh_spin,2)*bh_v*(-1 + pow(bh_v,2))*pow(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2),2)*rr_2*pow(sigma,2)*dpsi4_2_dy) + bh_v*y1_2*pow(psi4_2,3)*pow(rr_2,5)*(1 + 2*pow(bh_spin,2)*x1_2*pow(y1_2,2)*gamma*dhh_dx + 2*pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*dhh_dx) + bh_spin*psi4_2*sigma*(-2*bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*((-1 + pow(bh_v,2))*(pow(y1_2,2) + 2*pow(x1_2,2)*pow(gamma,2))*R_y + x1_2*y1_2*gamma*R_x) + pow(rr_2,3)*((-1 + pow(bh_v,2))*y1_2*(2*pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*dpsi4_2_dy + x1_2*gamma*((1 - 2*pow(bh_v,2))*pow(y1_2,2) - 2*(-1 + pow(bh_v,2))*pow(x1_2,2)*pow(gamma,2))*dpsi4_2_dx) + bh_spin*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*rr_2*(-((-2 + pow(bh_v,2))*y1_2*sigma) + (-1 + pow(bh_v,2))*(pow(y1_2,2) + 2*pow(x1_2,2)*pow(gamma,2))*dsigma_dy + x1_2*y1_2*gamma*dsigma_dx)) + pow(psi4_2,2)*pow(rr_2,2)*(4*bh_spin*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*((-1 + pow(bh_v,2))*y1_2*R_y + x1_2*gamma*R_x) + bh_v*x1_2*y1_2*gamma*pow(rr_2,3)*dpsi4_2_dx + bh_spin*rr_2*(sigma*(pow(x1_2,2)*pow(gamma,2)*(2 - 4*pow(bh_v,2) + pow(bh_spin,2)*(-1 + pow(bh_v,2))*pow(y1_2,3)*dhh_dy) + pow(y1_2,2)*(-2 - pow(bh_v,2) + pow(bh_spin,2)*(-1 + pow(bh_v,2))*pow(y1_2,3)*dhh_dy) - pow(bh_spin,2)*pow(bh_v,2)*x1_2*pow(y1_2,4)*gamma*dhh_dx + pow(bh_spin,2)*(1 - 2*pow(bh_v,2))*pow(x1_2,3)*pow(y1_2,2)*pow(gamma,3)*dhh_dx - pow(bh_spin,2)*(-1 + pow(bh_v,2))*pow(x1_2,5)*pow(gamma,5)*dhh_dx) - 2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*((-1 + pow(bh_v,2))*y1_2*dsigma_dy + x1_2*gamma*dsigma_dx)))) + pow(bh_spin,3)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(hh,2)*psi4_2*pow(rr_2,2)*(bh_v*y1_2*pow(psi4_2,2)*pow(rr_2,3)*(2 + pow(bh_spin,2)*x1_2*pow(y1_2,2)*gamma*dhh_dx + pow(bh_spin,2)*pow(x1_2,3)*pow(gamma,3)*dhh_dx) + bh_spin*rr_2*sigma*((-1 + pow(bh_v,2))*pow(y1_2,3)*dpsi4_2_dy - x1_2*gamma*(pow(bh_v,2)*pow(y1_2,2) + (-1 + pow(bh_v,2))*pow(x1_2,2)*pow(gamma,2))*dpsi4_2_dx) - psi4_2*(-2*bh_spin*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*sigma*((-1 + pow(bh_v,2))*y1_2*R_y + x1_2*gamma*R_x) - 2*bh_v*x1_2*y1_2*gamma*pow(rr_2,3)*dpsi4_2_dx + bh_spin*rr_2*((2*pow(y1_2,2) + (-2 + 3*pow(bh_v,2))*pow(x1_2,2)*pow(gamma,2))*sigma + (pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*((-1 + pow(bh_v,2))*y1_2*dsigma_dy + x1_2*gamma*dsigma_dx)))))))/(pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,3)*pow(psi4_2,3)*pow(rr_2,7));
-    kxz[ind] = (sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))))*(2*bh_v*alpha0*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,5)*(-((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)) + bh_spin*bh_v*y1_2*sigma)*dalpha_dz + bh_v*pow(alpha0,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4)*(2*bh_spin*bh_v*y1_2*sigma*R_z + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*pow(rr_2,3)*dhh_dz + pow(rr_2,3)*dpsi4_2_dz + pow(bh_spin,2)*pow(y1_2,2)*hh*pow(rr_2,3)*dpsi4_2_dz + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*pow(rr_2,3)*dpsi4_2_dz - bh_spin*bh_v*y1_2*rr_2*dsigma_dz) + bh_spin*(y1_2*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4) - bh_spin*bh_v*(2*pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma + pow(bh_spin,2)*pow(bh_v,2)*y1_2*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*sigma*dpsi4_2_dz + psi4_2*(sigma*(2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*R_z + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*rr_2*dhh_dz) - (1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*rr_2*dsigma_dz))))/(2.*(-1 + pow(bh_v,2))*pow(alpha0,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,3)*pow(psi4_2,3)*pow(rr_2,7));
-    kyy[ind] = (gamma*(2*pow(bh_spin,2)*bh_v*x1_2*gamma*hh*psi4_2 + (4*bh_spin*x1_2*gamma*sigma*R_y)/pow(rr_2,3) + 2*pow(bh_spin,2)*bh_v*x1_2*y1_2*gamma*psi4_2*dhh_dy + 2*pow(bh_spin,2)*bh_v*x1_2*y1_2*gamma*hh*dpsi4_2_dy - (2*bh_spin*x1_2*gamma*dsigma_dy)/pow(rr_2,2) + ((bh_v*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - bh_v*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + bh_spin*(1 + pow(bh_v,2))*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(bh_spin*x1_2*gamma*(2*bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,3)*dhh_dy + bh_v*rr_2*sigma*dpsi4_2_dy + bh_spin*hh*psi4_2*pow(rr_2,3)*(4*psi4_2 + y1_2*dpsi4_2_dy) + psi4_2*(4*bh_v*sigma*R_y - 2*bh_v*rr_2*dsigma_dy)) + pow(bh_spin,3)*pow(x1_2,3)*pow(gamma,3)*(bh_v*psi4_2*rr_2*sigma*dhh_dy + bh_spin*pow(hh,2)*psi4_2*pow(rr_2,3)*(4*psi4_2 + y1_2*dpsi4_2_dy) + hh*(bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,3)*dhh_dy + bh_v*rr_2*sigma*dpsi4_2_dy + psi4_2*(4*bh_v*sigma*R_y - 2*bh_v*rr_2*dsigma_dy))) + psi4_2*pow(rr_2,3)*dpsi4_2_dx + pow(bh_spin,4)*pow(x1_2,4)*pow(gamma,4)*hh*psi4_2*pow(rr_2,3)*(psi4_2*dhh_dx + hh*dpsi4_2_dx) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*pow(rr_2,3)*(psi4_2*dhh_dx + 2*hh*dpsi4_2_dx)))/(psi4_2*pow(rr_2,3)*(-(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))) - (bh_spin*x1_2*gamma*(bh_spin*bh_v*y1_2*hh*psi4_2 - sigma/pow(rr_2,2))*(rr_2*(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + 2*bh_spin*bh_v*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*pow(bh_v,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dy + (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dy) + bh_spin*x1_2*gamma*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*(bh_spin*y1_2*hh*psi4_2*pow(rr_2,2) - bh_v*sigma)*(2*bh_spin*x1_2*gamma*(2*bh_v*sigma*R_y + bh_spin*y1_2*psi4_2*pow(rr_2,3)*dhh_dy + bh_spin*hh*pow(rr_2,3)*(2*psi4_2 + y1_2*dpsi4_2_dy) - bh_v*rr_2*dsigma_dy) + pow(rr_2,3)*dpsi4_2_dx + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*pow(rr_2,3)*(psi4_2*dhh_dx + hh*dpsi4_2_dx))))/(psi4_2*rr_2*(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))))/(2.*sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))));
-    kyz[ind] = (bh_spin*x1_2*pow(gamma,2)*((2*sigma*R_z)/pow(rr_2,3) + bh_spin*bh_v*y1_2*psi4_2*dhh_dz + bh_spin*bh_v*y1_2*hh*dpsi4_2_dz - dsigma_dz/pow(rr_2,2) - ((bh_spin*bh_v*y1_2*hh*psi4_2 - sigma/pow(rr_2,2))*(rr_2*(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + 2*bh_spin*bh_v*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*pow(bh_v,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dz) + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*(bh_spin*y1_2*hh*psi4_2*pow(rr_2,2) - bh_v*sigma)*(2*bh_v*sigma*R_z + bh_spin*y1_2*psi4_2*pow(rr_2,3)*dhh_dz + bh_spin*y1_2*hh*pow(rr_2,3)*dpsi4_2_dz - bh_v*rr_2*dsigma_dz)))/(psi4_2*rr_2*(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))) + ((bh_v*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - bh_v*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*pow(psi4_2,2)*pow(rr_2,4) + bh_spin*(1 + pow(bh_v,2))*y1_2*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2)*sigma - pow(bh_spin,2)*bh_v*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*pow(sigma,2))*(bh_spin*y1_2*pow(psi4_2,2)*pow(rr_2,3)*dhh_dz + bh_v*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*rr_2*sigma*dpsi4_2_dz + bh_v*psi4_2*(sigma*(2*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*R_z + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*rr_2*dhh_dz) - (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*rr_2*dsigma_dz)))/(psi4_2*pow(rr_2,3)*(-(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)) + pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))))/(2.*sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2)))));
-    kzz[ind] = -0.5*(sqrt(-((pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*pow(gamma,2)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4))/(pow(bh_v,2)*pow(alpha0,2)*(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4) - pow((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma,2))))*(-(bh_v*pow(alpha0,2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,4)*(-(pow(bh_spin,2)*(-1 + pow(bh_v,2))*x1_2*y1_2*gamma*hh*dpsi4_2_dy) + dpsi4_2_dx + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh*dpsi4_2_dx)) + ((1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh)*psi4_2*pow(rr_2,2) - bh_spin*bh_v*y1_2*sigma)*(-(bh_spin*(-1 + pow(bh_v,2))*x1_2*gamma*sigma*dpsi4_2_dy) + pow(bh_spin,2)*bh_v*pow(x1_2,2)*pow(gamma,2)*hh*psi4_2*pow(rr_2,2)*dpsi4_2_dx + (bh_v*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2*pow(rr_2,2) - bh_spin*y1_2*sigma)*dpsi4_2_dx)))/(pow(-1 + pow(bh_v,2),2)*pow(alpha0,2)*gamma*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + pow(x1_2,2)*pow(gamma,2))*hh,2)*pow(psi4_2,2)*pow(rr_2,4));
-    
+
+        // Compute covariant derivatives of the shift
+        CCTK_REAL Dbetad[4][4];
+        for (int i = 1; i <= 3; ++i) {
+          for (int j = 1; j <= 3; ++j) {
+            Dbetad[i][j] = dbetad[i][j];
+              for (int k = 1; k <= 3; ++k)
+                  Dbetad[i][j] -= Gamma[k][i][j] * betad[k];
+          }
+        }
+
+      // Compute extrinsic curvature K_{ij}
+      CCTK_REAL new_lapse = alph_2; // or alpha0, depending on your convention
+      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]);
+      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]);
+      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]);
+      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2]);
+      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2]);
+      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3]);
+
+
+     
 
         
         check_nan_or_inf("kxx",kxx[ind]);
@@ -871,7 +1393,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         
 
-        const CCTK_REAL alph_1 = exp(F0_1[ind]);
+        const CCTK_REAL alph_1 = new_lapse;
         const CCTK_REAL alph_2 = alpha0;
 
         // No regularization needed for the BS, the lapse is non-zero
@@ -898,15 +1420,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             alp[ind] = SMALL;
         }
 
-        CCTK_REAL bphi;
         CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
         CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
         bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
 
         // shift
         if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
-          betax[ind] =   y1_2*bphi;//por enquato o shift da bs é zero pois é estática.
-          betay[ind] = - x1_2*bphi;
+          betax[ind] =  bx ;//por enquato o shift da bs é zero pois é estática.
+          betay[ind] =  by;
           betaz[ind] =   0.;
         }
 

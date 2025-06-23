@@ -1378,7 +1378,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     CCTK_REAL x1_2_4 = x1_2_3 * x1_2;
     CCTK_REAL x1_2_5 = x1_2_4 * x1_2;
     CCTK_REAL x1_2_6 = x1_2_5 * x1_2;
-    CCTK_REAL y1_2_sq = y1_2 * y1_2;
+    // CCTK_REAL y1_2_sq = y1_2 * y1_2;
     CCTK_REAL y1_2_3 = y1_2_sq * y1_2;
     CCTK_REAL y1_2_4 = y1_2_3 * y1_2;
     CCTK_REAL y1_2_5 = y1_2_4 * y1_2;

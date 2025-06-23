@@ -1388,7 +1388,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     CCTK_REAL gamma4 = gamma2 * gamma2;
     CCTK_REAL gamma5 = gamma3 * gamma2;
     CCTK_REAL gamma6 = gamma3 * gamma3;
-    CCTK_REAL rr_2_sq = rr_2 * rr_2;
+    // CCTK_REAL rr_2_sq = rr_2 * rr_2;
     CCTK_REAL rr_2_3 = rr_2_sq * rr_2;
     CCTK_REAL rr_2_4 = rr_2_3 * rr_2;
     CCTK_REAL rr_2_5 = rr_2_4 * rr_2;

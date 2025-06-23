@@ -774,12 +774,20 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
        
 
 
-       
+        //capital Gs refer to the unboosted frame. (aqui nao preciso de por gammas certo? ver no caso de schwarzschild)
+
+        const CCTK_REAL Gtt = -alpha02 + bphi*bphi;
+        const CCTK_REAL Gxt = bh_spin*sigma*y1_2/rr2_2;
+        const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
+        const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*x1_2;
+        const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2;
+        const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*x1_2; 
+        const CCTK_REAL Gty = -bh_spin*sigma*x1_2/rr2_2;
 
        
 
-
-        gxx[ind] = gamma*((bh_v*y1_2*bphi*gamma)/\
+        gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
+        // gxx[ind] = gamma*((bh_v*y1_2*bphi*gamma)/\
                   (pow(y1_2,2) + pow(x1_2,2)*gamma2) + gamma*(1 + \
                   bh_spin2*pow(y1_2,2)*hh)*psi4_2) - \
                   bh_v*gamma*(-((y1_2*bphi*\
@@ -810,10 +818,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                   sqrt(bh_spin2))/(2.*rr_2),2)*pow(1 + (bh_mass + \
                   sqrt(bh_spin2))/(2.*rr_2),2)*pow(rr_2,2) + bh_spin2*(1 + \
                   ((pow(y1_2,2) + pow(x1_2,2)*gamma2)*sigma)/pow(rr_2,2))))));// + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;;
-        gxy[ind] =-((bh_v*x1_2*bphi*gamma2)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
-                  bh_spin2*x1_2*y1_2*gamma2*hh*psi4_2;// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
+        // gxy[ind] =-((bh_v*x1_2*bphi*gamma2)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
+        //           bh_spin2*x1_2*y1_2*gamma2*hh*psi4_2;// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
+        gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
         gxz[ind] = 0;
-        gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
+        // gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
+        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
         gyz[ind] = 0;
         gzz[ind] = psi4_2; // + psi4_1 - 1;
 

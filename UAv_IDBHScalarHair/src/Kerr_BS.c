@@ -1219,6 +1219,18 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dg[3][2][2] = dg[2][3][2]; // dgzy_dy = dgyz_dy
         dg[3][2][3] = dg[2][3][3]; // dgzy_dz = dgyz_dz
 
+        // Check for NaN or Inf in all metric derivatives
+        for (int ii = 1; ii <= 3; ++ii) {
+          for (int jj = 1; jj <= 3; ++jj) {
+            for (int kk = 1; kk <= 3; ++kk) {
+              char dg_name[32];
+              snprintf(dg_name, sizeof(dg_name), "dg[%d][%d][%d]", ii, jj, kk);
+              check_nan_or_inf(dg_name, dg[ii][jj][kk]);
+            }
+          }
+        }
+
+
         // Christoffel symbols of the spatial metric (only spatial indices 1..3)
         CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
         // Initialize to zero

@@ -654,6 +654,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL sinthz_th  = -rr_2 * sinth2 ;
 
 
+        const CCTK_REAL costh2_x = -2*x1_2*pow(z1_2,2)/pow(rr2_2,2);
+        const CCTK_REAL costh2_y = -2*y1_2*pow(z1_2,2)/pow(rr2_2,2);
+        const CCTK_REAL costh2_z = 2*rho2_2*z1_2/pow(rr2_2,2);
+
+
         const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
         const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
@@ -682,13 +687,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //fazer as derivadas das funcoes auxiliares
 
         const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
-        const CCTK_REAL costh2_x = -2*x1_2*pow(z1_2,2)/pow(rr2_2,2);
-        const CCTK_REAL costh2_y = -2*y1_2*pow(z1_2,2)/pow(rr2_2,2);
-        const CCTK_REAL costh2_z = 2*rho2_2*z1_2/pow(rr2_2,2);
+        
 
         const CCTK_REAL dsigma_dx = -2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)*dr_dR*R_x - 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)*costh2_x;
         const CCTK_REAL dsigma_dy = -2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)*dr_dR*R_y - 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)*costh2_y;
         const CCTK_REAL dsigma_dz = -2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)*dr_dR*R_z - 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)*costh2_z;
+
+        const CCTK_REAL drho2kerr_dx = 2*rBL*dr_dR*R_x + bh_spin2*costh2_x;
+        const CCTK_REAL drho2kerr_dy = 2*rBL*dr_dR*R_y + bh_spin2*costh2_y;
+        const CCTK_REAL drho2kerr_dz = 2*rBL*dr_dR*R_z + bh_spin2*costh2_z;
 
         const CCTK_REAL dpsi4_2_dx = 2*rr_2*dr_dR*R_x+bh_spin2*costh2_x;
         const CCTK_REAL dpsi4_2_dy = 2*rr_2*dr_dR*R_y+bh_spin2*costh2_y;
@@ -696,14 +703,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         
 
-        const CCTK_REAL dhh_dx = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_x + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_x;
-        const CCTK_REAL dhh_dy = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_y + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_y;
-        const CCTK_REAL dhh_dz = (-((1 + sigma)*(2*rho2kerr*(1/dr_dR) + rr_2*2*rBL)) + rr_2*rho2kerr*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2)))/(pow(rr_2,3)*pow(rho2kerr,2))*dr_dR*R_z + (-((1 + sigma)*bh_spin2) + rho2kerr*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL)))/(rr2_2*pow(rho2kerr,2))*costh2_z;
-
-
-
-
-        
+        const CCTK_REAL dhh_dx = (2*bh_mass*(rho2kerr*R_x*dr_dR - \
+                                 rBL*drho2kerr_dx))/pow(rho2kerr,2);
+        const CCTK_REAL dhh_dy = (2*bh_mass*(rho2kerr*R_y*dr_dR - \
+                                 rBL*drho2kerr_dy))/pow(rho2kerr,2);
+        const CCTK_REAL dhh_dz = (2*bh_mass*(rho2kerr*R_z*dr_dR - \
+                                 rBL*drho2kerr_dz))/pow(rho2kerr,2);
 
         
         const CCTK_REAL dalpha_dx = (2*(rr2_2 + pow(horizon_radius,2))*(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma)) - 2*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*rBL*dr_dR + 

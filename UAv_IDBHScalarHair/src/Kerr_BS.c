@@ -862,25 +862,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
-        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
+        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc. ALGUNS NANS PORQUE FALTAM RHO2_2 QUE CONTEM A REGULARIZAÇÃO
         dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
-                      2*x1_2*y1_2*gamma + (bh_v*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*hh)*psi4_2)) + \
+                      2*x1_2*y1_2*gamma + (bh_v*(rho2_2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
                       (pow(bh_v,2)*pow(bphi,2)*(\
-                      psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*hh) - pow(bh_spin,2)*pow(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2,2)*dhh_dx) - (pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*hh)*dpsi4_2_dx))/(pow(1 + \
-                      pow(bh_spin,2)*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*hh,2)*pow(psi4_2,2)) + (pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*(-2*pow(bh_v,2)*alpha0*(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*dalpha_dx + \
-                      2*bh_v*y1_2*(dbetadphi_dR*R_x) + (pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2)*(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + \
-                      (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx))))/pow(pow(y1_2,2) + \
-                      pow(x1_2,2)*gamma2,2); // dgxx_dx
+                      psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(rho2_2)*hh) - pow(bh_spin,2)*pow(rho2_2,2)*dhh_dx) - (rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx))/(pow(1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)) + (rho2_2)*(-2*pow(bh_v,2)*alpha0*(rho2_2)*dalpha_dx + \
+                      2*bh_v*y1_2*(dbetadphi_dR*R_x) + (rho2_2)*(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + \
+                      (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx))))/pow(rho2_2,2); // dgxx_dx
         dg[1][1][2] = gamma2*((4*bh_spin*bh_v*pow(y1_2,2)*(1 - \
                       pow(z1_2,2)/pow(rr_2,2))*sigma)/pow(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2,2) - (2*bh_spin*bh_v*(1 - \

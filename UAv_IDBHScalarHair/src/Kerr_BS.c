@@ -997,6 +997,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dbetad[3][2] = 0;
         dbetad[3][3] = 0;
         
+        // Check for NaN or Inf in all dbetad[i][j] components
+        for (int ii = 1; ii <= 3; ++ii) {
+          for (int jj = 1; jj <= 3; ++jj) {
+            char dbetad_name[32];
+            snprintf(dbetad_name, sizeof(dbetad_name), "dbetad[%d][%d]", ii, jj);
+            check_nan_or_inf(dbetad_name, dbetad[ii][jj]);
+          }
+        }
 
         // Compute Christoffel symbols (spatial part)
         // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)

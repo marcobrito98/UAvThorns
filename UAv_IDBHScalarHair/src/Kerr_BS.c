@@ -882,8 +882,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                       pow(x1_2,2)*gamma2)*(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + \
                       (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx))))/pow(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2,2) // dgxx_dx
-                      dg[1][1][2]=0;
-        //dg[1][1][2] = gamma2*((4*bh_spin*bh_v*pow(y1_2,2)*(1 - \
+        dg[1][1][2] = gamma2*((4*bh_spin*bh_v*pow(y1_2,2)*(1 - \
                       pow(z1_2,2)/pow(rr_2,2))*sigma)/pow(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2,2) - (2*bh_spin*bh_v*(1 - \
                       pow(z1_2,2)/pow(rr_2,2))*sigma)/(pow(y1_2,2) + \
@@ -993,8 +992,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                       pow(x1_2,2)*gamma2)*hh)*dsigma_dy))))/(pow(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2,3)*pow(1 + pow(bh_spin,2)*(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2)*hh,2)*pow(psi4_2,2)*pow(rr_2,5)))); // dgxx_dy
-                      dg[1][1][3]=0;
-       // dg[1][1][3] = gamma2*((4*bh_spin*bh_v*y1_2*z1_2*sigma*(rr_2 - \
+        dg[1][1][3] = gamma2*((4*bh_spin*bh_v*y1_2*z1_2*sigma*(rr_2 - \
                       z1_2*R_z))/((pow(y1_2,2) + pow(x1_2,2)*gamma2)*pow(rr_2,3)) \
                       + pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + \
                       pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz - (2*bh_spin*bh_v*y1_2*(1 - \

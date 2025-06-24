@@ -628,7 +628,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL sinth2 = 1. - costh2 ;
         const CCTK_REAL sinth  = sqrt(sinth2) ;
 
-        // const CCTK_REAL R_x    = gamma*x1_2/rr_2 ;
         const CCTK_REAL R_x    = x1_2*gamma/rr_2 ;
         const CCTK_REAL R_y    = y1_2/rr_2 ;
         const CCTK_REAL R_z    = z1_2/rr_2 ;
@@ -747,6 +746,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("dalpha_dx", dalpha_dx);
         check_nan_or_inf("dalpha_dy", dalpha_dy);
         check_nan_or_inf("dalpha_dz", dalpha_dz);
+
+
+        check_nan_or_inf("drho2kerr_dx", drho2kerr_dx);
+        check_nan_or_inf("drho2kerr_dy", drho2kerr_dy);
+        check_nan_or_inf("drho2kerr_dz", drho2kerr_dz);
         
 
 
@@ -848,7 +852,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
          // Create an array g to store the metric components at each grid point
         CCTK_REAL g[4][4];
-        g[0][0] = gamma2*(-pow(alpha0,2) + pow(bh_v,2)*(1 + \
+        g[0][0] = gamma2*(-alpha02 + pow(bh_v,2)*(1 + \
                   pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2 + \
                   (2*bh_spin*bh_v*y1_2*(pow(z1_2,2) - rr2_2)*sigma)/((rho2_2)*rr2_2) + \
                   (pow(bh_spin,2)*pow(pow(z1_2,2) - \

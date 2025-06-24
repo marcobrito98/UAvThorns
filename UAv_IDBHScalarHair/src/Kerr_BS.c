@@ -859,7 +859,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
-        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc. ALGUNS NANS PORQUE FALTAM RHO2_2 QUE CONTEM A REGULARIZAÇÃO
+        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
         dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
                       2*x1_2*y1_2*gamma + (bh_v*(rho2_2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
                       (pow(bh_v,2)*pow(bphi,2)*(\
@@ -1018,42 +1018,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           }
         }
 
-        // const CCTK_REAL new_lapse = sqrt(-g[0][0] + g[1][1] * betaup[1] * betaup[1] + g[2][2] * betaup[2] * betaup[2] + g[3][3] * betaup[3] * betaup[3]);
+        
         const CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]); 
         check_nan_or_inf("new_lapse", new_lapse); 
 
         //stationary metric, time derivatives are zero. 
 
-
-
-
-        // const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
-        // const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
-
-        // const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
-
-        // const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-        //          1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
-
-        // const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
-
-
-
-        // //capital Ks refer to the unboosted frame.
-        // const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
-        // const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
-
-        // // const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kxt = R_x*KRt + x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
-
-
-        // const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
-        // const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        // const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
-        // const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        // const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
         CCTK_REAL dW_drho_1, dW_dz_1;
         const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
@@ -1124,8 +1094,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         
 
-        const CCTK_REAL alph_1 = new_lapse;
-        const CCTK_REAL alph_2 = alpha0;
+        const CCTK_REAL alph_1 = exp(F0_1[ind]);
+        const CCTK_REAL alph_2 = new_lapse;
 
         // No regularization needed for the BS, the lapse is non-zero
 

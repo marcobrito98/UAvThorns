@@ -701,9 +701,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         
 
-        const CCTK_REAL dpsi4_2_dx = 2*rr_2*dr_dR*R_x+bh_spin2*costh2_x;
-        const CCTK_REAL dpsi4_2_dy = 2*rr_2*dr_dR*R_y+bh_spin2*costh2_y;
-        const CCTK_REAL dpsi4_2_dz = 2*rr_2*dr_dR*R_z+bh_spin2*costh2_z;
+        const CCTK_REAL dpsi4_2_dx = (-2*rho2kerr*R_x + rr_2*drho2kerr_dx)/pow(rr_2,3);
+        const CCTK_REAL dpsi4_2_dy = (-2*rho2kerr*R_y + rr_2*drho2kerr_dy)/pow(rr_2,3);
+        const CCTK_REAL dpsi4_2_dz = (-2*rho2kerr*R_z + rr_2*drho2kerr_dz)/pow(rr_2,3);
 
         
 

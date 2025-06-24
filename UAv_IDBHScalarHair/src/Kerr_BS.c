@@ -1030,8 +1030,18 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             }
           }
         }
+        // Check for NaN or Inf in all Christoffel symbols
+        for (int ii = 1; ii <= 3; ++ii) {
+          for (int jj = 1; jj <= 3; ++jj) {
+            for (int kk = 1; kk <= 3; ++kk) {
+              char gamma_name[32];
+              snprintf(gamma_name, sizeof(gamma_name), "Gamma[%d][%d][%d]", ii, jj, kk);
+              check_nan_or_inf(gamma_name, Gamma[ii][jj][kk]);
+            }
+          }
+        }
 
-        
+
         const CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]); 
         check_nan_or_inf("new_lapse", new_lapse); 
 

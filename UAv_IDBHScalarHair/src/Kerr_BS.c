@@ -864,7 +864,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
         // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
-        dg[1][1][1] = (pow(gamma,3)*(2*bh_v*bphi*(-\
+        dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
                       2*x1_2*y1_2*gamma + (bh_v*(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(pow(y1_2,2) + \
                       pow(x1_2,2)*gamma2)*hh)*psi4_2)) + \

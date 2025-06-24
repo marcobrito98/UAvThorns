@@ -971,7 +971,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector
-        dbetad[1][1] = (bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
+        dbetad[1][1] = (1/gamma)*(bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
                        (rho2_2)*pow(z1_2,2)*R_x*gamma) + (rho2_2)*rr_2*(-pow(z1_2,2) + \
                        rr2_2)*dsigma_dx))/(pow(rho2_2,2)*pow(rr_2,3)) ;
 
@@ -983,7 +983,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dbetad[1][3] = (bh_spin*y1_2*((2*z1_2*sigma*(-rr_2 + z1_2*R_z))/pow(rr_2,3) + (1 \
                        - pow(z1_2,2)/rr2_2)*dsigma_dz))/(rho2_2);
 
-        dbetad[2][1] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
+        dbetad[2][1] = (1/gamma)*(bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
                        rr2_2) - 2*x1_2*gamma*(rho2_2)*pow(z1_2,2)*R_x*gamma) \
                        + bh_spin*x1_2*gamma*(rho2_2)*rr_2*(pow(z1_2,2) - \
                        rr2_2)*dsigma_dx)/(pow(rho2_2,2)*pow(rr_2,3)) ;
@@ -1121,8 +1121,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             alp[ind] = SMALL;
         }
 
-        CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
-        CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
+        // CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
+        // CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) - Delt * bh_spin2 * sinth2;
         // bphi = 2.0 * bh_spin * bh_mass * rBL / fctFF;
 
         // shift

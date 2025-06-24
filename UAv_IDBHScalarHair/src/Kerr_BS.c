@@ -688,6 +688,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
         
+        const CCTK_REAL drho2kerr_dx = 2*rBL*dr_dR*R_x + bh_spin2*costh2_x;
+        const CCTK_REAL drho2kerr_dy = 2*rBL*dr_dR*R_y + bh_spin2*costh2_y;
+        const CCTK_REAL drho2kerr_dz = 2*rBL*dr_dR*R_z + bh_spin2*costh2_z;
 
         const CCTK_REAL dsigma_dx = (2*bh_mass*(rho2kerr*R_x*dr_dR - \
                                  rBL*drho2kerr_dx))/pow(rho2kerr,2);
@@ -696,9 +699,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dsigma_dz =(2*bh_mass*(rho2kerr*R_z*dr_dR - \
                                  rBL*drho2kerr_dz))/pow(rho2kerr,2);
 
-        const CCTK_REAL drho2kerr_dx = 2*rBL*dr_dR*R_x + bh_spin2*costh2_x;
-        const CCTK_REAL drho2kerr_dy = 2*rBL*dr_dR*R_y + bh_spin2*costh2_y;
-        const CCTK_REAL drho2kerr_dz = 2*rBL*dr_dR*R_z + bh_spin2*costh2_z;
+        
 
         const CCTK_REAL dpsi4_2_dx = 2*rr_2*dr_dR*R_x+bh_spin2*costh2_x;
         const CCTK_REAL dpsi4_2_dy = 2*rr_2*dr_dR*R_y+bh_spin2*costh2_y;

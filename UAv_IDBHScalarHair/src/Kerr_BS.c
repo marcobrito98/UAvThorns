@@ -1036,7 +1036,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         const CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]); 
-        check_nan_or_inf("new_lapse", new_lapse); 
+        if (fabs(new_lapse) < 1e-16) {
+          fprintf(stderr, "Error: new_lapse is zero at grid point (%d,%d,%d)\n", i, j, k);
+          abort();
+        }
 
         //stationary metric, time derivatives are zero. 
       

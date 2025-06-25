@@ -1039,7 +1039,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("new_lapse", new_lapse); 
 
         //stationary metric, time derivatives are zero. 
-
+        printf("new_lapse = %e\n", new_lapse);
 
         CCTK_REAL dW_drho_1, dW_dz_1;
         const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);

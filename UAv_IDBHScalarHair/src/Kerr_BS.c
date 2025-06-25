@@ -1059,10 +1059,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         for (int i = 1; i <= 3; ++i) {
           for (int j = 1; j <= 3; ++j) {
             Dbetad[i][j] = dbetad[i][j];
-              for (int k = 1; k <= 3; ++k)
-                  Dbetad[i][j] -= Gamma[k][i][j] * betad[k];
+            for (int k = 1; k <= 3; ++k)
+              Dbetad[i][j] -= Gamma[k][i][j] * betad[k];
+            // Check for NaN or Inf in Dbetad
+            char Dbetad_name[32];
+            snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
+            check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
           }
         }
+
+
+
 
       // Compute extrinsic curvature K_{ij}
       kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]);

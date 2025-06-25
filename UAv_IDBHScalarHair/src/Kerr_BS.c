@@ -855,7 +855,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         g[0][0] = gamma2*(-alpha02 + pow(bh_v,2)*(1 + \
                   pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2 + \
                   (2*bh_spin*bh_v*y1_2*(-rho2_2)*sigma)/((rho2_2)*rr2_2) + \
-                  (pow(bh_spin,2)*pow(-rho2,2,2)*pow(sigma,2))/((rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*pow(rr_2,4)));
+                  (pow(bh_spin,2)*pow(-rho2_2,2)*pow(sigma,2))/((rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*pow(rr_2,4)));
         g[1][1] = gxx[ind];
         g[1][2] = gxy[ind];
         g[1][3] = gxz[ind];

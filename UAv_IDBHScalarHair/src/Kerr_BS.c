@@ -871,7 +871,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
-        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
+        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc. //a derivada e em relacao ao x boosted, que é para escolhermos a foliacao correta. dai que se divide por gamma nas derivadas de x.
         dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
                       2*x1_2*y1_2*gamma + (bh_v*(rho2_2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
                       (pow(bh_v,2)*pow(bphi,2)*(\

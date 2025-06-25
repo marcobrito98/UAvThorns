@@ -997,8 +997,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                        + bh_spin*x1_2*gamma*(rho2_2)*rr_2*(-rho2_2)*dsigma_dx)/(pow(rho2_2,2)*pow(rr_2,3)) ;
 
         dbetad[2][2] = (bh_spin*x1_2*gamma*(-2*sigma*(y1_2*pow(z1_2,2)*rr_2 - y1_2*pow(rr_2,3) + \
-                       (rho2_2)*pow(z1_2,2)*R_y) + (rho2_2)*rr_2*(pow(-rho2_2)*dsigma_dy))/(pow(rho2_2,2)*pow(rr_2,3));
-        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(-rho2_2)*dsigma_dz))/((rho2_2)*pow(rr_2,3));
+                       (rho2_2)*pow(z1_2,2)*R_y) + (rho2_2)*rr_2*(-rho2_2)*dsigma_dy))/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(pow(z1_2,2) \
+                       - rr2_2)*dsigma_dz))/((rho2_2)*pow(rr_2,3));
         dbetad[3][1] = 0;
         dbetad[3][2] = 0;
         dbetad[3][3] = 0;

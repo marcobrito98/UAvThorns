@@ -854,9 +854,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL g[4][4];
         g[0][0] = gamma2*(-alpha02 + pow(bh_v,2)*(1 + \
                   pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2 + \
-                  (2*bh_spin*bh_v*y1_2*(pow(z1_2,2) - rr2_2)*sigma)/((rho2_2)*rr2_2) + \
-                  (pow(bh_spin,2)*pow(pow(z1_2,2) - \
-                  rr2_2,2)*pow(sigma,2))/((rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*pow(rr_2,4)));
+                  (2*bh_spin*bh_v*y1_2*(-rho2_2)*sigma)/((rho2_2)*rr2_2) + \
+                  (pow(bh_spin,2)*pow(-rho2,2,2)*pow(sigma,2))/((rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*pow(rr_2,4)));
         g[1][1] = gxx[ind];
         g[1][2] = gxy[ind];
         g[1][3] = gxz[ind];
@@ -876,7 +875,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
                       2*x1_2*y1_2*gamma + (bh_v*(rho2_2)*(dbetadphi_dR*R_x))/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
                       (pow(bh_v,2)*pow(bphi,2)*(\
-                      psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(rho2_2)*hh) - pow(bh_spin,2)*pow(rho2_2,2)*dhh_dx) - (rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx))/(pow(1 + \
+                      psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(rho2_2)*hh) - pow(bh_spin,2)*pow(rho2_2,2)*dhh_dx) - \
+                      (rho2_2)*(1 + pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx))/(pow(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)) + (rho2_2)*(-2*pow(bh_v,2)*alpha0*(rho2_2)*dalpha_dx + \
                       2*bh_v*y1_2*(dbetadphi_dR*R_x) + (rho2_2)*(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + \
                       (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx))))/pow(rho2_2,2); // dgxx_dx
@@ -985,27 +985,20 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector
         dbetad[1][1] = (1/gamma)*(bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
-                       (rho2_2)*pow(z1_2,2)*R_x*gamma) + (rho2_2)*rr_2*(-pow(z1_2,2) + \
-                       rr2_2)*dsigma_dx))/(pow(rho2_2,2)*pow(rr_2,3)) ;
+                       (rho2_2)*pow(z1_2,2)*R_x*gamma) + (rho2_2)*rr_2*(rho2_2)*dsigma_dx))/(pow(rho2_2,2)*pow(rr_2,3)) ;
 
-        dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
-                       rr2_2) + 2*y1_2*(rho2_2)*pow(z1_2,2)*R_y) \
-                       + bh_spin*y1_2*(rho2_2)*rr_2*(-pow(z1_2,2) + \
-                       rr2_2)*dsigma_dy)/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) + 2*y1_2*(rho2_2)*pow(z1_2,2)*R_y) \
+                       + bh_spin*y1_2*(rho2_2)*rr_2*(rho2_2)*dsigma_dy)/(pow(rho2_2,2)*pow(rr_2,3));
 
         dbetad[1][3] = (bh_spin*y1_2*((2*z1_2*sigma*(-rr_2 + z1_2*R_z))/pow(rr_2,3) + (1 \
                        - pow(z1_2,2)/rr2_2)*dsigma_dz))/(rho2_2);
 
-        dbetad[2][1] = (1/gamma)*(bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(-pow(z1_2,2) + \
-                       rr2_2) - 2*x1_2*gamma*(rho2_2)*pow(z1_2,2)*R_x*gamma) \
-                       + bh_spin*x1_2*gamma*(rho2_2)*rr_2*(pow(z1_2,2) - \
-                       rr2_2)*dsigma_dx)/(pow(rho2_2,2)*pow(rr_2,3)) ;
+        dbetad[2][1] = (1/gamma)*(bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) - 2*x1_2*gamma*(rho2_2)*pow(z1_2,2)*R_x*gamma) \
+                       + bh_spin*x1_2*gamma*(rho2_2)*rr_2*(-rho2_2)*dsigma_dx)/(pow(rho2_2,2)*pow(rr_2,3)) ;
 
         dbetad[2][2] = (bh_spin*x1_2*gamma*(-2*sigma*(y1_2*pow(z1_2,2)*rr_2 - y1_2*pow(rr_2,3) + \
-                       (rho2_2)*pow(z1_2,2)*R_y) + (rho2_2)*rr_2*(pow(z1_2,2) - \
-                       rr2_2)*dsigma_dy))/(pow(rho2_2,2)*pow(rr_2,3));
-        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(pow(z1_2,2) \
-                       - rr2_2)*dsigma_dz))/((rho2_2)*pow(rr_2,3));
+                       (rho2_2)*pow(z1_2,2)*R_y) + (rho2_2)*rr_2*(pow(-rho2_2)*dsigma_dy))/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(-rho2_2)*dsigma_dz))/((rho2_2)*pow(rr_2,3));
         dbetad[3][1] = 0;
         dbetad[3][2] = 0;
         dbetad[3][3] = 0;

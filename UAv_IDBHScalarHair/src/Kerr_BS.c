@@ -802,10 +802,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //capital Gs refer to the unboosted frame. (aqui nao preciso de por gammas certo? ver no caso de schwarzschild)
 
         const CCTK_REAL Gtt = -alpha02 + bphi*bphi;
-        const CCTK_REAL Gxt = bh_spin*sigma*y1_2/rr2_2;
+        const CCTK_REAL Gxt = betad[1];
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*gamma*x1_2;
-        const CCTK_REAL Gty = -bh_spin*sigma*gamma*x1_2/rr2_2; 
+        const CCTK_REAL Gty = betad[2]; 
         
 
        

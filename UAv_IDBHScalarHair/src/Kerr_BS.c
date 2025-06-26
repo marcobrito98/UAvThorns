@@ -799,7 +799,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
        
 
 
-        //capital Gs refer to the unboosted frame. (aqui nao preciso de por gammas certo? ver no caso de schwarzschild)
+        //capital Gs refer to the unboosted frame.
 
         const CCTK_REAL Gtt = -alpha02 + bphi*bphi;
         const CCTK_REAL Gxt = betad[1];

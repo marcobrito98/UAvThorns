@@ -960,7 +960,7 @@ CCTK_REAL dbetad[4][4];
         dg[3][3][1] = dpsi4_2_dx; // dgzz_dx
         dg[3][3][2] = dpsi4_2_dy; // dgzz_dy
         dg[3][3][3] = dpsi4_2_dz; // dgzz_dz
-        // Set symmetric componentsMore actions
+        // Set symmetric components
         dg[2][1][1] = dg[1][2][1]; // dgyx_dx = dgxy_dx
         dg[2][1][2] = dg[1][2][2]; // dgyx_dy = dgxy_dy
         dg[2][1][3] = dg[1][2][3]; // dgyx_dz = dgxy_dz

@@ -996,8 +996,7 @@ CCTK_REAL dbetad[4][4];
                       pow(bh_spin,2)*x1_2*y1_2*betad[2]*gamma*dhh_dz) - \
                       pow(bh_spin,2)*x1_2*y1_2*betad[2]*gamma*hh*(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dz) + \
-                      pow(bh_v,2)*pow(betad[1],2)*(-(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_\
-                      dz) - (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + \
+                      pow(bh_v,2)*pow(betad[1],2)*(-(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz) - (1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dz)))/(pow(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)); // dgxx_dz
         dg[1][2][1] = (1/gamma)*-(pow(gamma,2)*(bh_v*dbetad[2][1] + \

@@ -714,15 +714,27 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                  rr_2*drho2kerr_dz))+rr_2*rho2kerr*dsigma_dz)/(pow(rr_2,3)*pow(rho2kerr,2));
 
         
-        const CCTK_REAL dalpha_dx = (2*(rr2_2 + pow(horizon_radius,2))*(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma)) - 2*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*rBL*dr_dR + 
-        bh_spin2*(-1 + costh2)*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2))*dr_dR)/(2.*rr2_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*R_x + (bh_spin2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(sigma + (-1 + costh2)*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL))))/(2.*rr_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*costh2_x;
+        const CCTK_REAL dalpha_dx = (gamma*(2*pow(rr_2,2)*(pow(rBL,2) + \
+                                    bh_spin2*(1 - (-1 + costh2)*sigma))*R_x + 2*pow(horizon_radius,2)*(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + \
+                                    costh2)*sigma))*R_x + rr_2*pow(horizon_radius,2)*(2*rBL*R_x*dr_dR + \
+                                    bh_spin2*(-(sigma*costh2_x) - (-1 + costh2)*dsigma_dx)) + pow(rr_2,3)*(-2*rBL*R_x*dr_dR + \
+                                    pow(bh_spin,2)*(sigma*costh2_x + (-1 + costh2)*dsigma_dx))))/(2.*pow(rr_2,2)*\
+                                    pow(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + costh2)*sigma),1.5));
         
-        const CCTK_REAL dalpha_dy = (2*(rr2_2 + pow(horizon_radius,2))*(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma)) - 2*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*rBL*dr_dR + 
-        bh_spin2*(-1 + costh2)*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2))*dr_dR)/(2.*rr2_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*R_y + (bh_spin2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(sigma + (-1 + costh2)*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL))))/(2.*rr_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*costh2_y;
+        const CCTK_REAL dalpha_dy = (gamma*(2*pow(rr_2,2)*(pow(rBL,2) + \
+                                    bh_spin2*(1 - (-1 + costh2)*sigma))*R_y + 2*pow(horizon_radius,2)*(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + \
+                                    costh2)*sigma))*R_y + rr_2*pow(horizon_radius,2)*(2*rBL*R_y*dr_dR + \
+                                    bh_spin2*(-(sigma*costh2_y) - (-1 + costh2)*dsigma_dy)) + pow(rr_2,3)*(-2*rBL*R_y*dr_dR + \
+                                    pow(bh_spin,2)*(sigma*costh2_y + (-1 + costh2)*dsigma_dy))))/(2.*pow(rr_2,2)*\
+                                    pow(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + costh2)*sigma),1.5));
 
 
-        const CCTK_REAL dalpha_dz = (2*(rr2_2 + pow(horizon_radius,2))*(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma)) - 2*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*rBL*dr_dR + 
-        bh_spin2*(-1 + costh2)*rr_2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(-2*bh_mass*(rBL*rBL-bh_spin2*costh2)/pow(rho2kerr,2))*dr_dR)/(2.*rr2_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*R_z + (bh_spin2*(rr_2 - horizon_radius)*(rr_2 + horizon_radius)*(sigma + (-1 + costh2)*(- 2*bh_spin2*bh_mass*rBL/(bh_spin2*costh2 +rBL*rBL))))/(2.*rr_2*pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5))*costh2_z;
+        const CCTK_REAL dalpha_dz = (gamma*(2*pow(rr_2,2)*(pow(rBL,2) + \
+                                    bh_spin2*(1 - (-1 + costh2)*sigma))*R_z + 2*pow(horizon_radius,2)*(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + \
+                                    costh2)*sigma))*R_z + rr_2*pow(horizon_radius,2)*(2*rBL*R_z*dr_dR + \
+                                    bh_spin2*(-(sigma*costh2_z) - (-1 + costh2)*dsigma_dz)) + pow(rr_2,3)*(-2*rBL*R_z*dr_dR + \
+                                    pow(bh_spin,2)*(sigma*costh2_z + (-1 + costh2)*dsigma_dz))))/(2.*pow(rr_2,2)*\
+                                    pow(pow(rBL,2) + pow(bh_spin,2)*(1 - (-1 + costh2)*sigma),1.5));
 
 
         // Check for NaN or Inf in all these quantities

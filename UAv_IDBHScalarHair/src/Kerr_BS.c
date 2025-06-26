@@ -989,7 +989,7 @@ CCTK_REAL dbetad[4][4];
 
         CCTK_REAL g_inv[4][4]; // Inverse metric
 
-        if (fabs(det_g) < 1e-16) {
+        if (fabs(det_g) < 1e-12) {
             // Abort execution due to singular metric
             CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
                    "Singular spatial metric (det_g = %e) at grid point (%d,%d,%d). Aborting.", det_g, i, j, k);

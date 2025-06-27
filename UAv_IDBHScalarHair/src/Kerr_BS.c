@@ -578,6 +578,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL rho_1  = sqrt(rho2_1);
         
 
+        
         const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
         // If x1_2=y1_2=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // but can this lead to nan depending on the C implementation?

@@ -853,7 +853,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector
         dbetad[1][1] = (bh_spin*y1_2*gamma*(-2*x1_2*gamma*(1 - pow(z1_2,2)/pow(rr_2,2))*sigma + \
-                       (2*pow(z1_2,2)*(rho2_2)*sigma*R_x1_2)/pow(rr_2,3) + (rho2_2)*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dx))/pow(rho2_2,2);
+                       (2*pow(z1_2,2)*(rho2_2)*sigma*R_x)/pow(rr_2,3) + (rho2_2)*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dx))/pow(rho2_2,2);
 
         dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) + 2*y1_2*(rho2_2)*pow(z1_2,2)*R_y) \
                        + bh_spin*y1_2*(rho2_2)*rr_2*(rho2_2)*dsigma_dy)/(pow(rho2_2,2)*pow(rr_2,3));
@@ -885,11 +885,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} //com o mathematica corrigido tenho a mesma métrica. portanto aqui nada deve mudar tirando termos em gamma das derivadas das funcs aux.
         // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc. //a derivada e em relacao ao x boosted, que é para escolhermos a foliacao correta. dai que se divide por gamma nas derivadas de x.
-        dg[1][1][1] = (pow(gamma,3)*(2*bh_v*bphi(x1_2*gamma,y1_2,z1_2,bh_mass,bh_spin,0)*(-\
-                      2*x1_2*y1_2*gamma + \
+        dg[1][1][1] = (pow(gamma,3)*(2*bh_v*bphi*(-\2*x1_2*y1_2*gamma + \
                       (bh_v*(rho2_2)*dbetadphi_dR*R_x)/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
-                      (pow(bh_v,2)*pow(bphi(x1_2*gamma,y1_2,z1_2,bh_mass,bh_spin,0),2)*(\
-                      psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(rho2_2)*hh) - \
+                      (pow(bh_v,2)*pow(bphi,2)*(psi4_2*(2*x1_2*gamma*(-1 - 2*pow(bh_spin,2)*(rho2_2)*hh) - \
                       pow(bh_spin,2)*pow(rho2_2,2)*dhh_dx) - (rho2_2)*(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx))/(pow(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)) + \

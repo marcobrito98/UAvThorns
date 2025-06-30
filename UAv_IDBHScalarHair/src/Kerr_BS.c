@@ -850,7 +850,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         g[3][2] = gyz[ind];
         g[3][3] = gzz[ind];
 
-CCTK_REAL dbetad[4][4];
+        CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector
         dbetad[1][1] = (gamma*y1_2*(2*gamma*x1_2*bphi - (rho2_2)*dbetadphi_dR*R_x))/pow(rho2_2,2);
 
@@ -1017,9 +1017,9 @@ CCTK_REAL dbetad[4][4];
         }
 
         CCTK_REAL betaup[4];
-                        betaup[1] = g_inv[1][1] * betad[1] + g_inv[1][2] * betad[2] + g_inv[1][3] * betad[3];
-                        betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
-                        betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
+        betaup[1] = g_inv[1][1] * betad[1] + g_inv[1][2] * betad[2] + g_inv[1][3] * betad[3];
+        betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
+        betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
 
         
 
@@ -1090,13 +1090,13 @@ CCTK_REAL dbetad[4][4];
 
 
 
-      // Compute extrinsic curvature K_{ij}
-      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
-      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
-      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
-      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
-      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
-      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
+        // Compute extrinsic curvature K_{ij}
+        kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
+        kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
+        kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
+        kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
+        kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
+        kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
 
 
      

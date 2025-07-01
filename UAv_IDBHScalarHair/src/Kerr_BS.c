@@ -634,20 +634,20 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL y_R    = y1_2/rr_2 ;
         const CCTK_REAL z_R    = z1_2/rr_2 ;
 
-        const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
-        // const CCTK_REAL sinth2ph_y =  gamma*x1_2/rr2_2 ;
-        const CCTK_REAL sinth2ph_y =  x1_2*gamma/rr2_2 ;
+        // const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
+        // // const CCTK_REAL sinth2ph_y =  gamma*x1_2/rr2_2 ;
+        // const CCTK_REAL sinth2ph_y =  x1_2*gamma/rr2_2 ;
 
 
-        // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
-        const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_z  = -sinth2/rr_2 ; 
+        // // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
+        // const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
+        // const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
+        // const CCTK_REAL sinthth_z  = -sinth2/rr_2 ; 
 
-        // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh ;
-        const CCTK_REAL sinthx_th  = x1_2*gamma * costh ;
-        const CCTK_REAL sinthy_th  = y1_2 * costh ;
-        const CCTK_REAL sinthz_th  = -rr_2 * sinth2 ;
+        // // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh ;
+        // const CCTK_REAL sinthx_th  = x1_2*gamma * costh ;
+        // const CCTK_REAL sinthy_th  = y1_2 * costh ;
+        // const CCTK_REAL sinthz_th  = -rr_2 * sinth2 ;
 
 
         const CCTK_REAL costh2_x = -2*x1_2*pow(z1_2,2)/pow(rr2_2,2);
@@ -695,7 +695,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dsigma_dz =(2*bh_mass*(rho2kerr*R_z*dr_dR - \
                                  rBL*drho2kerr_dz))/pow(rho2kerr,2);
 
-        
 
         const CCTK_REAL dpsi4_2_dx = (-2*rho2kerr*R_x + rr_2*drho2kerr_dx)/pow(rr_2,3);
         const CCTK_REAL dpsi4_2_dy = (-2*rho2kerr*R_y + rr_2*drho2kerr_dy)/pow(rr_2,3);
@@ -733,7 +732,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                     bh_spin2*(sigma*costh2_z + (-1 + costh2)*dsigma_dz))))/(2.*pow(rr_2,2)*\
                                     pow(pow(rBL,2) + bh_spin2*(1 - (-1 + costh2)*sigma),1.5));
 
-
+                                    
         // Check for NaN or Inf in all these quantities
         check_nan_or_inf("dr_dR", dr_dR);
         check_nan_or_inf("costh2_x", costh2_x);
@@ -809,39 +808,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
        
 
         gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        // gxx[ind] = gamma*((bh_v*y1_2*bphi*gamma)/\
-                  (pow(y1_2,2) + pow(x1_2,2)*gamma2) + gamma*(1 + \
-                  bh_spin2*pow(y1_2,2)*hh)*psi4_2) - \
-                  bh_v*gamma*(-((y1_2*bphi*\
-                  gamma)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
-                  bh_v*gamma*((x1_2*bphi*gamma*(\
-                  -((bh_spin2*x1_2*pow(y1_2,2)*bphi*gamma*hh*pow(psi4_2,2))/((pow(y1_2,2) + \
-                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
-                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
-                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))) + \
-                  (x1_2*bphi*gamma*(pow(psi4_2,\
-                  2) + bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,2)))/((pow(y1_2,2) + \
-                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
-                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
-                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))))/(pow(y1_2,2) + pow(x1_2,2)*gamma2) - \
-                  (y1_2*bphi*((bh_spin2*\
-                  pow(x1_2,2)*y1_2*bphi*pow(\
-                  gamma,2)*hh*pow(psi4_2,2))/((pow(y1_2,2) + \
-                  pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
-                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
-                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3))) - \
-                  (y1_2*bphi*(pow(psi4_2,2) + \
-                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,2)))/((pow(y1_2,\
-                  2) + pow(x1_2,2)*gamma2)*(pow(psi4_2,3) + \
-                  bh_spin2*pow(y1_2,2)*hh*pow(psi4_2,3) + \
-                  bh_spin2*pow(x1_2,2)*gamma2*hh*pow(psi4_2,3)))))/(pow(y1_2,2) + pow(x1_2,2)*gamma2) - (pow(-0.5*sqrt(pow(bh_mass,2) - \
-                  bh_spin2) + rr_2,2)*pow(sqrt(pow(bh_mass,2) - \
-                  bh_spin2)/2. + rr_2,2))/(rr2_2*(pow(1 + (bh_mass - \
-                  sqrt(bh_spin2))/(2.*rr_2),2)*pow(1 + (bh_mass + \
-                  sqrt(bh_spin2))/(2.*rr_2),2)*rr2_2 + bh_spin2*(1 + \
-                  ((pow(y1_2,2) + pow(x1_2,2)*gamma2)*sigma)/rr2_2)))));// + psi4_1*(1. + h_rho2_1 * sinph_1 * sinph_1) - 1;;
-        // gxy[ind] =-((bh_v*x1_2*bphi*gamma2)/(pow(y1_2,2) + pow(x1_2,2)*gamma2)) - \
-                   bh_spin2*x1_2*y1_2*gamma2*hh*psi4_2;// - psi4_1 * h_rho2_1 * sinph_1 * cosph_1;
         gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
         gxz[ind] = 0;
         // gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
@@ -875,9 +841,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         g[3][2] = gyz[ind];
         g[3][3] = gzz[ind];
 
-CCTK_REAL dbetad[4][4];
+        CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector
-         dbetad[1][1] = (1/gamma)*(bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
+        dbetad[1][1] = (1/gamma)*(bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
                        (rho2_2)*pow(z1_2,2)*R_x*gamma) + (rho2_2)*rr_2*(rho2_2)*dsigma_dx))/(pow(rho2_2,2)*pow(rr_2,3)) ;
 
         dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) + 2*y1_2*(rho2_2)*pow(z1_2,2)*R_y) \
@@ -908,7 +874,7 @@ CCTK_REAL dbetad[4][4];
         
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
-        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc. //a derivada e em relacao ao x boosted, que é para escolhermos a foliacao correta. dai que se divide por gamma nas derivadas de x.
+        // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
         dg[1][1][1] = (1/gamma)*(pow(gamma,3)*(2*bh_v*bphi*(-\
                       2*x1_2*y1_2*gamma + (bh_v*(rho2_2)*(dbetadphi_dx))/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2)) + \
                       (pow(bh_v,2)*pow(bphi,2)*(\

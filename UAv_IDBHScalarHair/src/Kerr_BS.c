@@ -556,8 +556,8 @@ const CCTK_REAL bh_mass2= bh_mass*bh_mass;
 const CCTK_REAL rBLp  = bh_mass + sqrt( bh_mass2 - bh_spin2 );
 const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
-  const CCTK_REAL horizon_radius = 0.5*(bh_mass2-bh_spin2);
-  const CCTK_REAL horizon_radius = 0.5*sqrt(bh_mass2-bh_spin2);
+
+const CCTK_REAL horizon_radius = 0.5*sqrt(bh_mass2-bh_spin2);
 
 for (int k = 0; k < cctk_lsh[2]; ++k) {
 for (int j = 0; j < cctk_lsh[1]; ++j) {

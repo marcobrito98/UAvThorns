@@ -693,7 +693,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*rr2_2);
         
-        const CCTK_REAL drho2kerr_dx = gamma*(bh_spin2*costh2 + 2*rBL*dr_dR*R_x);
+        const CCTK_REAL drho2kerr_dx = gamma*(bh_spin2*costh2_x + 2*rBL*dr_dR*R_x);
         const CCTK_REAL drho2kerr_dy = 2*rBL*dr_dR*R_y + bh_spin2*costh2_y;
         const CCTK_REAL drho2kerr_dz = 2*rBL*dr_dR*R_z + bh_spin2*costh2_z;
 

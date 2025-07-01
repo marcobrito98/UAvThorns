@@ -1141,7 +1141,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         Kphi2[ind] = Kphi2_1 + Kphi2_2;
 
 
-        
+      
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))

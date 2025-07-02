@@ -706,9 +706,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL betad[4];
-                  betad[1] = -y1_2/rho2_2 * bphi;
-                  betad[2] =  x1_2*gamma/rho2_2 * bphi;
-                  betad[3] = 0.;
+        betad[1] = -y1_2/rho2_2 * bphi;
+        betad[2] =  x1_2*gamma/rho2_2 * bphi;
+        betad[3] = 0.;
+
+        // Check for NaN or Inf in betad components
+        check_nan_or_inf("betad[1]", betad[1]);
+        check_nan_or_inf("betad[2]", betad[2]);
+        check_nan_or_inf("betad[3]", betad[3]);
 
         //To change the pin direction, change the indices accordingly.
         const CCTK_REAL dbetadphi_dx = (-2*bh_spin*pow(z1_2,2)*sigma*R_x)/pow(rr_2,3) - bh_spin*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dx;
@@ -776,6 +781,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("drho2kerr_dx", drho2kerr_dx);
         check_nan_or_inf("drho2kerr_dy", drho2kerr_dy);
         check_nan_or_inf("drho2kerr_dz", drho2kerr_dz);
+
+        check_nan_or_inf("dbetadphi_dx", drho2kerr_dx);
+        check_nan_or_inf("dbetadphi_dy", drho2kerr_dy);
+        check_nan_or_inf("dbetadphi_dz", drho2kerr_dz);
 
 
         CCTK_REAL dbetad[4][4];
@@ -849,6 +858,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         g[3][2] = gyz[ind];
         g[3][3] = gzz[ind];
 
+        
+        // Check for NaN or Inf in all g[i][j] components
+        for (int gi = 0; gi <= 3; ++gi) {
+          for (int gj = 0; gj <= 3; ++gj) {
+            char g_name[32];
+            snprintf(g_name, sizeof(g_name), "g[%d][%d]", gi, gj);
+            check_nan_or_inf(g_name, g[gi][gj]);
+          }
+        }
         
 
         //from here on the derivatives already take into account the gammas correctly.
@@ -1042,6 +1060,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                   betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
                   betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
 
+        // Check for NaN or Inf in betaup components
+        check_nan_or_inf("betaup[1]", betaup[1]);
+        check_nan_or_inf("betaup[2]", betaup[2]);
+        check_nan_or_inf("betaup[3]", betaup[3]);
+        //estava mal porque os shifts agora sao diferentes depois do boost.
+
         
 
 
@@ -1067,15 +1091,37 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           }
         }
 
+        CCTK_REAL new_betad[4];
+        new_betad[1] = pow(gamma,2)*(betad[1] + bh_v*(pow(alpha0,2) + bh_v*betad[1] - \
+                       (pow(betad[1],2) + pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] \
+                       + x1_2*betad[1]*gamma,2)*hh)/((1 + \
+                       pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2));
+        new_betad[2] =  gamma*(betad[2] + pow(bh_spin,2)*bh_v*x1_2*y1_2*gamma*hh*psi4_2);
+        new_betad[3] = 0.;
+        check_nan_or_inf("new_betad[1]", new_betad[1]);
+        check_nan_or_inf("new_betad[2]", new_betad[2]);
+        check_nan_or_inf("new_betad[3]", new_betad[3]);
 
-        CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]); 
+
+        CCTK_REAL new_betaup[4];
+                  new_betaup[1] = g_inv[1][1] * new_betad[1] + g_inv[1][2] * new_betad[2] + g_inv[1][3] * new_betad[3];
+                  new_betaup[2] = g_inv[2][1] * new_betad[1] + g_inv[2][2] * new_betad[2] + g_inv[2][3] * new_betad[3];
+                  new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
+
+        // Check for NaN or Inf in betaup components
+        check_nan_or_inf("betaup[1]", new_betaup[1]);
+        check_nan_or_inf("betaup[2]", new_betaup[2]);
+        check_nan_or_inf("betaup[3]", new_betaup[3]);
+
+
+
+        CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3])
+        // CCTK_REAL new_lapse = sqrt(-g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }
-        // if (fabs(new_lapse) < 1e-16) {
-        //   fprintf(stderr, "Error: new_lapse is zero at grid point (%d,%d,%d)\n", i, j, k);
-        //   abort();
-        // }
+        check_nan_or_inf("new_lapse", new_lapse);
+        
 
         //stationary metric, time derivatives are zero. 
       
@@ -1111,12 +1157,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
       // Compute extrinsic curvature K_{ij}
-      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]);
-      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]);
-      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]);
-      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2]);
-      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2]);
-      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3]);
+      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]-dg[1][1][0]);
+      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]-dg[1][2][0]);
+      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]-dg[1][3][0]);
+      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2]-dg[2][2][0]);
+      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2]-dg[2][3][0]);
+      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3]-dg[3][3][0]);
 
 
      

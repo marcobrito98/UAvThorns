@@ -1120,7 +1120,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }
-        check_nan_or_inf("new_lapse", new_lapse);
+        // check_nan_or_inf("new_lapse", new_lapse);
+        if (isnan(new_lapse)) {
+        fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
+        fprintf(stderr, "g00 = %e \n", g[0][0]);
+        fprintf(stderr, "beta2 = %e \n", betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
+        abort(); // Break execution
+        }
         
 
         //stationary metric, time derivatives are zero. 

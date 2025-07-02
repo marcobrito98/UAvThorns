@@ -706,9 +706,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL betad[4];
-                  betad[1] = -y1_2/rho2_2 * bphi;
-                  betad[2] =  x1_2*gamma/rho2_2 * bphi;
-                  betad[3] = 0.;
+        betad[1] = -y1_2/rho2_2 * bphi;
+        betad[2] =  x1_2*gamma/rho2_2 * bphi;
+        betad[3] = 0.;
+
+        // Check for NaN or Inf in betad components
+        check_nan_or_inf("betad[1]", betad[1]);
+        check_nan_or_inf("betad[2]", betad[2]);
+        check_nan_or_inf("betad[3]", betad[3]);
 
         //To change the pin direction, change the indices accordingly.
         const CCTK_REAL dbetadphi_dx = (-2*bh_spin*pow(z1_2,2)*sigma*R_x)/pow(rr_2,3) - bh_spin*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dx;

@@ -1115,8 +1115,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-
-        CCTK_REAL new_lapse = sqrt(-g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
+        CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
+        // CCTK_REAL new_lapse = sqrt(-g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }

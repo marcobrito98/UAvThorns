@@ -859,6 +859,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         g[3][3] = gzz[ind];
 
         
+        // Check for NaN or Inf in all g[i][j] components
+        for (int gi = 0; gi <= 3; ++gi) {
+          for (int gj = 0; gj <= 3; ++gj) {
+            char g_name[32];
+            snprintf(g_name, sizeof(g_name), "g[%d][%d]", gi, gj);
+            check_nan_or_inf(g_name, g[gi][gj]);
+          }
+        }
+        
 
         //from here on the derivatives already take into account the gammas correctly.
         

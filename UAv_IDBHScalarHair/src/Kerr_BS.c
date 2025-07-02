@@ -1055,15 +1055,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             g_inv[3][3] =  (g[1][1]*g[2][2] - g[1][2]*g[2][1]) / det_g;
         }
 
-        // CCTK_REAL betaup[4];
-        //           betaup[1] = g_inv[1][1] * betad[1] + g_inv[1][2] * betad[2] + g_inv[1][3] * betad[3];
-        //           betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
-        //           betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
+        CCTK_REAL betaup[4];
+                  betaup[1] = g_inv[1][1] * betad[1] + g_inv[1][2] * betad[2] + g_inv[1][3] * betad[3];
+                  betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
+                  betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
 
-        // // Check for NaN or Inf in betaup components
-        // check_nan_or_inf("betaup[1]", betaup[1]);
-        // check_nan_or_inf("betaup[2]", betaup[2]);
-        // check_nan_or_inf("betaup[3]", betaup[3]);
+        // Check for NaN or Inf in betaup components
+        check_nan_or_inf("betaup[1]", betaup[1]);
+        check_nan_or_inf("betaup[2]", betaup[2]);
+        check_nan_or_inf("betaup[3]", betaup[3]);
         //estava mal porque os shifts agora sao diferentes depois do boost.
 
         

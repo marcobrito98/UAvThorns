@@ -710,7 +710,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                   betad[2] =  x1_2*gamma/rho2_2 * bphi;
                   betad[3] = 0.;
 
-
+        //To change the pin direction, change the indices accordingly.
         const CCTK_REAL dbetadphi_dx = (-2*bh_spin*pow(z1_2,2)*sigma*R_x)/pow(rr_2,3) - bh_spin*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dx;
         const CCTK_REAL dbetadphi_dy = (-2*bh_spin*pow(z1_2,2)*sigma*R_y)/pow(rr_2,3) - bh_spin*(1 - pow(z1_2,2)/pow(rr_2,2))*dsigma_dy;
         const CCTK_REAL dbetadphi_dz = (bh_spin*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(-rho2_2)*dsigma_dz))/pow(rr_2,3);
@@ -779,7 +779,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL dbetad[4][4];
-        // Compute derivatives of the beta vector
+        // Compute derivatives of the beta vector. To change the pin direction, change the indices accordingly.
         dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
 
         dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);

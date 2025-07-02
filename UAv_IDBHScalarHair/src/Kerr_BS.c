@@ -1072,10 +1072,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }
-        // if (fabs(new_lapse) < 1e-16) {
-        //   fprintf(stderr, "Error: new_lapse is zero at grid point (%d,%d,%d)\n", i, j, k);
-        //   abort();
-        // }
+        check_nan_or_inf("new_lapse", new_lapse);
+        
 
         //stationary metric, time derivatives are zero. 
       
@@ -1111,12 +1109,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
       // Compute extrinsic curvature K_{ij}
-      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]);
-      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]);
-      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]);
-      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2]);
-      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2]);
-      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3]);
+      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1]-dg[1][1][0]);
+      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1]-dg[1][2][0]);
+      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1]-dg[1][3][0]);
+      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2]-dg[2][2][0]);
+      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2]-dg[2][3][0]);
+      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3]-dg[3][3][0]);
 
 
      

@@ -557,8 +557,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
   const CCTK_REAL horizon_radius = 0.5*sqrt(bh_mass2-bh_spin2);
-  printf("spin = %e\n", bh_spin);
-  printf("spin^2 = %e\n", bh_spin2);
+  // printf("spin = %e\n", bh_spin);
+  // printf("spin^2 = %e\n", bh_spin2);
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {

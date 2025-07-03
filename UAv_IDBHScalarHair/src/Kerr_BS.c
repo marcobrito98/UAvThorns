@@ -845,9 +845,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
          // Create an array g to store the metric components at each grid point
         CCTK_REAL g[4][4];
-        g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + \
-                  (pow(betad[1],2) + pow(betad[2],2) + bh_spin2*pow(y1_2*betad[2] \
-                  + x1_2*gamma*betad[1]*gamma,2)*hh)/((1 + bh_spin2*(rho2_2)*hh)*psi4_2) + bh_v2*(1 + bh_spin2*pow(y1_2,2)*hh)*psi4_2);
+        g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + (pow(betad[1],2) + \
+                  pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
+                  x1_2*betad[1]*gamma,2)*hh)/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) \
+                  + pow(bh_v,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2);
         g[1][1] = gxx[ind];
         g[1][2] = gxy[ind];
         g[1][3] = gxz[ind];

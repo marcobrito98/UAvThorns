@@ -550,7 +550,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
-  const CCTK_REAL pow(bh_spin,2)= bh_spin*bh_spin;
+  // const CCTK_REAL pow(bh_spin,2)= bh_spin*bh_spin;
   const CCTK_REAL bh_mass2= bh_mass*bh_mass;
 
   const CCTK_REAL rBLp  = bh_mass + sqrt( bh_mass2 - pow(bh_spin,2) );

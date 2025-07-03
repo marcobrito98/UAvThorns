@@ -1115,8 +1115,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[2]", new_betaup[2]);
         check_nan_or_inf("betaup[3]", new_betaup[3]);
 
-          printf("spin = %e\n", bh_spin);
-  printf("spin^2 = %e\n", bh_spin2);
+
 
 
 

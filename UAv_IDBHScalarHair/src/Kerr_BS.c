@@ -1120,6 +1120,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }
+        if (g[0][0] > 0) {
+            printf(stderr, "Warning: g[0][0] is positive at grid point (%d,%d,%d)", i, j, k); 
+        }
         // check_nan_or_inf("new_lapse", new_lapse);
         if (isnan(new_lapse)) {
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");

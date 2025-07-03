@@ -1022,13 +1022,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-        // Christoffel symbols of the spatial metric (only spatial indices 1..3)
-        CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
-        // Initialize to zero
-        for (int i = 1; i <= 3; ++i)
-          for (int j = 1; j <= 3; ++j)
-            for (int k = 1; k <= 3; ++k)
-              Gamma[i][j][k] = 0.0;
 
         // Compute inverse metric g^{ij} (spatial part only)
         CCTK_REAL det_g =
@@ -1067,6 +1060,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //estava mal porque os shifts agora sao diferentes depois do boost.
 
         
+        // Christoffel symbols of the spatial metric (only spatial indices 1..3)
+        CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
+        // Initialize to zero
+        for (int i = 1; i <= 3; ++i)
+          for (int j = 1; j <= 3; ++j)
+            for (int k = 1; k <= 3; ++k)
+              Gamma[i][j][k] = 0.0;
 
 
         // Compute Christoffel symbols (spatial part)

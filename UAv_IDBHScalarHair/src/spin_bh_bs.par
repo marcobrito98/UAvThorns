@@ -203,7 +203,7 @@ UAv_IDBHScalarHair::Wbar_r_power      = 0
 UAv_IDBHScalarHair::bh_mass           = 1
 UAv_IDBHScalarHair::bh_spin           = 0.5
 UAv_IDBHScalarHair::bh_v              = 0.0
-# UAv_IDBHScalarHair::eps_r             = 1d-06
+# UAv_IDBHScalarHair::eps_r             = 1d-16
 # UAv_IDBHScalarHair::Apert_phi         = 0.0
 # UAv_IDBHScalarHair::R0pert_phi        = 0.0
 # UAv_IDBHScalarHair::Sigmapert_phi     = 1.0
@@ -400,7 +400,7 @@ AHFinderDirect::find_every = 256
 
 AHFinderDirect::run_at_CCTK_POST_RECOVER_VARIABLES = no
 
-AHFinderDirect::move_origins            = no
+AHFinderDirect::move_origins            = yes
 
 AHFinderDirect::geometry_interpolator_name = "Lagrange polynomial interpolation"
 AHFinderDirect::geometry_interpolator_pars = "order=4"
@@ -411,7 +411,7 @@ AHFinderDirect::output_h_every = 0
 
 AHFinderDirect::N_horizons = 6
 
-# o tanho dos horizontes deve estar por order crescente.
+# o tamanho dos horizontes deve estar por order crescente.
 
 AHFinderDirect::origin_x                             [1] = -20.0
 AHFinderDirect::initial_guess__coord_sphere__x_center[1] = -20.0
@@ -634,6 +634,7 @@ IOASCII::out2D_vars              = "
 IOASCII::out3D_every                      = 8192
 IOASCII::out3D_vars                       = "
   ADMBase::kzz
+  ADMBase::lapse
 "
 
 Carpet::verbose                    = no

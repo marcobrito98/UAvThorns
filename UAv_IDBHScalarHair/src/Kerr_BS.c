@@ -660,7 +660,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*(bh_mass2-bh_spin2);
 
-        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2 ;
+        CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2 ;
         if( rho2kerr < pow( eps_r, 2 ) ) {
           rho2kerr = pow( eps_r, 2 );
         }

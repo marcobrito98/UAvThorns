@@ -704,6 +704,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         const CCTK_REAL bphi = -bh_spin * sigma * sinth2;
+        const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
+        const CCTK_REAL bphiup = bphi/gammaphiphi;
+
 
 
         CCTK_REAL betad[4];
@@ -789,7 +792,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL dbetad[4][4];
-        // Compute derivatives of the beta vector. To change the pin direction, change the indices accordingly.
+        // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
         dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
 
         dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
@@ -816,7 +819,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         //capital Gs refer to the unboosted frame.
 
-        const CCTK_REAL Gtt = -alpha02 + bphi*bphi;
+        const CCTK_REAL Gtt = -alpha02 + bphi*bphiup; //estava aqui o/um erro fiz a contracção errada.
         const CCTK_REAL Gxt = betad[1];
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*gamma*x1_2;

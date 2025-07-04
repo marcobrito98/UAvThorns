@@ -661,13 +661,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*(bh_mass2-bh_spin2);
 
         CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2 ;
-        if( rho2kerr < pow( eps_r, 2 ) ) {
-          rho2kerr = pow( eps_r, 2 );
-        }
+        // if( rho2kerr < pow( eps_r, 2 ) ) {
+        //   rho2kerr = pow( eps_r, 2 );
+        // }
         // const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
         const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
         const CCTK_REAL hh     = (1 + sigma) / (rho2kerr * rr2_2);
+
+        // NaN/Inf checks for sigma and hh
+        check_nan_or_inf("sigma", sigma);
+        check_nan_or_inf("hh", hh);
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
@@ -828,7 +832,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         //capital Gs refer to the unboosted frame.
 
-        const CCTK_REAL Gtt = -alpha02 + bphi*bphiup; //estava aqui o/um erro fiz a contracção errada.
+        const CCTK_REAL Gtt = -alpha02 + bphi*bphiup;
         const CCTK_REAL Gxt = betad[1];
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*gamma*x1_2;

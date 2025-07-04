@@ -819,7 +819,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         //capital Gs refer to the unboosted frame.
 
-        const CCTK_REAL Gtt = -alpha02 + bphi*bphiup; //estava aqui o/um erro fiz a contracção errada.
+        const CCTK_REAL Gtt = -alpha02 + bphi*bphi; //estava aqui o/um erro fiz a contracção errada.
         const CCTK_REAL Gxt = betad[1];
         const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
         const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*gamma*x1_2;

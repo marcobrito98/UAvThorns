@@ -704,8 +704,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         const CCTK_REAL bphi = -bh_spin * sigma * sinth2;
-        const CCTK_REAL gammaphiphi= psi4_2*rr2_2*sinth2*(1 + bh_spin2*hh*rr2_2*sinth2);
-        const CCTK_REAL bphiup = bphi/gammaphiphi;
+        const CCTK_REAL gammaphiphi = psi4_2 * rr2_2 * sinth2 * (1 + bh_spin2 * hh * rr2_2 * sinth2);
+        const CCTK_REAL bphiup = bphi / gammaphiphi;
+
+        // Check for NaN or Inf in these quantities
+        check_nan_or_inf("bphi", bphi);
+        check_nan_or_inf("gammaphiphi", gammaphiphi);
+        check_nan_or_inf("bphiup", bphiup);
 
 
 

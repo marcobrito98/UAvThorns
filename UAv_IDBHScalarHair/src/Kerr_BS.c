@@ -557,8 +557,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   const CCTK_REAL rBLm  = bh_mass - sqrt( bh_mass2 - bh_spin2 );
 
   const CCTK_REAL horizon_radius = 0.5*sqrt(bh_mass2-bh_spin2);
-  // printf("spin = %e\n", bh_spin);
-  // printf("spin^2 = %e\n", bh_spin2);
+
+
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -601,6 +601,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL gamma = sqrt(gamma2);
+        printf("gamma = %e\n", gamma);
  
         CCTK_REAL rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
         if( rr2_2 < pow( eps_r, 2 ) ) {
@@ -1156,15 +1157,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         if (new_lapse < SMALL){
             new_lapse = SMALL;
         }
-        // if (g[0][0] > 0) {
-        //     printf(stderr, "Warning: g[0][0] is positive at grid point (%d,%d,%d)", i, j, k); 
-        // }
-        // check_nan_or_inf("new_lapse", new_lapse);
         if (isnan(new_lapse)) {
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
-        // fprintf(stderr, "g00 = %.9e \n", g[0][0]);
-        // fprintf(stderr, "beta2 = %.9e \n", betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
-        // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", i, j, k);
+        fprintf(stderr, "g00 = %.9e \n", g[0][0]);
+        fprintf(stderr, "beta2 = %.9e \n", betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
+        fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", i, j, k);
         abort(); // Break execution
         }
 

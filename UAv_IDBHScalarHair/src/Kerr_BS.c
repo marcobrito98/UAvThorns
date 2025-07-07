@@ -864,9 +864,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL g[4][4];
 
         // Initialize g to zero
-        for (int gi = 0; gi < 4; ++gi)
-          for (int gj = 0; gj < 4; ++gj)
-            g[gi][gj] = 0.0; 
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            g[i][j] = 0.0; 
 
         g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + (pow(betad[1],2) + \
                   pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
@@ -884,11 +884,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         
         // Check for NaN or Inf in all g[i][j] components
-        for (int gi = 0; gi <= 3; ++gi) {
-          for (int gj = 0; gj <= 3; ++gj) {
+        for (int i = 0; i <= 3; ++i) {
+          for (int j = 0; j <= 3; ++j) {
             char g_name[32];
-            snprintf(g_name, sizeof(g_name), "g[%d][%d]", gi, gj);
-            check_nan_or_inf(g_name, g[gi][gj]);
+            snprintf(g_name, sizeof(g_name), "g[%d][%d]", i, j);
+            check_nan_or_inf(g_name, g[i][j]);
           }
         }
         
@@ -1060,6 +1060,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           + g[1][3]*(g[2][1]*g[3][2] - g[2][2]*g[3][1]);
 
         CCTK_REAL g_inv[4][4]; // Inverse metric
+        // Initialize g_inv to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            g_inv[i][j] = 0.0;
 
         if (fabs(det_g) < 1e-12) {
             // Abort execution due to singular metric
@@ -1185,7 +1189,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL Dbetad[4][4];
         for (int i = 1; i <= 3; ++i) {
           for (int j = 1; j <= 3; ++j) {
-            Dbetad[i][j] = dbetad[i][j]; //aqui devem ser a derivada dos shifts depois do boost.
+            Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
             for (int k = 1; k <= 3; ++k)
               Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
             // Check for NaN or Inf in Dbetad

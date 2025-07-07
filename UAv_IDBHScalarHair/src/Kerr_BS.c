@@ -862,6 +862,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
          // Create an array g to store the metric components at each grid point
         CCTK_REAL g[4][4];
+
+        // Initialize g to zero
+        for (int gi = 0; gi < 4; ++gi)
+          for (int gj = 0; gj < 4; ++gj)
+            g[gi][gj] = 0.0; 
+
         g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + (pow(betad[1],2) + \
                   pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
                   x1_2*betad[1]*gamma,2)*hh)/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) \
@@ -890,6 +896,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //from here on the derivatives already take into account the gammas correctly.
         
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
+        // Initialize dg to zero
+        for (int ii = 0; ii < 4; ++ii)
+          for (int jj = 0; jj < 4; ++jj)
+            for (int kk = 0; kk < 4; ++kk)
+              dg[ii][jj][kk] = 0.0;
+
         // Example: dg[1][1][1] = dgxx_dx, dg[1][1][2] = dgxx_dy, etc.
         dg[1][1][1] = (pow(gamma,3)*(2*pow(bh_v,2)*betad[2]*(1 + \
                       pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(pow(bh_spin,2)*x1_2*y1_2*gamma*hh*\
@@ -1173,9 +1185,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL Dbetad[4][4];
         for (int i = 1; i <= 3; ++i) {
           for (int j = 1; j <= 3; ++j) {
-            Dbetad[i][j] = dbetad[i][j];
+            Dbetad[i][j] = dbetad[i][j]; //aqui devem ser a derivada dos shifts depois do boost.
             for (int k = 1; k <= 3; ++k)
-              Dbetad[i][j] -= Gamma[k][i][j] * betad[k];
+              Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
             // Check for NaN or Inf in Dbetad
             char Dbetad_name[32];
             snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);

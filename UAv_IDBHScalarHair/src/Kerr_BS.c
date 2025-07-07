@@ -1160,7 +1160,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         if (isnan(new_lapse)) {
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
         fprintf(stderr, "g00 = %.9e \n", g[0][0]);
-        fprintf(stderr, "beta2 = %.9e \n", betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
+        fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
         fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", i, j, k);
         abort(); // Break execution
         }

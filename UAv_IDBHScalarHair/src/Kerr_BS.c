@@ -602,7 +602,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
 
-        if (x1_2 < 128.0 || y1_2 < 128.0 || z1_2 < 128.0) {
+        if (x1_2 < -128.0 || y1_2 < -128.0 || z1_2 < -128.0) {
           fprintf(stderr,"x1_2 = %e, y1_2 = %e, z1_2 = %e\n", x1_2, y1_2, z1_2);
           abort();
         } else if (x1_2 > 128.0 || y1_2 > 128.0 || z1_2 > 128.0) {

@@ -723,7 +723,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-        CCTK_REAL betad[4];
+        CCTK_REAL betad[4] = {0.0, 0.0, 0.0, 0.0};
         betad[1] = -y1_2/rho2_2 * bphi;
         betad[2] =  x1_2*gamma/rho2_2 * bphi;
         betad[3] = 0.;
@@ -806,6 +806,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL dbetad[4][4];
+        // Initialize g to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            dbetad[i][j] = 0.0; 
         // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
         dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
 
@@ -1127,6 +1131,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
         CCTK_REAL new_betad[4];
+        // Initialize g to zero
+        for (int i = 0; i < 4; ++i)
+            new_betad[i] = 0.0; 
+
         new_betad[1] = pow(gamma,2)*(betad[1] + bh_v*(pow(alpha0,2) + bh_v*betad[1] - \
                        (pow(betad[1],2) + pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] \
                        + x1_2*betad[1]*gamma,2)*hh)/((1 + \
@@ -1139,9 +1147,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         CCTK_REAL new_betaup[4];
-                  new_betaup[1] = g_inv[1][1] * new_betad[1] + g_inv[1][2] * new_betad[2] + g_inv[1][3] * new_betad[3];
-                  new_betaup[2] = g_inv[2][1] * new_betad[1] + g_inv[2][2] * new_betad[2] + g_inv[2][3] * new_betad[3];
-                  new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
+        // Initialize new_betaup to zero
+        for (int i = 0; i < 4; ++i)
+            new_betaup[i] = 0.0;
+
+        new_betaup[1] = g_inv[1][1] * new_betad[1] + g_inv[1][2] * new_betad[2] + g_inv[1][3] * new_betad[3];
+        new_betaup[2] = g_inv[2][1] * new_betad[1] + g_inv[2][2] * new_betad[2] + g_inv[2][3] * new_betad[3];
+        new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
 
         // Check for NaN or Inf in betaup components
         check_nan_or_inf("betaup[1]", new_betaup[1]);
@@ -1189,6 +1201,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // Compute covariant derivatives of the shift
         CCTK_REAL Dbetad[4][4];
+        // Initialize Dbetad to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            Dbetad[i][j] = 0.0;
+          
         for (int i = 1; i <= 3; ++i) {
           for (int j = 1; j <= 3; ++j) {
             Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.

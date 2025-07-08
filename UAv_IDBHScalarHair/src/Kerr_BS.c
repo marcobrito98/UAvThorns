@@ -602,13 +602,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
 
-        if (x1_2 < -128.0 || y1_2 < -128.0 || z1_2 < -128.0) {
-          fprintf(stderr,"x1_2 = %d, y1_2 = %d, z1_2 = %d\n", x1_2, y1_2, z1_2);
-          abort();
-        } else if (x1_2 > 128.0 || y1_2 > 128.0 || z1_2 > 128.0) {
-          fprintf(stderr,"x1_2 = %d, y1_2 = %d, z1_2 = %d\n", x1_2, y1_2, z1_2);
-          abort();
-        }
+        // if (x1_2 < -128.0 || y1_2 < -128.0 || z1_2 < -128.0) {
+        //   fprintf(stderr,"x1_2 = %d, y1_2 = %d, z1_2 = %d\n", x1_2, y1_2, z1_2);
+        //   abort();
+        // } else if (x1_2 > 128.0 || y1_2 > 128.0 || z1_2 > 128.0) {
+        //   fprintf(stderr,"x1_2 = %d, y1_2 = %d, z1_2 = %d\n", x1_2, y1_2, z1_2);
+        //   abort();
+        // }
 
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);

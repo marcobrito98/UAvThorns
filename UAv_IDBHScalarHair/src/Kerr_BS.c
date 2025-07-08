@@ -1181,7 +1181,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
         fprintf(stderr, "g00 = %.9e \n", g[0][0]);
         fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
-        fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
+        // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
+        fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x1_2, y1_2, z1_2);
+
         abort(); // Break execution
         }
 

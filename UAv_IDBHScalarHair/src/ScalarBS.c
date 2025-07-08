@@ -475,14 +475,6 @@ void UAv_IDScalarBS(CCTK_ARGUMENTS)
         const CCTK_REAL y1  = y[ind] - y0;
         const CCTK_REAL z1  = z[ind] - z0;
 
-        if (x1 < -128.0 || y1 < -128.0 || z1 < -128.0) {
-          fprintf(stderr,"x1 = %d, y1 = %d, z1 = %d\n", x1, y1, z1);
-          abort();
-        } else if (x1 > 128.0 || y1 > 128.0 || z1 > 128.0) {
-          fprintf(stderr,"x1 = %d, y1 = %d, z1 = %d\n", x1, y1, z1);
-          abort();
-        }
-
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2 = x1*x1 + y1*y1 + z1*z1;
         const CCTK_REAL rr  = sqrt(rr2);

@@ -823,20 +823,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int j = 0; j < 4; ++j)
             dbetad[i][j] = 0.0; 
         // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
-        dbetad[1][1] = (bh_spin*y1_2*(2*sigma*(x1_2*gamma*pow(z1_2,2)*rr_2 - x1_2*gamma*pow(rr_2,3) + \
-                       (rho2_2)*pow(z1_2,2)*R_x) + (rho2_2)*rr_2*(rho2_2)*dsigma_dx))/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
 
-        dbetad[1][2] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) + 2*y1_2*(rho2_2)*pow(z1_2,2)*R_y) \
-                       + bh_spin*y1_2*(rho2_2)*rr_2*(rho2_2)*dsigma_dy)/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
 
-        dbetad[1][3] = (bh_spin*y1_2*((2*z1_2*sigma*(-rr_2 + z1_2*R_z))/pow(rr_2,3) + (rho2_2/pow(rr_2,2))*dsigma_dz))/(rho2_2);
+        dbetad[1][3] = -((y1_2*dbetadphi_dz)/(rho2_2));
 
-        dbetad[2][1] = (bh_spin*sigma*((x1_2*gamma - y1_2)*(x1_2*gamma + y1_2)*rr_2*(rho2_2) - 2*x1_2*gamma*(rho2_2)*pow(z1_2,2)*R_x) \
-                       + bh_spin*x1_2*gamma*(rho2_2)*rr_2*(-rho2_2)*dsigma_dx)/(pow(rho2_2,2)*pow(rr_2,3));
+        dbetad[2][1] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi + x1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
 
-        dbetad[2][2] = (bh_spin*x1_2*gamma*(-2*sigma*(y1_2*pow(z1_2,2)*rr_2 - y1_2*pow(rr_2,3) + \
-                       (rho2_2)*pow(z1_2,2)*R_y) + (rho2_2)*rr_2*(-rho2_2)*dsigma_dy))/(pow(rho2_2,2)*pow(rr_2,3));
-        dbetad[2][3] = (bh_spin*x1_2*gamma*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(-rho2_2)*dsigma_dz))/((rho2_2)*pow(rr_2,3));
+        dbetad[2][2] = (x1_2*gamma*(-2*y1_2*bphi + rho2_2*dbetadphi_dy))/pow(rho2_2,2);
+        dbetad[2][3] = (x1_2*gamma*dbetadphi_dz)/(rho2_2);
         dbetad[3][1] = 0;
         dbetad[3][2] = 0;
         dbetad[3][3] = 0;

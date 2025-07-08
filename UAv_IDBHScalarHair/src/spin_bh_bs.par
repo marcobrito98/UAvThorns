@@ -201,9 +201,9 @@ UAv_IDBHScalarHair::omega_BS          = 0.90
 UAv_IDBHScalarHair::C0                = 1.0 
 UAv_IDBHScalarHair::Wbar_r_power      = 0
 UAv_IDBHScalarHair::bh_mass           = 1
-UAv_IDBHScalarHair::bh_spin           = 0.5
+UAv_IDBHScalarHair::bh_spin           = 0.0
 UAv_IDBHScalarHair::bh_v              = 0.0
-# UAv_IDBHScalarHair::eps_r             = 1d-16
+# UAv_IDBHScalarHair::eps_r             = 1d-06
 # UAv_IDBHScalarHair::Apert_phi         = 0.0
 # UAv_IDBHScalarHair::R0pert_phi        = 0.0
 # UAv_IDBHScalarHair::Sigmapert_phi     = 1.0
@@ -295,8 +295,8 @@ SphericalSurface::ntheta            [1] = 41
 SphericalSurface::nphi              [1] = 80
 SphericalSurface::nghoststheta      [1] = 2
 SphericalSurface::nghostsphi        [1] = 2
-CarpetMask::excluded_surface        [0] = 0
-CarpetMask::excluded_surface_factor [0] = 1.0
+CarpetMask::excluded_surface        [1] = 1
+CarpetMask::excluded_surface_factor [1] = 1.0
 
 
 # Horizon 2
@@ -400,7 +400,7 @@ AHFinderDirect::find_every = 256
 
 AHFinderDirect::run_at_CCTK_POST_RECOVER_VARIABLES = no
 
-AHFinderDirect::move_origins            = yes
+AHFinderDirect::move_origins            = no
 
 AHFinderDirect::geometry_interpolator_name = "Lagrange polynomial interpolation"
 AHFinderDirect::geometry_interpolator_pars = "order=4"
@@ -411,12 +411,12 @@ AHFinderDirect::output_h_every = 0
 
 AHFinderDirect::N_horizons = 6
 
-# o tamanho dos horizontes deve estar por order crescente.
+# o tanho dos horizontes deve estar por order crescente.
 
 AHFinderDirect::origin_x                             [1] = -20.0
 AHFinderDirect::initial_guess__coord_sphere__x_center[1] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__radius  [1] = 0.4
-AHFinderDirect::which_surface_to_store_info          [1] = 0
+AHFinderDirect::initial_guess__coord_sphere__radius  [1] = 0.5
+AHFinderDirect::which_surface_to_store_info          [1] = 1
 AHFinderDirect::reset_horizon_after_not_finding      [1] = no
 # AHFinderDirect::max_allowable_horizon_radius         [1] = 1
 # AHFinderDirect::find_after_individual_time           [1] = 900.0
@@ -428,8 +428,8 @@ AHFinderDirect::max_allowable_horizon_radius         [1] = 6
 
 AHFinderDirect::origin_x                             [2] = -20.0
 AHFinderDirect::initial_guess__coord_sphere__x_center[2] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__radius  [2] = 0.45
-AHFinderDirect::which_surface_to_store_info          [2] = 1
+AHFinderDirect::initial_guess__coord_sphere__radius  [2] = 0.4
+AHFinderDirect::which_surface_to_store_info          [2] = 2
 AHFinderDirect::reset_horizon_after_not_finding      [2] = no
 # AHFinderDirect::max_allowable_horizon_radius         [2] = 2
 # AHFinderDirect::find_after_individual_time           [2] = 900.0
@@ -441,8 +441,8 @@ AHFinderDirect::max_allowable_horizon_radius         [2] = 6
 
 AHFinderDirect::origin_x                             [3] = -20.0
 AHFinderDirect::initial_guess__coord_sphere__x_center[3] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__radius  [3] = 0.5
-AHFinderDirect::which_surface_to_store_info          [3] = 2
+AHFinderDirect::initial_guess__coord_sphere__radius  [3] = 0.45
+AHFinderDirect::which_surface_to_store_info          [3] = 3
 AHFinderDirect::reset_horizon_after_not_finding      [3] = no
 # AHFinderDirect::max_allowable_horizon_radius         [3] = 4
 # AHFinderDirect::find_after_individual_time           [3] = 900.0
@@ -458,21 +458,21 @@ AHFinderDirect::surface_definition                   [4] = "expansion product"
 AHFinderDirect::surface_selection                    [4] = "areal radius"
 AHFinderDirect::desired_value                        [4] = 80.0
 AHFinderDirect::initial_guess__coord_sphere__radius  [4] = 80.0
-AHFinderDirect::which_surface_to_store_info          [4] = 3
+AHFinderDirect::which_surface_to_store_info          [4] = 4
 AHFinderDirect::reset_horizon_after_not_finding      [4] = no
 
 AHFinderDirect::surface_definition                   [5] = "expansion product"
 AHFinderDirect::surface_selection                    [5] = "areal radius"
 AHFinderDirect::desired_value                        [5] = 100.0
 AHFinderDirect::initial_guess__coord_sphere__radius  [5] = 100.0
-AHFinderDirect::which_surface_to_store_info          [5] = 4
+AHFinderDirect::which_surface_to_store_info          [5] = 5
 AHFinderDirect::reset_horizon_after_not_finding      [5] = no
 
 AHFinderDirect::surface_definition                   [6] = "expansion product"
 AHFinderDirect::surface_selection                    [6] = "areal radius"
 AHFinderDirect::desired_value                        [6] = 110.0
 AHFinderDirect::initial_guess__coord_sphere__radius  [6] = 110.0
-AHFinderDirect::which_surface_to_store_info          [6] = 5
+AHFinderDirect::which_surface_to_store_info          [6] = 6
 AHFinderDirect::reset_horizon_after_not_finding      [6] = no
 
 
@@ -485,7 +485,7 @@ QuasiLocalMeasures::veryverbose            = no
 QuasiLocalMeasures::interpolator           = "Lagrange polynomial interpolation"
 QuasiLocalMeasures::interpolator_options   = "order=4"
 QuasiLocalMeasures::spatial_order          = 4
-QuasiLocalMeasures::num_surfaces           = 6
+QuasiLocalMeasures::num_surfaces           = 6 #6
 QuasiLocalMeasures::surface_index      [0] = 1
 QuasiLocalMeasures::surface_index      [1] = 2
 QuasiLocalMeasures::surface_index      [2] = 3
@@ -634,7 +634,6 @@ IOASCII::out2D_vars              = "
 IOASCII::out3D_every                      = 8192
 IOASCII::out3D_vars                       = "
   ADMBase::kzz
-  ADMBase::lapse
 "
 
 Carpet::verbose                    = no

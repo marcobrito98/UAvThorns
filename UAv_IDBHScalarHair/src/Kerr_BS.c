@@ -800,6 +800,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("drho2kerr_dy", drho2kerr_dy);
         check_nan_or_inf("drho2kerr_dz", drho2kerr_dz);
 
+        check_nan_or_inf("dbetadphi_dx", drho2kerr_dx);
+        check_nan_or_inf("dbetadphi_dy", drho2kerr_dy);
+        check_nan_or_inf("dbetadphi_dz", drho2kerr_dz);
+
 
         CCTK_REAL dbetad[4][4];
         // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
@@ -1008,7 +1012,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dg[2][3][3] = 0.0; // dgyz_dz
         dg[3][3][1] = gamma*dpsi4_2_dx; // dgzz_dx
         dg[3][3][2] = dpsi4_2_dy; // dgzz_dy
-        dg[3][3] = dpsi4_2_dz; // dgzz_dz
+        dg[3][3][3] = dpsi4_2_dz; // dgzz_dz
         // Set symmetric components
         dg[2][1][1] = dg[1][2][1]; // dgyx_dx = dgxy_dx
         dg[2][1][2] = dg[1][2][2]; // dgyx_dy = dgxy_dy
@@ -1221,10 +1225,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // // let's add a perturbation to the scalar field as well
         // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1) * mu * mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
+        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
         
         // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2) * mu * mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;

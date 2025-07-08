@@ -858,11 +858,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
        
 
-        gxx[ind] = gamma2*Gxx + 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxy[ind] = gamma*Gxy+gamma*bh_v*Gty;
+        gxx[ind] = psi4_2;
+        gxy[ind] = 0;//gamma*Gxy+gamma*bh_v*Gty;
         gxz[ind] = 0;
         // gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
-        gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
+        gyy[ind] = psi4_2;// * ( 1. + bh_spin2 * hh * gamma2*x1_2*x1_2 );
         gyz[ind] = 0;
         gzz[ind] = psi4_2; // + psi4_1 - 1;
 
@@ -1177,24 +1177,24 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         // CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
-        double lapse_arg = -g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3];
-        if (lapse_arg < 0) {
-            fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
-            // print more context here
-        }
-        CCTK_REAL new_lapse = sqrt(lapse_arg);
-        if (new_lapse < SMALL){
-            new_lapse = SMALL;
-        }
-        if (isnan(new_lapse)) {
-        fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
-        fprintf(stderr, "g00 = %.9e \n", g[0][0]);
-        fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
-        // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
-        fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x1_2, y1_2, z1_2);
+        // double lapse_arg = -g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3];
+        // if (lapse_arg < 0) {
+        //     fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
+        //     // print more context here
+        // }
+        // CCTK_REAL new_lapse = sqrt(lapse_arg);
+        // if (new_lapse < SMALL){
+        //     new_lapse = SMALL;
+        // }
+        // if (isnan(new_lapse)) {
+        // fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
+        // fprintf(stderr, "g00 = %.9e \n", g[0][0]);
+        // fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
+        // // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
+        // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x1_2, y1_2, z1_2);
 
-        abort(); // Break execution
-        }
+        // abort(); // Break execution
+        // }
 
 
     
@@ -1213,35 +1213,35 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-        // Compute covariant derivatives of the shift
-        CCTK_REAL Dbetad[4][4];
-        // Initialize Dbetad to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            Dbetad[i][j] = 0.0;
+        // // Compute covariant derivatives of the shift
+        // CCTK_REAL Dbetad[4][4];
+        // // Initialize Dbetad to zero
+        // for (int i = 0; i < 4; ++i)
+        //   for (int j = 0; j < 4; ++j)
+        //     Dbetad[i][j] = 0.0;
           
-        for (int i = 1; i <= 3; ++i) {
-          for (int j = 1; j <= 3; ++j) {
-            Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
-            for (int k = 1; k <= 3; ++k)
-              Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
-            // Check for NaN or Inf in Dbetad
-            char Dbetad_name[32];
-            snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
-            check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
-          }
-        }
+        // for (int i = 1; i <= 3; ++i) {
+        //   for (int j = 1; j <= 3; ++j) {
+        //     Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
+        //     for (int k = 1; k <= 3; ++k)
+        //       Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
+        //     // Check for NaN or Inf in Dbetad
+        //     char Dbetad_name[32];
+        //     snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
+        //     check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
+        //   }
+        // }
 
 
 
 
       // Compute extrinsic curvature K_{ij}
-      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
-      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
-      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
-      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
-      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
-      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
+      kxx[ind] = 0;//.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
+      kxy[ind] = 0;//.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
+      kxz[ind] = 0;//.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
+      kyy[ind] = 0;//.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
+      kyz[ind] = 0;//.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
+      kzz[ind] = 0;//.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
 
 
      

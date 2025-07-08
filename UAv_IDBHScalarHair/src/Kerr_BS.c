@@ -1282,7 +1282,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = new_lapse;
+        const CCTK_REAL alph_2 = 0;
 
         // No regularization needed for the BS, the lapse is non-zero
 

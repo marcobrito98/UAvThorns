@@ -1266,7 +1266,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
         if ((rr_2 < horizon_radius + 1e-5) && (rr_2 > horizon_radius - 1e-5 )) {
           fprintf(stderr, "Warning: new_lapse at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
-          fprintf(stderr, "new_lapse = %lf\n", new_lapse);
+          fprintf(stderr, "new_lapse = %e\n", new_lapse);
           abort(); // Break execution
         }
 

@@ -1247,7 +1247,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
         CCTK_REAL lapse_arg = -g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3];
-        if (lapse_arg < 0) {
+        if (lapse_arg < pow(SMALL, 4)) {
             fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
             lapse_arg = pow(SMALL, 4); // Set to a small positive value to avoid NaN
 

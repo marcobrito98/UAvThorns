@@ -1264,8 +1264,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         abort(); // Break execution
         }
-        if (rr_2 < horizon_radius + 1e-8 || (rr_2 < horizon_radius + 1e-4 )) {
-          fprintf(stderr, "Warning: new_lapse is too small at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
+        if (rr_2 < horizon_radius + 1e-8 || (rr_2 > horizon_radius - 1e-8 )) {
+          fprintf(stderr, "Warning: new_lapse at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
           fprintf(stderr, "new_lapse = %.9e\n", new_lapse);
           abort(); // Break execution
         }

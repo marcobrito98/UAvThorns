@@ -751,6 +751,36 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetadphi_dz = (bh_spin*(2*z1_2*sigma*(rr_2 - z1_2*R_z) + rr_2*(-rho2_2)*dsigma_dz))/pow(rr_2,3);
 
 
+        CCTK_REAL dbetad[4][4];
+        // Initialize g to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            dbetad[i][j] = 0.0; 
+        // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
+        dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
+
+        dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
+
+        dbetad[1][3] = -((y1_2*dbetadphi_dz)/(rho2_2));
+
+        dbetad[2][1] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi + x1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
+
+        dbetad[2][2] = (x1_2*gamma*(-2*y1_2*bphi + rho2_2*dbetadphi_dy))/pow(rho2_2,2);
+        dbetad[2][3] = (x1_2*gamma*dbetadphi_dz)/(rho2_2);
+        dbetad[3][1] = 0;
+        dbetad[3][2] = 0;
+        dbetad[3][3] = 0;
+        
+        // Check for NaN or Inf in all dbetad[i][j] components
+        for (int ii = 1; ii <= 3; ++ii) {
+          for (int jj = 1; jj <= 3; ++jj) {
+            char dbetad_name[32];
+            snprintf(dbetad_name, sizeof(dbetad_name), "dbetad[%d][%d]", ii, jj);
+            check_nan_or_inf(dbetad_name, dbetad[ii][jj]);
+          }
+        }
+
+
         const CCTK_REAL dhh_dx = (-((1 + sigma)*(2*rho2kerr*R_x + \
                                  rr_2*drho2kerr_dx))+rr_2*rho2kerr*dsigma_dx)/(pow(rr_2,3)*pow(rho2kerr,2));
         const CCTK_REAL dhh_dy = (-((1 + sigma)*(2*rho2kerr*R_y + \
@@ -817,34 +847,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("dbetadphi_dz", drho2kerr_dz);
 
 
-        CCTK_REAL dbetad[4][4];
-        // Initialize g to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            dbetad[i][j] = 0.0; 
-        // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
-        dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
-
-        dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
-
-        dbetad[1][3] = -((y1_2*dbetadphi_dz)/(rho2_2));
-
-        dbetad[2][1] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi + x1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
-
-        dbetad[2][2] = (x1_2*gamma*(-2*y1_2*bphi + rho2_2*dbetadphi_dy))/pow(rho2_2,2);
-        dbetad[2][3] = (x1_2*gamma*dbetadphi_dz)/(rho2_2);
-        dbetad[3][1] = 0;
-        dbetad[3][2] = 0;
-        dbetad[3][3] = 0;
         
-        // Check for NaN or Inf in all dbetad[i][j] components
-        for (int ii = 1; ii <= 3; ++ii) {
-          for (int jj = 1; jj <= 3; ++jj) {
-            char dbetad_name[32];
-            snprintf(dbetad_name, sizeof(dbetad_name), "dbetad[%d][%d]", ii, jj);
-            check_nan_or_inf(dbetad_name, dbetad[ii][jj]);
-          }
-        }
 
 
         //capital Gs refer to the unboosted frame.
@@ -1261,7 +1264,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         fprintf(stderr, "g00 = %.9e \n", g[0][0]);
         fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
         // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
-        fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x1_2, y1_2, z1_2);
+        fprintf(stderr, "Error: new_lapse is nan at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
 
         abort(); // Break execution
         }

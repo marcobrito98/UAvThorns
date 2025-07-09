@@ -1254,7 +1254,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // CCTK_REAL new_lapse = sqrt(lapse_arg);
         // if (new_lapse < SMALL){
         //     new_lapse = SMALL;
-        }
+        // }
         if (isnan(new_lapse)) {
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
         fprintf(stderr, "g00 = %.9e \n", g[0][0]);

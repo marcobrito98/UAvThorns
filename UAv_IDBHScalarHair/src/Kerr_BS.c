@@ -758,13 +758,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             dbetad[i][j] = 0.0; 
         // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
         dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
-
         dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
-
         dbetad[1][3] = -((y1_2*dbetadphi_dz)/(rho2_2));
-
         dbetad[2][1] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi + x1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
-
         dbetad[2][2] = (x1_2*gamma*(-2*y1_2*bphi + rho2_2*dbetadphi_dy))/pow(rho2_2,2);
         dbetad[2][3] = (x1_2*gamma*dbetadphi_dz)/(rho2_2);
         dbetad[3][1] = 0;

@@ -1251,9 +1251,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
             // print more context here
         }
-        CCTK_REAL new_lapse = sqrt(lapse_arg);
-        if (new_lapse < SMALL){
-            new_lapse = SMALL;
+        // CCTK_REAL new_lapse = sqrt(lapse_arg);
+        // if (new_lapse < SMALL){
+        //     new_lapse = SMALL;
         }
         if (isnan(new_lapse)) {
         fprintf(stderr, "Error: %s is NaN\n", "new_lapse");

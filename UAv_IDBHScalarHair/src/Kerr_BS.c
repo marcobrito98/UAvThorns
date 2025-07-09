@@ -856,7 +856,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gty = betad[2];
         const CCTK_REAL Gyy = psi4_2*(1 + bh_spin2*hh*x1_2*x1_2*gamma2);
         
-        const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)      *dpsi4_2_dx;
+        const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
         const CCTK_REAL dGxx_dy = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
         const CCTK_REAL dGxx_dz = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz;
 
@@ -975,7 +975,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                       Gxx*Gyy*(Gxx*dbetad[2][1] - betad[1]*dGxy_dx) - \
                       pow(Gxy,2)*(Gxx*dbetad[2][1] + betad[1]*dGxy_dx) + \
                       Gxy*(Gyy*(-(Gxx*dbetad[1][1]) + betad[1]*dGxx_dx) + \
-                      betad[1]*Gxx*dGyy_dx))))/pow(pow(Gxy,2) - Gxx*Gyy,2));
+                      betad[1]*Gxx*dGyy_dx))))/pow(pow(Gxy,2) - Gxx*Gyy,2)); // dgxx_dx
 
         // dg[1][1][2] = (pow(gamma,2)*(2*pow(bh_v,2)*betad[2]*(1 + \
         //               pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(pow(bh_spin,2)*x1_2*y1_2*gamma*hh*\
@@ -998,7 +998,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //               dalpha_dy + dbetad[1][2]) + dpsi4_2_dy + \
         //               pow(bh_spin,2)*y1_2*(y1_2*psi4_2*dhh_dy + hh*(2*psi4_2 + \
         //               y1_2*dpsi4_2_dy)))))/(pow(1 + \
-        //               pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)); // dgxx_dy
+        //               pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)); // 
         dg[1][1][2] = -((pow(gamma,2)*(2*pow(bh_v,2)*alpha0*pow(pow(Gxy,2) - Gxx*Gyy,2)* \
                       dalpha_dy + 2*bh_v*pow(Gxy,4)*dbetad[1][2] + 2*pow(bh_v,2)*\
                       betad[1]*pow(Gxy,2)*Gyy*dbetad[1][2] - 4*bh_v*Gxx*\
@@ -1017,7 +1017,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                       Gxx*Gyy*(Gxx*dbetad[2][2] - betad[1]*dGxy_dy) - \
                       pow(Gxy,2)*(Gxx*dbetad[2][2] + betad[1]*dGxy_dy) +\
                       Gxy*(Gyy*(-(Gxx*dbetad[1][2]) + betad[1]*dGxx_dy) + \
-                      betad[1]*Gxx*dGyy_dy))))/pow(pow(Gxy,2) - Gxx*Gyy,2));
+                      betad[1]*Gxx*dGyy_dy))))/pow(pow(Gxy,2) - Gxx*Gyy,2)); // dgxx_dy
 
 
         // dg[1][1][3] = (pow(gamma,2)*(-2*pow(bh_v,2)*alpha0*pow(1 + \

@@ -1303,17 +1303,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                    2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
                                    bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
                                    pow(Gxx,2))*pow(Gyy,2))));
-        const CCTK_REAL kzz_kerr = (gamma*(-(betad[2]*Gxx) + \
-                                   betad[1]*Gxy)*dpsi4_2_dy + \
-                                   gamma*(betad[2]*Gxy - \
-                                   betad[1]*Gyy)*dpsi4_2_dx)/(2.*(pow(Gxy,2) - \
-                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
-                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
-                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
-                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
-                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
-                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
-                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kzz_kerr = 0;
 
 
         kxx[ind] = kxx_kerr +\

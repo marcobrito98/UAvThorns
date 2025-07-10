@@ -1236,12 +1236,84 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-        const CCTK_REAL kxx_kerr = gamma2*Axx / psi2_2; //testing multiplying gamma per x basis
-        const CCTK_REAL kxy_kerr = gamma*Axy / psi2_2;
-        const CCTK_REAL kxz_kerr = gamma*Axz / psi2_2;
-        const CCTK_REAL kyy_kerr = Ayy / psi2_2;
-        const CCTK_REAL kyz_kerr = Ayz / psi2_2;
-        const CCTK_REAL kzz_kerr =   0.0;
+        // const CCTK_REAL kxx_kerr = Axx / psi2_2;
+        // const CCTK_REAL kxy_kerr = Axy / psi2_2;
+        // const CCTK_REAL kxz_kerr = Axz / psi2_2;
+        // const CCTK_REAL kyy_kerr = Ayy / psi2_2;
+        // const CCTK_REAL kyz_kerr = Ayz / psi2_2;
+        // const CCTK_REAL kzz_kerr =   0.0;
+
+
+
+        const CCTK_REAL kxx_kerr = (pow(gamma,3)*(2*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*dbetad[1][1] - betad[2]*(Gxy*dGxx_dx \
+                                   + Gxx*(dGxx_dy - 2*dGxy_dx)) + \
+                                   betad[1]*(Gyy*dGxx_dx + Gxy*(dGxx_dy - \
+                                   2*dGxy_dx))))/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kxy_kerr = (pow(gamma,2)*(betad[1]*Gyy*dGxx_dy + \
+                                   pow(Gxy,2)*(dbetad[1][2] + dbetad[2][1]) - \
+                                   Gxy*(betad[2]*dGxx_dy + betad[1]*dGyy_dx) + \
+                                   Gxx*(-(Gyy*(dbetad[1][2] + dbetad[2][1])) + \
+                                   betad[2]*dGyy_dx)))/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kxz_kerr = (pow(gamma,2)*(pow(Gxy,2)*dbetad[1][3] + \
+                                   betad[1]*Gyy*dGxx_dz - Gxy*(betad[2]*dGxx_dz \
+                                   + betad[1]*dGxy_dz) + Gxx*(-(Gyy*dbetad[1][3]) + \
+                                   betad[2]*dGxy_dz)))/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kyy_kerr = (gamma*(2*pow(Gxy,2)*dbetad[2][2] + \
+                                   Gxx*(-2*Gyy*dbetad[2][2] + betad[2]*dGyy_dy) + \
+                                   betad[1]*Gyy*(2*dGxy_dy - dGyy_dx) + \
+                                   Gxy*(-(betad[1]*dGyy_dy) + betad[2]*(-2*dGxy_dy + \
+                                   dGyy_dx))))/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kyz_kerr = (gamma*(pow(Gxy,2)*dbetad[2][3] + \
+                                   betad[1]*Gyy*dGxy_dz - Gxy*(betad[2]*dGxy_dz \
+                                   + betad[1]*dGyy_dz) + Gxx*(-(Gyy*dbetad[2][3]) + \
+                                   betad[2]*dGyy_dz)))/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
+        const CCTK_REAL kzz_kerr = (gamma*(-(betad[2]*Gxx) + \
+                                   betad[1]*Gxy)*dpsi4_2_dy + \
+                                   gamma*(betad[2]*Gxy - \
+                                   betad[1]*Gyy)*dpsi4_2_dx)/(2.*(pow(Gxy,2) - \
+                                   Gxx*Gyy)*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(alpha0,2)*pow(pow(Gxy,2) - \
+                                   Gxx*Gyy,2))/(pow(Gxy,2)*pow(-(bh_v*betad[2]) + \
+                                   Gxy,2) + Gxy*(2*bh_v*betad[2]*(-(bh_v*betad[1]) + \
+                                   Gxx) + (pow(bh_v,2)*pow(alpha0,2) + 2*bh_v*betad[1] - \
+                                   2*Gxx)*Gxy)*Gyy + (pow(bh_v,2)*pow(betad[1],2) - \
+                                   bh_v*(bh_v*pow(alpha0,2) + 2*betad[1])*Gxx + \
+                                   pow(Gxx,2))*pow(Gyy,2))));
 
 
         kxx[ind] = kxx_kerr +\

@@ -1,1 +1,1 @@
-Kerr_BS.c seems to work for Kerr, Schwarzschild,
+Kerr_BS.c seems to work for Kerr, Schwarzschild, (not for very high resolutions: fix slight offset on x0_2)

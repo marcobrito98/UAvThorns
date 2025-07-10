@@ -1441,8 +1441,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                    pow(Gxx,2)*pow(Gyy,3)*dGxx_dx - \
                    2*pow(Gxy,5)*dGxy_dx + \
                    4*Gxx*pow(Gxy,3)*Gyy*dGxy_dx + \
-                   2*pow(bh_v,2)*pow(betad[1],2)*Gxy*pow(Gyy,2)*dGxy_\
-                   dx - 2*pow(Gxx,2)*Gxy*pow(Gyy,2)*dGxy_dx - \
+                   2*pow(bh_v,2)*pow(betad[1],2)*Gxy*pow(Gyy,2)*dGxy_dx - 2*pow(Gxx,2)*Gxy*pow(Gyy,2)*dGxy_dx - \
                    pow(bh_v,2)*pow(betad[1],2)*pow(Gxy,2)*Gyy*dGyy_dx \
                    - pow(bh_v,2)*pow(betad[2],2)*(pow(Gxy,3)*(2*bh_v*dbetad[1][2] \
                    + dGxx_dy) + pow(Gxy,2)*(-2*bh_v*Gxx*dbetad[2][2] - \

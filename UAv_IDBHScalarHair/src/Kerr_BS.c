@@ -1916,12 +1916,12 @@ pow(bh_spin,4)*pow(bh_v,2) + 16*pow(bh_v,2)*pow(rr_2,4) - \
      
 
         
-        // check_nan_or_inf("kxx",kxx[ind]);
-        // check_nan_or_inf("kxy",kxy[ind]);
-        // check_nan_or_inf("kxz",kxz[ind]);
-        // check_nan_or_inf("kyy",kyy[ind]);
-        // check_nan_or_inf("kyz",kyz[ind]);
-        // check_nan_or_inf("kzz",kzz[ind]);  
+        check_nan_or_inf("kxx",kxx[ind]);
+        check_nan_or_inf("kxy",kxy[ind]);
+        check_nan_or_inf("kxz",kxz[ind]);
+        check_nan_or_inf("kyy",kyy[ind]);
+        check_nan_or_inf("kyz",kyz[ind]);
+        check_nan_or_inf("kzz",kzz[ind]);  
 
         // // let's add a perturbation to the scalar field as well
         // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;

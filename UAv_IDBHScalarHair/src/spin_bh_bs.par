@@ -124,7 +124,7 @@ CarpetRegrid2::num_centres              = 1 #2
 # # CarpetRegrid2::radius_1[5]              =  6.0
 
 CarpetRegrid2::num_levels_1             = 9
-CarpetRegrid2::position_x_1             = -20.0
+CarpetRegrid2::position_x_1             = -20.00000001
 CarpetRegrid2::radius_1[1]              = 64.0
 CarpetRegrid2::radius_1[2]              = 32.0
 CarpetRegrid2::radius_1[3]              = 16.0
@@ -195,13 +195,13 @@ UAv_IDBHScalarHair::infilename        = "$ENV{HOME}/ET/par_files/initial_data_BS
 
 
 UAv_IDBHScalarHair::x0                = 20.0  
-UAv_IDBHScalarHair::x0_2              = -20.0
+UAv_IDBHScalarHair::x0_2              = -20.00000001
 UAv_IDBHScalarHair::mm                = 0
 UAv_IDBHScalarHair::omega_BS          = 0.90
 UAv_IDBHScalarHair::C0                = 1.0 
 UAv_IDBHScalarHair::Wbar_r_power      = 0
 UAv_IDBHScalarHair::bh_mass           = 1
-UAv_IDBHScalarHair::bh_spin           = 0.3
+UAv_IDBHScalarHair::bh_spin           = 0.0
 UAv_IDBHScalarHair::bh_v              = 0.0
 # UAv_IDBHScalarHair::eps_r             = 1d-16
 # UAv_IDBHScalarHair::Apert_phi         = 0.0
@@ -360,7 +360,7 @@ CarpetTracker::surface[0]                       = 0
 # CarpetTracker::surface[1]                       = 1
 
 PunctureTracker::track                      [0] = yes
-PunctureTracker::initial_x                  [0] = -20.0
+PunctureTracker::initial_x                  [0] = -20.00000001
 PunctureTracker::which_surface_to_store_info[0] = 0
 # PunctureTracker::track                      [1] = yes
 # PunctureTracker::initial_x                  [1] = -3
@@ -411,10 +411,10 @@ AHFinderDirect::output_h_every = 0
 
 AHFinderDirect::N_horizons = 6
 
-# o tanho dos horizontes deve estar por order crescente.
 
-AHFinderDirect::origin_x                             [1] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__x_center[1] = -20.0
+
+AHFinderDirect::origin_x                             [1] = -20.00000001
+AHFinderDirect::initial_guess__coord_sphere__x_center[1] = -20.00000001
 AHFinderDirect::initial_guess__coord_sphere__radius  [1] = 0.5
 AHFinderDirect::which_surface_to_store_info          [1] = 1
 AHFinderDirect::reset_horizon_after_not_finding      [1] = no
@@ -426,8 +426,8 @@ AHFinderDirect::track_origin_source_y                [1] = "PunctureTracker::pt_
 AHFinderDirect::track_origin_source_z                [1] = "PunctureTracker::pt_loc_z[0]"
 AHFinderDirect::max_allowable_horizon_radius         [1] = 6
 
-AHFinderDirect::origin_x                             [2] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__x_center[2] = -20.0
+AHFinderDirect::origin_x                             [2] = -20.00000001
+AHFinderDirect::initial_guess__coord_sphere__x_center[2] = -20.00000001
 AHFinderDirect::initial_guess__coord_sphere__radius  [2] = 0.4
 AHFinderDirect::which_surface_to_store_info          [2] = 2
 AHFinderDirect::reset_horizon_after_not_finding      [2] = no
@@ -439,8 +439,8 @@ AHFinderDirect::track_origin_source_y                [2] = "PunctureTracker::pt_
 AHFinderDirect::track_origin_source_z                [2] = "PunctureTracker::pt_loc_z[0]"
 AHFinderDirect::max_allowable_horizon_radius         [2] = 6
 
-AHFinderDirect::origin_x                             [3] = -20.0
-AHFinderDirect::initial_guess__coord_sphere__x_center[3] = -20.0
+AHFinderDirect::origin_x                             [3] = -20.00000001
+AHFinderDirect::initial_guess__coord_sphere__x_center[3] = -20.00000001
 AHFinderDirect::initial_guess__coord_sphere__radius  [3] = 0.45
 AHFinderDirect::which_surface_to_store_info          [3] = 3
 AHFinderDirect::reset_horizon_after_not_finding      [3] = no

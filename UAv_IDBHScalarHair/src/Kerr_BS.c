@@ -1180,97 +1180,97 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         //estava mal porque os shifts agora sao diferentes depois do boost.
 
         
-        // Christoffel symbols of the spatial metric (only spatial indices 1..3)
-        CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
-        // Initialize to zero
-        for (int i = 1; i <= 3; ++i)
-          for (int j = 1; j <= 3; ++j)
-            for (int k = 1; k <= 3; ++k)
-              Gamma[i][j][k] = 0.0;
+        // // Christoffel symbols of the spatial metric (only spatial indices 1..3)
+        // CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
+        // // Initialize to zero
+        // for (int i = 1; i <= 3; ++i)
+        //   for (int j = 1; j <= 3; ++j)
+        //     for (int k = 1; k <= 3; ++k)
+        //       Gamma[i][j][k] = 0.0;
 
 
-        // Compute Christoffel symbols (spatial part)
-        // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)
-        for (int i = 1; i <= 3; ++i) {
-          for (int j = 1; j <= 3; ++j) {
-            for (int k = 1; k <= 3; ++k) {
-              for (int l = 1; l <= 3; ++l) {
-                Gamma[i][j][k] += 0.5 * g_inv[i][l] * (dg[l][j][k] + dg[l][k][j] - dg[j][k][l]);
-              }
-            }
-          }
-        }
-        // Check for NaN or Inf in all Christoffel symbols
-        for (int ii = 1; ii <= 3; ++ii) {
-          for (int jj = 1; jj <= 3; ++jj) {
-            for (int kk = 1; kk <= 3; ++kk) {
-              char gamma_name[32];
-              snprintf(gamma_name, sizeof(gamma_name), "Gamma[%d][%d][%d]", ii, jj, kk);
-              check_nan_or_inf(gamma_name, Gamma[ii][jj][kk]);
-            }
-          }
-        }
-
-        CCTK_REAL new_betad[4];
-        // Initialize g to zero
-        for (int i = 0; i < 4; ++i)
-            new_betad[i] = 0.0; 
-
-        new_betad[1] = pow(gamma,2)*(betad[1] + bh_v*(pow(alpha0,2) + bh_v*betad[1] - \
-                       (pow(betad[1],2) + pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] \
-                       + x1_2*betad[1]*gamma,2)*hh)/((1 + \
-                       pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2));
-        new_betad[2] =  gamma*(betad[2] + pow(bh_spin,2)*bh_v*x1_2*y1_2*gamma*hh*psi4_2);
-        new_betad[3] = 0.;
-        check_nan_or_inf("new_betad[1]", new_betad[1]);
-        check_nan_or_inf("new_betad[2]", new_betad[2]);
-        check_nan_or_inf("new_betad[3]", new_betad[3]);
-
-
-        CCTK_REAL new_betaup[4];
-        // Initialize new_betaup to zero
-        for (int i = 0; i < 4; ++i)
-            new_betaup[i] = 0.0;
-
-        new_betaup[1] = g_inv[1][1] * new_betad[1] + g_inv[1][2] * new_betad[2] + g_inv[1][3] * new_betad[3];
-        new_betaup[2] = g_inv[2][1] * new_betad[1] + g_inv[2][2] * new_betad[2] + g_inv[2][3] * new_betad[3];
-        new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
-
-        // Check for NaN or Inf in betaup components
-        check_nan_or_inf("betaup[1]", new_betaup[1]);
-        check_nan_or_inf("betaup[2]", new_betaup[2]);
-        check_nan_or_inf("betaup[3]", new_betaup[3]);
-
-
-
-
-
-        // CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
-        CCTK_REAL lapse_arg = -g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3];
-        if (lapse_arg < pow(SMALL, 4)) {
-            fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
-            lapse_arg = pow(SMALL, 4); // Set to a small positive value to avoid NaN
-
-            // print more context here
-        }
-        CCTK_REAL new_lapse = sqrt(lapse_arg);
-        // if (new_lapse < SMALL){
-        //     new_lapse = SMALL;
+        // // Compute Christoffel symbols (spatial part)
+        // // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)
+        // for (int i = 1; i <= 3; ++i) {
+        //   for (int j = 1; j <= 3; ++j) {
+        //     for (int k = 1; k <= 3; ++k) {
+        //       for (int l = 1; l <= 3; ++l) {
+        //         Gamma[i][j][k] += 0.5 * g_inv[i][l] * (dg[l][j][k] + dg[l][k][j] - dg[j][k][l]);
+        //       }
+        //     }
+        //   }
         // }
-        if (isnan(new_lapse)) {
-        fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
-        fprintf(stderr, "g00 = %.9e \n", g[0][0]);
-        fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
-        // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
-        fprintf(stderr, "Error: new_lapse is nan at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
+        // // Check for NaN or Inf in all Christoffel symbols
+        // for (int ii = 1; ii <= 3; ++ii) {
+        //   for (int jj = 1; jj <= 3; ++jj) {
+        //     for (int kk = 1; kk <= 3; ++kk) {
+        //       char gamma_name[32];
+        //       snprintf(gamma_name, sizeof(gamma_name), "Gamma[%d][%d][%d]", ii, jj, kk);
+        //       check_nan_or_inf(gamma_name, Gamma[ii][jj][kk]);
+        //     }
+        //   }
+        // }
 
-        abort(); // Break execution
-        }
-        if ((rr_2 < horizon_radius + 1e-5) && (rr_2 > horizon_radius - 1e-5 )) {
-          fprintf(stderr, "Warning: new_lapse at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
-          fprintf(stderr, "new_lapse = %e\n", new_lapse);
-          // abort(); // Break execution
-        }
+        // CCTK_REAL new_betad[4];
+        // // Initialize g to zero
+        // for (int i = 0; i < 4; ++i)
+        //     new_betad[i] = 0.0; 
+
+        // new_betad[1] = pow(gamma,2)*(betad[1] + bh_v*(pow(alpha0,2) + bh_v*betad[1] - \
+        //                (pow(betad[1],2) + pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] \
+        //                + x1_2*betad[1]*gamma,2)*hh)/((1 + \
+        //                pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2));
+        // new_betad[2] =  gamma*(betad[2] + pow(bh_spin,2)*bh_v*x1_2*y1_2*gamma*hh*psi4_2);
+        // new_betad[3] = 0.;
+        // check_nan_or_inf("new_betad[1]", new_betad[1]);
+        // check_nan_or_inf("new_betad[2]", new_betad[2]);
+        // check_nan_or_inf("new_betad[3]", new_betad[3]);
+
+
+        // CCTK_REAL new_betaup[4];
+        // // Initialize new_betaup to zero
+        // for (int i = 0; i < 4; ++i)
+        //     new_betaup[i] = 0.0;
+
+        // new_betaup[1] = g_inv[1][1] * new_betad[1] + g_inv[1][2] * new_betad[2] + g_inv[1][3] * new_betad[3];
+        // new_betaup[2] = g_inv[2][1] * new_betad[1] + g_inv[2][2] * new_betad[2] + g_inv[2][3] * new_betad[3];
+        // new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
+
+        // // Check for NaN or Inf in betaup components
+        // check_nan_or_inf("betaup[1]", new_betaup[1]);
+        // check_nan_or_inf("betaup[2]", new_betaup[2]);
+        // check_nan_or_inf("betaup[3]", new_betaup[3]);
+
+
+
+
+
+        // // CCTK_REAL new_lapse = sqrt(-g[0][0] + betad[1]*betaup[1] + betad[2]*betaup[2] + betad[3]*betaup[3]);
+        // CCTK_REAL lapse_arg = -g[0][0] + new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3];
+        // if (lapse_arg < pow(SMALL, 4)) {
+        //     fprintf(stderr, "Negative argument in sqrt for new_lapse: %.9e\n", lapse_arg);
+        //     lapse_arg = pow(SMALL, 4); // Set to a small positive value to avoid NaN
+
+        //     // print more context here
+        // }
+        // CCTK_REAL new_lapse = sqrt(lapse_arg);
+        // // if (new_lapse < SMALL){
+        // //     new_lapse = SMALL;
+        // // }
+        // if (isnan(new_lapse)) {
+        // fprintf(stderr, "Error: %s is NaN\n", "new_lapse");
+        // fprintf(stderr, "g00 = %.9e \n", g[0][0]);
+        // fprintf(stderr, "beta2 = %.9e \n", new_betad[1]*new_betaup[1] + new_betad[2]*new_betaup[2] + new_betad[3]*new_betaup[3]);
+        // // fprintf(stderr, "Error: new_lapse is nan at grid point (%d,%d,%d)\n", x[CCTK_GFINDEX3D (cctkGH, i, j, k)], y[CCTK_GFINDEX3D (cctkGH, i, j, k)], z[CCTK_GFINDEX3D (cctkGH, i, j, k)]);
+        // fprintf(stderr, "Error: new_lapse is nan at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
+
+        // abort(); // Break execution
+        // }
+        // if ((rr_2 < horizon_radius + 1e-5) && (rr_2 > horizon_radius - 1e-5 )) {
+        //   fprintf(stderr, "Warning: new_lapse at grid point (%lf,%lf,%lf)\n", x1_2, y1_2, z1_2);
+        //   fprintf(stderr, "new_lapse = %e\n", new_lapse);
+        //   // abort(); // Break execution
+        // }
 
 
     
@@ -1289,24 +1289,24 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-        // Compute covariant derivatives of the shift
-        CCTK_REAL Dbetad[4][4];
-        // Initialize Dbetad to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            Dbetad[i][j] = 0.0;
+        // // Compute covariant derivatives of the shift
+        // CCTK_REAL Dbetad[4][4];
+        // // Initialize Dbetad to zero
+        // for (int i = 0; i < 4; ++i)
+        //   for (int j = 0; j < 4; ++j)
+        //     Dbetad[i][j] = 0.0;
           
-        for (int i = 1; i <= 3; ++i) {
-          for (int j = 1; j <= 3; ++j) {
-            Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
-            for (int k = 1; k <= 3; ++k)
-              Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
-            // Check for NaN or Inf in Dbetad
-            char Dbetad_name[32];
-            snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
-            check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
-          }
-        }
+        // for (int i = 1; i <= 3; ++i) {
+        //   for (int j = 1; j <= 3; ++j) {
+        //     Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
+        //     for (int k = 1; k <= 3; ++k)
+        //       Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
+        //     // Check for NaN or Inf in Dbetad
+        //     char Dbetad_name[32];
+        //     snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
+        //     check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
+        //   }
+        // }
 
 
 

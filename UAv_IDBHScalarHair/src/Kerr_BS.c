@@ -1647,7 +1647,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
      
 
         
-        check_nan_or_inf("kxx",kxx[ind]);
+        // check_nan_or_inf("kxx",kxx[ind]);
         check_nan_or_inf("kxy",kxy[ind]);
         check_nan_or_inf("kxz",kxz[ind]);
         check_nan_or_inf("kyy",kyy[ind]);

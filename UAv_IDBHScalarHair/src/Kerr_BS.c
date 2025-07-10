@@ -1236,9 +1236,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
 
 
-        const CCTK_REAL kxx_kerr = Axx / psi2_2;
-        const CCTK_REAL kxy_kerr = Axy / psi2_2;
-        const CCTK_REAL kxz_kerr = Axz / psi2_2;
+        const CCTK_REAL kxx_kerr = gamma2*Axx / psi2_2; //testing multiplying gamma per x basis
+        const CCTK_REAL kxy_kerr = gamma*Axy / psi2_2;
+        const CCTK_REAL kxz_kerr = gamma*Axz / psi2_2;
         const CCTK_REAL kyy_kerr = Ayy / psi2_2;
         const CCTK_REAL kyz_kerr = Ayz / psi2_2;
         const CCTK_REAL kzz_kerr =   0.0;

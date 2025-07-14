@@ -1078,7 +1078,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[1]", betaup[1]);
         check_nan_or_inf("betaup[2]", betaup[2]);
         check_nan_or_inf("betaup[3]", betaup[3]);
-        estava mal porque os shifts agora sao diferentes depois do boost.
+        //estava mal porque os shifts agora sao diferentes depois do boost.
 
         
         // Christoffel symbols of the spatial metric (only spatial indices 1..3)

@@ -1209,7 +1209,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
       //Compute extrinsic curvature K_{ij}
-      if (rr_2 < horizon_radius + 1e-6 && rr_2 > horizon_radius - 1e-6) {
+      if (rr_2 < horizon_radius + 1e-6 || rr_2 > horizon_radius - 1e-6) {
         //fill with Kij near the horizon
       kxx[ind] = 0.0;
       kxy[ind] = 0.0;

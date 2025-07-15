@@ -744,7 +744,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
         const CCTK_REAL rr_1  = sqrt(rr2_1);
-	/* note that there are divisions by rr_1 in the following expressions.
+	      /* note that there are divisions by rr_1 in the following expressions.
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
@@ -778,9 +778,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL cosmph = cos(mm*ph_1);
         const CCTK_REAL sinmph = sin(mm*ph_1);
 
-        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+        // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        // const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        // const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
@@ -791,7 +791,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL y1_2  = y[ind] - y0_2;
         const CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        const CCTK_REAL bh_v2 = bh_v * bh_v;
+        // const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
         // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         // const CCTK_REAL gamma = sqrt(gamma2);
@@ -818,10 +818,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
         const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
 
-        const CCTK_REAL costh_1  = z1_2/rr_2 ;
-        const CCTK_REAL costh2_1 = costh_1*costh_1 ;
-        const CCTK_REAL sinth2_1 = 1. - costh2_1 ;
-        const CCTK_REAL sinth_1  = sqrt(sinth2_1) ;
+        const CCTK_REAL costh_2  = z1_2/rr_2 ;
+        const CCTK_REAL costh2_2 = costh_2*costh_2 ;
+        const CCTK_REAL sinth2_2 = 1. - costh2_2 ;
+        const CCTK_REAL sinth_2  = sqrt(sinth2_2) ;
 
         // const CCTK_REAL R_x    = gamma*x1_2/rr_2 ;
         const CCTK_REAL R_x    = x1_2/rr_2 ;
@@ -841,23 +841,23 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
         const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
         const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_z  = -sinth2_1/rr_2 ; 
+        const CCTK_REAL sinthth_z  = -sinth2_2/rr_2 ; 
 
-        // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh_1 ;
-        const CCTK_REAL sinthx_th  = x1_2 * costh_1 ;
-        const CCTK_REAL sinthy_th  = y1_2 * costh_1 ;
-        const CCTK_REAL sinthz_th  = -rr_2 * sinth2_1 ;
+        // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh_2 ;
+        const CCTK_REAL sinthx_th  = x1_2 * costh_2 ;
+        const CCTK_REAL sinthy_th  = y1_2 * costh_2 ;
+        const CCTK_REAL sinthz_th  = -rr_2 * sinth2_2 ;
 
 
         const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
         const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
 
-        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2_1 ;
+        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2_2 ;
         const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
         const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
-        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_1) ;
+        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_2) ;
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
@@ -870,7 +870,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
         
         const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_1)) ;
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
         const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
        
@@ -918,15 +918,15 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         check_nan_or_inf("gzz",gzz[ind]);
 
 
-        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh_1  ;  // we are dividing by sinth2_1
-        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth_1
+        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh_2  ;  // we are dividing by sinth2_2
+        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth_2
 
         const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
 
         const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_1)) ;
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
 
-        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2_1
+        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2_2
 
 
         const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
@@ -966,7 +966,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
-        const CCTK_REAL alph = exp(F0_1[ind]);
+        const CCTK_REAL alph = exp(F0_1[ind]) + alpha0 - 1;
 
 
         // let's add a perturbation to the Proca field as well

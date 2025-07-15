@@ -25,6 +25,61 @@ void check_nan_or_inf(const char* var_name, double value) {
     }
 }
 
+typedef struct {
+    CCTK_REAL rr2_2, rr_2, rho2_2, rho_2, theta_2, costh, costh2, sinth2, sinth;
+    CCTK_REAL R_x, R_y, R_z;
+    CCTK_REAL x_R, y_R, z_R;
+    CCTK_REAL sinth2ph_x, sinth2ph_y;
+    CCTK_REAL sinthth_x, sinthth_y, sinthth_z;
+    CCTK_REAL sinthx_th, sinthy_th, sinthz_th;
+    CCTK_REAL costh2_x, costh2_y, costh2_z;
+    CCTK_REAL rBL, rho2kerr, rhokerr, sigma, hh;
+    CCTK_REAL psi4_2, psi2_2, psi1_2;
+    // Add more as needed
+} KerrVars;
+
+KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_REAL bh_v, CCTK_REAL gamma, CCTK_REAL eps_r, CCTK_REAL bh_mass, CCTK_REAL bh_spin, CCTK_REAL bh_mass2, CCTK_REAL bh_spin2) {
+    KerrVars v;
+    CCTK_REAL gamma2 = gamma * gamma;
+    v.rr2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2 + z1_2*z1_2;
+    if (v.rr2_2 < pow(eps_r, 2)) v.rr2_2 = pow(eps_r, 2);
+    v.rr_2 = sqrt(v.rr2_2);
+    v.rho2_2 = x1_2*x1_2*gamma2 + y1_2*y1_2;
+    if (v.rho2_2 < pow(eps_r, 2)) v.rho2_2 = pow(eps_r, 2);
+    v.rho_2 = sqrt(v.rho2_2);
+    v.theta_2 = acos(z1_2/v.rr_2);
+    v.costh = z1_2/v.rr_2;
+    v.costh2 = v.costh*v.costh;
+    v.sinth2 = 1. - v.costh2;
+    v.sinth = sqrt(v.sinth2);
+    v.R_x = x1_2*gamma/v.rr_2;
+    v.R_y = y1_2/v.rr_2;
+    v.R_z = z1_2/v.rr_2;
+    v.x_R = v.R_x;
+    v.y_R = v.R_y;
+    v.z_R = v.R_z;
+    v.sinth2ph_x = -y1_2/v.rr2_2;
+    v.sinth2ph_y = gamma*x1_2/v.rr2_2;
+    v.sinthth_x = z1_2*gamma*x1_2/(v.rr_2*v.rr2_2);
+    v.sinthth_y = z1_2*y1_2/(v.rr_2*v.rr2_2);
+    v.sinthth_z = -v.sinth2/v.rr_2;
+    v.sinthx_th = gamma*x1_2 * v.costh;
+    v.sinthy_th = y1_2 * v.costh;
+    v.sinthz_th = -v.rr_2 * v.sinth2;
+    v.costh2_x = -2*x1_2*gamma*pow(z1_2,2)/pow(v.rr2_2,2);
+    v.costh2_y = -2*y1_2*pow(z1_2,2)/pow(v.rr2_2,2);
+    v.costh2_z = 2*v.rho2_2*z1_2/pow(v.rr2_2,2);
+    v.rBL = v.rr_2 + bh_mass + 0.25*(bh_mass2-bh_spin2) / v.rr_2;
+    v.rho2kerr = v.rBL*v.rBL + bh_spin2 * v.costh2;
+    v.rhokerr = sqrt(v.rho2kerr);
+    v.sigma = (2.*bh_mass*v.rBL)/v.rho2kerr;
+    v.hh = (1 + v.sigma) / (v.rho2kerr * v.rr2_2);
+    v.psi4_2 = v.rho2kerr / v.rr2_2;
+    v.psi2_2 = sqrt(v.psi4_2);
+    v.psi1_2 = sqrt(v.psi2_2);
+    // Add more as needed
+    return v;
+}
 
 void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
@@ -1210,13 +1265,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
       //Compute extrinsic curvature K_{ij}
       if (rr_2 < horizon_radius + 1e-6 || rr_2 > horizon_radius - 1e-6) {
-        //fill with Kij near the horizon
-      kxx[ind] = 0.0;
-      kxy[ind] = 0.0;
-      kxz[ind] = 0.0;
-      kyy[ind] = 0.0;
-      kyz[ind] = 0.0;
-      kzz[ind] = 0.0;
+        // Example: recompute with new coordinates (replace new_x1_2, etc. with your values)
+        // KerrVars new_vars = compute_kerr_vars(new_x1_2, new_y1_2, new_z1_2, bh_v, gamma, eps_r, bh_mass, bh_spin, bh_mass2, bh_spin2);
+        // Use new_vars.rr_2, new_vars.rho_2, etc. as needed
+        kxx[ind] = 0.0;
+        kxy[ind] = 0.0;
+        kxz[ind] = 0.0;
+        kyy[ind] = 0.0;
+        kyz[ind] = 0.0;
+        kzz[ind] = 0.0;
       } else{
       kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
       kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
@@ -1254,7 +1311,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
        
-       
 
 
      
@@ -1269,10 +1325,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // // let's add a perturbation to the scalar field as well
         // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
+        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1) * mu * mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
         
         // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2)*mu*mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2) * mu * mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;

@@ -1,0 +1,74 @@
+# $Header:$
+
+shares: IO
+USES KEYWORD  recover
+
+
+restricted:
+
+KEYWORD evolution_method "ComplexProca variables evolution method"
+{
+  "none" :: "ComplexProca variables are not evolved"
+} "none"
+
+KEYWORD initial_ComplexProca "initial data for ComplexProca field"
+{
+  "none" :: "ComplexProca variables are not initialized"
+} "none"
+
+
+CCTK_REAL mu "mass of the vector field"
+{
+  0:*           :: "any non-negative number"
+} 0
+
+CCTK_INT n_Zeta "n power of outgoing boundary r^n fall off rate for Zeta"
+{
+  0:4           :: "??"
+} 3
+
+CCTK_INT n_Aphi "n power of outgoing boundary r^n fall off rate for Aphi"
+{
+  0:4           :: "i guess 3"
+} 3
+
+CCTK_INT n_E[3] "n power of outgoing boundary r^n fall off rate for E^i"
+{
+  0:4           :: "2, i guess"
+} 2
+
+CCTK_INT n_A[3] "n power of outgoing boundary r^n fall off rate for A_i"
+{
+  0:4           :: "i guess 2..."
+} 2
+
+CCTK_REAL Aphi01 "asymptotic value for Aphi"
+{
+  *:*           :: ""
+} 0
+
+CCTK_REAL E01[3] "asymptotic value for E^i"
+{
+  *:*           :: ""
+} 0
+
+CCTK_REAL A01[3] "asymptotic value for A_i"
+{
+  *:*           :: ""
+} 0
+
+CCTK_REAL Aphi02 "asymptotic value for Aphi"
+{
+  *:*           :: ""
+} 0
+
+CCTK_REAL E02[3] "asymptotic value for E^i"
+{
+  *:*           :: ""
+} 0
+
+CCTK_REAL A02[3] "asymptotic value for A_i"
+{
+  *:*           :: ""
+} 0
+

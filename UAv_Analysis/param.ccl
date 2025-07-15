@@ -5,3 +5,53 @@
 BOOLEAN excise_horizon "excise the region inside the AH from the volume integrations?" STEERABLE=ALWAYS
 {
 } "no"
+
+INT do_analysis_every "Perform the analysis (compute the energy, densities...) every N iterations" STEERABLE=ALWAYS
+{
+    *:*  :: "0 or a negative value means never compute them"
+} 1
+
+BOOLEAN compute_density_rho "Compute the grid function density_rho" STEERABLE=ALWAYS
+{
+} "no"
+
+BOOLEAN compute_density_p "Compute the grid functions density_p" STEERABLE=ALWAYS
+{
+} "no"
+
+BOOLEAN track_origin_from_grid_scalar "Track analysis origin from given grid scalar (used for angular momentum, quadrupole). If not, fixed coordinates are used for the origin." STEERABLE=RECOVER
+{
+} "no"
+
+STRING track_origin_source_x "grid scalar containing the x component of the origin estimate" STEERABLE=RECOVER
+{
+  "" :: "don't use this feature"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
+} ""
+
+STRING track_origin_source_y "grid scalar containing the y component of the origin estimate" STEERABLE=RECOVER
+{
+  "" :: "don't use this feature"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
+} ""
+
+STRING track_origin_source_z "grid scalar containing the z component of the origin estimate" STEERABLE=RECOVER
+{
+  "" :: "don't use this feature"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
+} ""
+
+REAL origin_x "x coordinate for the fixed origin used in the analysis" STEERABLE=RECOVER
+{
+    *:*     :: "Any real number"
+} 0.0
+
+REAL origin_y "y coordinate for the fixed origin used in the analysis" STEERABLE=RECOVER
+{
+    *:*     :: "Any real number"
+} 0.0
+
+REAL origin_z "z coordinate for the fixed origin used in the analysis" STEERABLE=RECOVER
+{
+    *:*     :: "Any real number"
+} 0.0

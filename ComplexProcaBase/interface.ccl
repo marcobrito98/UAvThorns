@@ -1,0 +1,34 @@
+# Interface definition for thorn ComplexProcaBase
+
+implements: ComplexProcaBase
+
+public:
+
+CCTK_REAL E1i type=gf timelevels=3 tags='tensortypealias="U" tensorweight=0'
+{
+  E1x E1y E1z
+} "E^i"
+
+CCTK_REAL A1i type=gf timelevels=3 tags='tensortypealias="D" tensorweight=0'
+{
+  A1x A1y A1z
+} "A_i"
+
+CCTK_REAL Aphi1 type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0' "Aphi = -n^mu A_mu"
+
+CCTK_REAL Zeta1 type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0' "hyperbolic damping variable"
+
+CCTK_REAL E2i type=gf timelevels=3 tags='tensortypealias="U" tensorweight=0'
+{
+  E2x E2y E2z
+} "E^i"
+
+CCTK_REAL A2i type=gf timelevels=3 tags='tensortypealias="D" tensorweight=0'
+{
+  A2x A2y A2z
+} "A_i"
+
+CCTK_REAL Aphi2 type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0' "Aphi = -n^mu A_mu"
+
+CCTK_REAL Zeta2 type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0' "hyperbolic damping variable"
+

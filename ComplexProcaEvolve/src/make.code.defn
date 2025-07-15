@@ -1,0 +1,13 @@
+# Main make.code.defn file for thorn ComplexProcaEvolve
+
+# Source files in this directory
+SRCS = ComplexProca_RegisterVars.c     \
+       ComplexProca_calc_rhs.F90  \
+       ComplexProca_Boundaries.F90     \
+       ComplexProca_calc_Tmunu.F90     \
+       ComplexProca_InitSymBound.F90   \
+       ComplexProca_adm_vs_bssn.F90    \
+       ComplexProca_zero_rhs.F90
+
+# Subdirectories containing source files
+SUBDIRS =

@@ -1,0 +1,141 @@
+# Parameter definitions for thorn UAv_IDBHProcaHair
+
+SHARES: ComplexProcaBase
+USES CCTK_REAL mu
+
+SHARES: ADMBase
+
+EXTENDS KEYWORD initial_data
+{
+  "ProcaHairyBH"   :: "ProcaHairyBH initial data"
+  "ProcaBS"        :: "Proca bosonic star initial data"
+}
+
+EXTENDS KEYWORD initial_lapse
+{
+  "ProcaHairyBH"   :: "ProcaHairyBH initial lapse profile"
+  "ProcaBS"        :: "Proca bosonic star initial lapse profile"
+  "psi^n"          :: "psi^n initial lapse profile"
+}
+
+EXTENDS KEYWORD initial_shift
+{
+  "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
+  "ProcaBS"        :: "Proca bosonic star initial shift profile"
+}
+
+
+PRIVATE:
+
+# These parameters shouldn't be used anyway after initial data has been read/generated, so don't need to be STEERABLE.
+# However, for convenience, we make the input file STEERABLE because it allows the use of aliases like $ENV{HOME} while
+# still allowing a restart from checkpoint on a different machine.
+
+STRING infilename "file to read the input data from" STEERABLE=RECOVER
+{
+  ".*"  ::  "any valid file name"
+} ""
+
+INT maxNF "maximum number of lines allowed in the input file"
+{
+ 100:* :: "any large enough integer"
+} 100000
+
+REAL C0 "parameter for R to X coordinate transformation"
+{
+  (0:* :: "greater than zero"
+} 1.0
+
+INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in ProcaHairyBH initial data."
+{
+  0:2 :: "0, 1 or 2"
+} 2 
+
+INT mm "azimuthal number of the solution. mm=0 for non-rotating solutions, and mm=1,2,3 for current rotating solutions"
+{
+  0:3 :: "0, 1, 2 or 3"
+} 0
+
+# Symmetry of the vector potential, with respect to the equatorial plane (initial data is provided for 0 <= theta <= pi/2).
+# We write A = exp{i(m phi - w t)} (H1 dr + H2 dtheta + i H3 sin(theta) dphi + i V dt).
+# A even (default): H1, H3 and V are even, and H2 is odd.
+# A odd           : H1, H3 and V are  odd, and H2 is even.
+BOOLEAN Amu_z_sym_is_odd "Parity of vector potential with respect to equatorial plane symmetry. So far, used only in ProcaBS."
+{
+} "no"
+
+REAL rH "Horizon radius parameter. Incompatible with the Proca Bosonic Star."
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL OmegaH "Horizon angular velocity. Incompatible with the Proca Bosonic Star."
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL omega_BS "Proca field angular frequency for the Bosonic Star. Incompatible with the Hairy Black Hole."
+{
+  0:* :: "non-negative"
+} 0.0
+
+
+REAL x0 "x coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+REAL y0 "y coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+REAL z0 "z coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+
+REAL Apert_conf_fac "amplitude for conformal factor perturbation"
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL R0pert_conf_fac "center radius for conformal factor perturbation. To be conceived in quasi-isotropic coordinate R"
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL Sigmapert_conf_fac "spread for conformal factor perturbation. To be conceived in quasi-isotropic coordinate R"
+{
+  (0:* :: "positive"
+} 1.0
+
+
+REAL Apert_Proca "amplitude for Proca field perturbation"
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL R0pert_Proca "center radius for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
+{
+  0:* :: "non-negative"
+} 0.0
+
+REAL Sigmapert_Proca "spread for Proca field perturbation. To be conceived in quasi-isotropic coordinate R"
+{
+  (0:* :: "positive"
+} 1.0
+
+
+REAL initial_lapse_psi_exponent "Exponent n for psi^n initial lapse profile"
+{
+  (*:*) :: "Should be negative"
+} -2.0
+
+INT normalization_Tmunu "Normalization used for the stress-energy tensor in the input files"
+{
+  0   :: "4 pi G = 1"
+  1   :: "G = 1"
+  2   :: "G = 1 and Tmunu has factor of 0.5"
+} 0

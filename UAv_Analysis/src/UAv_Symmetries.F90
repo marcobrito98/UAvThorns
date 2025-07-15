@@ -13,5 +13,8 @@ subroutine UAv_Analysis_Symmetries( CCTK_ARGUMENTS )
   CCTK_INT ierr
 
   call SetCartSymVN( ierr, cctkGH, (/ 1, 1, 1/), "UAv_Analysis::density_rho" )
+  call SetCartSymVN( ierr, cctkGH, (/-1, 1, 1/), "UAv_Analysis::density_px" )
+  call SetCartSymVN( ierr, cctkGH, (/ 1,-1, 1/), "UAv_Analysis::density_py" )
+  call SetCartSymVN( ierr, cctkGH, (/ 1, 1,-1/), "UAv_Analysis::density_pz" )
 
 end subroutine UAv_Analysis_Symmetries

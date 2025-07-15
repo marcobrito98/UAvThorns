@@ -18,9 +18,23 @@ USES FUNCTION Boundary_SelectGroupForBC
 
 private:
 
-CCTK_REAL total_energy type=scalar timelevels=1 tags='checkpoint="no"'
+CCTK_REAL total_energy type=scalar timelevels=1 tags='checkpoint="no"' "Komar mass (volume integral). See Gourgoulhon's 3+1 Formalism, sections 8.6.1 and 8.6.2 (Eq. 8.63 and 8.70)."
 
 CCTK_REAL dE_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="Scalar" checkpoint="no"' "energy density gridfunction for volume integration"
+
+CCTK_REAL total_angular_momentum type=scalar timelevels=1 tags='checkpoint="no"'
+{
+  total_angular_momentum_x
+  total_angular_momentum_y
+  total_angular_momentum_z
+} "Komar angular momentum (volume integral computed with respect to rotation around each axis, centered at the origin). See Gourgoulhon's 3+1 Formalism, section 8.6.3 (Eq. 8.75)."
+
+CCTK_REAL dJ_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="D" checkpoint="no"'
+{
+  dJx_gf_volume
+  dJy_gf_volume
+  dJz_gf_volume
+} "angular momentum density J_i gridfunctions for volume integration"
 
 CCTK_REAL quadrupole type=scalar timelevels=1 tags='checkpoint="no"'
 {
@@ -39,7 +53,23 @@ CCTK_REAL quadrupole_gf_volume type=gf timelevels=3 tags='Prolongation="none" te
   dIzz_gf_volume
 } "quadrupole moments I_ij gridfunctions for volume integration"
 
-CCTK_REAL densities type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0 Checkpoint="no"'
+CCTK_REAL density_rho type=gf timelevels=3 tags='tensortypealias="Scalar" tensorweight=0 Checkpoint="no"' "Eulerian energy density"
+
+CCTK_REAL density_p type=gf timelevels=3 tags='tensortypealias="D" tensorweight=0 checkpoint="no"'
 {
-  density_rho
-} "energy-momentum densities"
+  density_px
+  density_py
+  density_pz
+} "Eulerian momentum density"
+
+CCTK_REAL origin_coordinates type=scalar tags='checkpoint="no"'
+{
+  x0, y0, z0
+} "Coordinates of the origin used in the analysis"
+
+CCTK_INT origin_from_grid_scalar_index type=scalar tags='checkpoint="no"' 
+{
+  origin_from_grid_scalar_index_x
+  origin_from_grid_scalar_index_y
+  origin_from_grid_scalar_index_z
+} "Auxiliary to store the Cactus indices of the grid scalars tracking the origin"

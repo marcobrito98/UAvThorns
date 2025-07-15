@@ -1,16 +1,40 @@
 # Schedule definitions for thorn UAv_Analysis
 
 storage: dE_gf_volume[3]
+storage: dJ_gf_volume[3]
 storage: quadrupole_gf_volume[3]
 storage: total_energy[1]
+storage: total_angular_momentum[1]
 storage: quadrupole[1]
-storage: densities[3]
+
+# allocate densities if required
+if (compute_density_rho)
+{
+  storage: density_rho[3]
+}
+if (compute_density_p)
+{
+  storage: density_p[3]
+}
+
+storage: origin_coordinates
+
+# allocate auxiliary index of tracked grid scalars
+if (track_origin_from_grid_scalar) {
+  storage: origin_from_grid_scalar_index
+}
+
 
 schedule UAv_Analysis_RegisterMask at STARTUP
 {
   LANG: C
 } "Register the masks for excision"
 
+schedule UAv_Analysis_ParamCheck AT ParamCheck
+{
+  LANG: C
+  OPTIONS: global
+} "Check UAv_Analysis parameters for consistency"
 
 schedule UAv_Analysis_Symmetries at BASEGRID
 {
@@ -18,19 +42,51 @@ schedule UAv_Analysis_Symmetries at BASEGRID
   OPTIONS: Global
 } "Register symmetries of the density functions"
 
+schedule UAv_Initialization at BASEGRID
+{
+  LANG: C
+  OPTIONS: global
+} "Initialize quantities used in the analysis"
 
-schedule GROUP UAv_Analysis_Group at CCTK_POSTSTEP after AHFinderDirect_maybe_do_masks
+###############################################################################
+# WARNING/NOTE:
+# It seems to be working fine with AHFinderDirect, even when the latter runs
+# at ANALYSIS, but if in doubt, maybe run AHFinderDirect at POSTSTEP (which
+# is the current default), this should make sure the excision mask is there.
+#
+# For a discussion about the schedule options, such as "local" versus "global
+# loop-local", as well as the schedule bins, see the users list archives
+# https://lists.einsteintoolkit.org/pipermail/users/2024-September/009456.html
+# and corresponding thread (several back and forth replies).
+# 
+# A possible schedule in EVOL would be
+# schedule GROUP UAv_Analysis_Group in MoL_PseudoEvolution after MoL_PostStep
+###############################################################################
+
+schedule GROUP UAv_Analysis_Group at ANALYSIS after AHFinderDirect_maybe_do_masks
 {
 } "Compute several diagnostic quantities"
 
+# Track origin at global-early time (i.e. like coarsest level),
+# to be done before UAv_Analysis_gfs (which is local)
 
-schedule UAv_Analysis_gfs in UAv_Analysis_Group
+if (track_origin_from_grid_scalar)
+{
+  schedule UAv_Track_origin in UAv_Analysis_Group
+  {
+    LANG: C
+    OPTIONS: global-early
+  } "Track the coordinates of the origin used in the analysis"
+}
+
+schedule UAv_Analysis_gfs in UAv_Analysis_Group after UAv_Track_origin
 {
   LANG: Fortran
-  OPTIONS: global loop-local
   SYNC: dE_gf_volume
+  SYNC: dJ_gf_volume
   SYNC: quadrupole_gf_volume
-  SYNC: densities
+  SYNC: density_rho
+  SYNC: density_p
 } "Calculate grid functions"
 
 
@@ -38,7 +94,8 @@ schedule UAv_Analysis_Boundaries after UAv_Analysis_gfs in UAv_Analysis_Group
 {
   LANG: Fortran
   OPTIONS: LEVEL
-  SYNC: densities
+  SYNC: density_rho
+  SYNC: density_p
 } "Enforce symmetry BCs in Analysis"
 
 schedule GROUP ApplyBCs as UAv_Analysis_ApplyBCs after UAv_Analysis_Boundaries in UAv_Analysis_Group
@@ -46,7 +103,7 @@ schedule GROUP ApplyBCs as UAv_Analysis_ApplyBCs after UAv_Analysis_Boundaries i
 } "Apply boundary conditions"
 
 
-schedule UAv_Analysis_IntegrateVol at CCTK_ANALYSIS
+schedule UAv_Analysis_IntegrateVol after UAv_Analysis_ApplyBCs in UAv_Analysis_Group
 {
   LANG: Fortran
   OPTIONS: global

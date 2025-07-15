@@ -16,16 +16,28 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
   CCTK_REAL gd(3,3), gu(3,3), detgd
 
   CCTK_REAL aux, S, rho
-
+  CCTK_REAL mom(3)
+  
+  ! names x0, y0, z0 used as members of the thorn
+  ! They are set in dedicated functions, to be called before this routine
   CCTK_REAL x1, y1, z1
 
   CCTK_INT  i, j, k, m, n
 
   CCTK_INT type_bits, state_outside
 
+  logical docalc
+
   type_bits     = -1
   state_outside = -1
-
+  
+  if (do_analysis_every .le. 0) then
+     return
+  end if
+  
+  if (MOD(cctk_iteration, do_analysis_every) .ne. 0 ) then
+     return
+  endif
 
   if (excise_horizon /= 0) then
 
@@ -42,19 +54,48 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
 
   end if
 
+!   write(*,*) 'Checking origin coordinates for the analysis in UAv_Analysis'
+!   write(*,*) 'x0 = ', x0
+!   write(*,*) 'y0 = ', y0
+!   write(*,*) 'z0 = ', z0
 
   dE_gf_volume   = 0
+  dJx_gf_volume  = 0
+  dJy_gf_volume  = 0
+  dJz_gf_volume  = 0
   dIxx_gf_volume = 0
   dIxy_gf_volume = 0
   dIxz_gf_volume = 0
   dIyy_gf_volume = 0
   dIyz_gf_volume = 0
   dIzz_gf_volume = 0
-  density_rho    = 0
+  if (compute_density_rho == 1) then
+     density_rho    = 0
+  end if
+  if (compute_density_p == 1) then
+     density_px     = 0
+     density_py     = 0
+     density_pz     = 0
+  end if
 
+  ! Note that these loops will also exclude at least one layer of points on the physical boundary,
+  ! (see https://lists.einsteintoolkit.org/pipermail/users/2024-September/009465.html )
+  ! but as of now we choose to live with that
   do k = 1+cctk_nghostzones(3), cctk_lsh(3)-cctk_nghostzones(3)
   do j = 1+cctk_nghostzones(2), cctk_lsh(2)-cctk_nghostzones(2)
   do i = 1+cctk_nghostzones(1), cctk_lsh(1)-cctk_nghostzones(1)
+
+    ! checking if outside the horizon, if asking for it to be excised
+    docalc = .true.
+    if (excise_horizon /= 0) then
+       if (.not. SpaceMask_CheckStateBitsF90(space_mask, i, j, k, type_bits, state_outside)) then
+          docalc = .false.
+       end if
+    end if
+
+    ! if inside the horizon, no need to compute the rest (continue with the next
+    ! iteration of the do loop)
+    if (.not. docalc) cycle
 
     !--------------Get local variables ----------
     gd(1,1) = gxx(i,j,k)
@@ -73,9 +114,9 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
     beta(2) = betay(i,j,k)
     beta(3) = betaz(i,j,k)
 
-    x1      = x(i,j,k)
-    y1      = y(i,j,k)
-    z1      = z(i,j,k)
+    x1      = x(i,j,k) - x0
+    y1      = y(i,j,k) - y0
+    z1      = z(i,j,k) - z0
 
     ! stress-energy tensor variables
     Tab = 0
@@ -127,8 +168,25 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
     end do
     rho = rho / ( alph * alph )
 
-    density_rho(i,j,k) = rho
-
+    if (compute_density_rho == 1) then
+      density_rho(i,j,k) = rho
+    end if
+    
+    ! momentum density
+    do n = 1, 3
+      mom(n) = Tab(4,n)
+      do m = 1, 3
+         mom(n) = mom(n) - beta(m) * Tab(m,n)
+      end do
+      mom(n) = - mom(n) / alph
+    end do
+   
+    if (compute_density_p == 1) then
+      density_px(i,j,k) = mom(1)
+      density_py(i,j,k) = mom(2)
+      density_pz(i,j,k) = mom(3)
+    end if
+   
 
     aux = 0
     do m = 1, 3
@@ -146,23 +204,22 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
     end do
 
 
-    ! checking if outside the horizon, if asking for it to be excised
-    if (SpaceMask_CheckStateBitsF90(space_mask, i, j, k, type_bits, state_outside) .or. &
-         excise_horizon == 0) then
+    ! dE_gf_volume = (alpha h^ij T_ij + T_tt / alpha - beta^i beta^j T_ij / alpha) sqrt(detgd)
 
-       ! dE_gf_volume = (alpha h^ij T_ij + T_tt / alpha - beta^i beta^j T_ij / alpha) sqrt(detgd)
+    dE_gf_volume(i,j,k)   = (alph * S + aux) * sqrt(detgd)
 
-       dE_gf_volume(i,j,k)   = (alph * S + aux) * sqrt(detgd)
-
-       ! dI_ij = rho * x^i x^j * alpha * sqrt(detgd)
-       dIxx_gf_volume(i,j,k) = alph * rho * x1 * x1 * sqrt(detgd)
-       dIxy_gf_volume(i,j,k) = alph * rho * x1 * y1 * sqrt(detgd)
-       dIxz_gf_volume(i,j,k) = alph * rho * x1 * z1 * sqrt(detgd)
-       dIyy_gf_volume(i,j,k) = alph * rho * y1 * y1 * sqrt(detgd)
-       dIyz_gf_volume(i,j,k) = alph * rho * y1 * z1 * sqrt(detgd)
-       dIzz_gf_volume(i,j,k) = alph * rho * z1 * z1 * sqrt(detgd)
-
-    end if
+    ! dJz = (-y p_x + x p_y) sqrt(detgd)        + permutations
+    dJz_gf_volume(i,j,k)  = (-y1 * mom(1) + x1 * mom(2)) * sqrt(detgd)
+    dJx_gf_volume(i,j,k)  = (-z1 * mom(2) + y1 * mom(3)) * sqrt(detgd)
+    dJy_gf_volume(i,j,k)  = (-x1 * mom(3) + z1 * mom(1)) * sqrt(detgd)
+    
+    ! dI_ij = rho * x^i x^j * alpha * sqrt(detgd)
+    dIxx_gf_volume(i,j,k) = alph * rho * x1 * x1 * sqrt(detgd)
+    dIxy_gf_volume(i,j,k) = alph * rho * x1 * y1 * sqrt(detgd)
+    dIxz_gf_volume(i,j,k) = alph * rho * x1 * z1 * sqrt(detgd)
+    dIyy_gf_volume(i,j,k) = alph * rho * y1 * y1 * sqrt(detgd)
+    dIyz_gf_volume(i,j,k) = alph * rho * y1 * z1 * sqrt(detgd)
+    dIzz_gf_volume(i,j,k) = alph * rho * z1 * z1 * sqrt(detgd)
 
   end do
   end do
@@ -176,110 +233,86 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
   DECLARE_CCTK_FUNCTIONS
   DECLARE_CCTK_PARAMETERS
 
+  ! num_out_vals: number of output values for a given reduction
+  CCTK_INT, PARAMETER :: num_in_fields = 10, num_out_vals = 1  
+  CCTK_REAL out_vals(num_in_fields*num_out_vals)
+  
   CCTK_INT ierr
-  CCTK_INT reduction_handle, varid
+  CCTK_INT reduction_handle, varid(num_in_fields)
 
-  CCTK_REAL E_int
-  CCTK_REAL Ixx_int, Ixy_int, Ixz_int, Iyy_int, Iyz_int, Izz_int
+  CCTK_INT i
+  CCTK_REAL dV
 
+  character(len=*), PARAMETER :: thorn_str = "UAv_Analysis::"
+  CCTK_INT, PARAMETER :: thorn_strlen = LEN(thorn_str), var_strlen = 14 ! 14 for dIxy_gf_volume (largest so far)
+  CCTK_INT, PARAMETER :: full_strlen = thorn_strlen + var_strlen 
+  character(len=full_strlen), dimension(num_in_fields) :: varnames
+
+  varnames = [character(len=full_strlen) :: &
+               thorn_str//"dE_gf_volume  ", &
+               thorn_str//"dJx_gf_volume ", &
+               thorn_str//"dJy_gf_volume ", &
+               thorn_str//"dJz_gf_volume ", &
+               thorn_str//"dIxx_gf_volume", &
+               thorn_str//"dIxy_gf_volume", &
+               thorn_str//"dIxz_gf_volume", &
+               thorn_str//"dIyy_gf_volume", &
+               thorn_str//"dIyz_gf_volume", &
+               thorn_str//"dIzz_gf_volume"]
+
+
+  if (do_analysis_every .le. 0) then
+     return
+  end if
+
+  if (MOD(cctk_iteration, do_analysis_every) .ne. 0 ) then
+     return
+  end if
+  
   call CCTK_ReductionHandle(reduction_handle, 'sum')
   if (reduction_handle < 0) then
      call CCTK_WARN(0, 'Could not obtain a handle for sum reduction')
   end if
 
-  ! energy
 
-  ! get index to the integration array
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dE_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dE_gf_volume')
-  end if
+  ! Get var IDs
+  do i = 1, num_in_fields
+      call CCTK_VarIndex(varid(i), varnames(i))
+      if (varid(i) < 0) then
+         call CCTK_WARN(0, 'Could not get index to grid array '//varnames(i))
+      end if
+  end do
 
+
+  ! Call reduction
   ! do a sum over all processors
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       E_int, 1, varid)
+  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, num_out_vals, CCTK_VARIABLE_REAL, &
+       out_vals, num_in_fields, &
+       varid(1), & ! E
+       varid(2), varid(3), varid(4), & ! J_i
+       varid(5), varid(6), varid(7), varid(8), varid(9), varid(10)) ! I_ij
   if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dE_gf_volume')
+     call CCTK_WARN(0, 'Error while reducing the auxiliary XX_gf_volume grid functions.')
   end if
-
-  ! TODO: is there a way of doing all components at once?
-
-  ! Ixx
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIxx_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIxx_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Ixx_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIxx_gf_volume')
-  end if
-
-  ! Ixy
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIxy_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIxy_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Ixy_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIxy_gf_volume')
-  end if
-
-  ! Ixz
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIxz_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIxz_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Ixz_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIxz_gf_volume')
-  end if
-
-  ! Iyy
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIyy_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIyy_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Iyy_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIyy_gf_volume')
-  end if
-
-  ! Iyz
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIyz_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIyz_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Iyz_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIyz_gf_volume')
-  end if
-
-  ! Izz
-  call CCTK_VarIndex(varid, 'UAv_Analysis::dIzz_gf_volume')
-  if (varid < 0) then
-     call CCTK_WARN(0, 'Could not get index to grid array dIzz_gf_volume')
-  end if
-  call CCTK_Reduce(ierr, cctkGH, -1, reduction_handle, 1, CCTK_VARIABLE_REAL, &
-       Izz_int, 1, varid)
-  if (ierr < 0) then
-     call CCTK_WARN(0, 'Error while reducing dIzz_gf_volume')
-  end if
-
 
   ! the multiplication with the volume element needs to be done here
-  total_energy = E_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
+  dV = cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
+  do i = 1,num_in_fields
+      out_vals(i) = out_vals(i) * dV
+  end do
 
-  Ixx = Ixx_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
-  Ixy = Ixy_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
-  Ixz = Ixz_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
-  Iyy = Iyy_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
-  Iyz = Iyz_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
-  Izz = Izz_int * cctk_delta_space(1) * cctk_delta_space(2) * cctk_delta_space(3)
+  total_energy = out_vals(1)
+
+  total_angular_momentum_x = out_vals(2)
+  total_angular_momentum_y = out_vals(3)
+  total_angular_momentum_z = out_vals(4)
+
+  Ixx = out_vals(5)
+  Ixy = out_vals(6)
+  Ixz = out_vals(7)
+  Iyy = out_vals(8)
+  Iyz = out_vals(9)
+  Izz = out_vals(10)
 
   ! write(*,*) 'total_energy = ', total_energy
 

@@ -1,0 +1,76 @@
+# Parameter definitions for thorn ComplexProcaEvolve
+
+shares: ComplexProcaBase
+USES CCTK_REAL mu
+USES CCTK_REAL E01
+USES CCTK_REAL A01
+USES CCTK_REAL Aphi01
+USES CCTK_REAL E02
+USES CCTK_REAL A02
+USES CCTK_REAL Aphi02
+USES CCTK_INT  n_E
+USES CCTK_INT  n_A
+USES CCTK_INT  n_Aphi
+USES CCTK_INT  n_Zeta
+
+EXTENDS KEYWORD evolution_method ""
+{
+  "ComplexProcaEvolve" :: "Use ComplexProcaEvolve to evolve ComplexProca variables"
+}
+
+
+shares: MethodOfLines
+USES CCTK_INT MoL_Num_Evolved_Vars
+USES CCTK_INT MoL_Num_Constrained_Vars
+USES CCTK_INT MoL_Num_SaveAndRestore_Vars
+
+
+restricted:
+
+CCTK_INT ComplexProcaEvolve_MaxNumEvolvedVars "The maximum number of evolved variables used by ComplexProcaEvolve" ACCUMULATOR-BASE=MethodofLines::MoL_Num_Evolved_Vars
+{
+  8:16           :: "Just 8: E^i, A_i, Aphi, Zeta"
+} 16
+
+CCTK_INT ComplexProcaEvolve_MaxNumConstrainedVars "The maximum number of constrained variables used by ComplexProcaEvolve" ACCUMULATOR-BASE=MethodofLines::MoL_Num_Constrained_Vars
+{
+  0:0           :: "none"
+} 0
+
+CCTK_INT ComplexProcaEvolve_MaxNumSandRVars "The maximum number of save and restore variables used by ComplexProcaEvolve" ACCUMULATOR-BASE=MethodofLines::MoL_Num_SaveAndRestore_Vars
+{
+  16:16           :: "lapse, shift, metric, and extrinsic curvature"
+} 16
+
+
+private:
+
+CCTK_INT derivs_order "Order for derivatives"
+{
+  4 :: "4th order stencils"
+  6 :: "6th order stencils"
+} 4
+
+BOOLEAN use_advection_stencils "Use lop-sided stencils for advection derivs"
+{
+} "yes"
+
+CCTK_REAL kappa "Damping parameter for Maxwell equations"
+{
+  0:*  :: "non-negative"
+} 1
+
+CCTK_REAL Zeta_Omega_fac "Set to zero to not evolve Zeta and Omega"
+{
+  *:*  :: "zero or one"
+} 1
+
+CCTK_REAL chi_floor "Minimal value of abs(chi)"
+{
+  *:*  :: "Any value possible"
+} 1.0d-05
+
+REAL conf_fac_exponent "Exponent n for hgamma_ij = chi^n gamma_ij conformal decomposition"
+{
+  (*:*) :: "1 or 2 are good choices"
+} 1

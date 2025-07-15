@@ -168,3 +168,8 @@ INT normalization_Tmunu "Normalization used for the stress-energy tensor in the 
   1   :: "G = 1"
   2   :: "G = 1 and Tmunu has factor of 0.5"
 } 0
+
+CCTK_REAL eps_r "floor value for rr"
+{
+  0:*  :: "any small positive value"
+} 1.0d-12

@@ -108,6 +108,22 @@ REAL z0 "z coordinate of central point"
   *:* :: "any real number"
 } 0.0
 
+REAL x0_2 "x coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+REAL y0_2 "y coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+REAL z0_2 "z coordinate of central point"
+{
+  *:* :: "any real number"
+} 0.0
+
+
 
 REAL Apert_conf_fac "amplitude for conformal factor perturbation"
 {

@@ -9,6 +9,7 @@ EXTENDS KEYWORD initial_data
 {
   "ProcaHairyBH"   :: "ProcaHairyBH initial data"
   "ProcaBS"        :: "Proca bosonic star initial data"
+  "ProcaBSBH"      :: "Proca collision with kerr black hole at rest"
 }
 
 EXTENDS KEYWORD initial_lapse
@@ -16,12 +17,14 @@ EXTENDS KEYWORD initial_lapse
   "ProcaHairyBH"   :: "ProcaHairyBH initial lapse profile"
   "ProcaBS"        :: "Proca bosonic star initial lapse profile"
   "psi^n"          :: "psi^n initial lapse profile"
+  "ProcaBSBH"      :: "Proca lapse"
 }
 
 EXTENDS KEYWORD initial_shift
 {
   "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
   "ProcaBS"        :: "Proca bosonic star initial shift profile"
+  "ProcaBSBH"      :: "Proca Shift: later on superimpose etc."
 }
 
 
@@ -45,6 +48,16 @@ REAL C0 "parameter for R to X coordinate transformation"
 {
   (0:* :: "greater than zero"
 } 1.0
+
+REAL bh_spin "spin of the black hole"
+{
+  *:* :: "a=J/M"
+} 0.0
+
+REAL bh_mass "BH mass parameter. Incompatible with the Scalar Boson Star and HairyBH."
+{
+  0:* :: "non-negative"
+} 0.0
 
 INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in ProcaHairyBH initial data."
 {

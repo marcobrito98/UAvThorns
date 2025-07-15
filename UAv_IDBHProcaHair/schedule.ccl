@@ -18,6 +18,16 @@ if (CCTK_Equals(initial_data, "ProcaBS"))
   } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
 }
 
+
+if (CCTK_Equals(initial_data, "ProcaBSBH"))
+{
+  SCHEDULE UAv_IDProcaBSBH IN ADMBase_InitialData
+  {
+    LANG: C
+    OPTIONS: Local
+  } "read data from the specified file, assumed to have an equidistant grid in the X coordinate"
+}
+
 schedule UAv_IDBHProcaHair_ParamCheck AT ParamCheck
 {
   LANG: C

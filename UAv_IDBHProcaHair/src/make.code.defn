@@ -1,7 +1,7 @@
 # Main make.code.defn file for thorn UAv_IDBHProcaHair
 
 # Source files in this directory
-SRCS = BHProcaHair.c  read_data.c  ProcaBS.c  ParamCheck.c
+SRCS = BHProcaHair.c  read_data.c  ProcaBS.c  ParamCheck.c ProcaBS_BH.c
 
 # Subdirectories containing source files
 SUBDIRS =

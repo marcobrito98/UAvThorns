@@ -802,8 +802,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         rr2_2 = pow( eps_r, 2 );
         }
         const CCTK_REAL rr_2  = sqrt(rr2_2);
-
-
         // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);
         CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
@@ -1088,7 +1086,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] = pow(psi1_1 + psi1_2, initial_lapse_psi_exponent);
+          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
         else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
           alp[ind] = alph;
           if (alp[ind] < SMALL)

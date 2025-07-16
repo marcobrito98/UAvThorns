@@ -1264,7 +1264,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
       //Compute extrinsic curvature K_{ij}
-      if (rr_2 < horizon_radius + 1e-6 || rr_2 > horizon_radius - 1e-6) {
+      if (rr_2 < horizon_radius + eps_r || rr_2 > horizon_radius - eps_r) {
         // Example: recompute with new coordinates (replace new_x1_2, etc. with your values)
         // KerrVars new_vars = compute_kerr_vars(new_x1_2, new_y1_2, new_z1_2, bh_v, gamma, eps_r, bh_mass, bh_spin, bh_mass2, bh_spin2);
         // Use new_vars.rr_2, new_vars.rho_2, etc. as needed
@@ -1275,12 +1275,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         kyz[ind] = 0.0;
         kzz[ind] = 0.0;
       } else{
-      kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
-      kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
-      kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
-      kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
-      kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
-      kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
+        kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
+        kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
+        kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
+        kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
+        kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
+        kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
       }
 
         

@@ -1336,12 +1336,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dnew_lapse_dr = ;
 
 
-        kxx[ind] = 0.5*;
-        kxy[ind] = 0.5*;
-        kxz[ind] = 0.5*;
-        kyy[ind] = 0.5*;
-        kyz[ind] = 0.5*;
-        kzz[ind] = 0.5*;
+        const CCTK_REAL kRR = ;
+
+        kxx[ind] = ;
+        kxy[ind] = ;
+        kxz[ind] = ;
+        kyy[ind] = ;
+        kyz[ind] = ;
+        kzz[ind] = ;
       } else{
         kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
         kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);

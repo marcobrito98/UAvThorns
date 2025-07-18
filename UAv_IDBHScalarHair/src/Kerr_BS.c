@@ -1344,47 +1344,19 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         kyy[ind] = ;
         kyz[ind] = ;
         kzz[ind] = ;
+        
       } else{
+
         kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
         kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
         kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
         kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
         kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
         kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
+
       }
 
         
-        // const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
-        // const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth
-        // const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
-        // const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-        //          1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ;
-        // const CCTK_REAL ARph   = HE / rr2_2 ;    
-      
-      
-        // const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
-        // const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        // const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
-        // const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        // const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
-
-
- 
-
-
-        // const CCTK_REAL kxx_kerr = Axx / psi2_2;
-        // const CCTK_REAL kxy_kerr = Axy / psi2_2;
-        // const CCTK_REAL kxz_kerr = Axz / psi2_2;
-        // const CCTK_REAL kyy_kerr = Ayy / psi2_2;
-        // const CCTK_REAL kyz_kerr = Ayz / psi2_2;
-        // const CCTK_REAL kzz_kerr =   0.0;
-
-
-       
-
-
-     
-
         
         check_nan_or_inf("kxx",kxx[ind]);
         check_nan_or_inf("kxy",kxy[ind]);
@@ -1393,12 +1365,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("kyz",kyz[ind]);
         check_nan_or_inf("kzz",kzz[ind]);  
 
-        // // let's add a perturbation to the scalar field as well
-        // const CCTK_REAL argpert_phi_1 = (rr_1 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_1 = 1. + Apert_phi * (x1_1*x1_1 - y1_1*y1_1) * mu * mu * exp( -0.5*argpert_phi_1*argpert_phi_1);
-        
-        // const CCTK_REAL argpert_phi_2 = (rr_2 - R0pert_phi)/Sigmapert_phi;
-        // const CCTK_REAL pert_phi_2 = 1. + Apert_phi * (x1_2*x1_2 - y1_2*y1_2) * mu * mu * exp( -0.5*argpert_phi_2*argpert_phi_2);
+
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind];// * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;

@@ -48,25 +48,26 @@ KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_
     if (v.rho2_2 < pow(eps_r, 2)) v.rho2_2 = pow(eps_r, 2);
     v.rho_2 = sqrt(v.rho2_2);
     v.theta_2 = acos(z1_2/v.rr_2);
-    v.costh = z1_2/v.rr_2;
+    v.costh = z1_2/v.rr_2; //nao quero variar theta nem phi portanto estes devem ficar os mesmos.
     v.costh2 = v.costh*v.costh;
     v.sinth2 = 1. - v.costh2;
     v.sinth = sqrt(v.sinth2);
     // if (v.sinth < eps_r) v.sinth = eps_r; // Regularize sinth to avoid division by zero
-    v.cscth = 1.0 / v.sinth;
-    if (fabs(v.cscth) < eps_r) {
-        v.cscth = 0.0; // Regularize cscth to avoid division by zero
-    }
+    // v.cscth = 1.0 / v.sinth;
+    // if (fabs(v.cscth) < eps_r) {
+    //     v.cscth = 0.0; // Regularize cscth to avoid division by zero
+    // }
     v.cotanth = v.costh / v.sinth;
     v.ph_2 = atan2(y1_2, x1_2);
     v.cosph = cos(v.ph_2);
     v.sinph = sin(v.ph_2);
-    v.R_x = x1_2*gamma/v.rr_2;
-    v.R_y = y1_2/v.rr_2;
-    v.R_z = z1_2/v.rr_2;
+    v.R_x = v.sinth*v.cosph;
+    v.R_y = v.sinth*v.sinph;
+    v.R_z = v.costh;
     v.x_R = v.R_x;
     v.y_R = v.R_y;
     v.z_R = v.R_z;
+    v.dr_dR = 1 + (bh_spin2 - bh_mass*bh_mass)/(4*pow(rhor, 2));
     // v.sinth2ph_x = -y1_2/v.rr2_2;
     // v.sinth2ph_y = gamma*x1_2/v.rr2_2;
     // v.sinthth_x = z1_2*gamma*x1_2/(v.rr_2*v.rr2_2);
@@ -75,18 +76,29 @@ KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_
     // v.sinthx_th = gamma*x1_2 * v.costh;
     // v.sinthy_th = y1_2 * v.costh;
     // v.sinthz_th = -v.rr_2 * v.sinth2;
-    v.costh2_x = -2*x1_2*gamma*pow(z1_2,2)/pow(v.rr2_2,2);
-    v.costh2_y = -2*y1_2*pow(z1_2,2)/pow(v.rr2_2,2);
-    v.costh2_z = 2*v.rho2_2*z1_2/pow(v.rr2_2,2);
+    v.costh2_x = -2*v.sinth*v.costh2*v.cosph/rhor;
+    v.costh2_y = -2*v.sinth*v.costh2*v.cosph/rhor;
+    v.costh2_z = 2*v.sinth2*v.costh/rhor;
     //in spherical coordinates at the horizon, rhor = rH. basically rr_2 -> rhor
     v.rBL = rhor + bh_mass + 0.25*(bh_mass2-bh_spin2) / rhor;
     v.rho2kerr = v.rBL*v.rBL + bh_spin2 * v.costh2;
     v.rhokerr = sqrt(v.rho2kerr);
+      v.drho2kerr_dx = 2*v.rBL*v.R_x*v.dr_dR + bh_spin2 * v.costh2_x;
+      v.drho2kerr_dy = 2*v.rBL*v.R_y*v.dr_dR + bh_spin2 * v.costh2_y;
+      v.drho2kerr_dz = 2*v.rBL*v.R_z*v.dr_dR + bh_spin2 * v.costh2_z;
+
     v.sigma = (2.*bh_mass*v.rBL)/v.rho2kerr;
+      v.dsigma_dx = (2*bh_mass*(v.rho2kerr*v.R_x*v.dr_dR - v.rBL*v.drho2kerr_dx))/pow(v.rho2kerr,2);
+      v.dsigma_dy = (2*bh_mass*(v.rho2kerr*v.R_y*v.dr_dR - v.rBL*v.drho2kerr_dy))/pow(v.rho2kerr,2);
+      v.dsigma_dz = (2*bh_mass*(v.rho2kerr*v.R_z*v.dr_dR - v.rBL*v.drho2kerr_dz))/pow(v.rho2kerr,2);
+
     v.hh = (1 + v.sigma) / (v.rho2kerr * pow(rhor,2));
-      v.dhh_dx = ;
-      v.dhh_dy = ;
-      v.dhh_dz = ;
+      v.dhh_dx = (-((1 + v.sigma)*(2*v.rho2kerr*v.R_x + \
+                                 rhor*v.drho2kerr_dx))+rhor*v.rho2kerr*v.dsigma_dx)/(pow(rhor,3)*pow(v.rho2kerr,2));
+      v.dhh_dy = (-((1 + v.sigma)*(2*v.rho2kerr*v.R_y + \
+                                 rhor*v.drho2kerr_dy))+rhor*v.rho2kerr*v.dsigma_dy)/(pow(rhor,3)*pow(v.rho2kerr,2));
+      v.dhh_dz = (-((1 + v.sigma)*(2*v.rho2kerr*v.R_z + \
+                                 rhor*v.drho2kerr_dz))+rhor*v.rho2kerr*v.dsigma_dz)/(pow(rhor,3)*pow(v.rho2kerr,2));
       v.dhh_dxx = ;
       v.dhh_dxy = ;
       v.dhh_dyy = ;
@@ -95,9 +107,9 @@ KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_
       v.dhh_dzz = ;
 
     v.psi4_2 = v.rho2kerr / pow(rhor,2);
-      v.dpsi4_2_dx = ;
-      v.dpsi4_2_dy = ;
-      v.dpsi4_2_dz = ;
+      v.dpsi4_2_dx = (-2*v.rho2kerr*v.R_x + rhor*v.drho2kerr_dx)/pow(rhor,3);
+      v.dpsi4_2_dy = (-2*v.rho2kerr*v.R_y + rhor*v.drho2kerr_dy)/pow(rhor,3);
+      v.dpsi4_2_dz = (-2*v.rho2kerr*v.R_z + rhor*v.drho2kerr_dz)/pow(rhor,3);
       v.dpsi4_2_dxx = ;
       v.dpsi4_2_dxy = ;
       v.dpsi4_2_dyy = ;
@@ -108,7 +120,7 @@ KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_
     v.psi2_2 = sqrt(v.psi4_2);
     v.psi1_2 = sqrt(v.psi2_2);
     v.bphi = - bh_spin * v.sigma * v.sinth2;
-      v.dbetadphi_dx = ;
+      v.dbetadphi_dx = ; //por em termos do bphi
       v.dbetadphi_dy = ;
       v.dbetadphi_dz = ;
       v.dbetadphi_dxx = ;
@@ -118,9 +130,30 @@ KerrVars compute_kerr_vars(CCTK_REAL x1_2, CCTK_REAL y1_2, CCTK_REAL z1_2, CCTK_
       v.dbetadphi_dxz = ;
       v.dbetadphi_dzz = ;
 //alpha0 em rhor é zero.
-    v.dalpha_dx = ;
-    v.dalpha_dy = ;
-    v.dalpha_dz = ;
+    v.dalpha_dx = (2*pow(rhor,2)*(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma))*v.R_x + \
+                  2*pow(horizon_radius,2)*(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma))*v.R_x + \
+                  rhor*pow(horizon_radius,2)*(2*v.rBL*v.R_x*v.dr_dR + \
+                  pow(bh_spin,2)*(-(v.sigma*v.costh2_x) - (-1 + v.costh2)*v.dsigma_dx)) + \
+                  pow(rhor,3)*(-2*v.rBL*v.R_x*v.dr_dR + pow(bh_spin,2)*(v.sigma*v.costh2_x + (-1 \
+                  + v.costh2)*v.dsigma_dx)))/(2.*pow(rhor,2)*pow(pow(v.rBL,2) + pow(bh_spin,2)*(1 - (-1 +v.costh2)*v.sigma),1.5));
+    v.dalpha_dy = (2*pow(rhor,2)*(pow(v.rBL,2) + pow(bh_spin,2)*(1 - (-1 + \
+                  v.costh2)*v.sigma))*v.R_y + 2*pow(horizon_radius,2)*(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma))*v.R_y + \
+                  rhor*pow(horizon_radius,2)*(2*v.rBL*v.R_y*v.dr_dR + \
+                  pow(bh_spin,2)*(-(v.sigma*v.costh2_y) - (-1 + v.costh2)*v.dsigma_dy)) + \
+                  pow(rhor,3)*(-2*v.rBL*v.R_y*v.dr_dR+ pow(bh_spin,2)*(v.sigma*v.costh2_y + (-1 \
+                  + v.costh2)*v.dsigma_dy)))/(2.*pow(rhor,2)*pow(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma),1.5));
+    v.dalpha_dz = (2*pow(rhor,2)*(pow(v.rBL,2) + pow(bh_spin,2)*(1 - (-1 + \
+                  v.costh2)*v.sigma))*v.R_z + 2*pow(horizon_radius,2)*(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma))*v.R_z + \
+                  rhor*pow(horizon_radius,2)*(2*v.rBL*v.R_z*v.dr_dR + \
+                  pow(bh_spin,2)*(-(v.sigma*v.costh2_z) - (-1 + v.costh2)*v.dsigma_dz)) + \
+                  pow(rhor,3)*(-2*v.rBL*v.R_z*v.dr_dR+ pow(bh_spin,2)*(v.sigma*v.costh2_z + (-1 \
+                  + v.costh2)*v.dsigma_dz)))/(2.*pow(rhor,2)*pow(pow(v.rBL,2) + \
+                  pow(bh_spin,2)*(1 - (-1 + v.costh2)*v.sigma),1.5));
     v.dalpha_dxx = ;
     v.dalpha_dxy = ;
     v.dalpha_dyy = ;
@@ -1333,10 +1366,18 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dBB_dr[3][3] = ;
 
 
-        const CCTK_REAL dnew_lapse_dr = ;
+        const CCTK_REAL dnew_lapse_dr = r*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(hor.psi4_2,2)*pow(hor.sinth,2)*pow(1 \
+                                        + pow(bh_spin,2)*pow(r,2)*hor.hh*pow(hor.sinth,2),2))/pow(hor.psi4_2*(\
+                                        r*hor.sinth + pow(bh_spin,2)*pow(r,3)*hor.hh*pow(hor.sinth,3)) + \
+                                        bh_v*hor.bphi*hor.sinph,2))*(hor.costh*hor.dalpha_dz + \
+                                        hor.sinth*(hor.sinph*hor.dalpha_dy + hor.cosph*hor.dalpha_dx));
 
-
-        const CCTK_REAL kRR = ;
+        const CCTK_REAL bxx[ind] = ;
+        const CCTK_REAL bxy[ind] = ;
+        const CCTK_REAL bxz[ind] = ;
+        const CCTK_REAL byy[ind] = ;
+        const CCTK_REAL byz[ind] = ;
+        const CCTK_REAL bzz[ind] = ;
 
         kxx[ind] = ;
         kxy[ind] = ;

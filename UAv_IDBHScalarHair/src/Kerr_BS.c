@@ -825,7 +825,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         CCTK_REAL alpha0  = (rr_2 + horizon_radius)*(rr_2 - horizon_radius) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2));
-        check_nan_or_inf("alpha0", alpha0);
+        // check_nan_or_inf("alpha0", alpha0);
         if (alpha0 < SMALL) {
         // If alpha0 is too small, we set it to zero to avoid division by zero.
         // This is a safeguard against numerical issues, especially near the horizon.
@@ -984,12 +984,72 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         //capital Gs refer to the unboosted frame.
 
-        const CCTK_REAL Gtt = -alpha02 + bphi*bphiup;
-        const CCTK_REAL Gxt = betad[1];
-        const CCTK_REAL Gxx = psi4_2*(1+bh_spin2*hh*y1_2*y1_2);
-        const CCTK_REAL Gxy = -psi4_2*bh_spin2*hh*y1_2*gamma*x1_2;
-        const CCTK_REAL Gty = betad[2];
-        const CCTK_REAL Gyy = psi4_2*(1 + bh_spin2*hh*x1_2*x1_2*gamma2);
+        CCTK_REAL G[4][4];
+        // Initialize G to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            G[i][j] = 0.0;
+
+        G[0][0] = -alpha02 + bphi*bphiup;
+        G[0][1] = betad[1];
+        G[0][2] = betad[2];
+        G[0][3] = 0.0;
+        G[1][1] = psi4_2*(1 + bh_spin2*hh*y1_2*y1_2);
+        G[1][2] = -psi4_2*bh_spin2*hh*y1_2*x1_2*gamma;
+        G[1][3] = 0.0;
+        G[2][1] = G[1][2];
+        G[2][2] = psi4_2*(1 + bh_spin2*hh*x1_2*x1_2*gamma2);
+        G[2][3] = 0.0;
+        G[3][1] = G[1][3];
+        G[3][2] = G[2][3];
+        G[3][3] = psi4_2;
+
+        const CCTK_REAL Gtt = G[0][0];
+        const CCTK_REAL Gxt = G[0][1];
+        const CCTK_REAL Gxx = G[1][1];
+        const CCTK_REAL Gxy = G[1][2];
+        const CCTK_REAL Gty = G[0][2];
+        const CCTK_REAL Gyy = G[2][2];
+
+        CCTK_REAL G_inv[4][4];
+        // Initialize G_inv to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            G_inv[i][j] = 0.0;
+
+        // Compute determinant of the spatial part of G (indices 1..3)
+        CCTK_REAL det_G =
+            G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
+          - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
+          + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
+
+        if (fabs(det_G) < 1e-12) {
+            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+                       "Singular G spatial metric (det_G = %e) at grid point (%d,%d,%d). Aborting.", det_G, i, j, k);
+            abort();
+        } else {
+            G_inv[1][1] =  (G[2][2]*G[3][3] - G[2][3]*G[3][2]) / det_G;
+            G_inv[1][2] = -(G[1][2]*G[3][3] - G[1][3]*G[3][2]) / det_G;
+            G_inv[1][3] =  (G[1][2]*G[2][3] - G[1][3]*G[2][2]) / det_G;
+            G_inv[2][1] = -(G[2][1]*G[3][3] - G[2][3]*G[3][1]) / det_G;
+            G_inv[2][2] =  (G[1][1]*G[3][3] - G[1][3]*G[3][1]) / det_G;
+            G_inv[2][3] = -(G[1][1]*G[2][3] - G[1][3]*G[2][1]) / det_G;
+            G_inv[3][1] =  (G[2][1]*G[3][2] - G[2][2]*G[3][1]) / det_G;
+            G_inv[3][2] = -(G[1][1]*G[3][2] - G[1][2]*G[3][1]) / det_G;
+            G_inv[3][3] =  (G[1][1]*G[2][2] - G[1][2]*G[2][1]) / det_G;
+        }
+
+
+        CCTK_REAL betaup[4];
+        betaup[1] = G_inv[1][1] * betad[1] + G_inv[1][2] * betad[2] + G_inv[1][3] * betad[3];
+        betaup[2] = G_inv[2][1] * betad[1] + G_inv[2][2] * betad[2] + G_inv[2][3] * betad[3];
+        betaup[3] = G_inv[3][1] * betad[1] + G_inv[3][2] * betad[2] + G_inv[3][3] * betad[3];
+
+        // Check for NaN or Inf in betaup components
+        check_nan_or_inf("betaup[1]", betaup[1]);
+        check_nan_or_inf("betaup[2]", betaup[2]);
+        check_nan_or_inf("betaup[3]", betaup[3]);
+        //estava mal porque os shifts agora sao diferentes depois do boost.
         
         const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
         const CCTK_REAL dGxx_dy = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
@@ -1207,16 +1267,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             g_inv[3][3] =  (g[1][1]*g[2][2] - g[1][2]*g[2][1]) / det_g;
         }
 
-        CCTK_REAL betaup[4];
-                  betaup[1] = g_inv[1][1] * betad[1] + g_inv[1][2] * betad[2] + g_inv[1][3] * betad[3];
-                  betaup[2] = g_inv[2][1] * betad[1] + g_inv[2][2] * betad[2] + g_inv[2][3] * betad[3];
-                  betaup[3] = g_inv[3][1] * betad[1] + g_inv[3][2] * betad[2] + g_inv[3][3] * betad[3];
 
-        // Check for NaN or Inf in betaup components
-        check_nan_or_inf("betaup[1]", betaup[1]);
-        check_nan_or_inf("betaup[2]", betaup[2]);
-        check_nan_or_inf("betaup[3]", betaup[3]);
-        //estava mal porque os shifts agora sao diferentes depois do boost.
 
         
         // Christoffel symbols of the spatial metric (only spatial indices 1..3)
@@ -1452,27 +1503,27 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int jj = 0; jj < 4; ++jj)
             third_term[ii][jj] = 0.0;
 
-        third_term[1][1] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][1][1] + 
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][1][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][1][3]);
-        third_term[1][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][2][1] +
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][2][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][2][3]);
-        third_term[1][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][3][1] +
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][3][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][3][3]);
+        third_term[1][1] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][1][1] + 
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][1][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][1][3]);
+        third_term[1][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][2][1] +
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][2][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][2][3]);
+        third_term[1][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][3][1] +
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][3][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][3][3]);
         third_term[2][1] = third_term[1][2]; // symmetric component
-        third_term[2][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[2][2][1] +
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[2][2][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[2][2][3]);
-        third_term[2][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[2][3][1] +
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[2][3][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[2][3][3]);
+        third_term[2][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[2][2][1] +
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[2][2][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[2][2][3]);
+        third_term[2][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[2][3][1] +
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[2][3][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[2][3][3]);
         third_term[3][1] = third_term[1][3]; // symmetric component
         third_term[3][2] = third_term[2][3]; // symmetric component
-        third_term[3][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[3][3][1] +
-                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[3][3][2] +
-                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[3][3][3]);
+        third_term[3][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[3][3][1] +
+                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[3][3][2] +
+                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[3][3][3]);
 
         kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1]);
         kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2]);

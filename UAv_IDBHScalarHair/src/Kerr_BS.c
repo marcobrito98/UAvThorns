@@ -892,7 +892,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         for (int i = 0; i < 4; ++i)
           for (int j = 0; j < 4; ++j)
             dbetad[i][j] = 0.0; 
-        // Compute derivatives of the beta vector. To change the spin direction, change the indices accordingly.
+        // Compute derivatives of the betad vector. To change the spin direction, change the indices accordingly.
         dbetad[1][1] = (2*x1_2*gamma*y1_2*bphi - y1_2*rho2_2*dbetadphi_dx)/pow(rho2_2,2);
         dbetad[1][2] = ((-pow(x1_2,2)*gamma2 + pow(y1_2,2))*bphi - y1_2*(rho2_2)*dbetadphi_dy)/pow(rho2_2,2);
         dbetad[1][3] = -((y1_2*dbetadphi_dz)/(rho2_2));
@@ -1276,9 +1276,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         new_betaup[3] = g_inv[3][1] * new_betad[1] + g_inv[3][2] * new_betad[2] + g_inv[3][3] * new_betad[3];
 
         // Check for NaN or Inf in betaup components
-        check_nan_or_inf("betaup[1]", new_betaup[1]);
-        check_nan_or_inf("betaup[2]", new_betaup[2]);
-        check_nan_or_inf("betaup[3]", new_betaup[3]);
+        check_nan_or_inf("new_betaup[1]", new_betaup[1]);
+        check_nan_or_inf("new_betaup[2]", new_betaup[2]);
+        check_nan_or_inf("new_betaup[3]", new_betaup[3]);
 
 
 
@@ -1347,55 +1347,141 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
       //Compute extrinsic curvature K_{ij}
-      if (rr_2 < horizon_radius + eps_r || rr_2 > horizon_radius - eps_r) {
-        // Example: recompute with new coordinates (replace new_x1_2, etc. with your values)
-        KerrVars hor = compute_kerr_vars(x1_2, y1_2, z1_2, bh_v, gamma, eps_r, bh_mass, bh_spin, bh_mass2, bh_spin2, horizon_radius);
-        // Use new_vars.rr_2, new_vars.rho_2, etc. as needed
+      // if (rr_2 < horizon_radius + eps_r || rr_2 > horizon_radius - eps_r) {
+      //   // Example: recompute with new coordinates (replace new_x1_2, etc. with your values)
+      //   KerrVars hor = compute_kerr_vars(x1_2, y1_2, z1_2, bh_v, gamma, eps_r, bh_mass, bh_spin, bh_mass2, bh_spin2, horizon_radius);
+      //   // Use new_vars.rr_2, new_vars.rho_2, etc. as needed
 
-        CCTK_REAL dBB_dr[4][4]; // dBB[i][j] = \partial_r B_{ij} indices refer to spherical coordinates
-        // Initialize dBB to zero
+      //   CCTK_REAL dBB_dr[4][4]; // dBB[i][j] = \partial_r B_{ij} indices refer to spherical coordinates
+      //   // Initialize dBB to zero
+      //   for (int ii = 0; ii < 4; ++ii)
+      //     for (int jj = 0; jj < 4; ++jj)
+      //       dBB_dr[ii][jj] = 0.0;
+        
+      //   dBB_dr[1][1] = ;
+      //   dBB_dr[1][2] = ;
+      //   dBB_dr[1][3] = ;    
+      //   dBB_dr[2][2] = ;
+      //   dBB_dr[2][3] = ;
+      //   dBB_dr[3][3] = ;
+
+
+      //   const CCTK_REAL dnew_lapse_dr = r*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(hor.psi4_2,2)*pow(hor.sinth,2)*pow(1 \
+      //                                   + pow(bh_spin,2)*pow(r,2)*hor.hh*pow(hor.sinth,2),2))/pow(hor.psi4_2*(\
+      //                                   r*hor.sinth + pow(bh_spin,2)*pow(r,3)*hor.hh*pow(hor.sinth,3)) + \
+      //                                   bh_v*hor.bphi*hor.sinph,2))*(hor.costh*hor.dalpha_dz + \
+      //                                   hor.sinth*(hor.sinph*hor.dalpha_dy + hor.cosph*hor.dalpha_dx));
+
+      //   const CCTK_REAL bxx[ind] = ;
+      //   const CCTK_REAL bxy[ind] = ;
+      //   const CCTK_REAL bxz[ind] = ;
+      //   const CCTK_REAL byy[ind] = ;
+      //   const CCTK_REAL byz[ind] = ;
+      //   const CCTK_REAL bzz[ind] = ;
+
+      //   kxx[ind] = ;
+      //   kxy[ind] = ;
+      //   kxz[ind] = ;
+      //   kyy[ind] = ;
+      //   kyz[ind] = ;
+      //   kzz[ind] = ;
+        
+      // } else{
+
+       const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh  ;  // we are dividing by sinth2
+       const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth 
+       const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);  
+       const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+                1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2)) ; 
+       const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2
+
+
+
+        // //capital Ks refer to the unboosted frame.
+        // const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
+        // const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
+
+        // // const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kxt = R_x*KRt + x1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        // const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
+
+
+        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+        const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
+        const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+        const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
+
+
+        CCTK_REAL first_term[4][4];
+        // Initialize first_term to zero
         for (int ii = 0; ii < 4; ++ii)
           for (int jj = 0; jj < 4; ++jj)
-            dBB_dr[ii][jj] = 0.0;
-        
-        dBB_dr[1][1] = ;
-        dBB_dr[1][2] = ;
-        dBB_dr[1][3] = ;    
-        dBB_dr[2][2] = ;
-        dBB_dr[2][3] = ;
-        dBB_dr[3][3] = ;
+            first_term[ii][jj] = 0.0;
+
+        first_term[1][1] = Axx / psi2_2;
+        first_term[1][2] = Axy / psi2_2;
+        first_term[1][3] = Axz / psi2_2;
+        first_term[2][1] = first_term[1][2]; // symmetric component;
+        first_term[2][2] = Ayy / psi2_2;
+        first_term[2][3] = Ayz / psi2_2;
+        first_term[3][1] = first_term[1][3]; // symmetric component;
+        first_term[3][2] = first_term[2][3]; // symmetric component;
+        first_term[3][3] = 0.0;
+
+        CCTK_REAL second_term[4][4];
+        // Initialize second_term to zero
+        for (int ii = 0; ii < 4; ++ii)
+          for (int jj = 0; jj < 4; ++jj)
+            second_term[ii][jj] = 0.0;
+        second_term[1][1] = -0.5 * betaup[1] / alpha0 * dg[1][1][0];
+        second_term[1][2] = -0.5 * betaup[1] / alpha0 * dg[1][2][0];
+        second_term[1][3] = -0.5 * betaup[1] / alpha0 * dg[1][3][0];
+        second_term[2][1] = second_term[1][2]; // symmetric component;
+        second_term[2][2] = -0.5 * betaup[2] / alpha0 * dg[2][2][0];
+        second_term[2][3] = -0.5 * betaup[2] / alpha0 * dg[2][3][0];
+        second_term[3][1] = second_term[1][3]; // symmetric component;
+        second_term[3][2] = second_term[2][3]; // symmetric component;
+        second_term[3][3] = -0.5 * betaup[3] / alpha0 * dg[3][3][0];
 
 
-        const CCTK_REAL dnew_lapse_dr = r*sqrt((pow(-1 + pow(bh_v,2),2)*pow(gamma,2)*pow(hor.psi4_2,2)*pow(hor.sinth,2)*pow(1 \
-                                        + pow(bh_spin,2)*pow(r,2)*hor.hh*pow(hor.sinth,2),2))/pow(hor.psi4_2*(\
-                                        r*hor.sinth + pow(bh_spin,2)*pow(r,3)*hor.hh*pow(hor.sinth,3)) + \
-                                        bh_v*hor.bphi*hor.sinph,2))*(hor.costh*hor.dalpha_dz + \
-                                        hor.sinth*(hor.sinph*hor.dalpha_dy + hor.cosph*hor.dalpha_dx));
+        CCTK_REAL third_term[4][4];
+        // Initialize third_term to zero
+        for (int ii = 0; ii < 4; ++ii)
+          for (int jj = 0; jj < 4; ++jj)
+            third_term[ii][jj] = 0.0;
 
-        const CCTK_REAL bxx[ind] = ;
-        const CCTK_REAL bxy[ind] = ;
-        const CCTK_REAL bxz[ind] = ;
-        const CCTK_REAL byy[ind] = ;
-        const CCTK_REAL byz[ind] = ;
-        const CCTK_REAL bzz[ind] = ;
+        third_term[1][1] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][1][1] + 
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][1][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][1][3]);
+        third_term[1][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][2][1] +
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][2][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][2][3]);
+        third_term[1][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[1][3][1] +
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[1][3][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[1][3][3]);
+        third_term[2][1] = third_term[1][2]; // symmetric component
+        third_term[2][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[2][2][1] +
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[2][2][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[2][2][3]);
+        third_term[2][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[2][3][1] +
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[2][3][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[2][3][3]);
+        third_term[3][1] = third_term[1][3]; // symmetric component
+        third_term[3][2] = third_term[2][3]; // symmetric component
+        third_term[3][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betad[1] * betad[1] / alpha0) * dg[3][3][1] +
+                                          (alpha0 * g_inv[1][2] + betad[1] * betad[2] / alpha0) * dg[3][3][2] +
+                                          (alpha0 * g_inv[1][3] + betad[1] * betad[3] / alpha0) * dg[3][3][3]);
 
-        kxx[ind] = ;
-        kxy[ind] = ;
-        kxz[ind] = ;
-        kyy[ind] = ;
-        kyz[ind] = ;
-        kzz[ind] = ;
-        
-      } else{
+        kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1]);
+        kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2]);
+        kxz[ind] = gamma * (first_term[1][3] + second_term[1][3] + third_term[1][3]);
+        kyy[ind] = gamma * (first_term[2][2] + second_term[2][2] + third_term[2][2]);
+        kyz[ind] = gamma * (first_term[2][3] + second_term[2][3] + third_term[2][3]);
+        kzz[ind] = gamma * (first_term[3][3] + second_term[3][3] + third_term[3][3]);
 
-        kxx[ind] = 0.5 / new_lapse * (Dbetad[1][1] + Dbetad[1][1] - dg[1][1][0]);
-        kxy[ind] = 0.5 / new_lapse * (Dbetad[1][2] + Dbetad[2][1] - dg[1][2][0]);
-        kxz[ind] = 0.5 / new_lapse * (Dbetad[1][3] + Dbetad[3][1] - dg[1][3][0]);
-        kyy[ind] = 0.5 / new_lapse * (Dbetad[2][2] + Dbetad[2][2] - dg[2][2][0]);
-        kyz[ind] = 0.5 / new_lapse * (Dbetad[2][3] + Dbetad[3][2] - dg[2][3][0]);
-        kzz[ind] = 0.5 / new_lapse * (Dbetad[3][3] + Dbetad[3][3] - dg[3][3][0]);
-
-      }
+      // }
 
         
         

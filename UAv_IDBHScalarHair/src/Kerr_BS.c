@@ -825,7 +825,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         
         CCTK_REAL alpha0  = (rr_2 + horizon_radius)*(rr_2 - horizon_radius) / rr_2 * \
                  1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2));
-
+        check_nan_or_inf("alpha0", alpha0);
         if (alpha0 < SMALL) {
         // If alpha0 is too small, we set it to zero to avoid division by zero.
         // This is a safeguard against numerical issues, especially near the horizon.

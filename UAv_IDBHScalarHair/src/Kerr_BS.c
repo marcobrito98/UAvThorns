@@ -1486,15 +1486,15 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         for (int ii = 0; ii < 4; ++ii)
           for (int jj = 0; jj < 4; ++jj)
             second_term[ii][jj] = 0.0;
-        second_term[1][1] = -0.5 * betaup[1] / alpha0 * dg[1][1][0];
-        second_term[1][2] = -0.5 * betaup[1] / alpha0 * dg[1][2][0];
-        second_term[1][3] = -0.5 * betaup[1] / alpha0 * dg[1][3][0];
+        second_term[1][1] = -0.5 * bh_v * betaup[1] / alpha0 * dg[1][1][0];
+        second_term[1][2] = -0.5 * bh_v * betaup[1] / alpha0 * dg[1][2][0];
+        second_term[1][3] = -0.5 * bh_v * betaup[1] / alpha0 * dg[1][3][0];
         second_term[2][1] = second_term[1][2]; // symmetric component;
-        second_term[2][2] = -0.5 * betaup[2] / alpha0 * dg[2][2][0];
-        second_term[2][3] = -0.5 * betaup[2] / alpha0 * dg[2][3][0];
+        second_term[2][2] = -0.5 * bh_v * betaup[2] / alpha0 * dg[2][2][0];
+        second_term[2][3] = -0.5 * bh_v * betaup[2] / alpha0 * dg[2][3][0];
         second_term[3][1] = second_term[1][3]; // symmetric component;
         second_term[3][2] = second_term[2][3]; // symmetric component;
-        second_term[3][3] = -0.5 * betaup[3] / alpha0 * dg[3][3][0];
+        second_term[3][3] = -0.5 * bh_v * betaup[3] / alpha0 * dg[3][3][0];
 
 
         CCTK_REAL third_term[4][4];

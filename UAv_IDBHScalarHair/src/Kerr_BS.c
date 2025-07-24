@@ -1503,27 +1503,27 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int jj = 0; jj < 4; ++jj)
             third_term[ii][jj] = 0.0;
 
-        third_term[1][1] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][1][1] + 
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][1][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][1][3]);
-        third_term[1][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][2][1] +
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][2][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][2][3]);
-        third_term[1][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[1][3][1] +
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[1][3][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[1][3][3]);
+        third_term[1][1] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[1][1][1] + 
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[1][1][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[1][1][3]);
+        third_term[1][2] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[1][2][1] +
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[1][2][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[1][2][3]);
+        third_term[1][3] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[1][3][1] +
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[1][3][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[1][3][3]);
         third_term[2][1] = third_term[1][2]; // symmetric component
-        third_term[2][2] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[2][2][1] +
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[2][2][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[2][2][3]);
-        third_term[2][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[2][3][1] +
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[2][3][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[2][3][3]);
+        third_term[2][2] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[2][2][1] +
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[2][2][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[2][2][3]);
+        third_term[2][3] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[2][3][1] +
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[2][3][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[2][3][3]);
         third_term[3][1] = third_term[1][3]; // symmetric component
         third_term[3][2] = third_term[2][3]; // symmetric component
-        third_term[3][3] = -0.5 * bh_v * ((alpha0 * g_inv[1][1] + betaup[1] * betaup[1] / alpha0) * dg[3][3][1] +
-                                          (alpha0 * g_inv[1][2] + betaup[1] * betaup[2] / alpha0) * dg[3][3][2] +
-                                          (alpha0 * g_inv[1][3] + betaup[1] * betaup[3] / alpha0) * dg[3][3][3]);
+        third_term[3][3] = -0.5 * bh_v * ((alpha0 * G_inv[1][1] - betaup[1] * betaup[1] / alpha0) * dg[3][3][1] +
+                                          (alpha0 * G_inv[1][2] - betaup[1] * betaup[2] / alpha0) * dg[3][3][2] +
+                                          (alpha0 * G_inv[1][3] - betaup[1] * betaup[3] / alpha0) * dg[3][3][3]);
 
         kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1]);
         kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2]);

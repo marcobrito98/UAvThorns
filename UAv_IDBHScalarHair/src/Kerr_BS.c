@@ -1450,33 +1450,33 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         //capital Ks refer to the unboosted frame.
 
-        const CCTK_REAL dbeta2_dx = -((pow(bh_spin,2)*sigma*(rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*sigma*dpsi4_2_dx + \
+        const CCTK_REAL dbeta2_dx = -((pow(bh_spin,2)*sigma*(rr_2*(rho2_2)*(1 + \
+                                    pow(bh_spin,2)*hh*(rho2_2))*sigma*dpsi4_2_dx + \
                                     psi4_2*(sigma*(2*(-2*pow(z1_2,2) + pow(rr_2,2) + \
                                     2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) - pow(rr_2,2),2))*R_x + \
                                     pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - pow(rr_2,2),2)*dhh_dx) - \
-                                    2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    2*rr_2*(rho2_2)*(1 + \
                                     pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
                                     pow(rr_2,2)))*dsigma_dx)))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2)));
-        const CCTK_REAL dbeta2_dy = -((pow(bh_spin,2)*sigma*(rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*sigma*dpsi4_2_dy + \
+                                    pow(bh_spin,2)*hh*(rho2_2),2)));
+        const CCTK_REAL dbeta2_dy = -((pow(bh_spin,2)*sigma*(rr_2*(rho2_2)*(1 + \
+                                    pow(bh_spin,2)*hh*(rho2_2))*sigma*dpsi4_2_dy + \
                                     psi4_2*(sigma*(2*(-2*pow(z1_2,2) + pow(rr_2,2) + \
                                     2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) - pow(rr_2,2),2))*R_y + \
                                     pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - pow(rr_2,2),2)*dhh_dy) - \
-                                    2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    2*rr_2*(rho2_2)*(1 + \
                                     pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
                                     pow(rr_2,2)))*dsigma_dy)))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2)));
+                                    pow(bh_spin,2)*hh*(rho2_2),2)));
         const CCTK_REAL dbeta2_dz = (pow(bh_spin,2)*sigma*(sigma*(psi4_2*(-2*z1_2*rr_2 - \
                                     2*(-2*pow(z1_2,2) + pow(rr_2,2) + 2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) \
                                     - pow(rr_2,2),2))*R_z - pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - \
-                                    pow(rr_2,2),2)*dhh_dz) - rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*dpsi4_2_dz) + \
-                                    2*psi4_2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(rr_2,2),2)*dhh_dz) - rr_2*(rho2_2)*(1 + \
+                                    pow(bh_spin,2)*hh*(rho2_2))*dpsi4_2_dz) + \
+                                    2*psi4_2*rr_2*(rho2_2)*(1 + \
                                     pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
                                     pow(rr_2,2)))*dsigma_dz))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
-                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2));
+                                    pow(bh_spin,2)*hh*(rho2_2),2));
 
 
 

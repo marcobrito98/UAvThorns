@@ -902,6 +902,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dbetad[3][1] = 0;
         dbetad[3][2] = 0;
         dbetad[3][3] = 0;
+
+        dbetad[1][0] = dbetad[1][1]*gamma*bh_v; //because the argument is gamma*(vt +x) and we set later t=0.
+        dbetad[2][0] = dbetad[2][1]*gamma*bh_v;
+        dbetad[3][0] = dbetad[2][1]*gamma*bh_v;
         
         // Check for NaN or Inf in all dbetad[i][j] components
         for (int ii = 1; ii <= 3; ++ii) {
@@ -1044,6 +1048,21 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         betaup[1] = G_inv[1][1] * betad[1] + G_inv[1][2] * betad[2] + G_inv[1][3] * betad[3];
         betaup[2] = G_inv[2][1] * betad[1] + G_inv[2][2] * betad[2] + G_inv[2][3] * betad[3];
         betaup[3] = G_inv[3][1] * betad[1] + G_inv[3][2] * betad[2] + G_inv[3][3] * betad[3];
+
+
+        dbetaup[1][1] = ;
+        dbetaup[1][2] = ;
+        dbetaup[1][3] = ;
+        dbetaup[2][1] = ;
+        dbetaup[2][2] = ;
+        dbetaup[2][3] = ;
+        dbetaup[3][1] = ;
+        dbetaup[3][2] = ;
+        dbetaup[3][3] = ;
+
+        dbetaup[1][0] = dbetaup[1][1]*gamma*bh_v; //because the argument is gamma*(vt +x) and we set later t=0.
+        dbetaup[2][0] = dbetaup[2][1]*gamma*bh_v;
+        dbetaup[3][0] = dbetaup[2][1]*gamma*bh_v;
 
         // Check for NaN or Inf in betaup components
         check_nan_or_inf("betaup[1]", betaup[1]);
@@ -1393,6 +1412,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
           }
         }
+        
 
 
 
@@ -1495,7 +1515,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - bphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - bphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
 
-        const CCTK_REAL Ktt = -0.5 * (dbeta2_dx * betaup[1] + dbeta2_dy * betaup[2] + dbeta2_dz * betaup[3]) / alpha0;
+        const CCTK_REAL Ktt = -0.5 * (dbeta2_dx * betaup[1] + dbeta2_dy * betaup[2] + dbeta2_dz * betaup[3] +\
+                              2*(betad[1]*dbetaup[1][0] + betad[2]*dbetad[2][0] + betad[3]*dbetad[3][0])) / alpha0;
         const CCTK_REAL Ktht = bphi*dbetauphi_dth/(-2*alpha0);
         const CCTK_REAL KRt = bphi*dbetauphi_dR/(-2*alpha0);
         

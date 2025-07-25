@@ -860,8 +860,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         const CCTK_REAL bphi = -bh_spin * sigma * sinth2;
-        // const CCTK_REAL gammaphiphi = psi4_2 * rr2_2 * sinth2 * (1 + bh_spin2 * hh * rr2_2 * sinth2);
-        const CCTK_REAL gammaphiphi = rho2kerr*rho2_2/rr2_2 *(1 + bh_spin2 * hh * rho2_2);
+        const CCTK_REAL gammaphiphi = psi4_2 * rr2_2 * sinth2 * (1 + bh_spin2 * hh * rr2_2 * sinth2);
+        // const CCTK_REAL gammaphiphi = rho2kerr*rho2_2/rr2_2 *(1 + bh_spin2 * hh * rho2_2);
         const CCTK_REAL bphiup = bphi / gammaphiphi;
 
         // Check for NaN or Inf in these quantities
@@ -1517,7 +1517,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int jj = 0; jj < 4; ++jj)
             first_term[ii][jj] = 0.0;
 
-        first_term[1][1] = gamma2 * Axx / psi2_2 + bh_v * gamma2 * Ktt;
+        first_term[1][1] = gamma2 * Axx / psi2_2 + bh_v2 * gamma2 * Ktt + 2*Kxt*bh_v2*gamma2;
         first_term[1][2] = gamma * Axy / psi2_2 + gamma * bh_v * Kyt;
         first_term[1][3] = gamma * Axz / psi2_2 + gamma * bh_v * Kzt;
         first_term[2][1] = first_term[1][2]; // symmetric component;

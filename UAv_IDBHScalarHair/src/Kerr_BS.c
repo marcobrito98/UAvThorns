@@ -1477,6 +1477,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                     pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
                                     pow(rr_2,2)))*dsigma_dz))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
                                     pow(bh_spin,2)*hh*(rho2_2),2));
+        check_nan_or_inf("dbeta2_dx", dbeta2_dx);
+        check_nan_or_inf("dbeta2_dy", dbeta2_dy);
+        check_nan_or_inf("dbeta2_dz", dbeta2_dz);
 
 
 

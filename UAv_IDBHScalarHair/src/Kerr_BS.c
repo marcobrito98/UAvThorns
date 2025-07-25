@@ -1448,14 +1448,49 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-        // //capital Ks refer to the unboosted frame.
-        // const CCTK_REAL Ktht = betadphi*dbetauphi_dth/(-2*alpha0);
-        // const CCTK_REAL KRt = betadphi*dbetauphi_dR/(-2*alpha0);
+        //capital Ks refer to the unboosted frame.
 
-        // // const CCTK_REAL Kxt = R_x*KRt + gamma*x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kxt = R_x*KRt + x1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
-        // const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
+        const CCTK_REAL dbeta2_dx = -((pow(bh_spin,2)*sigma*(rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*sigma*dpsi4_2_dx + \
+                                    psi4_2*(sigma*(2*(-2*pow(z1_2,2) + pow(rr_2,2) + \
+                                    2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) - pow(rr_2,2),2))*R_x + \
+                                    pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - pow(rr_2,2),2)*dhh_dx) - \
+                                    2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
+                                    pow(rr_2,2)))*dsigma_dx)))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2)));
+        const CCTK_REAL dbeta2_dy = -((pow(bh_spin,2)*sigma*(rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*sigma*dpsi4_2_dy + \
+                                    psi4_2*(sigma*(2*(-2*pow(z1_2,2) + pow(rr_2,2) + \
+                                    2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) - pow(rr_2,2),2))*R_y + \
+                                    pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - pow(rr_2,2),2)*dhh_dy) - \
+                                    2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
+                                    pow(rr_2,2)))*dsigma_dy)))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2)));
+        const CCTK_REAL dbeta2_dz = (pow(bh_spin,2)*sigma*(sigma*(psi4_2*(-2*z1_2*rr_2 - \
+                                    2*(-2*pow(z1_2,2) + pow(rr_2,2) + 2*pow(bh_spin,2)*hh*pow(pow(z1_2,2) \
+                                    - pow(rr_2,2),2))*R_z - pow(bh_spin,2)*rr_2*pow(pow(z1_2,2) - \
+                                    pow(rr_2,2),2)*dhh_dz) - rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)))*dpsi4_2_dz) + \
+                                    2*psi4_2*rr_2*(-pow(z1_2,2) + pow(rr_2,2))*(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + \
+                                    pow(rr_2,2)))*dsigma_dz))/(pow(psi4_2,2)*pow(rr_2,5)*pow(1 + \
+                                    pow(bh_spin,2)*hh*(-pow(z1_2,2) + pow(rr_2,2)),2));
+
+
+
+        
+        const CCTK_REAL dbetadphi_dth = -(4*bh_spin*bh_mass*rBL*(bh_spin2+rBL*rBL)*sinth*costh)/pow(rho2kerr,2);
+        const CCTK_REAL dbetadphi_dR = dr_dR*2*bh_spin*bh_mass*(rBL*rBL-bh_spin2*costh2)*sinth2/pow(rho2kerr,2);
+
+        const CCTK_REAL Ktt = -0.5 * (dbeta2_dx * betaup[1] + dbeta2_dy * betaup[2] + dbeta2_dz * betaup[3]) / alpha0;
+        const CCTK_REAL Ktht = bphi*dbetauphi_dth/(-2*alpha0);
+        const CCTK_REAL KRt = bphi*dbetauphi_dR/(-2*alpha0);
+        
+        const CCTK_REAL Kxt = R_x*KRt + x1_2*gamma*z1_2/(rho_2*rr2_2) * Ktht;
+        const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
+        const CCTK_REAL Kzt = R_z*KRt + rho_2/rr2_2 * Ktht;
 
 
         const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
@@ -1471,9 +1506,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int jj = 0; jj < 4; ++jj)
             first_term[ii][jj] = 0.0;
 
-        first_term[1][1] = Axx / psi2_2;
-        first_term[1][2] = Axy / psi2_2;
-        first_term[1][3] = Axz / psi2_2;
+        first_term[1][1] = gamma2 * Axx / psi2_2 + bh_v * gamma2 * Ktt;
+        first_term[1][2] = gamma * Axy / psi2_2 + gamma * bh_v * Kyt;
+        first_term[1][3] = gamma * Axz / psi2_2 + gamma * bh_v * Kzt;
         first_term[2][1] = first_term[1][2]; // symmetric component;
         first_term[2][2] = Ayy / psi2_2;
         first_term[2][3] = Ayz / psi2_2;

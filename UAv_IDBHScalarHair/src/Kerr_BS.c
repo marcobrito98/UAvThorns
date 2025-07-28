@@ -1048,6 +1048,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         betaup[3] = G_inv[3][1] * betad[1] + G_inv[3][2] * betad[2] + G_inv[3][3] * betad[3];
 
 
+        CCTK_REAL dbetaup[4][4];
+        // Initialize dbetaup to zero
+        for (int i = 0; i < 4; ++i) 
+          for (int j = 0; j < 4; ++j)
+            dbetaup[i][j] = 0.0;
+        // Compute derivatives of the betaup vector
         dbetaup[1][1] = (-(pow(bh_spin,2)*(betad[1] + pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
                         y1_2*betad[2])*hh)*psi4_2*(2*x1_2*gamma*hh + (rho2_2)*dhh_dx)) \
                         + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[1][1] + \

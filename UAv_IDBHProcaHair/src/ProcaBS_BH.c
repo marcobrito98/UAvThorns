@@ -15,6 +15,16 @@ void UAv_IDBHProcaHair_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL [], CCTK_REAL
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL [],
                    CCTK_REAL [], CCTK_REAL [], CCTK_REAL [], CCTK_REAL []);
 
+void check_nan_or_inf(const char* var_name, double value) {
+    if (isnan(value)) {
+        fprintf(stderr, "Error: %s is NaN\n", var_name);
+        abort(); // Break execution
+    } else if (isinf(value)) {
+        fprintf(stderr, "Error: %s is Inf\n", var_name);
+        abort(); // Break execution
+    }
+}
+
 
 void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 {

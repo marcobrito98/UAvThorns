@@ -1108,17 +1108,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[3]", betaup[3]);
         //estava mal porque os shifts agora sao diferentes depois do boost.
         
-        const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
-        const CCTK_REAL dGxx_dy = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
-        const CCTK_REAL dGxx_dz = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz;
+        // const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
+        // const CCTK_REAL dGxx_dy = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
+        // const CCTK_REAL dGxx_dz = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz;
 
-        const CCTK_REAL dGxy_dx = -(pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + x1_2*gamma*dpsi4_2_dx)));
-        const CCTK_REAL dGxy_dy = -(pow(bh_spin,2)*x1_2*gamma*(y1_2*psi4_2*dhh_dy + hh*(psi4_2 + y1_2*dpsi4_2_dy)));
-        const CCTK_REAL dGxy_dz = -(pow(bh_spin,2)*x1_2*gamma*y1_2*(psi4_2*dhh_dz + hh*dpsi4_2_dz));
+        // const CCTK_REAL dGxy_dx = -(pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + x1_2*gamma*dpsi4_2_dx)));
+        // const CCTK_REAL dGxy_dy = -(pow(bh_spin,2)*x1_2*gamma*(y1_2*psi4_2*dhh_dy + hh*(psi4_2 + y1_2*dpsi4_2_dy)));
+        // const CCTK_REAL dGxy_dz = -(pow(bh_spin,2)*x1_2*gamma*y1_2*(psi4_2*dhh_dz + hh*dpsi4_2_dz));
 
-        const CCTK_REAL dGyy_dx = pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dx;
-        const CCTK_REAL dGyy_dy = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dy + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dy;
-        const CCTK_REAL dGyy_dz = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dz;
+        // const CCTK_REAL dGyy_dx = pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dx;
+        // const CCTK_REAL dGyy_dy = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dy + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dy;
+        // const CCTK_REAL dGyy_dz = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dz;
         
 
        
@@ -1360,36 +1360,36 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
         
-        // Christoffel symbols of the spatial metric (only spatial indices 1..3)
-        CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
-        // Initialize to zero
-        for (int i = 1; i <= 3; ++i)
-          for (int j = 1; j <= 3; ++j)
-            for (int k = 1; k <= 3; ++k)
-              Gamma[i][j][k] = 0.0;
+        // // Christoffel symbols of the spatial metric (only spatial indices 1..3)
+        // CCTK_REAL Gamma[4][4][4]; // Gamma^i_{jk}
+        // // Initialize to zero
+        // for (int i = 1; i <= 3; ++i)
+        //   for (int j = 1; j <= 3; ++j)
+        //     for (int k = 1; k <= 3; ++k)
+        //       Gamma[i][j][k] = 0.0;
 
 
-        // Compute Christoffel symbols (spatial part)
-        // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)
-        for (int i = 1; i <= 3; ++i) {
-          for (int j = 1; j <= 3; ++j) {
-            for (int k = 1; k <= 3; ++k) {
-              for (int l = 1; l <= 3; ++l) {
-                Gamma[i][j][k] += 0.5 * g_inv[i][l] * (dg[l][j][k] + dg[l][k][j] - dg[j][k][l]);
-              }
-            }
-          }
-        }
-        // Check for NaN or Inf in all Christoffel symbols
-        for (int ii = 1; ii <= 3; ++ii) {
-          for (int jj = 1; jj <= 3; ++jj) {
-            for (int kk = 1; kk <= 3; ++kk) {
-              char gamma_name[32];
-              snprintf(gamma_name, sizeof(gamma_name), "Gamma[%d][%d][%d]", ii, jj, kk);
-              check_nan_or_inf(gamma_name, Gamma[ii][jj][kk]);
-            }
-          }
-        }
+        // // Compute Christoffel symbols (spatial part)
+        // // Gamma^i_{jk} = 0.5 * g^{il} (dg_{lj}/dx^k + dg_{lk}/dx^j - dg_{jk}/dx^l)
+        // for (int i = 1; i <= 3; ++i) {
+        //   for (int j = 1; j <= 3; ++j) {
+        //     for (int k = 1; k <= 3; ++k) {
+        //       for (int l = 1; l <= 3; ++l) {
+        //         Gamma[i][j][k] += 0.5 * g_inv[i][l] * (dg[l][j][k] + dg[l][k][j] - dg[j][k][l]);
+        //       }
+        //     }
+        //   }
+        // }
+        // // Check for NaN or Inf in all Christoffel symbols
+        // for (int ii = 1; ii <= 3; ++ii) {
+        //   for (int jj = 1; jj <= 3; ++jj) {
+        //     for (int kk = 1; kk <= 3; ++kk) {
+        //       char gamma_name[32];
+        //       snprintf(gamma_name, sizeof(gamma_name), "Gamma[%d][%d][%d]", ii, jj, kk);
+        //       check_nan_or_inf(gamma_name, Gamma[ii][jj][kk]);
+        //     }
+        //   }
+        // }
 
         // CCTK_REAL new_betad[4];
         // // Initialize g to zero
@@ -1465,24 +1465,24 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-        // Compute covariant derivatives of the shift
-        CCTK_REAL Dbetad[4][4];
-        // Initialize Dbetad to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            Dbetad[i][j] = 0.0;
+        // // Compute covariant derivatives of the shift
+        // CCTK_REAL Dbetad[4][4];
+        // // Initialize Dbetad to zero
+        // for (int i = 0; i < 4; ++i)
+        //   for (int j = 0; j < 4; ++j)
+        //     Dbetad[i][j] = 0.0;
           
-        for (int i = 1; i <= 3; ++i) {
-          for (int j = 1; j <= 3; ++j) {
-            Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
-            for (int k = 1; k <= 3; ++k)
-              Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
-            // Check for NaN or Inf in Dbetad
-            char Dbetad_name[32];
-            snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
-            check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
-          }
-        }
+        // for (int i = 1; i <= 3; ++i) {
+        //   for (int j = 1; j <= 3; ++j) {
+        //     Dbetad[i][j] = dbetad[i][j]; //aqui deve ser a derivada dos shifts depois do boost.
+        //     for (int k = 1; k <= 3; ++k)
+        //       Dbetad[i][j] -= Gamma[k][i][j] * betad[k]; // e aqui também.
+        //     // Check for NaN or Inf in Dbetad
+        //     char Dbetad_name[32];
+        //     snprintf(Dbetad_name, sizeof(Dbetad_name), "Dbetad[%d][%d]", i, j);
+        //     check_nan_or_inf(Dbetad_name, Dbetad[i][j]);
+        //   }
+        // }
         
 
 

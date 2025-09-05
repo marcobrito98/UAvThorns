@@ -1609,7 +1609,7 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
           for (int jj = 0; jj < 4; ++jj)
             first_term[ii][jj] = 0.0;
 
-        first_term[1][1] = gamma2 * Axx / psi2_2 + bh_v2 * gamma2 * Ktt - 2*Kxt*bh_v2*gamma2;
+        first_term[1][1] = gamma2 * Axx / psi2_2 + bh_v2 * gamma2 * Ktt - 2*Kxt*bh_v*gamma2;
         first_term[1][2] = gamma * Axy / psi2_2 - gamma * bh_v * Kyt;
         first_term[1][3] = gamma * Axz / psi2_2 - gamma * bh_v * Kzt;
         first_term[2][1] = first_term[1][2]; // symmetric component;

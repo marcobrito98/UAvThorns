@@ -1591,7 +1591,7 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
         const CCTK_REAL Ktht = bphi*dbetauphi_dth/(-2*alpha0);
         const CCTK_REAL KRt = bphi*dbetauphi_dR/(-2*alpha0);
         
-        const CCTK_REAL Kxt = R_x*KRt + x1_2*gamma*z1_2/(rho_2*rr2_2) * Ktht;
+        const CCTK_REAL Kxt = R_x*KRt + x1_2*gamma2*z1_2/(rho_2*rr2_2) * Ktht;
         const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
         const CCTK_REAL Kzt = R_z*KRt - rho_2/rr2_2 * Ktht;
 

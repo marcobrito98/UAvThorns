@@ -26,6 +26,7 @@ void check_nan_or_inf(const char* var_name, double value) {
 }
 
 
+
 void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
@@ -1449,17 +1450,17 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
         const CCTK_REAL dbetauphi_dth = (gammaphiphi*dbetadphi_dth - bphi*dgammaphiphi_dth)/pow(gammaphiphi,2);
         const CCTK_REAL dbetauphi_dR = (gammaphiphi*dbetadphi_dR - bphi*dgammaphiphi_dR)/pow(gammaphiphi,2);
 
-        const CCTK_REAL Ktt = 0.5 * (gamma*dbeta2_dx * betaup[1] + dbeta2_dy * betaup[2] + dbeta2_dz * betaup[3]) / alpha0; //time derivatives here are zero since we are computing the original Ktt. nevertheless its argument now for the computation of the new quatities is gamma x.
+        const CCTK_REAL Ktt = 0.5 * (dbeta2_dx * betaup[1] + dbeta2_dy * betaup[2] + dbeta2_dz * betaup[3]) / alpha0; //time derivatives here are zero since we are computing the original Ktt. nevertheless its argument now for the computation of the new quatities is gamma x.
         const CCTK_REAL Ktht = bphi*dbetauphi_dth/(-2*alpha0);
         const CCTK_REAL KRt = bphi*dbetauphi_dR/(-2*alpha0);
         
-        const CCTK_REAL Kxt = gamma*R_x*KRt + x1_2*gamma2*z1_2/(rho_2*rr2_2) * Ktht;
+        const CCTK_REAL Kxt = R_x*KRt + x1_2*gamma*z1_2/(rho_2*rr2_2) * Ktht;
         const CCTK_REAL Kyt = R_y*KRt + y1_2*z1_2/(rho_2*rr2_2) * Ktht;
         const CCTK_REAL Kzt = R_z*KRt - rho_2/rr2_2 * Ktht;
 
 
-        const CCTK_REAL Axx = 2.*ARph *  gamma*R_x * sinth2ph_x                     +  2.*Athph *  gamma*sinthth_x * sinth2ph_x ;
-        const CCTK_REAL Axy =    ARph * (gamma*R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (gamma*sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
         const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
         const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;

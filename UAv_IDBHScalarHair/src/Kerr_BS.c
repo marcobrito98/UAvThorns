@@ -1464,7 +1464,7 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
         const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
         const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
         const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
-
+                                      //aparentemente nao preciso de mexer aqui com gammas no K de kerr original. só depois é que o argumento de altera.
 
         CCTK_REAL first_term[4][4];
         // Initialize first_term to zero
@@ -1513,6 +1513,44 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
         third_term[3][1] = third_term[1][3]; // symmetric component
         third_term[3][2] = third_term[2][3]; // symmetric component
         third_term[3][3] = 0.5 * bh_v / alpha0 * dg[3][3][1];
+
+
+        CCTK_REAL forth_term[4][4];
+        // Initialize third_term to zero
+        for (int ii = 0; ii < 4; ++ii)
+          for (int jj = 0; jj < 4; ++jj)
+            forth_term[ii][jj] = 0.0;
+
+        forth_term[1][1] = -0.5 * betaup[2]/alpha0 *(gamma-1) * dg[1][1][2];
+        forth_term[1][2] = -0.5 * betaup[2]/alpha0 *(gamma-1)  * dg[1][2][2];
+        forth_term[1][3] = -0.5 * betaup[2]/alpha0 *(gamma-1)  * dg[1][3][2];
+        forth_term[2][1] = forth_term[1][2]; // symmetric component
+        forth_term[2][2] = -0.5 * betaup[2]/alpha0 *(gamma-1) * dg[2][2][2];
+        forth_term[2][3] = -0.5 * betaup[2]/alpha0 *(gamma-1)  * dg[2][3][2];
+        forth_term[3][1] = forth_term[1][3]; // symmetric component
+        forth_term[3][2] = forth_term[2][3]; // symmetric component
+        forth_term[3][3] = -0.5 * betaup[2]/alpha0 *(gamma-1)  * dg[3][3][2];
+
+
+        CCTK_REAL fifth_term[4][4];
+        // Initialize third_term to zero
+        for (int ii = 0; ii < 4; ++ii)
+          for (int jj = 0; jj < 4; ++jj)
+            fifth_term[ii][jj] = 0.0;
+
+        fifth_term[1][1] = -0.5 * betaup[3]/alpha0 *(gamma-1) * dg[1][1][3];
+        fifth_term[1][2] = -0.5 * betaup[3]/alpha0 *(gamma-1)  * dg[1][2][3];
+        fifth_term[1][3] = -0.5 * betaup[3]/alpha0 *(gamma-1)  * dg[1][3][3];
+        fifth_term[2][1] = fifth_term[1][2]; // symmetric component
+        fifth_term[2][2] = -0.5 * betaup[3]/alpha0 *(gamma-1) * dg[2][2][3];
+        fifth_term[2][3] = -0.5 * betaup[3]/alpha0 *(gamma-1)  * dg[2][3][3];
+        fifth_term[3][1] = fifth_term[1][3]; // symmetric component
+        fifth_term[3][2] = fifth_term[2][3]; // symmetric component
+        fifth_term[3][3] = -0.5 * betaup[3]/alpha0 *(gamma-1)  * dg[3][3][3];
+
+
+        
+
 
         kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1]);
         kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2]);

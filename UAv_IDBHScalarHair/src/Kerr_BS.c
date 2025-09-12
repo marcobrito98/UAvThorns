@@ -1552,12 +1552,12 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
         
 
 
-        kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1]);
-        kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2]);
-        kxz[ind] = gamma * (first_term[1][3] + second_term[1][3] + third_term[1][3]);
-        kyy[ind] = gamma * (first_term[2][2] + second_term[2][2] + third_term[2][2]);
-        kyz[ind] = gamma * (first_term[2][3] + second_term[2][3] + third_term[2][3]);
-        kzz[ind] = gamma * (first_term[3][3] + second_term[3][3] + third_term[3][3]);
+        kxx[ind] = gamma * (first_term[1][1] + second_term[1][1] + third_term[1][1])+forth_term[1][1]+fifth_term[1][1];
+        kxy[ind] = gamma * (first_term[1][2] + second_term[1][2] + third_term[1][2])+forth_term[1][2]+fifth_term[1][2];
+        kxz[ind] = gamma * (first_term[1][3] + second_term[1][3] + third_term[1][3])+forth_term[1][3]+fifth_term[1][3];
+        kyy[ind] = gamma * (first_term[2][2] + second_term[2][2] + third_term[2][2])+forth_term[2][2]+fifth_term[2][2];
+        kyz[ind] = gamma * (first_term[2][3] + second_term[2][3] + third_term[2][3])+forth_term[2][3]+fifth_term[2][3];
+        kzz[ind] = gamma * (first_term[3][3] + second_term[3][3] + third_term[3][3])+forth_term[3][3]+fifth_term[3][3];
 
       // }
 

@@ -1405,7 +1405,7 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
 
         //capital Ks refer to the unboosted frame. Original quantities.
 
-        const CCTK_REAL dbeta2_dx = -((pow(bh_spin,2)*sigma*(rr_2*(rho2_2)*(1 + \
+        const CCTK_REAL dbeta2_dx = -gamma*((pow(bh_spin,2)*sigma*(rr_2*(rho2_2)*(1 + \
                                     pow(bh_spin,2)*hh*(rho2_2))*sigma*dpsi4_2_dx + \
                                     psi4_2*(sigma*(2*(-2*pow(z1_2,2) + pow(rr_2,2) + \
                                     2*pow(bh_spin,2)*hh*pow(-rho2_2,2))*R_x + \

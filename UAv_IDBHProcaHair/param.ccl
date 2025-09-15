@@ -44,6 +44,12 @@ INT maxNF "maximum number of lines allowed in the input file"
  100:* :: "any large enough integer"
 } 100000
 
+
+INT rotation "rotates the black hole spin axis"
+{
+ 0:1 :: "0 spin in the z-axis, 1 spin in the -y axis"
+} 0
+
 REAL C0 "parameter for R to X coordinate transformation"
 {
   (0:* :: "greater than zero"

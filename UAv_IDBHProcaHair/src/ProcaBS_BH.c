@@ -789,9 +789,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
          //Black Hole B
 
-        const CCTK_REAL x1_2  = x[ind] - x0_2;
-        const CCTK_REAL y1_2  = y[ind] - y0_2;
-        const CCTK_REAL z1_2  = z[ind] - z0_2;
+
+
+      if (rotation == 0) {
+
+        CCTK_REAL x1_2  = x[ind] - x0_2;
+        CCTK_REAL y1_2  = y[ind] - y0_2;
+        CCTK_REAL z1_2  = z[ind] - z0_2;
 
         // const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
@@ -1101,6 +1105,339 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           betay[ind] = -W_1[ind] * x1_1;
           betaz[ind] =  0.;
         }
+
+      }
+
+
+      if (rotation == 1) {
+
+        CCTK_REAL x1_2  = x[ind] - x0_2;
+        CCTK_REAL y1_2  = y[ind] - y0_2;
+        CCTK_REAL z1_2  = z[ind] - z0_2;
+
+
+        CCTK_REAL xx1_2 = x1_2;
+        CCTK_REAL yy1_2 = - z1_2;
+        CCTK_REAL zz1_2 = y1_2;
+
+        x1_2 = xx1_2;
+        y1_2 = yy1_2;
+        z1_2 = zz1_2;
+
+        // const CCTK_REAL bh_v2 = bh_v * bh_v;
+        const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
+        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
+        // const CCTK_REAL gamma = sqrt(gamma2);
+        CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+        if( rr2_2 < pow( eps_r, 2 ) ) {
+        rr2_2 = pow( eps_r, 2 );
+        }
+        const CCTK_REAL rr_2  = sqrt(rr2_2);
+        // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
+        // const CCTK_REAL rho_2  = sqrt(rho2_2);
+        CCTK_REAL rho2_2 = x1_2*x1_2 + z1_2*z1_2;
+        if( rho2_2 < pow( eps_r, 2 ) ){
+        rho2_2 = pow( eps_r, 2 );
+        }
+        const CCTK_REAL rho_2  = sqrt(rho2_2);
+
+        const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
+        const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
+
+        const CCTK_REAL costh_2  = -y1_2/rr_2 ;
+        const CCTK_REAL costh2_2 = costh_2*costh_2 ;
+        const CCTK_REAL sinth2_2 = 1. - costh2_2 ;
+        const CCTK_REAL sinth_2  = sqrt(sinth2_2) ;
+
+        // const CCTK_REAL R_x    = gamma*x1_2/rr_2 ;
+        const CCTK_REAL R_x    = x1_2/rr_2 ;
+        const CCTK_REAL R_y    = y1_2/rr_2 ;
+        const CCTK_REAL R_z    = z1_2/rr_2 ;
+
+        // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
+        const CCTK_REAL x_R    = x1_2/rr_2 ;
+        const CCTK_REAL y_R    = y1_2/rr_2 ;
+        const CCTK_REAL z_R    = z1_2/rr_2 ;
+
+        const CCTK_REAL sinth2ph_x = -z1_2/rr2_2 ;
+        const CCTK_REAL sinth2ph_y =  0;
+        const CCTK_REAL sinth2ph_z =  x1_2/rr2_2 ;
+
+
+        // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
+        const CCTK_REAL sinthth_x  = -y1_2*x1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_y  = rho2_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_z  = -y1_2*z1_2/(rr_2*rr2_2) ; 
+
+        // // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh_2 ;
+        // const CCTK_REAL sinthx_th  = x1_2 * costh_2 ;
+        // const CCTK_REAL sinthy_th  = y1_2 * costh_2 ;
+        // const CCTK_REAL sinthz_th  = -rr_2 * sinth2_2 ;
+
+
+        const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
+
+        const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
+
+        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2_2 ;
+        const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
+
+        const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
+        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_2) ;
+
+        const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
+        const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
+        const CCTK_REAL psi1_2 = sqrt(psi2_2) ;
+        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+
+        // non-axisymmetric perturbation.
+        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
+        
+        const CCTK_REAL alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
+        const CCTK_REAL alpha02 = alpha0*alpha0 ;
+
+       
+
+        // add non-axisymmetric perturbation on conformal factor
+        // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
+        const CCTK_REAL argpert_cf = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
+        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
+
+        const CCTK_REAL conf_fac = psi4_1 * pert_cf;
+
+        // 3-metric
+
+        // gxx[ind] = psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
+        // gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2 - conf_fac * h_rho2_1 * sinph * cosph;
+        // gxz[ind] = 0;
+        // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
+        // gyz[ind] = 0;
+        // gzz[ind] = psi4_2 + conf_fac - 1;
+
+        gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
+        gxy[ind] = 0 - conf_fac * h_rho2_1 * sinph * cosph;
+        gxz[ind] = -psi4_2*bh_spin2*hh*z1_2*x1_2;
+        gyy[ind] = psi4_2 + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
+        gyz[ind] = 0;
+        gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac - 1;
+
+        /*
+          d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
+          d/dz   =   z/r * d/dr  -  rho_1/r^2 * d/dth
+
+          Kxx = 0.5 * 2xy/rho_1        * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * sin(2phi) * exp(2F2-F0_1) * dW/drho
+          Kyy = - Kxx
+          Kzz = 0
+          Kxy =-0.5 * (x^2-y^2)/rho_1  * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * cos(2phi) * exp(2F2-F0_1) * dW/drho
+          Kxz = 0.5 * y * exp(2F2-F0_1) * dW/dz
+          Kyz =-0.5 * x * exp(2F2-F0_1) * dW/dz
+        */
+
+        /*
+          Close to the axis and the origin, Kij = 0.
+          The "coordinate" part of the expressions above behave like rho_1 (or r).
+          Let's first consider a threshold of rho_1 < 1e-8. The sphere r < 1e-8 is included in this cylinder.
+          In this case, we just set d/drho and d/dz = 0 as proxies.
+        */
+
+
+        check_nan_or_inf("gxx",gxx[ind]);
+        check_nan_or_inf("gxy",gxy[ind]);
+        check_nan_or_inf("gxz",gxz[ind]);
+        check_nan_or_inf("gyy",gyy[ind]);
+        check_nan_or_inf("gyz",gyz[ind]);
+        check_nan_or_inf("gzz",gzz[ind]);
+
+
+        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh_2  ;  // we are dividing by sinth2_2
+        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth_2
+
+        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
+
+        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
+
+        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2_2
+
+
+        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+        const CCTK_REAL Axz =    ARph * (R_x * sinth2ph_z + R_z * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_z + sinthth_z * sinth2ph_x) ; 
+        const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+        const CCTK_REAL Ayz =    ARph * (R_y * sinth2ph_z + R_z * sinth2ph_y) +     Athph * (sinthth_y * sinth2ph_z + sinthth_z * sinth2ph_y) ;
+        const CCTK_REAL Azz = 2.*ARph *  R_z * sinth2ph_z                     +  2.*Athph *  sinthth_z * sinth2ph_z ;
+
+        CCTK_REAL dW_drho, dW_dz;
+        const CCTK_REAL exp_auxi = exp(2. * F2_1[ind] - F0_1[ind]);
+
+        if (rho_1 < 1e-8) {
+          dW_drho = 0.;
+          dW_dz   = 0.;
+        }
+        else {
+          dW_drho = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+          dW_dz   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+        }
+
+        // extrinsic curvature currently incompatible with rotating stars.
+        kxx[ind] = Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi * dW_drho;
+        kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi * dW_drho;
+        kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi * dW_dz;
+        kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi * dW_drho;
+        kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi * dW_dz;
+        kzz[ind] = Azz / psi2_2;
+
+        check_nan_or_inf("kxx",kxx[ind]);
+        check_nan_or_inf("kxy",kxy[ind]);
+        check_nan_or_inf("kxz",kxz[ind]);
+        check_nan_or_inf("kyy",kyy[ind]);
+        check_nan_or_inf("kyz",kyz[ind]);
+        check_nan_or_inf("kzz",kzz[ind]);  
+
+          
+
+        // lapse value (field initialization below)
+        // No lapse regularization needed for the BS, the lapse is non-zero
+        const CCTK_REAL alph = exp(F0_1[ind]) + alpha0 - 1;
+
+
+        // let's add a perturbation to the Proca field as well
+        // NOTE: the perturbation is added directed to every instance of e^{i m \varphi}, hence its derivatives are not taken into account
+        // TODO (?): Design perturbation more generically as ~ cos((m+1)\varphi)
+        const CCTK_REAL argpert_Proca = (rr_1 - R0pert_Proca)/Sigmapert_Proca;
+        const CCTK_REAL pert_Proca = 1. + Apert_Proca * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_Proca*argpert_Proca );
+
+
+        // ----- Proca fields -----
+
+        // TODO: check what happens with divisions by rr_1 and sinth_1, can we work around them?
+
+        // Real and imaginay part of the harmonic dependence: exp[i(m\varphi - \omega t)]
+        const CCTK_REAL harm_re = (coswt * cosmph + sinwt * sinmph) * pert_Proca;
+        const CCTK_REAL harm_im = (coswt * sinmph - sinwt * cosmph) * pert_Proca;
+
+        // No need to change the radial component, R and r coincide
+        // A_x
+        A1x[ind] = x1_1/rr_1 * H1r_1[ind] * harm_re + costh_1*cosph/rr_1 * H2_1[ind] * harm_re + sinph/rr_1 * H3_1[ind] * harm_im;
+        A2x[ind] = x1_1/rr_1 * H1r_1[ind] * harm_im + costh_1*cosph/rr_1 * H2_1[ind] * harm_im - sinph/rr_1 * H3_1[ind] * harm_re;
+        
+        // A_y
+        A1y[ind] = y1_1/rr_1 * H1r_1[ind] * harm_re + costh_1*sinph/rr_1 * H2_1[ind] * harm_re - cosph/rr_1 * H3_1[ind] * harm_im;
+        A2y[ind] = y1_1/rr_1 * H1r_1[ind] * harm_im + costh_1*sinph/rr_1 * H2_1[ind] * harm_im + cosph/rr_1 * H3_1[ind] * harm_re;
+        
+        // A_z
+        A1z[ind] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_re;
+        A2z[ind] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im;
+
+        // A_\phi
+        /*
+          A_\phi = -n^\mu A_\mu = - (A_t + W_1*A_ph)/alpha
+                = -i * e^{i (m ph_1 - w t)} * (V_1 + W_1 H3_1 sinth_1) / alpha
+        */
+        Aphi1[ind] = (V_1[ind] + W_1[ind] * sinth_1 * H3_1[ind]) / alph * harm_im;
+        Aphi2[ind] =-(V_1[ind] + W_1[ind] * sinth_1 * H3_1[ind]) / alph * harm_re;
+
+        // ----- Electric fields -----
+        
+        // First, E_i in (R, th, ph_1) coordinates
+        CCTK_REAL E1d_r, E2d_r, E1d_th, E2d_th, E1d_ph_o_sinth, E2d_ph_o_sinth;
+
+        // E_r
+        /*
+          E_r = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) H1r_1 + dV/dr + W_1 sinth_1 dH3/dr]
+        */
+
+        E1d_r = -(- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_im;
+        E2d_r =  (- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_re;
+
+        // E_th
+        /*
+          E_th = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) * H2_1 + dV/dth + W_1 * d(H3_1 * sinth_1)/dth]
+        */
+        E1d_th = -(- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_im;
+        E2d_th =  (- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_re;
+
+        // E_ph / sinth_1
+        /*
+          E_ph = - (m * V_1 + w * H3_1 * sinth_1) / alpha * e^{i(m phi - w t)}
+
+          We include here the division by sinth_1 which arises when computing E^ph_1.
+          
+          on the axis sinth_1=0, we need to regularize the division by sinth_1
+          We have V_1(theta=0,pi) = 0, so with l'Hôpital's rule
+          V_1 / sinth_1 ~ \pm dV/dth    for theta = 0, pi resp.
+        */
+        if (fabs(sinth_1) < 1e-8) {
+          // TODO: see how to deal with this if now we allow rr_1==0
+          const CCTK_INT zsign = (costh_1>=0) ? 1 : -1; // costh_1==0 shouldn't happen on the axis for a grid point, this would mean rr_1==0 too...
+
+          E1d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_im;
+        
+        } else {
+          E1d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_im;
+        }
+
+
+        // E^i components
+        // Spherical auxiliaries
+        
+        // E^r/r = e^{-2*F1_1} * E_r / r
+        const CCTK_REAL E1u_r_o_r = exp(-2*F1_1[ind]) * E1d_r / rr_1;
+        const CCTK_REAL E2u_r_o_r = exp(-2*F1_1[ind]) * E2d_r / rr_1;
+
+        // E^th = e^{-2*F1_1} / r^2 * E_th
+        const CCTK_REAL E1u_th = exp(-2*F1_1[ind]) / rr2_1 * E1d_th;
+        const CCTK_REAL E2u_th = exp(-2*F1_1[ind]) / rr2_1 * E2d_th;
+
+        // E^ph_1 = e^{-2*F2_1} / r^2 / sinth_1^2 * E_ph
+        // We compute r * sinth_1 * E^ph_1. The other division by sinth_1 is managed with E_ph above 
+        const CCTK_REAL rsinthE1u_ph = exp(-2*F2_1[ind]) / rr_1 * E1d_ph_o_sinth;
+        const CCTK_REAL rsinthE2u_ph = exp(-2*F2_1[ind]) / rr_1 * E2d_ph_o_sinth;
+
+
+        // Finally Cartesian components
+        // E^x
+        E1x[ind] = x1_1 * E1u_r_o_r + z1_1 * cosph * E1u_th - sinph * rsinthE1u_ph;
+        E2x[ind] = x1_1 * E2u_r_o_r + z1_1 * cosph * E2u_th - sinph * rsinthE2u_ph;
+
+        // E^y
+        E1y[ind] = y1_1 * E1u_r_o_r + z1_1 * sinph * E1u_th + cosph * rsinthE1u_ph;
+        E2y[ind] = y1_1 * E2u_r_o_r + z1_1 * sinph * E2u_th + cosph * rsinthE2u_ph;
+
+        // E^z
+        E1z[ind] = z1_1 * E1u_r_o_r - rho_1 * E1u_th;
+        E2z[ind] = z1_1 * E2u_r_o_r - rho_1 * E2u_th;
+
+
+
+
+        // zero-initialize constraint damping variable Zeta
+        Zeta1[ind] = 0;
+        Zeta2[ind] = 0;
+
+
+        // lapse
+        if (CCTK_EQUALS(initial_lapse, "psi^n"))
+          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
+        else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
+          alp[ind] = alph;
+          if (alp[ind] < SMALL)
+            alp[ind] = SMALL;
+        }
+
+        // shift
+        if (CCTK_EQUALS(initial_shift, "ProcaBS")) {
+          betax[ind] =  W_1[ind] * y1_1;
+          betay[ind] = -W_1[ind] * x1_1;
+          betaz[ind] =  0.;
+        }
+
+      }
 
       } /* for i */
     }   /* for j */

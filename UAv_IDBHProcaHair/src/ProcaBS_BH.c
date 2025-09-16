@@ -833,24 +833,24 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL R_z    = z1_2/rr_2 ;
 
         // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
-        // const CCTK_REAL x_R    = x1_2/rr_2 ;
-        // const CCTK_REAL y_R    = y1_2/rr_2 ;
-        // const CCTK_REAL z_R    = z1_2/rr_2 ;
+        const CCTK_REAL x_R    = x1_2/rr_2 ;
+        const CCTK_REAL y_R    = y1_2/rr_2 ;
+        const CCTK_REAL z_R    = z1_2/rr_2 ;
 
-        const CCTK_REAL sinth2ph_x = -z1_2/rr2_2 ;
-        const CCTK_REAL sinth2ph_y =  0 ;
-        const CCTK_REAL sinth2ph_z =  x1_2/rr2_2 ;
+        const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
+        // const CCTK_REAL sinth2ph_y =  gamma*x1_2/rr2_2 ;
+        const CCTK_REAL sinth2ph_y =  x1_2/rr2_2 ;
 
 
         // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
         const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_y  = rho2_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_z  = -z1_2*y1_2/(rr_2*rr2_2); 
+        const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_z  = -sinth2_2/rr_2 ; 
 
-        // // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh_2 ;
-        // const CCTK_REAL sinthx_th  = x1_2 * costh_2 ;
-        // const CCTK_REAL sinthy_th  = y1_2 * costh_2 ;
-        // const CCTK_REAL sinthz_th  = -rr_2 * sinth2_2 ;
+        // const CCTK_REAL sinthx_th  = gamma*x1_2 * costh_2 ;
+        const CCTK_REAL sinthx_th  = x1_2 * costh_2 ;
+        const CCTK_REAL sinthy_th  = y1_2 * costh_2 ;
+        const CCTK_REAL sinthz_th  = -rr_2 * sinth2_2 ;
 
 
         const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r

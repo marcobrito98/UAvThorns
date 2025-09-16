@@ -1116,13 +1116,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         CCTK_REAL z1_2  = z[ind] - z0_2;
 
 
-        CCTK_REAL xx1_2 = x1_2;
-        CCTK_REAL yy1_2 = - z1_2;
-        CCTK_REAL zz1_2 = y1_2;
+        // CCTK_REAL xx1_2 = x1_2;
+        // CCTK_REAL yy1_2 = - z1_2;
+        // CCTK_REAL zz1_2 = y1_2;
 
-        x1_2 = xx1_2;
-        y1_2 = yy1_2;
-        z1_2 = zz1_2;
+        // x1_2 = xx1_2;
+        // y1_2 = yy1_2;
+        // z1_2 = zz1_2;
 
         // const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
@@ -1154,10 +1154,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL R_y    = y1_2/rr_2 ;
         const CCTK_REAL R_z    = z1_2/rr_2 ;
 
-        // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
-        const CCTK_REAL x_R    = x1_2/rr_2 ;
-        const CCTK_REAL y_R    = y1_2/rr_2 ;
-        const CCTK_REAL z_R    = z1_2/rr_2 ;
+        // // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
+        // const CCTK_REAL x_R    = x1_2/rr_2 ;
+        // const CCTK_REAL y_R    = y1_2/rr_2 ;
+        // const CCTK_REAL z_R    = z1_2/rr_2 ;
 
         const CCTK_REAL sinth2ph_x = -z1_2/rr2_2 ;
         const CCTK_REAL sinth2ph_y =  0;

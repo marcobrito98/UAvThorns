@@ -791,7 +791,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-      if (rotation == 0) { 
+      if (CCTK_EQUALS(bh_spin_direction, "z")) { 
 
         CCTK_REAL x1_2  = x[ind] - x0_2;
         CCTK_REAL y1_2  = y[ind] - y0_2;
@@ -1109,7 +1109,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       }
 
 
-      if (rotation == 1) {
+      if (CCTK_EQUALS(bh_spin_direction, "y")) { // rotation applied (x',y',z') = (x,z,-y)
 
         CCTK_REAL x1_2  = x[ind] - x0_2;
         CCTK_REAL y1_2  = y[ind] - y0_2;

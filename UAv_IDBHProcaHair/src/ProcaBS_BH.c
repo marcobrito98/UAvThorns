@@ -1149,9 +1149,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL R_z    = z1_2/rr_2 ;
 
         // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
-        const CCTK_REAL x_R    = x1_2/rr_2 ;
-        const CCTK_REAL y_R    = y1_2/rr_2 ;
-        const CCTK_REAL z_R    = z1_2/rr_2 ;
+        // const CCTK_REAL x_R    = x1_2/rr_2 ;
+        // const CCTK_REAL y_R    = y1_2/rr_2 ;
+        // const CCTK_REAL z_R    = z1_2/rr_2 ;
 
         const CCTK_REAL sinth2ph_x = z1_2/rr2_2 ;
         const CCTK_REAL sinth2ph_y = 0;
@@ -1254,9 +1254,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
         const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        const CCTK_REAL Axz =    ARph *                     R_z * sinth2ph_x  +     Athph *                           sinthth_z * sinth2ph_x  ; 
+        const CCTK_REAL Axz =    ARph * (R_x * sinth2ph_z + R_z * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_z + sinthth_z * sinth2ph_x) ; 
         const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        const CCTK_REAL Ayz =    ARph *                     R_z * sinth2ph_y  +     Athph *                           sinthth_z * sinth2ph_y  ;
+        const CCTK_REAL Ayz =    ARph * (R_y * sinth2ph_z + R_z * sinth2ph_y) +     Athph * (sinthth_y * sinth2ph_z + sinthth_z * sinth2ph_y) ;
+        const CCTK_REAL Azz = 2.*ARph *  R_z * sinth2ph_z                     +  2.*Athph *  sinthth_z * sinth2ph_z ;
 
         CCTK_REAL dW_drho, dW_dz;
         const CCTK_REAL exp_auxi = exp(2. * F2_1[ind] - F0_1[ind]);

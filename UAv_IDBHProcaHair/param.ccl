@@ -45,10 +45,11 @@ INT maxNF "maximum number of lines allowed in the input file"
 } 100000
 
 
-INT rotation "rotates the black hole spin axis"
+KEYWORD bh_spin_direction "Rotation axis for the BH spin"
 {
- 0:1 :: "0 spin in the z-axis, 1 spin in the -y axis"
-} 0
+  "z" :: "Spin around z axis"
+  "y" :: "Spin around y axis"
+} "z"
 
 REAL C0 "parameter for R to X coordinate transformation"
 {

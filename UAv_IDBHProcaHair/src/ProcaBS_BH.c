@@ -791,7 +791,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-      if (rotation == 0) {
+      if (rotation == 0) { 
 
         CCTK_REAL x1_2  = x[ind] - x0_2;
         CCTK_REAL y1_2  = y[ind] - y0_2;

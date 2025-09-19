@@ -895,15 +895,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         gzz[ind] = psi4_2 + conf_fac - 1;
 
 
-
-        if (rr_2 > 10*eps_r && fabs(x1_2) > 10*eps_r && fabs(y1_2) > 10*eps_r) {
-          const CCTK_REAL gxy_exp = -psi4_2*bh_spin2*hh*x1_2*y1_2;
-          const CCTK_REAL diff = gxy[ind] - gxy_exp;
-          if (fabs(diff) > 1e-10 * (1 + fabs(gxy_exp)))
-            CCTK_VInfo(CCTK_THORNSTRING, "[spin=z] gxy check: got=%g exp=%g diff=%g @ (%g,%g,%g)",
-                       gxy[ind], gxy_exp, diff, x1_2, y1_2, z1_2);
-        }
-
+        
 
         /*
           d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
@@ -1224,14 +1216,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         gyz[ind] = 0;
         gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac - 1;
 
-
-        if (rr_2 > 10*eps_r && fabs(x1_2) > 10*eps_r && fabs(z1_2) > 10*eps_r) {
-          const CCTK_REAL gxz_exp = -psi4_2*bh_spin2*hh*x1_2*z1_2;
-          const CCTK_REAL diff = gxz[ind] - gxz_exp;
-          if (fabs(diff) > 1e-10 * (1 + fabs(gxz_exp)))
-            CCTK_VInfo(CCTK_THORNSTRING, "[spin=y] gxz check: got=%g exp=%g diff=%g @ (%g,%g,%g)",
-                       gxz[ind], gxz_exp, diff, x1_2, y1_2, z1_2);
-        }
         /*
           d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
           d/dz   =   z/r * d/dr  -  rho_1/r^2 * d/dth

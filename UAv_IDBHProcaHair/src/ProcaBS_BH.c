@@ -1208,7 +1208,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
         gxy[ind] = 0 - conf_fac * h_rho2_1 * sinph * cosph;
-        gxz[ind] = -psi4_2*bh_spin2*hh*z1_2*x1_2;
+        gxz[ind] = psi4_2*bh_spin2*hh*z1_2*x1_2;
         gyy[ind] = psi4_2 + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
         gyz[ind] = 0;
         gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac - 1;

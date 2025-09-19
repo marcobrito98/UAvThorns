@@ -1280,7 +1280,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi * dW_dz;
         kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi * dW_drho;
         kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi * dW_dz;
-        kzz[ind] =  0.;
+        kzz[ind] = Azz / psi2_2;
 
         check_nan_or_inf("kxx",kxx[ind]);
         check_nan_or_inf("kxy",kxy[ind]);

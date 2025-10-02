@@ -958,7 +958,20 @@ pow(x1_1,2)*gamma)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
 exp(2. * F2_1[ind])*x1_1*(pow(y1_1,2) + x1_1*gamma*(pow(y1_1,2) + \
 pow(x1_1,2)*gamma)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(\
 pow(y1_1,2) + pow(x1_1,2)*gamma,2);
-        dG[2][2][2] = 
+        dG[2][2][2] = (2*exp(2. * F1_1[ind])*y1_1*(pow(x1_1,2)*gamma + y1_1*(pow(y1_1,2) + \
+pow(x1_1,2)*gamma)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
+2*exp(2. * F2_1[ind])*pow(x1_1,2)*gamma*(-y1_1 + (pow(y1_1,2) + \
+pow(x1_1,2)*gamma)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1)))/pow(\
+pow(y1_1,2) + pow(x1_1,2)*gamma,2);
+        dG[2][2][3] = (2*(exp(2. * \
+F1_1[ind])*pow(y1_1,2)*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1) + \
+exp(2. * \
+F2_1[ind])*pow(x1_1,2)*gamma*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_\
+1)))/(pow(y1_1,2) + pow(x1_1,2)*gamma);
+        dG[3][3][1] = 2*exp(2. * \
+F1_1[ind])*gamma*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1);
+        dG[3][3][2] = 2*exp(2. * F1_1[ind])*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1);
+        dG[3][3][3] = 2*exp(2. * F1_1[ind])*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1);
 
 
         // CCTK_REAL det_g =

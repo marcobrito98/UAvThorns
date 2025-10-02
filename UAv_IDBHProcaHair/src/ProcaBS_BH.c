@@ -141,10 +141,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dV_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   // New: same for F0_1, F1_1, F2_1
-  CCTK_REAL *dF0_dr_extd, *dF1_dr_extd, *dF2_dr_extd;
+  CCTK_REAL *dF0_dr_extd, *dF1_dr_extd, *dF2_dr_extd, *dF0_dth_extd, *dF1_dth_extd, *dF2_dth_extd;
   dF0_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dF1_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dF2_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dF0_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dF1_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dF2_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
 
   // // Some auxi file for debug
@@ -232,6 +235,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       // WARNING/TODO (rotating stars): Do we need to be careful with theta derivatives, like for V_1? Depending on m?
       // 1st derivative with 4th order accuracy (central stencils)
       const CCTK_REAL H3_th = (-H3_in[indjp2] + 8 * H3_in[indjp1] - 8 * H3_in[indjm1] + H3_in[indjm2]) *
+        oodth12;
+
+      const CCTK_REAL F0_th = (-F0_in[indjp2] + 8 * F0_in[indjp1] - 8 * F0_in[indjm1] + F0_in[indjm2]) *
+        oodth12;
+      const CCTK_REAL F1_th = (-F1_in[indjp2] + 8 * F1_in[indjp1] - 8 * F1_in[indjm1] + F1_in[indjm2]) *
+        oodth12;
+      const CCTK_REAL F2_th = (-F2_in[indjp2] + 8 * F2_in[indjp1] - 8 * F2_in[indjm1] + F2_in[indjm2]) *
         oodth12;
 
       // Symmetries of V_1 on the axis and/or the equator can vary (theta = 0, pi/2 resp.).
@@ -510,6 +520,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       dH3_dth_extd[ind]     = H3_th;
       dV_dth_extd[ind]      = V_th;
+      dF0_dth_extd[ind]     = F0_th;
+      dF1_dth_extd[ind]     = F1_th;
+      dF2_dth_extd[ind]     = F2_th;
     
       // fprintf (debugfile, "%.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f %.15f ", 
       //             W_extd[ind], dW_dr_extd[ind], dW_dth_extd[ind],
@@ -558,6 +571,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       // Odd
       dW_dth_extd[ind]      = - dW_dth_extd[indsym];
+      dF0_dth_extd[ind]     = - dF0_dth_extd[indsym];
+      dF1_dth_extd[ind]     = - dF1_dth_extd[indsym];
+      dF2_dth_extd[ind]     = - dF2_dth_extd[indsym];
       
       // Vector potential
       
@@ -660,6 +676,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_array_type_codes[14]= CCTK_VARIABLE_REAL;
   input_array_type_codes[15]= CCTK_VARIABLE_REAL;
   input_array_type_codes[16]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[17]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[18]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[19]= CCTK_VARIABLE_REAL;
 
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
@@ -681,6 +700,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_arrays[14]= (const void *) dF0_dr_extd;
   input_arrays[15]= (const void *) dF1_dr_extd;
   input_arrays[16]= (const void *) dF2_dr_extd;
+  input_arrays[17]= (const void *) dF0_dth_extd;
+  input_arrays[18]= (const void *) dF1_dth_extd;
+  input_arrays[19]= (const void *) dF2_dth_extd;
 
 
   /* output arrays */
@@ -690,7 +712,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   CCTK_REAL *dW_dr_1, *dW_dth_1;
   CCTK_REAL *dH3_dr_1, *dH3_dth_1;
   CCTK_REAL *dV_dr_1, *dV_dth_1;
-  CCTK_REAL *dF0_dr_1, *dF1_dr_1, *dF2_dr_1;
+  CCTK_REAL *dF0_dr_1, *dF1_dr_1, *dF2_dr_1, *dF0_dth_1, *dF1_dth_1, *dF2_dth_1;
 
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F2_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -709,6 +731,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dF0_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF1_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF2_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF0_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF1_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF2_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  
 
   output_array_type_codes[0] = CCTK_VARIABLE_REAL;
   output_array_type_codes[1] = CCTK_VARIABLE_REAL;
@@ -727,6 +753,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_array_type_codes[14]= CCTK_VARIABLE_REAL;
   output_array_type_codes[15]= CCTK_VARIABLE_REAL;
   output_array_type_codes[16]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[17]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[18]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[19]= CCTK_VARIABLE_REAL;
 
   output_arrays[0] = (void *) F1_1;
   output_arrays[1] = (void *) F2_1;
@@ -745,6 +774,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_arrays[14]= (void *) dF0_dr_1;
   output_arrays[15]= (void *) dF1_dr_1;
   output_arrays[16]= (void *) dF2_dr_1;
+  output_arrays[17]= (void *) dF0_dth_1;
+  output_arrays[18]= (void *) dF1_dth_1;
+  output_arrays[19]= (void *) dF2_dth_1;
 
 
   /* handle and settings for the interpolation routine */
@@ -782,6 +814,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   free(dH3_dr_extd); free(dH3_dth_extd);
   free(dV_dr_extd); free(dV_dth_extd);
   free(dF0_dr_extd); free(dF1_dr_extd); free(dF2_dr_extd);
+  free(dF0_dth_extd); free(dF1_dth_extd); free(dF2_dth_extd);
 
 
   /* printf("F1_1 = %g\n", F1_1[0]); */

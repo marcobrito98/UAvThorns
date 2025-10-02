@@ -140,6 +140,12 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dV_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dV_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
+  // New: same for F0_1, F1_1, F2_1
+  CCTK_REAL *dF0_dr_extd, *dF1_dr_extd, *dF2_dr_extd;
+  dF0_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dF1_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dF2_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+
 
   // // Some auxi file for debug
   // FILE* debugfile = fopen ("testdebug.txt", "w");
@@ -254,10 +260,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           oodth12;
       }
 
-      CCTK_REAL Wbar_X, H3_X, V_X;
+      CCTK_REAL Wbar_X, H3_X, V_X,F0_X, F1_X, F2_X; // radial derivatives
       CCTK_REAL Wbar_XX = 0.; // Used for r=0 (i==0), if Wbar_r_power == 2.
       CCTK_REAL H1_X = 0.;    // Used for r=0 (i==0), due to H1_in/r.
-
 
       /*
       Regarding finite differencing orders: for Scalar BS, plotting W_1 and dW_dr_1, there were small discontinuities near r=0
@@ -279,6 +284,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         
         // 1st derivative with 4th order accuracy (forward stencils)
         V_X =(- 25 * V_in[ind] + 48 * V_in[indip1] - 36 * V_in[indip2] + 16 * V_in[indip3] - 3 * V_in[indip4]) * oodX12;
+
+        // 1st derivative with 4th order accuracy (forward stencils)
+        F0_X =(- 25 * F0_in[ind] + 48 * F0_in[indip1] - 36 * F0_in[indip2] + 16 * F0_in[indip3] - 3 * F0_in[indip4]) * oodX12;
+        // 1st derivative with 4th order accuracy (forward stencils)
+        F1_X =(- 25 * F1_in[ind] + 48 * F1_in[indip1] - 36 * F1_in[indip2] + 16 * F1_in[indip3] - 3 * F1_in[indip4]) * oodX12;
+        // 1st derivative with 4th order accuracy (forward stencils)
+        F2_X =(- 25 * F2_in[ind] + 48 * F2_in[indip1] - 36 * F2_in[indip2] + 16 * F2_in[indip3] - 3 * F2_in[indip4]) * oodX12;
 
 
         // Special care at r=0
@@ -305,6 +317,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative, 4th order accuracy
         V_X = (- 3 * V_in[indim1] - 10 * V_in[ind] + 18 * V_in[indip1] - 6 * V_in[indip2] + V_in[indip3]) * oodX12;
 
+        // 1st derivative, 4th order accuracy
+        F0_X = (- 3 * F0_in[indim1] - 10 * F0_in[ind] + 18 * F0_in[indip1] - 6 * F0_in[indip2] + F0_in[indip3]) * oodX12;
+        // 1st derivative, 4th order accuracy
+        F1_X = (- 3 * F1_in[indim1] - 10 * F1_in[ind] + 18 * F1_in[indip1] - 6 * F1_in[indip2] + F1_in[indip3]) * oodX12;
+        // 1st derivative, 4th order accuracy
+        F2_X = (- 3 * F2_in[indim1] - 10 * F2_in[ind] + 18 * F2_in[indip1] - 6 * F2_in[indip2] + F2_in[indip3]) * oodX12;
+
       } else if (i == NX - 1) {
         /* last radial point */
 
@@ -317,6 +336,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (backward stencils)
         V_X = (V_in[indim2] - 4*V_in[indim1] + 3*V_in[ind]) * 0.5 * oodX;
 
+        // 1st derivative with 2nd order accuracy (backward stencils)
+        F0_X = (F0_in[indim2] - 4*F0_in[indim1] + 3*F0_in[ind]) * 0.5 * oodX;
+        // 1st derivative with 2nd order accuracy (backward stencils)
+        F1_X = (F1_in[indim2] - 4*F1_in[indim1] + 3*F1_in[ind]) * 0.5 * oodX;
+        // 1st derivative with 2nd order accuracy (backward stencils)
+        F2_X = (F2_in[indim2] - 4*F2_in[indim1] + 3*F2_in[ind]) * 0.5 * oodX;
+
       } else if (i == NX - 2) {
         // 1st derivative with 2nd order accuracy (central stencils)
         Wbar_X = (-Wbar_in[indim1] + Wbar_in[indip1]) * 0.5 * oodX;
@@ -327,6 +353,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (central stencils)
         V_X = (-V_in[indim1] + V_in[indip1]) * 0.5 * oodX;
 
+        // 1st derivative with 2nd order accuracy (central stencils)
+        F0_X = (-F0_in[indim1] + F0_in[indip1]) * 0.5 * oodX;
+        // 1st derivative with 2nd order accuracy (central stencils)
+        F1_X = (-F1_in[indim1] + F1_in[indip1]) * 0.5 * oodX;
+        // 1st derivative with 2nd order accuracy (central stencils)
+        F2_X = (-F2_in[indim1] + F2_in[indip1]) * 0.5 * oodX;
+
       } else {
         // 4th order accurate stencils
         Wbar_X    = (-Wbar_in[indip2] + 8 * Wbar_in[indip1] - 8 * Wbar_in[indim1] + Wbar_in[indim2]) * oodX12;
@@ -336,6 +369,14 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         
         // 4th order accurate stencils
         V_X    = (-V_in[indip2] + 8 * V_in[indip1] - 8 * V_in[indim1] + V_in[indim2]) * oodX12;
+
+        // 4th order accurate stencils
+        F0_X    = (-F0_in[indip2] + 8 * F0_in[indip1] - 8 * F0_in[indim1] + F0_in[indim2]) * oodX12;
+        // 4th order accurate stencils
+        F1_X    = (-F1_in[indip2] + 8 * F1_in[indip1] - 8 * F1_in[indim1] + F1_in[indim2]) * oodX12;
+        // 4th order accurate stencils
+        F2_X    = (-F2_in[indip2] + 8 * F2_in[indip1] - 8 * F2_in[indim1] + F2_in[indim2]) * oodX12;
+
       
       }
 
@@ -352,6 +393,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // At X==0 (rr_1==0), dXdr = 1/C0
         dH3_dr_extd[ind]       = H3_X / C0;
         dV_dr_extd[ind]        =  V_X / C0;
+        dF0_dr_extd[ind]       = F0_X / C0;
+        dF1_dr_extd[ind]       = F1_X / C0;
+        dF2_dr_extd[ind]       = F2_X / C0;
 
         // For W_1 we need more care depending on the power
         switch (Wbar_r_power)
@@ -408,6 +452,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         dH3_dr_extd[ind]    = 0.;
         dV_dr_extd[ind]    = 0.;
+        dF0_dr_extd[ind]   = 0.;
+        dF1_dr_extd[ind]   = 0.;
+        dF2_dr_extd[ind]   = 0.;
 
         H1r_extd[ind] = 0.; // A_r = 0 at infinity
 
@@ -423,6 +470,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         dH3_dr_extd[ind]       = dXdr * H3_X;
         dV_dr_extd[ind]        = dXdr * V_X;
+        dF0_dr_extd[ind]       = dXdr * F0_X;
+        dF1_dr_extd[ind]       = dXdr * F1_X;
+        dF2_dr_extd[ind]       = dXdr * F2_X;
         
         // Now translate from Wbar to W_1
         switch (Wbar_r_power) // We could put a generic power for the computation here I guess...
@@ -502,6 +552,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       W_extd[ind]        = W_extd[indsym];
       dW_dr_extd[ind]    = dW_dr_extd[indsym];
+      dF0_dr_extd[ind]   = dF0_dr_extd[indsym];
+      dF1_dr_extd[ind]   = dF1_dr_extd[indsym];
+      dF2_dr_extd[ind]   = dF2_dr_extd[indsym];
       
       // Odd
       dW_dth_extd[ind]      = - dW_dth_extd[indsym];
@@ -515,6 +568,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       dH3_dr_extd[ind]   = H3_z_sign * dH3_dr_extd[indsym];
       dV_dr_extd[ind]    =  V_z_sign *  dV_dr_extd[indsym];
+      
 
       dH3_dth_extd[ind]  = - H3_z_sign * dH3_dth_extd[indsym];
       dV_dth_extd[ind]   = -  V_z_sign *  dV_dth_extd[indsym];
@@ -603,6 +657,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_array_type_codes[11]= CCTK_VARIABLE_REAL;
   input_array_type_codes[12]= CCTK_VARIABLE_REAL;
   input_array_type_codes[13]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[14]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[15]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[16]= CCTK_VARIABLE_REAL;
 
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
@@ -621,6 +678,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_arrays[11]= (const void *) dH3_dth_extd;
   input_arrays[12]= (const void *) dV_dr_extd;
   input_arrays[13]= (const void *) dV_dth_extd;
+  input_arrays[14]= (const void *) dF0_dr_extd;
+  input_arrays[15]= (const void *) dF1_dr_extd;
+  input_arrays[16]= (const void *) dF2_dr_extd;
+
 
   /* output arrays */
   void *output_arrays[N_output_arrays];
@@ -629,6 +690,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   CCTK_REAL *dW_dr_1, *dW_dth_1;
   CCTK_REAL *dH3_dr_1, *dH3_dth_1;
   CCTK_REAL *dV_dr_1, *dV_dth_1;
+  CCTK_REAL *dF0_dr_1, *dF1_dr_1, *dF2_dr_1;
 
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   F2_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -644,6 +706,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dH3_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dV_dr_1       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dV_dth_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF0_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF1_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dF2_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
   output_array_type_codes[0] = CCTK_VARIABLE_REAL;
   output_array_type_codes[1] = CCTK_VARIABLE_REAL;
@@ -659,6 +724,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_array_type_codes[11]= CCTK_VARIABLE_REAL;
   output_array_type_codes[12]= CCTK_VARIABLE_REAL;
   output_array_type_codes[13]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[14]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[15]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[16]= CCTK_VARIABLE_REAL;
 
   output_arrays[0] = (void *) F1_1;
   output_arrays[1] = (void *) F2_1;
@@ -674,6 +742,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_arrays[11]= (void *) dH3_dth_1;
   output_arrays[12]= (void *) dV_dr_1;
   output_arrays[13]= (void *) dV_dth_1;
+  output_arrays[14]= (void *) dF0_dr_1;
+  output_arrays[15]= (void *) dF1_dr_1;
+  output_arrays[16]= (void *) dF2_dr_1;
 
 
   /* handle and settings for the interpolation routine */
@@ -710,6 +781,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   free(dW_dr_extd); free(dW_dth_extd);
   free(dH3_dr_extd); free(dH3_dth_extd);
   free(dV_dr_extd); free(dV_dth_extd);
+  free(dF0_dr_extd); free(dF1_dr_extd); free(dF2_dr_extd);
 
 
   /* printf("F1_1 = %g\n", F1_1[0]); */

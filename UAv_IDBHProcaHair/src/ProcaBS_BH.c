@@ -836,6 +836,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
+  const CCTK_REAL bs_v2 = bs_v * bs_v;
+  const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
+  const CCTK_REAL gamma = sqrt(gamma2);
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -849,13 +852,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL z1_1  = z[ind] - z0;
 
         // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
         const CCTK_REAL rr_1  = sqrt(rr2_1);
 	      /* note that there are divisions by rr_1 in the following expressions.
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
-        const CCTK_REAL rho2_1 = x1_1*x1_1 + y1_1*y1_1;
+        const CCTK_REAL rho2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1;
         const CCTK_REAL rho_1  = sqrt(rho2_1);
 
         const CCTK_REAL costh_1  = z1_1/rr_1;
@@ -875,7 +878,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
         
 
-        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
+        const CCTK_REAL ph_1 = atan2(y1_1, x1_1*gamma);
         // If x1_1=y1_1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // but can this lead to nan depending on the C implementation?
 
@@ -890,6 +893,91 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
+
+
+        CCTK_REAL G[3][3]; // temporary storage for the 4-metric
+        CCTK_REAL Gb[3][3]; // temporary storage for the boosted metric
+        CCTK_REAL g_inv[3][3]; // temporary storage for the inverse of the 3-metric
+
+        for (int a = 0; a < 3; ++a) {
+          for (int b = 0; b < 3; ++b) {
+            G[a][b] = 0.0;
+            g_inv[a][b] = 0.0;
+          }
+        }
+
+        G[0][0] = - exp(2. * F0_1[ind]);
+        G[1][1] = (exp(2. * F1_1[ind]) * x1_1*x1_1*gamma2 + exp(2. * F2_1[ind]) * y1_1*y1_1)/rho2_1;
+        G[1][2] = (exp(2. * F1_1[ind]) - exp(2. * F2_1[ind])) * x1_1*y1_1/(rho2_1);
+        G[2][1] = G[1][2];
+        G[2][2] = (exp(2. * F1_1[ind]) * y1_1*y1_1 + exp(2. * F2_1[ind]) * x1_1*x1_1*gamma2)/rho2_1;
+        G[3][3] = exp(2. * F1_1[ind]);
+
+        // Derivatives of the metric functions
+        CCTK_REAL dG[3][3][3];
+        for (int a = 0; a < 3; ++a) {
+          for (int b = 0; b < 3; ++b) {
+            for (int c = 0; c < 3; ++c) {
+              dG[a][b][c] = 0.0;
+            }
+          }
+        }
+        // dG[a][b][c] = dG_ab/dx^c
+
+        dG[1][1][1] = (2*gamma*(exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + \
+x1_1*gamma*(rho2_1)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
+exp(2. * F2_1[ind])*pow(y1_1,2)*(-(x1_1*gamma) + \
+(rho2_1)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(rho2_1,2);
+        dG[1][1][2] = (2*exp(2. * F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*(-y1_1 + \
+(rho2_1)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + 2*exp(2. * \
+F2_1[ind])*y1_1*(pow(x1_1,2)*pow(gamma,2) + \
+y1_1*(rho2_1)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1)))/pow(rho2_\
+1,2);
+        dG[1][1][3] = (2*(exp(2. * \
+F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*Derivative(0,0,1)(F1)(x1_1*gamma,\
+y1_1,z1_1) + exp(2. * \
+F2_1[ind])*pow(y1_1,2)*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_1)))/(\
+rho2_1);
+        dG[1][2][1] = (y1_1*gamma*(exp(2. * F1_1[ind])*(pow(y1_1,2) + \
+x1_1*gamma*(-(x1_1*gamma) + \
+2*(rho2_1)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1))) - exp(2. * \
+F2_1[ind])*(pow(y1_1,2) + x1_1*gamma*(-(x1_1*gamma) + \
+2*(rho2_1)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1)))))/pow(rho2_1,\
+2);
+        dG[1][2][2] = (x1_1*gamma*(exp(2. * F1_1[ind])*(-rho2_1 + \
+2*y1_1*(rho2_1)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + exp(2. \
+* F2_1[ind])*(pow(y1_1,2) - pow(x1_1,2)*pow(gamma,2) - \
+2*y1_1*(rho2_1)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(\
+rho2_1,2);
+        dG[1][2][3] = (2*x1_1*y1_1*gamma*(exp(2. * \
+F1_1[ind])*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1) - exp(2. * \
+F2_1[ind])*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_1)))/(rho2_1);
+
+        dG[2][2][1] = (2*gamma*(exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1 + (pow(y1_1,2) + \
+pow(x1_1,2)*gamma)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
+exp(2. * F2_1[ind])*x1_1*(pow(y1_1,2) + x1_1*gamma*(pow(y1_1,2) + \
+pow(x1_1,2)*gamma)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(\
+pow(y1_1,2) + pow(x1_1,2)*gamma,2);
+        dG[2][2][2] = 
+
+
+        // CCTK_REAL det_g =
+        //     G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
+        //   - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
+        //   + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
+
+        // g_inv[1][1] =  (G[2][2]*G[3][3] - G[2][3]*G[3][2]) / det_g;
+        // g_inv[1][2] = -(G[1][2]*G[3][3] - G[1][3]*G[3][2]) / det_g;
+        // g_inv[1][3] =  (G[1][2]*G[2][3] - G[1][3]*G[2][2]) / det_g;
+        // g_inv[2][1] = -(G[2][1]*G[3][3] - G[2][3]*G[3][1]) / det_g;
+        // g_inv[2][2] =  (G[1][1]*G[3][3] - G[1][3]*G[3][1]) / det_g;
+        // g_inv[2][3] = -(G[1][1]*G[2][3] - G[1][3]*G[2][1]) / det_g;
+        // g_inv[3][1] =  (G[2][1]*G[3][2] - G[2][2]*G[3][1]) / det_g;
+        // g_inv[3][2] = -(G[1][1]*G[3][2] - G[1][2]*G[3][1]) / det_g;
+        // g_inv[3][3] =  (G[1][1]*G[2][2] - G[1][2]*G[2][1]) / det_g;
+
+
+        
 
 
     //Black Hole B

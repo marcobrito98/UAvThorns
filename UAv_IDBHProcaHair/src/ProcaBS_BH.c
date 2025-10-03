@@ -894,15 +894,26 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
+        const CCTK_REAL R_x_1    = x1_1/rr_1 ;
+        const CCTK_REAL R_y_1    = y1_1/rr_1 ;
+        const CCTK_REAL R_z_1    = z1_1/rr_1 ;
+
+        const CCTK_REAL th_x_1   = costh_1*R_x_1/rho_1 ;
+        const CCTK_REAL th_y_1   = costh_1*R_y_1/rho_1 ;
+        const CCTK_REAL th_z_1   = -rho_1/rr2_1;
+
 
         CCTK_REAL G[3][3]; // temporary storage for the 4-metric
+        CCTK_REAL G_inv[3][3]; // temporary storage for the inverse of the 4-metric
         CCTK_REAL Gb[3][3]; // temporary storage for the boosted metric
-        CCTK_REAL g_inv[3][3]; // temporary storage for the inverse of the 3-metric
+        CCTK_REAL g_inv[3][3]; // temporary storage for the inverse of the boosted 3-metric
 
         for (int a = 0; a < 3; ++a) {
           for (int b = 0; b < 3; ++b) {
             G[a][b] = 0.0;
             g_inv[a][b] = 0.0;
+            G_inv[a][b] = 0.0;
+            Gb[a][b] = 0.0;
           }
         }
 
@@ -924,71 +935,169 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
         // dG[a][b][c] = dG_ab/dx^c
 
-        dG[1][1][1] = (2*gamma*(exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + \
-x1_1*gamma*(rho2_1)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
-exp(2. * F2_1[ind])*pow(y1_1,2)*(-(x1_1*gamma) + \
-(rho2_1)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(rho2_1,2);
+
+
+
+        const CCTK_REAL dF1_1_dx = dF1_dr_1[ind]*R_x_1 + dF1_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF1_1_dy = dF1_dr_1[ind]*R_y_1 + dF1_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF1_1_dz = dF1_dr_1[ind]*R_z_1 + dF1_dth_1[ind]*th_z_1;
+        const CCTK_REAL dF2_1_dx = dF2_dr_1[ind]*R_x_1 + dF2_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF2_1_dy = dF2_dr_1[ind]*R_y_1 + dF2_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF2_1_dz = dF2_dr_1[ind]*R_z_1 + dF2_dth_1[ind]*th_z_1;
+        const CCTK_REAL dF0_1_dx = dF0_dr_1[ind]*R_x_1 + dF0_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF0_1_dy = dF0_dr_1[ind]*R_y_1 + dF0_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF0_1_dz = dF0_dr_1[ind]*R_z_1 + dF0_dth_1[ind]*th_z_1;
+
+        dG[1][1][1] = (2*exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(rho2_1)*dF1_1_dx) + 2*exp(2. * \
+                      F2_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+
         dG[1][1][2] = (2*exp(2. * F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*(-y1_1 + \
-(rho2_1)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + 2*exp(2. * \
-F2_1[ind])*y1_1*(pow(x1_1,2)*pow(gamma,2) + \
-y1_1*(rho2_1)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1)))/pow(rho2_\
-1,2);
-        dG[1][1][3] = (2*(exp(2. * \
-F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*Derivative(0,0,1)(F1)(x1_1*gamma,\
-y1_1,z1_1) + exp(2. * \
-F2_1[ind])*pow(y1_1,2)*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_1)))/(\
-rho2_1);
-        dG[1][2][1] = (y1_1*gamma*(exp(2. * F1_1[ind])*(pow(y1_1,2) + \
-x1_1*gamma*(-(x1_1*gamma) + \
-2*(rho2_1)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1))) - exp(2. * \
-F2_1[ind])*(pow(y1_1,2) + x1_1*gamma*(-(x1_1*gamma) + \
-2*(rho2_1)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1)))))/pow(rho2_1,\
-2);
+                      (rho2_1)*dF1_1_dy) + 2*exp(2. * \
+                      F2_1[ind])*y1_1*(pow(x1_1,2)*pow(gamma,2) + \
+                      y1_1*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+
+        dG[1][1][3] = (2*(exp(2. * F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*dF1_1_dz + exp(2. * \
+                      F2_1[ind])*pow(y1_1,2)*dF2_1_dz))/(rho2_1);
+
+        dG[1][2][1] = (exp(2. * F1_1[ind])*y1_1*(-pow(x1_1,2)*gamma2 + pow(y1_1,2) + \
+                      2*x1_1*gamma*(rho2_1)*dF1_1_dx) - exp(2. * \
+                      F2_1[ind])*y1_1*(-pow(x1_1,2)*gamma2 + pow(y1_1,2) + 2*x1_1*gamma*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+
+
         dG[1][2][2] = (x1_1*gamma*(exp(2. * F1_1[ind])*(-rho2_1 + \
-2*y1_1*(rho2_1)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + exp(2. \
-* F2_1[ind])*(pow(y1_1,2) - pow(x1_1,2)*pow(gamma,2) - \
-2*y1_1*(rho2_1)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(\
-rho2_1,2);
-        dG[1][2][3] = (2*x1_1*y1_1*gamma*(exp(2. * \
-F1_1[ind])*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1) - exp(2. * \
-F2_1[ind])*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_1)))/(rho2_1);
+                      2*y1_1*(rho2_1)*dF1_1_dy) + exp(2. \
+                      * F2_1[ind])*(pow(y1_1,2) - pow(x1_1,2)*pow(gamma,2) - \
+                      2*y1_1*(rho2_1)*dF2_1_dy)))/pow(\
+                      rho2_1,2);
 
-        dG[2][2][1] = (2*gamma*(exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1 + (pow(y1_1,2) + \
-pow(x1_1,2)*gamma)*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
-exp(2. * F2_1[ind])*x1_1*(pow(y1_1,2) + x1_1*gamma*(pow(y1_1,2) + \
-pow(x1_1,2)*gamma)*Derivative(1,0,0)(F2)(x1_1*gamma,y1_1,z1_1))))/pow(\
-pow(y1_1,2) + pow(x1_1,2)*gamma,2);
+        dG[1][2][3] = (2*x1_1*y1_1*gamma*(exp(2. * F1_1[ind])*dF1_1_dz - exp(2. * F2_1[ind])*dF2_1_dz))/(rho2_1);
+
+        dG[2][2][1] = (2*exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (rho2_1)*dF1_1_dx) + 2*exp(2. * \
+                      F2_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+
         dG[2][2][2] = (2*exp(2. * F1_1[ind])*y1_1*(pow(x1_1,2)*gamma + y1_1*(pow(y1_1,2) + \
-pow(x1_1,2)*gamma)*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1)) + \
-2*exp(2. * F2_1[ind])*pow(x1_1,2)*gamma*(-y1_1 + (pow(y1_1,2) + \
-pow(x1_1,2)*gamma)*Derivative(0,1,0)(F2)(x1_1*gamma,y1_1,z1_1)))/pow(\
-pow(y1_1,2) + pow(x1_1,2)*gamma,2);
-        dG[2][2][3] = (2*(exp(2. * \
-F1_1[ind])*pow(y1_1,2)*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1) + \
-exp(2. * \
-F2_1[ind])*pow(x1_1,2)*gamma*Derivative(0,0,1)(F2)(x1_1*gamma,y1_1,z1_\
-1)))/(pow(y1_1,2) + pow(x1_1,2)*gamma);
-        dG[3][3][1] = 2*exp(2. * \
-F1_1[ind])*gamma*Derivative(1,0,0)(F1)(x1_1*gamma,y1_1,z1_1);
-        dG[3][3][2] = 2*exp(2. * F1_1[ind])*Derivative(0,1,0)(F1)(x1_1*gamma,y1_1,z1_1);
-        dG[3][3][3] = 2*exp(2. * F1_1[ind])*Derivative(0,0,1)(F1)(x1_1*gamma,y1_1,z1_1);
+                      pow(x1_1,2)*gamma)*dF1_1_dy) + \
+                      2*exp(2. * F2_1[ind])*pow(x1_1,2)*gamma*(-y1_1 + (pow(y1_1,2) + \
+                      pow(x1_1,2)*gamma)*dF2_1_dy))/pow(pow(y1_1,2) + pow(x1_1,2)*gamma,2);
+        dG[2][2][3] = (2*(exp(2. * F1_1[ind])*pow(y1_1,2)*dF1_1_dz + \
+                      exp(2. * F2_1[ind])*pow(x1_1,2)*gamma*dF2_1_dz))/(pow(y1_1,2) + pow(x1_1,2)*gamma);
+        dG[3][3][1] = 2*exp(2. * F1_1[ind])*dF1_1_dx;
+        dG[3][3][2] = 2*exp(2. * F1_1[ind])*dF1_1_dy;
+        dG[3][3][3] = 2*exp(2. * F1_1[ind])*dF1_1_dz;
 
 
-        // CCTK_REAL det_g =
-        //     G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
-        //   - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
-        //   + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
 
-        // g_inv[1][1] =  (G[2][2]*G[3][3] - G[2][3]*G[3][2]) / det_g;
-        // g_inv[1][2] = -(G[1][2]*G[3][3] - G[1][3]*G[3][2]) / det_g;
-        // g_inv[1][3] =  (G[1][2]*G[2][3] - G[1][3]*G[2][2]) / det_g;
-        // g_inv[2][1] = -(G[2][1]*G[3][3] - G[2][3]*G[3][1]) / det_g;
-        // g_inv[2][2] =  (G[1][1]*G[3][3] - G[1][3]*G[3][1]) / det_g;
-        // g_inv[2][3] = -(G[1][1]*G[2][3] - G[1][3]*G[2][1]) / det_g;
-        // g_inv[3][1] =  (G[2][1]*G[3][2] - G[2][2]*G[3][1]) / det_g;
-        // g_inv[3][2] = -(G[1][1]*G[3][2] - G[1][2]*G[3][1]) / det_g;
-        // g_inv[3][3] =  (G[1][1]*G[2][2] - G[1][2]*G[2][1]) / det_g;
+        // Boosted metric
+        Gb[0][0] = gamma2*(G[0][0] + bs_v*bs_v*G[1][1]);
+        Gb[0][1] = gamma2*bs_v*(G[0][0] + G[1][1]);
+        Gb[1][0] = Gb[0][1];
+        Gb[0][2] = gamma*G[0][2];
+        Gb[2][0] = Gb[0][2];
+        Gb[0][3] = gamma*G[0][3];
+        Gb[3][0] = Gb[0][3];
+        Gb[1][1] = gamma2*(G[1][1] + bs_v*bs_v*G[0][0]);
+        Gb[1][2] = gamma*G[1][2] + gamma*bs_v*G[0][2];
+        Gb[2][1] = Gb[1][2];
+        Gb[1][3] = gamma*G[1][3] + gamma*bs_v*G[0][3];
+        Gb[3][1] = Gb[1][3];
+        Gb[2][2] = G[2][2];
+        Gb[2][3] = G[2][3];
+        Gb[3][2] = Gb[2][3];
+        Gb[3][3] = G[3][3];
 
+
+        CCTK_REAL det_g =
+            Gb[1][1]*(Gb[2][2]*Gb[3][3] - Gb[2][3]*Gb[3][2])
+          - Gb[1][2]*(Gb[2][1]*Gb[3][3] - Gb[2][3]*Gb[3][1])
+          + Gb[1][3]*(Gb[2][1]*Gb[3][2] - Gb[2][2]*Gb[3][1]);
+
+        g_inv[1][1] =  (Gb[2][2]*Gb[3][3] - Gb[2][3]*Gb[3][2]) / det_g;
+        g_inv[1][2] = -(Gb[1][2]*Gb[3][3] - Gb[1][3]*Gb[3][2]) / det_g;
+        g_inv[1][3] =  (Gb[1][2]*Gb[2][3] - Gb[1][3]*Gb[2][2]) / det_g;
+        g_inv[2][1] = -(Gb[2][1]*Gb[3][3] - Gb[2][3]*Gb[3][1]) / det_g;
+        g_inv[2][2] =  (Gb[1][1]*Gb[3][3] - Gb[1][3]*Gb[3][1]) / det_g;
+        g_inv[2][3] = -(Gb[1][1]*Gb[2][3] - Gb[1][3]*Gb[2][1]) / det_g;
+        g_inv[3][1] =  (Gb[2][1]*Gb[3][2] - Gb[2][2]*Gb[3][1]) / det_g;
+        g_inv[3][2] = -(Gb[1][1]*Gb[3][2] - Gb[1][2]*Gb[3][1]) / det_g;
+        g_inv[3][3] =  (Gb[1][1]*Gb[2][2] - Gb[1][2]*Gb[2][1]) / det_g;
+
+        CCTK_REAL dGb[3][3][3];
+        for (int a = 0; a < 3; ++a) {
+          for (int b = 0; b < 3; ++b) {
+            for (int c = 0; c < 3; ++c) {
+              dGb[a][b][c] = 0.0;
+            }
+          }
+        }
+        // dGb[a][b][c] = dGb_ab/dx^c
+        dGb[0][0][1] = gamma2*(dG[0][0][1] + bs_v*bs_v*dG[1][1][1]);
+        dGb[0][0][2] = gamma2*(dG[0][0][2] + bs_v*bs_v*dG[1][1][2]);
+        dGb[0][0][3] = gamma2*(dG[0][0][3] + bs_v*bs_v*dG[1][1][3]);
+        dGb[0][1][1] = gamma2*bs_v*(dG[0][0][1] + dG[1][1][1]);
+        dGb[0][1][2] = gamma2*bs_v*(dG[0][0][2] + dG[1][1][2]);
+        dGb[0][1][3] = gamma2*bs_v*(dG[0][0][3] + dG[1][1][3]);
+        dGb[0][2][1] = gamma*dG[0][2][1];
+        dGb[0][2][2] = gamma*dG[0][2][2];
+        dGb[0][2][3] = gamma*dG[0][2][3];
+        dGb[0][3][1] = gamma*dG[0][3][1];
+        dGb[0][3][2] = gamma*dG[0][3][2];
+        dGb[0][3][3] = gamma*dG[0][3][3];
+        dGb[1][0][1] = dGb[0][1][1];
+        dGb[1][0][2] = dGb[0][1][2];
+        dGb[1][0][3] = dGb[0][1][3];
+        dGb[1][1][1] = gamma2*(dG[1][1][1] + bs_v*bs_v*dG[0][0][1]);
+        dGb[1][1][2] = gamma2*(dG[1][1][2] + bs_v*bs_v*dG[0][0][2]);
+        dGb[1][1][3] = gamma2*(dG[1][1][3] + bs_v*bs_v*dG[0][0][3]);
+        dGb[1][2][1] = gamma*dG[1][2][1] + gamma*bs_v*dG[0][2][1];
+        dGb[1][2][2] = gamma*dG[1][2][2] + gamma*bs_v*dG[0][2][2];
+        dGb[1][2][3] = gamma*dG[1][2][3] + gamma*bs_v*dG[0][2][3];
+        dGb[1][3][1] = gamma*dG[1][3][1] + gamma*bs_v*dG[0][3][1];
+        dGb[1][3][2] = gamma*dG[1][3][2] + gamma*bs_v*dG[0][3][2];
+        dGb[1][3][3] = gamma*dG[1][3][3] + gamma*bs_v*dG[0][3][3];
+        dGb[2][0][1] = dGb[0][2][1];
+        dGb[2][0][2] = dGb[0][2][2];
+        dGb[2][0][3] = dGb[0][2][3];
+        dGb[2][1][1] = dGb[1][2][1];
+        dGb[2][1][2] = dGb[1][2][2];
+        dGb[2][1][3] = dGb[1][2][3];
+        dGb[2][2][1] = dG[2][2][1];
+        dGb[2][2][2] = dG[2][2][2];
+        dGb[2][2][3] = dG[2][2][3];
+        dGb[2][3][1] = dG[2][3][1];
+        dGb[2][3][2] = dG[2][3][2];
+        dGb[2][3][3] = dG[2][3][3];
+        dGb[3][0][1] = dGb[0][3][1];
+        dGb[3][0][2] = dGb[0][3][2];
+        dGb[3][0][3] = dGb[0][3][3];
+        dGb[3][1][1] = dGb[1][3][1];
+        dGb[3][1][2] = dGb[1][3][2];
+        dGb[3][1][3] = dGb[1][3][3];
+        dGb[3][2][1] = dGb[2][3][1];
+        dGb[3][2][2] = dGb[2][3][2];
+        dGb[3][2][3] = dGb[2][3][3];
+        dGb[3][3][1] = dG[3][3][1];
+        dGb[3][3][2] = dG[3][3][2];
+        dGb[3][3][3] = dG[3][3][3];
+
+
+        // Now we compute the 3+1 quantities
+        // Lapse
+        alpha1 = -(G_inv[0][0]*gamma2+gamma2*bs_v2*G_inv[0][1]);
+        // Shift
+        CCTK_REAL beta1[3],betaup1[3];
+        beta1[0] = 0;
+        beta1[1] = Gb[0][1];
+        beta1[2] = Gb[0][2];
+        beta1[3] = Gb[0][3];
+        betaup1[0] = 0;
+        betaup1[1] = g_inv[1][1]*beta1[1] + g_inv[1][2]*beta1[2] + g_inv[1][3]*beta1[3];
+        betaup1[2] = g_inv[2][1]*beta1[1] + g_inv[2][2]*beta1[2] + g_inv[2][3]*beta1[3];
+        betaup1[3] = g_inv[3][1]*beta1[1] + g_inv[3][2]*beta1[2] + g_inv[3][3]*beta1[3];
+
+
+      
+      
+      
 
         
 

@@ -1407,11 +1407,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         check_nan_or_inf("kzz",kzz[ind]);  
 
           
-
-        // lapse value (field initialization below)
-        // No lapse regularization needed for the BS, the lapse is non-zero
-        const CCTK_REAL alph = exp(F0_1[ind]) + alpha0 - 1;
-    }
+    } // end if bh_spin_direction == "z"
 
 
     if (CCTK_EQUALS(bh_spin_direction, "y")) { // rotation applied (x',y',z') = (x,z,-y)
@@ -1709,12 +1705,14 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         check_nan_or_inf("kzz",kzz[ind]);  
 
           
+    } // end if bh_spin_direction == "y"
+
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
         const CCTK_REAL alph = exp(F0_1[ind]) + alpha0 - 1;
 
-    }
+    
 
 
         // let's add a perturbation to the Proca field as well
@@ -1865,6 +1863,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
         //Boosted components
+        CCTK_REAL E1_boosted[4]; //E^\mu real part
+        CCTK_REAL E2_boosted[4]; //E^\mu imag part
         for (int a = 0; a < 4; ++a) {
           E1_boosted[a] = 0.0;
           E2_boosted[a] = 0.0;

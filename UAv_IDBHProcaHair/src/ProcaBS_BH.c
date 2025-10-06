@@ -1075,7 +1075,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // Now we compute the 3+1 quantities
         // Lapse
-        alpha1 = -(G_inv[0][0]*gamma2+gamma2*bs_v2*G_inv[0][1]);
+        const CCTK_REAL alpha1 = -(G_inv[0][0]*gamma2+gamma2*bs_v2*G_inv[0][1]);
         // Shift
         CCTK_REAL beta1[3],betaup1[3];
         beta1[0] = 0;
@@ -1382,11 +1382,11 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
             CCTK_REAL sum2 = 0.0;
             for (int m = 1; m < 4; ++m) {
               for (int n = 1; n < 4; ++n) {
-                sum1 += gamma_final_inv[m][i] * (K_A[j][n] * gamma_A_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
-                sum2 += gamma_final_inv[m][j] * (K_A[i][n] * gamma_A_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
+                sum1 += gamma_final_inv[m][i] * (K_A[j][n] * gammaA_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
+                sum2 += gamma_final_inv[m][j] * (K_A[i][n] * gammaA_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
               }
             }
-          Kfinal[a][b] = 0.5 * (sum1 + sum2);
+          Kfinal[i][j] = 0.5 * (sum1 + sum2);
           }
         }
 
@@ -1680,11 +1680,11 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
             CCTK_REAL sum2 = 0.0;
             for (int m = 1; m < 4; ++m) {
               for (int n = 1; n < 4; ++n) {
-                sum1 += gamma_final_inv[m][i] * (K_A[j][n] * gamma_A_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
-                sum2 += gamma_final_inv[m][j] * (K_A[i][n] * gamma_A_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
+                sum1 += gamma_final_inv[m][i] * (K_A[j][n] * gammaA_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
+                sum2 += gamma_final_inv[m][j] * (K_A[i][n] * gammaA_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
               }
             }
-          Kfinal[a][b] = 0.5 * (sum1 + sum2);
+          Kfinal[i][j] = 0.5 * (sum1 + sum2);
           }
         }
 

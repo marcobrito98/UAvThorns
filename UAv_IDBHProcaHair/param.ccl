@@ -66,7 +66,7 @@ REAL bh_mass "BH mass parameter. Incompatible with the Scalar Boson Star and Hai
   0:* :: "non-negative"
 } 0.0
 
-REAL bh_mass "Velocity of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
+REAL bs_v "Velocity of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
 {
   -1:1 :: "any number in this interval"
 } 0.0

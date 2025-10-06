@@ -1241,7 +1241,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         CCTK_REAL det_gammaB_inv =
             gammaB[1][1]*(gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2])
           - gammaB[1][2]*(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1])
-          + gammaB[1][3]*(gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]);;
+          + gammaB[1][3]*(gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]);
 
         gammaB_inv[1][1] =  (gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2]) / det_gammaB_inv;
         gammaB_inv[1][2] = -(gammaB[1][2]*gammaB[3][3] - gammaB[1][3]*gammaB[3][2]) / det_gammaB_inv;
@@ -1511,12 +1511,50 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // gzz[ind] = psi4_2 + conf_fac - 1;
 
 
-        gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
-        gxy[ind] = 0 - conf_fac * h_rho2_1 * sinph * cosph;
-        gxz[ind] = - psi4_2*bh_spin2*hh*z1_2*x1_2;
-        gyy[ind] = psi4_2 + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
-        gyz[ind] = 0;
-        gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac - 1;
+        gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + Gb[1][1] - 1;
+        gxy[ind] = 0 + Gb[1][2];
+        gxz[ind] = - psi4_2*bh_spin2*hh*z1_2*x1_2 + Gb[1][3];
+        gyy[ind] = psi4_2 + Gb[2][2] - 1;
+        gyz[ind] = 0 + Gb[2][3];
+        gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) +  Gb[3][3] - 1;
+
+
+        CCTK_REAL gammaB[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            gammaB[a][b] = 0.0;
+          }
+        }
+        gammaB[1][1] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2);
+        gammaB[1][2] = 0;
+        gammaB[1][3] = - psi4_2*bh_spin2*hh*z1_2*x1_2;
+        gammaB[2][1] = gammaB[1][2];
+        gammaB[2][2] = psi4_2;
+        gammaB[2][3] = 0;
+        gammaB[3][1] = gammaB[1][3];
+        gammaB[3][2] = gammaB[2][3];
+        gammaB[3][3] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2); 
+
+        CCTK_REAL gammaB_inv[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            gammaB_inv[a][b] = 0.0;
+          }
+        }
+        CCTK_REAL det_gammaB_inv =
+            gammaB[1][1]*(gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2])
+          - gammaB[1][2]*(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1])
+          + gammaB[1][3]*(gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]);
+
+        gammaB_inv[1][1] =  (gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2]) / det_gammaB_inv;
+        gammaB_inv[1][2] = -(gammaB[1][2]*gammaB[3][3] - gammaB[1][3]*gammaB[3][2]) / det_gammaB_inv;
+        gammaB_inv[1][3] =  (gammaB[1][2]*gammaB[2][3] - gammaB[1][3]*gammaB[2][2]) / det_gammaB_inv;
+        gammaB_inv[2][1] = -(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1]) / det_gammaB_inv;
+        gammaB_inv[2][2] =  (gammaB[1][1]*gammaB[3][3] - gammaB[1][3]*gammaB[3][1]) / det_gammaB_inv;
+        gammaB_inv[2][3] = -(gammaB[1][1]*gammaB[2][3] - gammaB[1][3]*gammaB[2][1]) / det_gammaB_inv;
+        gammaB_inv[3][1] =  (gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]) / det_gammaB_inv;
+        gammaB_inv[3][2] = -(gammaB[1][1]*gammaB[3][2] - gammaB[1][2]*gammaB[3][1]) / det_gammaB_inv;
+        gammaB_inv[3][3] =  (gammaB[1][1]*gammaB[2][2] - gammaB[1][2]*gammaB[2][1]) / det_gammaB_inv;
 
         /*
           d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
@@ -1576,13 +1614,92 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           dW_dz   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
         }
 
-        // extrinsic curvature currently incompatible with rotating stars.
-        kxx[ind] = Axx / psi2_2 + 0.5 * rho_1 * sin(2*ph_1) * exp_auxi * dW_drho;
-        kxy[ind] = Axy / psi2_2 - 0.5 * rho_1 * cos(2*ph_1) * exp_auxi * dW_drho;
-        kxz[ind] = Axz / psi2_2 + 0.5 *  y1_1 * exp_auxi * dW_dz;
-        kyy[ind] = Ayy / psi2_2 - 0.5 * rho_1 * sin(2*ph_1) * exp_auxi * dW_drho;
-        kyz[ind] = Ayz / psi2_2 - 0.5 *  x1_1 * exp_auxi * dW_dz;
-        kzz[ind] = Azz / psi2_2;
+        CCTK_REAL gamma_final[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            gamma_final[a][b] = 0.0;
+          }
+        }
+        gamma_final[1][1] = gxx[ind];
+        gamma_final[1][2] = gxy[ind];
+        gamma_final[1][3] = gxz[ind];
+        gamma_final[2][1] = gxy[ind];
+        gamma_final[2][2] = gyy[ind];
+        gamma_final[2][3] = gyz[ind];
+        gamma_final[3][1] = gxz[ind];
+        gamma_final[3][2] = gyz[ind];
+        gamma_final[3][3] = gzz[ind];
+
+
+        CCTK_REAL gamma_final_inv[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            gamma_final_inv[a][b] = 0.0;
+          }
+        }
+        CCTK_REAL det_gamma_final =
+            gamma_final[1][1]*(gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2])
+          - gamma_final[1][2]*(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1])
+          + gamma_final[1][3]*(gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]);
+
+        gamma_final_inv[1][1] =  (gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2]) / det_gamma_final;
+        gamma_final_inv[1][2] = -(gamma_final[1][2]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][2]) / det_gamma_final;
+        gamma_final_inv[1][3] =  (gamma_final[1][2]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][2]) / det_gamma_final;
+        gamma_final_inv[2][1] = -(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1]) / det_gamma_final;
+        gamma_final_inv[2][2] =  (gamma_final[1][1]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][1]) / det_gamma_final;
+        gamma_final_inv[2][3] = -(gamma_final[1][1]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][1]) / det_gamma_final;
+        gamma_final_inv[3][1] =  (gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]) / det_gamma_final;
+        gamma_final_inv[3][2] = -(gamma_final[1][1]*gamma_final[3][2] - gamma_final[1][2]*gamma_final[3][1]) / det_gamma_final;
+        gamma_final_inv[3][3] =  (gamma_final[1][1]*gamma_final[2][2] - gamma_final[1][2]*gamma_final[2][1]) / det_gamma_final;
+
+
+        CCTK_REAL K_B[4][4]; // extrinsic curvature
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            K_B[a][b] = 0.0;
+          }
+        } //K_0\mu might not be zero but irrelevant for what i want to compute
+
+        K_B[1][1] =  Axx / psi2_2;
+        K_B[1][2] =  Axy / psi2_2;
+        K_B[1][3] =  Axz / psi2_2;
+        K_B[2][1] =  Axy / psi2_2;
+        K_B[2][2] =  Ayy / psi2_2;
+        K_B[2][3] =  Ayz / psi2_2;
+        K_B[3][1] =  Axz / psi2_2;
+        K_B[3][2] =  Ayz / psi2_2;
+        K_B[3][3] =  Azz / psi2_2;
+
+
+        CCTK_REAL Kfinal[4][4]; // extrinsic curvature
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            Kfinal[a][b] = 0.0;
+          }
+        }
+
+        for (int i = 1; i < 4; ++i) {
+          for (int j = 1; j < 4; ++j) {
+            CCTK_REAL sum1 = 0.0;
+            CCTK_REAL sum2 = 0.0;
+            for (int m = 1; m < 4; ++m) {
+              for (int n = 1; n < 4; ++n) {
+                sum1 += gamma_final_inv[m][i] * (K_A[j][n] * gamma_A_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
+                sum2 += gamma_final_inv[m][j] * (K_A[i][n] * gamma_A_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
+              }
+            }
+          Kfinal[a][b] = 0.5 * (sum1 + sum2);
+          }
+        }
+
+
+
+        kxx[ind] = Kfinal[1][1];
+        kxy[ind] = Kfinal[1][2];
+        kxz[ind] = Kfinal[1][3];
+        kyy[ind] = Kfinal[2][2];
+        kyz[ind] = Kfinal[2][3];
+        kzz[ind] = Kfinal[3][3];
 
         check_nan_or_inf("kxx",kxx[ind]);
         check_nan_or_inf("kxy",kxy[ind]);

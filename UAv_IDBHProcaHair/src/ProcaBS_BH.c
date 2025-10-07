@@ -1100,12 +1100,12 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
             CCTK_REAL sum1 = 0.0;
             CCTK_REAL sum2 = 0.0;
             CCTK_REAL sum3 = 0.0;
-            // for (int c = 1; c < 4; ++c) {
-            //   sum1 += betaup1[c]*dGb[a][b][c];
-            //   sum2 += betaup1[c]*dGb[b][c][a];
-            //   sum3 += betaup1[c]*dGb[a][c][b];
-            // }
-            K_A[a][b] = 0; //-1 / (2. * alpha1) * (dGb[0][a][b] - sum1 - (dGb[0][b][a] - sum2) + (dGb[0][a][b] - sum3));
+            for (int c = 1; c < 4; ++c) {
+              sum1 += betaup1[c]*dGb[a][b][c];
+              sum2 += betaup1[c]*dGb[b][c][a];
+              sum3 += betaup1[c]*dGb[a][c][b];
+            }
+            K_A[a][b] = -1 / (2. * alpha1) * (dGb[0][a][b] - sum1 - (dGb[0][b][a] - sum2) + (dGb[0][a][b] - sum3));
           }
         }
 

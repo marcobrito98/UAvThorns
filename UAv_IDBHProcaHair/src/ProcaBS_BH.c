@@ -902,6 +902,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL th_y_1   = costh_1*R_y_1/rho_1 ;
         const CCTK_REAL th_z_1   = -rho_1/rr2_1;
 
+        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+
 
         CCTK_REAL G[4][4]; // temporary storage for the 4-metric
         CCTK_REAL G_inv[4][4]; // temporary storage for the inverse of the 4-metric
@@ -918,11 +922,11 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
 
         G[0][0] = - exp(2. * F0_1[ind]);
-        G[1][1] = (exp(2. * F1_1[ind]) * x1_1*x1_1*gamma2 + exp(2. * F2_1[ind]) * y1_1*y1_1)/rho2_1;
-        G[1][2] = (exp(2. * F1_1[ind]) - exp(2. * F2_1[ind])) * x1_1*y1_1/(rho2_1);
+        G[1][1] = psi4_1 * (1. + h_rho2_1* sinph * sinph);
+        G[1][2] = -psi4_1 * h_rho2 * sinph * cosph;
         G[2][1] = G[1][2];
-        G[2][2] = (exp(2. * F1_1[ind]) * y1_1*y1_1 + exp(2. * F2_1[ind]) * x1_1*x1_1*gamma2)/rho2_1;
-        G[3][3] = exp(2. * F1_1[ind]);
+        G[2][2] = psi4_1 * (1. + h_rho2 * cosph * cosph);
+        G[3][3] = psi4_1;
 
         // Derivatives of the metric functions
         CCTK_REAL dG[4][4][4];
@@ -1119,7 +1123,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
     //Black Hole B
 
-      CCTK_REAL alpha0,psi1_1,psi1_2;
+      CCTK_REAL alpha0;
 
       if (CCTK_EQUALS(bh_spin_direction, "z")) { 
 
@@ -1196,9 +1200,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
         psi1_2 = sqrt(psi2_2) ;
-        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        psi1_1 = sqrt(psi2_1);
+        
 
         // non-axisymmetric perturbation.
         /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */

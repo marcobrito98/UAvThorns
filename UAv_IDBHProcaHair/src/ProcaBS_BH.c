@@ -1112,7 +1112,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         for (int a = 1; a < 4; ++a) {
           for (int b = 1; b < 4; ++b) {
             if (isnan(K_A[a][b]) || isinf(K_A[a][b])) {
-              printf("Warning: K_A[%d][%d] is NaN or Inf at ind=%d\n", a, b, ind);
+              fprintf(stderr, "Error: new_lapse is nan at grid point (%lf,%lf,%lf)\n", x1_1, y1_1, z1_1);
             }
           }
         }

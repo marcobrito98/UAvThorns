@@ -602,7 +602,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   X_g     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   theta_g = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
-  for (int k = 0; k < cctk_lsh[2]; ++k) {
+  for (int k = 0; k < cctk_lsh[2]; ++k) { //tenho de por aqui os gammas?
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
 
@@ -635,8 +635,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
   const CCTK_INT N_dims  = 2;   // 2-D interpolation
 
-  const CCTK_INT N_input_arrays  = 14;
-  const CCTK_INT N_output_arrays = 14;
+  const CCTK_INT N_input_arrays  = 20;
+  const CCTK_INT N_output_arrays = 20;
 
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */

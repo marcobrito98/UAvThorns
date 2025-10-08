@@ -960,42 +960,69 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-        dG[1][1][1] = (2*exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(rho2_1)*dF1_1_dx) + 2*exp(2. * \
-                      F2_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+        dG[1][1][1] = (2*exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF1_1_dx) + 2*exp(2. * \
+F2_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dx))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
 
-        dG[1][1][2] = (2*exp(2. * F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*(-y1_1 + \
-                      (rho2_1)*dF1_1_dy) + 2*exp(2. * \
-                      F2_1[ind])*y1_1*(pow(x1_1,2)*pow(gamma,2) + \
-                      y1_1*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+        dG[1][1][2] = (2*exp(2. * F1_1[ind])*pow(x1_1*gamma,2)*(-y1_1 + (pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dy) + 2*exp(2. * \
+F2_1[ind])*y1_1*(pow(x1_1*gamma,2) + y1_1*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dy))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
 
-        dG[1][1][3] = (2*(exp(2. * F1_1[ind])*pow(x1_1,2)*pow(gamma,2)*dF1_1_dz + exp(2. * \
-                      F2_1[ind])*pow(y1_1,2)*dF2_1_dz))/(rho2_1);
+        dG[1][1][3] = (2*(exp(2. * \
+F1_1[ind])*pow(x1_1*gamma,2)*dF1_1_dz + exp(2. \
+* F2_1[ind])*pow(y1_1,2)*dF2_1_dz))/(pow(\
+x1_1*gamma,2) + pow(y1_1,2));
 
-        dG[1][2][1] = (exp(2. * F1_1[ind])*y1_1*(-pow(x1_1,2)*gamma2 + pow(y1_1,2) + \
-                      2*x1_1*gamma*(rho2_1)*dF1_1_dx) - exp(2. * \
-                      F2_1[ind])*y1_1*(-pow(x1_1,2)*gamma2 + pow(y1_1,2) + 2*x1_1*gamma*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+        dG[1][2][1] = (exp(2. * F1_1[ind])*y1_1*(-pow(x1_1*gamma,2) + pow(y1_1,2) + \
+2*x1_1*gamma*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF1_1_dx) - exp(2. * \
+F2_1[ind])*y1_1*(-pow(x1_1*gamma,2) + pow(y1_1,2) + 2*x1_1*gamma*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dx))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
 
 
-        dG[1][2][2] = (x1_1*gamma*(exp(2. * F1_1[ind])*(-rho2_1 + \
-                      2*y1_1*(rho2_1)*dF1_1_dy) + exp(2. \
-                      * F2_1[ind])*(pow(y1_1,2) - pow(x1_1,2)*pow(gamma,2) - \
-                      2*y1_1*(rho2_1)*dF2_1_dy)))/pow(\
-                      rho2_1,2);
+        dG[1][2][2] = (exp(2. * F1_1[ind])*x1_1*gamma*(pow(x1_1*gamma,2) - pow(y1_1,2) + \
+2*y1_1*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF1_1_dy) - exp(2. * \
+F2_1[ind])*x1_1*gamma*(pow(x1_1*gamma,2) - pow(y1_1,2) + 2*y1_1*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dy))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
 
-        dG[1][2][3] = (2*x1_1*y1_1*gamma*(exp(2. * F1_1[ind])*dF1_1_dz - exp(2. * F2_1[ind])*dF2_1_dz))/(rho2_1);
+        dG[1][2][3] = (2*x1_1*gamma*y1_1*(exp(2. * F1_1[ind])*dF1_1_dz - exp(2. * F2_1[ind])*dF2_1_dz))/(pow(x1_1*gamma,2) + pow(y1_1,2));
 
-        dG[2][2][1] = (2*exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (rho2_1)*dF1_1_dx) + 2*exp(2. * \
-                      F2_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(rho2_1)*dF2_1_dy))/pow(rho2_1,2);
+        dG[2][2][1] = (2*exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF1_1_dx) + 2*exp(2. * \
+F2_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dx))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
 
-        dG[2][2][2] = (2*exp(2. * F1_1[ind])*y1_1*(pow(x1_1,2)*gamma2 + y1_1*(pow(y1_1,2) + \
-                      pow(x1_1,2)*gamma2)*dF1_1_dy) + \
-                      2*exp(2. * F2_1[ind])*pow(x1_1,2)*gamma2*(-y1_1 + (pow(y1_1,2) + \
-                      pow(x1_1,2)*gamma2)*dF2_1_dy))/pow(rho2_1,2);
-        dG[2][2][3] = (2*(exp(2. * F1_1[ind])*pow(y1_1,2)*dF1_1_dz + \
-                      exp(2. * F2_1[ind])*pow(x1_1,2)*gamma2*dF2_1_dz))/(rho2_1);
+        dG[2][2][2] = (2*exp(2. * F1_1[ind])*y1_1*(pow(x1_1*gamma,2) + y1_1*(pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF1_1_dy) + 2*exp(2. * \
+F2_1[ind])*pow(x1_1*gamma,2)*(-y1_1 + (pow(x1_1*gamma,2) + \
+pow(y1_1,2))*dF2_1_dy))/pow(pow(x1_1*gamma,2) \
++ pow(y1_1,2),2);
+        dG[2][2][3] = (2*(exp(2. * \
+F1_1[ind])*pow(y1_1,2)*dF1_1_dz + exp(2. \
+* F2_1[ind])*pow(x1_1*gamma,2)*dF2_1_dz))/(pow(\
+x1_1*gamma,2) + pow(y1_1,2));
+
         dG[3][3][1] = 2*exp(2. * F1_1[ind])*dF1_1_dx;
         dG[3][3][2] = 2*exp(2. * F1_1[ind])*dF1_1_dy;
         dG[3][3][3] = 2*exp(2. * F1_1[ind])*dF1_1_dz;
+        //symmetries
+        dG[2][1][1] = dG[1][2][1];
+        dG[2][1][2] = dG[1][2][2];
+        dG[2][1][3] = dG[1][2][3];
+        dG[3][1][1] = dG[1][3][1];
+        dG[3][1][2] = dG[1][3][2];
+        dG[3][1][3] = dG[1][3][3];
+        dG[3][2][1] = dG[2][3][1];
+        dG[3][2][2] = dG[2][3][2];
+        dG[3][2][3] = dG[2][3][3];
 
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {

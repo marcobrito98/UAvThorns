@@ -1123,7 +1123,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
     //Black Hole B
 
-      CCTK_REAL alpha0;
+      CCTK_REAL alpha0,psi1_2;
 
       if (CCTK_EQUALS(bh_spin_direction, "z")) { 
 
@@ -1199,7 +1199,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
-        const CCTK_REAL psi1_2 = sqrt(psi2_2) ;
+        psi1_2 = sqrt(psi2_2) ;
         
 
         // non-axisymmetric perturbation.
@@ -1487,7 +1487,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
-        const CCTK_REAL psi1_2 = sqrt(psi2_2) ;
+        psi1_2 = sqrt(psi2_2) ;
         // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
         // const CCTK_REAL psi2_1 = sqrt(psi4_1);
         // psi1_1 = sqrt(psi2_1);

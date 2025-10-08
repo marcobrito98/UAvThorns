@@ -1129,7 +1129,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           if (isnan(beta1[idx]) || isinf(beta1[idx])) {
             fprintf(stderr, "Error: beta1[%d] is NaN at grid point (%lf,%lf,%lf)\n", idx, x1_1, y1_1, z1_1);
           }
-          if (isnan(betaup1[idx] || isinf(betaup1[idx]))) {
+          if (isnan(betaup1[idx]) || isinf(betaup1[idx])) {
             fprintf(stderr, "Error: betaup1[%d] is NaN at grid point (%lf,%lf,%lf)\n", idx, x1_1, y1_1, z1_1);
           }
         }

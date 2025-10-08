@@ -990,7 +990,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         dG[2][2][2] = (2*exp(2. * F1_1[ind])*y1_1*(pow(x1_1,2)*gamma2 + y1_1*(pow(y1_1,2) + \
                       pow(x1_1,2)*gamma2)*dF1_1_dy) + \
                       2*exp(2. * F2_1[ind])*pow(x1_1,2)*gamma2*(-y1_1 + (pow(y1_1,2) + \
-                      pow(x1_1,2)*gamma2)*dF2_1_dy))/pow(pow(y1_1,2) + pow(x1_1,2)*gamma,2);
+                      pow(x1_1,2)*gamma2)*dF2_1_dy))/pow(rho2_1,2);
         dG[2][2][3] = (2*(exp(2. * F1_1[ind])*pow(y1_1,2)*dF1_1_dz + \
                       exp(2. * F2_1[ind])*pow(x1_1,2)*gamma2*dF2_1_dz))/(rho2_1);
         dG[3][3][1] = 2*exp(2. * F1_1[ind])*dF1_1_dx;

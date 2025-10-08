@@ -989,6 +989,16 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         dG[3][3][2] = 2*exp(2. * F1_1[ind])*dF1_1_dy;
         dG[3][3][3] = 2*exp(2. * F1_1[ind])*dF1_1_dz;
 
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            for (int c = 0; c < 4; ++c) {
+              if (isnan(dG[a][b][c]) || isinf(dG[a][b][c])) {
+                fprintf(stderr, "Error: dG[%d][%d][%d] is nan or inf at grid point (%lf,%lf,%lf)\n", a, b, c, x1_1, y1_1, z1_1);
+              }
+            }
+          }
+        }
+
 
 
         // Boosted metric

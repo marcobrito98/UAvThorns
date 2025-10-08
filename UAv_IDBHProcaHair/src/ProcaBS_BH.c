@@ -852,7 +852,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL z1_1  = z[ind] - z0;
 
         // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
+        CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
         if( rr2_1 < pow( eps_r, 2 ) ) {
         rr2_1 = pow( eps_r, 2 );
         }

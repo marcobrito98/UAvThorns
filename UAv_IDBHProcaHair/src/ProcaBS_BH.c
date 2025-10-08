@@ -1112,7 +1112,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // Now we compute the 3+1 quantities
         // Lapse
-        const CCTK_REAL alpha1 = -(G_inv[0][0]*gamma2+gamma2*bs_v2*G_inv[0][1]);
+        const CCTK_REAL alpha1 = -(G_inv[0][0]*gamma2 + gamma2*bs_v2*G_inv[0][1]);
         // Shift
         CCTK_REAL beta1[4],betaup1[4];
         beta1[0] = 0;
@@ -1135,7 +1135,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
 
         
-
+        check_nan_or_inf("1/alpha1", 1/alpha1);
 
         CCTK_REAL K_A[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a) {
@@ -1161,7 +1161,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         for (int a = 1; a < 4; ++a) {
           for (int b = 1; b < 4; ++b) {
             if (isnan(K_A[a][b]) || isinf(K_A[a][b])) {
-              fprintf(stderr, "Error: K_{%d,%d}is nan at grid point (%lf,%lf,%lf)\n",a,b, x1_1, y1_1, z1_1);
+              fprintf(stderr, "Error: K_{%d,%d} is nan at grid point (%lf,%lf,%lf)\n",a,b, x1_1, y1_1, z1_1);
             }
           }
         }

@@ -923,9 +923,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         G[0][0] = - exp(2. * F0_1[ind]);
         G[1][1] = psi4_1 * (1. + h_rho2_1* sinph * sinph);
-        G[1][2] = -psi4_1 * h_rho2 * sinph * cosph;
+        G[1][2] = -psi4_1 * h_rho2_1 * sinph * cosph;
         G[2][1] = G[1][2];
-        G[2][2] = psi4_1 * (1. + h_rho2 * cosph * cosph);
+        G[2][2] = psi4_1 * (1. + h_rho2_1 * cosph * cosph);
         G[3][3] = psi4_1;
 
         // Derivatives of the metric functions
@@ -1197,9 +1197,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
         const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_2) ;
 
-        const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
-        const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
-        psi1_2 = sqrt(psi2_2) ;
+        // const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
+        // const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
+        // psi1_2 = sqrt(psi2_2) ;
         
 
         // non-axisymmetric perturbation.

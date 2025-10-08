@@ -1035,6 +1035,17 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         gammaA_inv[3][2] = -(Gb[1][1]*Gb[3][2] - Gb[1][2]*Gb[3][1]) / det_g;
         gammaA_inv[3][3] =  (Gb[1][1]*Gb[2][2] - Gb[1][2]*Gb[2][1]) / det_g;
 
+        // Check for NaN or Inf in gammaA_inv
+        for (int a = 1; a < 4; ++a) {
+          for (int b = 1; b < 4; ++b) {
+            if (isnan(gammaA_inv[a][b]) || isinf(gammaA_inv[a][b])) {
+              fprintf(stderr, "Error: gammaA_inv[%d][%d] is nan or inf at grid point (%lf,%lf,%lf)\n", a, b, x1_1, y1_1, z1_1);
+            }
+          }
+        }
+
+        
+
         CCTK_REAL dGb[4][4][4];
         for (int a = 0; a < 3; ++a) {
           for (int b = 0; b < 3; ++b) {

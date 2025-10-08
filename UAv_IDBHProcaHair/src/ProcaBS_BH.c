@@ -862,8 +862,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
            z0 (for instance) */
 
         CCTK_REAL rho2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1;
-        if( rho2_2 < pow( eps_r, 2 ) ){
-        rho2_2 = pow( eps_r, 2 );
+        if( rho2_1 < pow( eps_r, 2 ) ){
+        rho2_1 = pow( eps_r, 2 );
         }
         const CCTK_REAL rho_1  = sqrt(rho2_1);
 

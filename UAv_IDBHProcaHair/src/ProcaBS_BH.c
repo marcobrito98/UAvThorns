@@ -1111,8 +1111,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
         // Now we compute the 3+1 quantities
-        // Lapse
-        const CCTK_REAL alpha1 = -(G_inv[0][0]*gamma2 + gamma2*bs_v2*G_inv[0][1]);
+        
         // Shift
         CCTK_REAL beta1[4],betaup1[4];
         beta1[0] = 0;
@@ -1123,6 +1122,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         betaup1[1] = gammaA_inv[1][1]*beta1[1] + gammaA_inv[1][2]*beta1[2] + gammaA_inv[1][3]*beta1[3];
         betaup1[2] = gammaA_inv[2][1]*beta1[1] + gammaA_inv[2][2]*beta1[2] + gammaA_inv[2][3]*beta1[3];
         betaup1[3] = gammaA_inv[3][1]*beta1[1] + gammaA_inv[3][2]*beta1[2] + gammaA_inv[3][3]*beta1[3];
+
+        // Lapse
+        const CCTK_REAL alpha1 = sqrt(-Gb[0][0] + betaup1[1]*beta1[1] + betaup1[2]*beta1[2] + betaup1[3]*beta1[3]);
 
         // Check for NaN in beta1 and betaup1
         for (int idx = 0; idx < 4; ++idx) {

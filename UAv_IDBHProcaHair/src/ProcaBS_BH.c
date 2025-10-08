@@ -853,13 +853,21 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
+        if( rr2_1 < pow( eps_r, 2 ) ) {
+        rr2_1 = pow( eps_r, 2 );
+        }
         const CCTK_REAL rr_1  = sqrt(rr2_1);
 	      /* note that there are divisions by rr_1 in the following expressions.
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
-        const CCTK_REAL rho2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1;
+        CCTK_REAL rho2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1;
+        if( rho2_2 < pow( eps_r, 2 ) ){
+        rho2_2 = pow( eps_r, 2 );
+        }
         const CCTK_REAL rho_1  = sqrt(rho2_1);
+
+        
 
         const CCTK_REAL costh_1  = z1_1/rr_1;
         const CCTK_REAL costh2_1 = costh_1*costh_1;
@@ -907,6 +915,17 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL psi1_1 = sqrt(psi2_1);
 
 
+        const CCTK_REAL dF1_1_dx = dF1_dr_1[ind]*R_x_1 + dF1_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF1_1_dy = dF1_dr_1[ind]*R_y_1 + dF1_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF1_1_dz = dF1_dr_1[ind]*R_z_1 + dF1_dth_1[ind]*th_z_1;
+        const CCTK_REAL dF2_1_dx = dF2_dr_1[ind]*R_x_1 + dF2_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF2_1_dy = dF2_dr_1[ind]*R_y_1 + dF2_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF2_1_dz = dF2_dr_1[ind]*R_z_1 + dF2_dth_1[ind]*th_z_1;
+        const CCTK_REAL dF0_1_dx = dF0_dr_1[ind]*R_x_1 + dF0_dth_1[ind]*th_x_1;
+        const CCTK_REAL dF0_1_dy = dF0_dr_1[ind]*R_y_1 + dF0_dth_1[ind]*th_y_1;
+        const CCTK_REAL dF0_1_dz = dF0_dr_1[ind]*R_z_1 + dF0_dth_1[ind]*th_z_1;
+
+
         CCTK_REAL G[4][4]; // temporary storage for the 4-metric
         CCTK_REAL G_inv[4][4]; // temporary storage for the inverse of the 4-metric
         CCTK_REAL Gb[4][4]; // temporary storage for the boosted metric
@@ -940,17 +959,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // dG[a][b][c] = dG_ab/dx^c
 
 
-
-
-        const CCTK_REAL dF1_1_dx = dF1_dr_1[ind]*R_x_1 + dF1_dth_1[ind]*th_x_1;
-        const CCTK_REAL dF1_1_dy = dF1_dr_1[ind]*R_y_1 + dF1_dth_1[ind]*th_y_1;
-        const CCTK_REAL dF1_1_dz = dF1_dr_1[ind]*R_z_1 + dF1_dth_1[ind]*th_z_1;
-        const CCTK_REAL dF2_1_dx = dF2_dr_1[ind]*R_x_1 + dF2_dth_1[ind]*th_x_1;
-        const CCTK_REAL dF2_1_dy = dF2_dr_1[ind]*R_y_1 + dF2_dth_1[ind]*th_y_1;
-        const CCTK_REAL dF2_1_dz = dF2_dr_1[ind]*R_z_1 + dF2_dth_1[ind]*th_z_1;
-        const CCTK_REAL dF0_1_dx = dF0_dr_1[ind]*R_x_1 + dF0_dth_1[ind]*th_x_1;
-        const CCTK_REAL dF0_1_dy = dF0_dr_1[ind]*R_y_1 + dF0_dth_1[ind]*th_y_1;
-        const CCTK_REAL dF0_1_dz = dF0_dr_1[ind]*R_z_1 + dF0_dth_1[ind]*th_z_1;
 
         dG[1][1][1] = (2*exp(2. * F1_1[ind])*x1_1*gamma*(pow(y1_1,2) + x1_1*gamma*(rho2_1)*dF1_1_dx) + 2*exp(2. * \
                       F2_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (rho2_1)*dF2_1_dy))/pow(rho2_1,2);

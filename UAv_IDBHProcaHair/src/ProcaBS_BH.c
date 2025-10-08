@@ -1488,9 +1488,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
         const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
         psi1_2 = sqrt(psi2_2) ;
-        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        psi1_1 = sqrt(psi2_1);
+        // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        // const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        // psi1_1 = sqrt(psi2_1);
 
         // non-axisymmetric perturbation.
         /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */

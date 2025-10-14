@@ -950,13 +950,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
         G3_inv[1][1] =  (pow(x1_1*gamma,2)/exp(2. * F1_1[ind]) + pow(y1_1,2)/exp(2. * \
-                        F2_1[ind]))/(pow(x1_1*gamma,2) + pow(y1_1,2));
+                        F2_1[ind]))/rho2_1;
         G3_inv[1][2] = ((exp(-2. * F1_1[ind]) - \
-                       exp(-2 * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + pow(y1_1,2));
+                       exp(-2 * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1;
         G3_inv[1][3] =  0.0;
         G3_inv[2][1] = G3_inv[1][2];
         G3_inv[2][2] =  (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
-                        F1_1[ind]))/(pow(x1_1*gamma,2) + pow(y1_1,2));
+                        F1_1[ind]))/rho2_1;
         G3_inv[2][3] = 0;
         G3_inv[3][1] = G3_inv[1][3];
         G3_inv[3][2] = G3_inv[2][3];
@@ -1006,7 +1006,7 @@ F2_1[ind])*x1_1*gamma*(pow(x1_1*gamma,2) - pow(y1_1,2) + 2*y1_1*(pow(x1_1*gamma,
 pow(y1_1,2))*dF2_1_dy))/pow(pow(x1_1*gamma,2) \
 + pow(y1_1,2),2);
 
-        dG[1][2][3] = (2*x1_1*gamma*y1_1*(exp(2. * F1_1[ind])*dF1_1_dz - exp(2. * F2_1[ind])*dF2_1_dz))/(pow(x1_1*gamma,2) + pow(y1_1,2));
+        dG[1][2][3] = (2*x1_1*gamma*y1_1*(exp(2. * F1_1[ind])*dF1_1_dz - exp(2. * F2_1[ind])*dF2_1_dz))/rho2_1;
 
         dG[2][2][1] = (2*exp(2. * F1_1[ind])*pow(y1_1,2)*(-x1_1*gamma + (pow(x1_1*gamma,2) + \
 pow(y1_1,2))*dF1_1_dx) + 2*exp(2. * \
@@ -1107,14 +1107,14 @@ x1_1*gamma,2) + pow(y1_1,2)); //dG23_dx^i = 0
 
 
         gammaA_inv[1][1] = (exp(2. * F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                           F1_1[ind])*pow(y1_1,2))/(pow(1 + bs_v,2)*exp(2*(F1_1[ind] + F2_1[ind]))*(pow(x1_1*gamma,2) + pow(y1_1,2))*pow(gamma,2));
+                           F1_1[ind])*pow(y1_1,2))/(pow(1 + bs_v,2)*exp(2*(F1_1[ind] + F2_1[ind]))*rho2_1*pow(gamma,2));
         gammaA_inv[1][2] = ((exp(-2*F1_1[ind]) - \
                            exp(-2*F2_1[ind]))*x1_1*gamma*y1_1)/((1 + bs_v)*(pow(x1_1*gamma,2) + \
                            pow(y1_1,2))*gamma);
         gammaA_inv[1][3] = 0;
         gammaA_inv[2][1] = gammaA_inv[1][2];
         gammaA_inv[2][2] = (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
-                           F1_1[ind]))/(pow(x1_1*gamma,2) + pow(y1_1,2));
+                           F1_1[ind]))/rho2_1;
         gammaA_inv[2][3] = 0;
         gammaA_inv[3][1] = gammaA_inv[1][3];
         gammaA_inv[3][2] = gammaA_inv[2][3];
@@ -1432,38 +1432,38 @@ x1_1*gamma,2) + pow(y1_1,2)); //dG23_dx^i = 0
 
         gamma_final_inv[1][1] = (-1 + psi4_2 + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
                                 F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)))/(-pow(((exp(2. * \
+                                F1_1[ind])*pow(y1_1,2))/rho2_1)/(-pow(((exp(2. * \
                                 F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + \
                                 pow(y1_1,2)) - pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 \
                                 + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
                                 F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)))*(-1 + psi4_2 + \
+                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
                                 (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)) + \
+                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
         gamma_final_inv[1][2] = -((((exp(2. * F1_1[ind]) - exp(2. * \
-                                F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + pow(y1_1,2)) - \
+                                F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
                                 pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2)/(-pow(((exp(2. * F1_1[ind]) - \
-                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + pow(y1_1,2)) - \
+                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
                                 pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
                                 F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)))*(-1 + psi4_2 + \
+                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
                                 (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)) + \
+                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))));
         gamma_final_inv[1][3] = 0;
         gamma_final_inv[2][1] = gamma_final_inv[1][2];
         gamma_final_inv[2][2] = (-1 + psi4_2 + (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)) + \
+                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))/(-pow(((exp(2. * F1_1[ind]) - \
-                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + pow(y1_1,2)) - \
+                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
                                 pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
                                 F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)))*(-1 + psi4_2 + \
+                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
                                 (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/(pow(x1_1*gamma,2) + pow(y1_1,2)) + \
+                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
                                 pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
         gamma_final_inv[2][3] = 0;
         gamma_final_inv[3][1] = gamma_final_inv[1][3];

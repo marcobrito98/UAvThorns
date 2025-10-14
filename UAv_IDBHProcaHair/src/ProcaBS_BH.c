@@ -902,7 +902,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
-        const CCTK_REAL R_x_1    = x1_1/rr_1 ;
+        const CCTK_REAL R_x_1    = x1_1*gamma/rr_1 ;
         const CCTK_REAL R_y_1    = y1_1/rr_1 ;
         const CCTK_REAL R_z_1    = z1_1/rr_1 ;
 

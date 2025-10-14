@@ -1048,9 +1048,6 @@ x1_1*gamma,2) + pow(y1_1,2)); //dG23_dx^i = 0
           }
         }
 
-
-
-
         CCTK_REAL invLambda[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
@@ -1058,8 +1055,8 @@ x1_1*gamma,2) + pow(y1_1,2)); //dG23_dx^i = 0
           }
         }
         invLambda[0][0] = gamma;
-        invLambda[0][1] = +gamma*bs_v;
-        invLambda[1][0] = +gamma*bs_v;
+        invLambda[0][1] = gamma*bs_v;
+        invLambda[1][0] = gamma*bs_v;
         invLambda[1][1] = gamma;
         invLambda[2][2] = 1.;
         invLambda[3][3] = 1.;

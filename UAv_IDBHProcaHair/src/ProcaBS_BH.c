@@ -951,7 +951,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         G3_inv[1][1] =  (pow(x1_1*gamma,2)/exp(2. * F1_1[ind]) + pow(y1_1,2)/exp(2. * \
                         F2_1[ind]))/(pow(x1_1*gamma,2) + pow(y1_1,2));
-        G3_inv[1][2] = ((exp(-2. * F1_1[ind]); - \
+        G3_inv[1][2] = ((exp(-2. * F1_1[ind]) - \
                        exp(-2 * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + pow(y1_1,2));
         G3_inv[1][3] =  0.0;
         G3_inv[2][1] = G3_inv[1][2];

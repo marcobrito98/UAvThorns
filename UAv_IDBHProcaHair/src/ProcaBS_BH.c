@@ -1419,53 +1419,53 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         gamma_final[3][3] = gzz[ind];
 
 
-        CCTK_REAL gamma_final_inv[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            gamma_final_inv[a][b] = 0.0;
-          }
-        }
+        // CCTK_REAL gamma_final_inv[4][4];
+        // for (int a = 0; a < 4; ++a) {
+        //   for (int b = 0; b < 4; ++b) {
+        //     gamma_final_inv[a][b] = 0.0;
+        //   }
+        // }
 
 
-        gamma_final_inv[1][1] = (-1 + psi4_2 + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
-                                F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/rho2_1)/(-pow(((exp(2. * \
-                                F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + \
-                                pow(y1_1,2)) - pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 \
-                                + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
-                                F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
-                                (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
-        gamma_final_inv[1][2] = -((((exp(2. * F1_1[ind]) - exp(2. * \
-                                F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
-                                pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2)/(-pow(((exp(2. * F1_1[ind]) - \
-                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
-                                pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
-                                F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
-                                (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))));
-        gamma_final_inv[1][3] = 0;
-        gamma_final_inv[2][1] = gamma_final_inv[1][2];
-        gamma_final_inv[2][2] = (-1 + psi4_2 + (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))/(-pow(((exp(2. * F1_1[ind]) - \
-                                exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
-                                pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
-                                F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
-                                (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
-                                F2_1[ind])*pow(y1_1,2))/rho2_1 + \
-                                pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
-        gamma_final_inv[2][3] = 0;
-        gamma_final_inv[3][1] = gamma_final_inv[1][3];
-        gamma_final_inv[3][2] = gamma_final_inv[2][3];
-        gamma_final_inv[3][3] = 1/(-1 + exp(2. * F1_1[ind]) + psi4_2);
+        // gamma_final_inv[1][1] = (-1 + psi4_2 + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
+        //                         F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F1_1[ind])*pow(y1_1,2))/rho2_1)/(-pow(((exp(2. * \
+        //                         F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/(pow(x1_1*gamma,2) + \
+        //                         pow(y1_1,2)) - pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 \
+        //                         + pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
+        //                         F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
+        //                         (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F2_1[ind])*pow(y1_1,2))/rho2_1 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
+        // gamma_final_inv[1][2] = -((((exp(2. * F1_1[ind]) - exp(2. * \
+        //                         F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
+        //                         pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2)/(-pow(((exp(2. * F1_1[ind]) - \
+        //                         exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
+        //                         pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
+        //                         F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
+        //                         (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F2_1[ind])*pow(y1_1,2))/rho2_1 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))));
+        // gamma_final_inv[1][3] = 0;
+        // gamma_final_inv[2][1] = gamma_final_inv[1][2];
+        // gamma_final_inv[2][2] = (-1 + psi4_2 + (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F2_1[ind])*pow(y1_1,2))/rho2_1 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2))/(-pow(((exp(2. * F1_1[ind]) - \
+        //                         exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1 - \
+        //                         pow(bh_spin,2)*hh*psi4_2*x1_2*y1_2,2) + (-1 + psi4_2 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(x1_2,2) + (exp(2. * \
+        //                         F2_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F1_1[ind])*pow(y1_1,2))/rho2_1)*(-1 + psi4_2 + \
+        //                         (exp(2. * F1_1[ind])*pow(x1_1*gamma,2) + exp(2. * \
+        //                         F2_1[ind])*pow(y1_1,2))/rho2_1 + \
+        //                         pow(bh_spin,2)*hh*psi4_2*pow(y1_2,2)));
+        // gamma_final_inv[2][3] = 0;
+        // gamma_final_inv[3][1] = gamma_final_inv[1][3];
+        // gamma_final_inv[3][2] = gamma_final_inv[2][3];
+        // gamma_final_inv[3][3] = 1/(-1 + exp(2. * F1_1[ind]) + psi4_2);
 
 
         CCTK_REAL K_B[4][4]; // extrinsic curvature

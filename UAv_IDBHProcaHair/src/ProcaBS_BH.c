@@ -1827,7 +1827,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
-        const CCTK_REAL alph = exp(F0_1[ind]) + alpha0 - 1;
+        const CCTK_REAL alph = exp(F0_1[ind]);// + alpha0 - 1;
 
     
 

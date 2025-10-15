@@ -1898,8 +1898,8 @@ x1_1*gamma,2) + pow(y1_1,2)); //dG23_dx^i = 0
         // Aphi1[ind] = (V_1[ind] + W_1[ind] * sinth_1 * H3_1[ind]) / alph * harm_im;
         // Aphi2[ind] =-(V_1[ind] + W_1[ind] * sinth_1 * H3_1[ind]) / alph * harm_re;
 
-        Aphi1[ind] = - 1 / alpha1 * A1_boosted[0] + betaup1[1] * A1_boosted[1] + betaup1[2] * A1_boosted[2] + betaup1[3] * A1_boosted[3];
-        Aphi2[ind] = - 1 / alpha1 * A2_boosted[0] + betaup1[1] * A2_boosted[1] + betaup1[2] * A2_boosted[2] + betaup1[3] * A2_boosted[3];
+        Aphi1[ind] = - 1 / alpha1 * (A1_boosted[0] + betaup1[1] * A1_boosted[1] + betaup1[2] * A1_boosted[2] + betaup1[3] * A1_boosted[3]);
+        Aphi2[ind] = - 1 / alpha1 * (A2_boosted[0] + betaup1[1] * A2_boosted[1] + betaup1[2] * A2_boosted[2] + betaup1[3] * A2_boosted[3]);
 
         // ----- Electric fields -----
         

@@ -606,7 +606,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
   const CCTK_REAL gamma = sqrt(gamma2);
 
-  for (int k = 0; k < cctk_lsh[2]; ++k) { //tenho de por aqui os gammas?
+  for (int k = 0; k < cctk_lsh[2]; ++k) { //tenho de por aqui os gammas? O resultado parece melhor
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
 

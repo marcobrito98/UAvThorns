@@ -602,6 +602,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   X_g     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   theta_g = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
+    const CCTK_REAL bs_v2 = bs_v * bs_v;
+  const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
+  const CCTK_REAL gamma = sqrt(gamma2);
+
   for (int k = 0; k < cctk_lsh[2]; ++k) { //tenho de por aqui os gammas?
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -612,7 +616,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL y1_1  = y[ind] - y0;
         const CCTK_REAL z1_1  = z[ind] - z0;
 
-        const CCTK_REAL rr2_1 = x1_1*x1_1 + y1_1*y1_1 + z1_1*z1_1;
+        const CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
 
         CCTK_REAL rr_1  = sqrt(rr2_1);
         /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
@@ -836,9 +840,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
 
-  const CCTK_REAL bs_v2 = bs_v * bs_v;
-  const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
-  const CCTK_REAL gamma = sqrt(gamma2);
+
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {

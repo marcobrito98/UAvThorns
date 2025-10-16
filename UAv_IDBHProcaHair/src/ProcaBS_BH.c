@@ -2009,7 +2009,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
-          alp[ind] = pow(psi1_1 + alpha1 - 1, initial_lapse_psi_exponent);
+          alp[ind] = pow(psi1_1 + psi1_2 - 1, initial_lapse_psi_exponent);
         else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
           alp[ind] = alph;
           if (alp[ind] < SMALL)

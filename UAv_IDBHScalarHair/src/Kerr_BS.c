@@ -455,14 +455,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   output_array_type_codes_1[5] = CCTK_VARIABLE_REAL;
   output_array_type_codes_1[6] = CCTK_VARIABLE_REAL;
 
-  // output_array_type_codes_2[0] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[1] = CCTK_VARIABLE_REAL;   // nao posso tirar este senao da interpolation error.
-  // output_array_type_codes_2[2] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[3] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[4] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[5] = CCTK_VARIABLE_REAL;
-  // output_array_type_codes_2[6] = CCTK_VARIABLE_REAL;
-
   output_arrays_1[0] = (void *) F1_1;
   output_arrays_1[1] = (void *) F2_1;
   output_arrays_1[2] = (void *) F0_1;
@@ -470,17 +462,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
   output_arrays_1[4] = (void *) W_1;
   output_arrays_1[5] = (void *) dW_dr_1;
   output_arrays_1[6] = (void *) dW_dth_1;
-
-  // output_arrays_2[0] = (void *) F1_2;
-  // output_arrays_2[1] = (void *) F2_2;
-  // output_arrays_2[2] = (void *) F0_2;
-  // output_arrays_2[3] = (void *) phi0_2;   // sem isto da segmentation fault, mas assim ele põe os dados do ficheiro.
-  // output_arrays_2[4] = (void *) W_2;
-  // output_arrays_2[5] = (void *) dW_dr_2;
-  // output_arrays_2[6] = (void *) dW_dth_2;
-
-
-
 
 
 
@@ -877,122 +858,204 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Gyy = G[2][2];
 
         CCTK_REAL G_inv[4][4];
-        // Initialize G_inv to zero
+        // Initialize G_inv to zero. Inverse of 3 metric
         for (int i = 0; i < 4; ++i)
           for (int j = 0; j < 4; ++j)
             G_inv[i][j] = 0.0;
 
-        // Compute determinant of the spatial part of G (indices 1..3)
-        CCTK_REAL det_G =
-            G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
-          - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
-          + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
+        // // Compute determinant of the spatial part of G (indices 1..3)
+        // CCTK_REAL det_G =
+        //     G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
+        //   - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
+        //   + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
 
-        if (fabs(det_G) < 1e-12) {
-            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "Singular G spatial metric (det_G = %e) at grid point (%d,%d,%d). Aborting.", det_G, i, j, k);
-            abort();
+        // if (fabs(det_G) < 1e-12) {
+        //     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+        //                "Singular G spatial metric (det_G = %e) at grid point (%d,%d,%d). Aborting.", det_G, i, j, k);
+        //     abort();
         } else {
-            G_inv[1][1] =  (G[2][2]*G[3][3] - G[2][3]*G[3][2]) / det_G;
-            G_inv[1][2] = -(G[1][2]*G[3][3] - G[1][3]*G[3][2]) / det_G;
-            G_inv[1][3] =  (G[1][2]*G[2][3] - G[1][3]*G[2][2]) / det_G;
-            G_inv[2][1] = -(G[2][1]*G[3][3] - G[2][3]*G[3][1]) / det_G;
-            G_inv[2][2] =  (G[1][1]*G[3][3] - G[1][3]*G[3][1]) / det_G;
-            G_inv[2][3] = -(G[1][1]*G[2][3] - G[1][3]*G[2][1]) / det_G;
-            G_inv[3][1] =  (G[2][1]*G[3][2] - G[2][2]*G[3][1]) / det_G;
-            G_inv[3][2] = -(G[1][1]*G[3][2] - G[1][2]*G[3][1]) / det_G;
-            G_inv[3][3] =  (G[1][1]*G[2][2] - G[1][2]*G[2][1]) / det_G;
+            G_inv[1][1] =  (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)/((1 + \
+pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
+            G_inv[1][2] = (pow(bh_spin,2)*x1_2*gamma*y1_2*hh)/((1 + \
+pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
+            G_inv[1][3] =  0;
+            G_inv[2][1] = G_inv[1][2];
+            G_inv[2][2] =  (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)/((1 + \
+pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
+            G_inv[2][3] = 0;
+            G_inv[3][1] =  G_inv[1][3];
+            G_inv[3][2] = G_inv[2][3];
+            G_inv[3][3] =  1/psi4_2;
         }
 
 
-        CCTK_REAL betaup[4];
-        betaup[1] = G_inv[1][1] * betad[1] + G_inv[1][2] * betad[2] + G_inv[1][3] * betad[3];
-        betaup[2] = G_inv[2][1] * betad[1] + G_inv[2][2] * betad[2] + G_inv[2][3] * betad[3];
-        betaup[3] = G_inv[3][1] * betad[1] + G_inv[3][2] * betad[2] + G_inv[3][3] * betad[3];
-
-
-        CCTK_REAL dbetaup[4][4];
-        // Initialize dbetaup to zero
-        for (int i = 0; i < 4; ++i) 
-          for (int j = 0; j < 4; ++j)
-            dbetaup[i][j] = 0.0;
-        // Compute derivatives of the betaup vector
-        dbetaup[1][1] = (-(pow(bh_spin,2)*(betad[1] + pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*psi4_2*(2*x1_2*gamma*hh + (rho2_2)*dhh_dx)) \
-                        + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[1][1] + \
-                        pow(bh_spin,2)*(hh*(y1_2*betad[2] + x1_2*gamma*(2*betad[1] + \
-                        x1_2*gamma*dbetad[1][1] + y1_2*dbetad[2][1])) + x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*dhh_dx)) - (1 + pow(bh_spin,2)*(rho2_2)*hh)*(betad[1] + pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dx)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[1][2] = (-(pow(bh_spin,2)*(betad[1] + pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*psi4_2*(2*y1_2*hh + (rho2_2)*dhh_dy)) + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[1][2] + \
-                        pow(bh_spin,2)*x1_2*gamma*(hh*(betad[2] + x1_2*gamma*dbetad[1][2] + \
-                        y1_2*dbetad[2][2]) + (x1_2*gamma*betad[1] + y1_2*betad[2])*dhh_dy)) - (1 + \
-                        pow(bh_spin,2)*(rho2_2)*hh)*(betad[1] + \
-                        pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dy)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[1][3] = (psi4_2*((1 + pow(bh_spin,2)*(rho2_2)*hh)*((1 + \
-                        pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dbetad[1][3] + \
-                        pow(bh_spin,2)*x1_2*gamma*y1_2*hh*dbetad[2][3]) + \
-                        pow(bh_spin,2)*y1_2*(-(y1_2*betad[1]) + x1_2*gamma*betad[2])*dhh_dz) - (1 + \
-                        pow(bh_spin,2)*(rho2_2)*hh)*(betad[1] + \
-                        pow(bh_spin,2)*x1_2*gamma*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dz)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[2][1] = (-(pow(bh_spin,2)*(betad[2] + pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*psi4_2*(2*x1_2*gamma*hh + (rho2_2)*dhh_dx)) + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[2][1] + \
-                        pow(bh_spin,2)*y1_2*(hh*(betad[1] + x1_2*gamma*dbetad[1][1] + \
-                        y1_2*dbetad[2][1]) + (x1_2*gamma*betad[1] + y1_2*betad[2])*dhh_dx)) - (1 + \
-                        pow(bh_spin,2)*(rho2_2)*hh)*(betad[2] + \
-                        pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dx)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[2][2] = (-(pow(bh_spin,2)*(betad[2] + pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*psi4_2*(2*y1_2*hh + (rho2_2)*dhh_dy)) + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[2][2] + \
-                        pow(bh_spin,2)*(hh*(x1_2*gamma*betad[1] + y1_2*(2*betad[2] + \
-                        x1_2*gamma*dbetad[1][2] + y1_2*dbetad[2][2])) + y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*dhh_dy)) - (1 + pow(bh_spin,2)*(rho2_2)*hh)*(betad[2] + pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dy)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[2][3] = (-(pow(bh_spin,2)*(rho2_2)*(betad[2] + \
-                        pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*psi4_2*dhh_dz) + (1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(dbetad[2][3] + \
-                        pow(bh_spin,2)*y1_2*(hh*(x1_2*gamma*dbetad[1][3] + y1_2*dbetad[2][3]) + \
-                        (x1_2*gamma*betad[1] + y1_2*betad[2])*dhh_dz)) - (1 + \
-                        pow(bh_spin,2)*(rho2_2)*hh)*(betad[2] + \
-                        pow(bh_spin,2)*y1_2*(x1_2*gamma*betad[1] + \
-                        y1_2*betad[2])*hh)*dpsi4_2_dz)/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2));
-        dbetaup[3][1] = 0;
-        dbetaup[3][2] = 0;
-        dbetaup[3][3] = 0;
-
-      
-
-        // Check for NaN or Inf in betaup components
-        check_nan_or_inf("betaup[1]", betaup[1]);
-        check_nan_or_inf("betaup[2]", betaup[2]);
-        check_nan_or_inf("betaup[3]", betaup[3]);
-        //estava mal porque os shifts agora sao diferentes depois do boost.
-        
-        // const CCTK_REAL dGxx_dx = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
-        // const CCTK_REAL dGxx_dy = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
-        // const CCTK_REAL dGxx_dz = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz;
-
-        // const CCTK_REAL dGxy_dx = -(pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + x1_2*gamma*dpsi4_2_dx)));
-        // const CCTK_REAL dGxy_dy = -(pow(bh_spin,2)*x1_2*gamma*(y1_2*psi4_2*dhh_dy + hh*(psi4_2 + y1_2*dpsi4_2_dy)));
-        // const CCTK_REAL dGxy_dz = -(pow(bh_spin,2)*x1_2*gamma*y1_2*(psi4_2*dhh_dz + hh*dpsi4_2_dz));
-
-        // const CCTK_REAL dGyy_dx = pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dx;
-        // const CCTK_REAL dGyy_dy = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dy + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dy;
-        // const CCTK_REAL dGyy_dz = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dz + (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dz;
         
 
+// Derivatives of the metric functions
+        CCTK_REAL dG[4][4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            for (int c = 0; c < 4; ++c) {
+              dG[a][b][c] = 0.0;
+            }
+          }
+        }
+        // dG[a][b][c] = dG_ab/dx^c
+
+        dG[1][1][1] = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + \
+pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx;
+
+        dG[1][1][2] = pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + (1 + \
+pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy;
+
+        dG[1][1][3] = pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + (1 + \
+pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz;
+
+        dG[1][2][1] = -(pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + \
+x1_2*gamma*dpsi4_2_dx)));
+
+
+        dG[1][2][2] = -(pow(bh_spin,2)*x1_2*gamma*(y1_2*psi4_2*dhh_dy + hh*(psi4_2 + \
+y1_2*dpsi4_2_dy)));
+
+        dG[1][2][3] = -(pow(bh_spin,2)*x1_2*gamma*y1_2*(psi4_2*dhh_dz + hh*dpsi4_2_dz));
+
+        //dG[1][3][i] = 0
+
+        dG[2][2][1] = pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + (1 + \
+pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dx;
+
+        dG[2][2][2] = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dy + (1 + \
+pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dy;
+        dG[2][2][3] = pow(bh_spin,2)*pow(x1_2*gamma,2)*psi4_2*dhh_dz + (1 + \
+pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dz; 
+                      
+        //dG23_dx^i = 0
+
+        dG[3][3][1] = dpsi4_2_dx;
+        dG[3][3][2] = dpsi4_2_dy;
+        dG[3][3][3] = dpsi4_2_dz;
+
+        //dG[mu][nu][0] = 0
+        dG[0][0][1] = -2*alpha0*dalpha_dx - (pow(bh_spin,2)*(pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*(2*x1_2*hh + (rho2_2)*dhh_dx))/(pow(1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + (2*betad[1]*dbetad[1][1] + \
+                      2*betad[2]*dbetad[2][1] + 2*pow(bh_spin,2)*(x1_2*betad[1] + \
+                      y1_2*betad[2])*hh*(betad[1] + x1_2*dbetad[1][1] + y1_2*dbetad[2][1]) \
+                      + pow(bh_spin,2)*pow(x1_2*betad[1] + y1_2*betad[2],2)*dhh_dx)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - ((pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*dpsi4_2_dx)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2));
+        dG[0][0][2] = -2*alpha0*dalpha_dy - (pow(bh_spin,2)*(pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*(2*y1_2*hh + (rho2_2)*dhh_dy))/(pow(1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + (2*betad[1]*dbetad[1][2] + \
+                      2*betad[2]*dbetad[2][2] + 2*pow(bh_spin,2)*(x1_2*betad[1] + \
+                      y1_2*betad[2])*hh*(betad[2] + x1_2*dbetad[1][2] + y1_2*dbetad[2][2]) \
+                      + pow(bh_spin,2)*pow(x1_2*betad[1] + y1_2*betad[2],2)*dhh_dy)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - ((pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*dpsi4_2_dy)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2));
+        dG[0][0][3] = -2*alpha0*dalpha_dz - (pow(bh_spin,2)*(rho2_2)*(pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*dhh_dz)/(pow(1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + (2*betad[1]*dbetad[1][3] + \
+                      2*betad[2]*dbetad[2][3] + 2*pow(bh_spin,2)*(x1_2*betad[1] + \
+                      y1_2*betad[2])*hh*(x1_2*dbetad[1][3] + y1_2*dbetad[2][3]) + \
+                      pow(bh_spin,2)*pow(x1_2*betad[1] + y1_2*betad[2],2)*dhh_dz)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - ((pow(betad[1],2) + \
+                      pow(betad[2],2) + pow(bh_spin,2)*pow(x1_2*betad[1] + \
+                      y1_2*betad[2],2)*hh)*dpsi4_2_dz)/((1 + \
+                      pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2));
+        dG[0][1][1] = dbetad[1][1];
+        dG[0][1][2] = dbetad[1][2];
+        dG[0][1][3] = dbetad[1][3];
+        dG[0][2][1] = dbetad[2][1];
+        dG[0][2][2] = dbetad[2][2];
+        dG[0][2][3] = dbetad[2][3];
+        dG[0][3][1] = dbetad[3][1];
+        dG[0][3][2] = dbetad[3][2];
+        dG[0][3][3] = dbetad[3][3];
+        //symmetries
+        dG[2][1][1] = dG[1][2][1];
+        dG[2][1][2] = dG[1][2][2];
+        dG[2][1][3] = dG[1][2][3];
+        dG[3][1][1] = dG[1][3][1];
+        dG[3][1][2] = dG[1][3][2];
+        dG[3][1][3] = dG[1][3][3];
+        dG[3][2][1] = dG[2][3][1];
+        dG[3][2][2] = dG[2][3][2];
+        dG[3][2][3] = dG[2][3][3];
+        dG[1][0][1] = dG[0][1][1];
+        dG[1][0][2] = dG[0][1][2];
+        dG[1][0][3] = dG[0][1][3];
+        dG[2][0][1] = dG[0][2][1];
+        dG[2][0][2] = dG[0][2][2];
+        dG[2][0][3] = dG[0][2][3];
+        dG[3][0][1] = dG[0][3][1];
+        dG[3][0][2] = dG[0][3][2];
+        dG[3][0][3] = dG[0][3][3];
+        
+
+
+
+
+
+        
+        CCTK_REAL invLambda[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            invLambda[a][b] = 0.0;
+          }
+        }
+        invLambda[0][0] = gamma;
+        invLambda[0][1] = gamma*bh_v;
+        invLambda[1][0] = gamma*bh_v;
+        invLambda[1][1] = gamma;
+        invLambda[2][2] = 1.;
+        invLambda[3][3] = 1.;
+
+
+        CCTK_REAL Lambda[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            Lambda[a][b] = 0.0;
+          }
+        }
+        Lambda[0][0] = gamma;
+        Lambda[0][1] = -gamma*bh_v;
+        Lambda[1][0] = -gamma*bh_v;
+        Lambda[1][1] = gamma;
+        Lambda[2][2] = 1.;
+        Lambda[3][3] = 1.;
+
+        CCTK_REAL Gb[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            Gb[a][b] = 0.0;
+          }
+        }
+
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+              CCTK_REAL sum = 0.0;
+              for (int mu = 0; mu < 4; ++mu)
+                for (int nu = 0; nu < 4; ++nu)
+                  sum += invLambda[mu][a]*invLambda[nu][b]*G[mu][nu];
+              Gb[a][b] = sum;
+          }
+        }
        
-
-        gxx[ind] = gamma2*Gxx - 2*gamma2*bh_v*Gxt + gamma2*bh_v2*Gtt;
-        gxy[ind] = gamma*Gxy-gamma*bh_v*Gty;
-        gxz[ind] = 0;
-        // gyy[ind] = (1 + bh_spin2*pow(x1_2,2)*gamma2*hh)*psi4_2; //+ psi4_1* (1. + h_rho2_1 * cosph_1 * cosph_1) - 1;
-        gyy[ind] = Gyy;
-        gyz[ind] = 0;
-        gzz[ind] = psi4_2; // + psi4_1 - 1;
+        //depois de testado fazer aqui a sobreposição
+        gxx[ind] = Gb[1][1];
+        gxy[ind] = Gb[1][2];
+        gxz[ind] = Gb[1][3];
+        gyy[ind] = Gb[2][2];
+        gyz[ind] = Gb[2][3];
+        gzz[ind] = Gb[3][3]; 
 
 
         check_nan_or_inf("gxx",gxx[ind]);
@@ -1005,137 +1068,61 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
 
 
-         // Create an array g to store the metric components at each grid point
-        CCTK_REAL g[4][4];
+        //  // Create an array g to store the metric components at each grid point
+        // CCTK_REAL g[4][4];
 
-        // Initialize g to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            g[i][j] = 0.0; 
+        // // Initialize g to zero
+        // for (int i = 0; i < 4; ++i)
+        //   for (int j = 0; j < 4; ++j)
+        //     g[i][j] = 0.0; 
 
-        g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + (pow(betad[1],2) + \
-                  pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
-                  x1_2*betad[1]*gamma,2)*hh)/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) \
-                  + pow(bh_v,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2);
-        g[1][1] = gxx[ind];
-        g[1][2] = gxy[ind];
-        g[1][3] = gxz[ind];
-        g[2][1] = g[1][2];
-        g[2][2] = gyy[ind];
-        g[2][3] = gyz[ind];
-        g[3][1] = g[1][3];
-        g[3][2] = g[2][3];
-        g[3][3] = gzz[ind];
+        // g[0][0] = pow(gamma,2)*(-pow(alpha0,2) - 2*bh_v*betad[1] + (pow(betad[1],2) + \
+        //           pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
+        //           x1_2*betad[1]*gamma,2)*hh)/((1 + pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) \
+        //           + pow(bh_v,2)*(1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*psi4_2);
+        // g[1][1] = gxx[ind];
+        // g[1][2] = gxy[ind];
+        // g[1][3] = gxz[ind];
+        // g[2][1] = g[1][2];
+        // g[2][2] = gyy[ind];
+        // g[2][3] = gyz[ind];
+        // g[3][1] = g[1][3];
+        // g[3][2] = g[2][3];
+        // g[3][3] = gzz[ind];
 
         
-        // Check for NaN or Inf in all g[i][j] components
-        for (int i = 0; i <= 3; ++i) {
-          for (int j = 0; j <= 3; ++j) {
-            char g_name[32];
-            snprintf(g_name, sizeof(g_name), "g[%d][%d]", i, j);
-            check_nan_or_inf(g_name, g[i][j]);
-          }
-        }
+        // // Check for NaN or Inf in all g[i][j] components
+        // for (int i = 0; i <= 3; ++i) {
+        //   for (int j = 0; j <= 3; ++j) {
+        //     char g_name[32];
+        //     snprintf(g_name, sizeof(g_name), "g[%d][%d]", i, j);
+        //     check_nan_or_inf(g_name, g[i][j]);
+        //   }
+        // }
         
 
         //from here on the derivatives already take into account the gammas correctly. one doesnt take that into account for the early aux variables because we are computing the unboosted original metric quantities, which later on
         //enter the rest of the equations with the transformed argument.
         
-        CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij}
+        CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)
           for (int jj = 0; jj < 4; ++jj)
             for (int kk = 0; kk < 4; ++kk)
               dg[ii][jj][kk] = 0.0;
             
-        dg[1][1][1] = pow(gamma,3)*(-2*bh_v*(bh_v*alpha0*dalpha_dx + dbetad[1][1]) + \
-                      pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + \
-                      (pow(bh_v,2)*(2*betad[1]*dbetad[1][1] + 2*betad[2]*dbetad[2][1] + \
-                      2*pow(bh_spin,2)*(y1_2*betad[2] + x1_2*betad[1]*gamma)*hh*(betad[1] + \
-                      x1_2*gamma*dbetad[1][1] + y1_2*dbetad[2][1]) + \
-                      pow(bh_spin,2)*pow(y1_2*betad[2] + \
-                      x1_2*betad[1]*gamma,2)*dhh_dx))/((1 + \
-                      pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - \
-                      (pow(bh_spin,2)*pow(bh_v,2)*(pow(betad[1],2) + pow(betad[2],2) + \
-                      pow(bh_spin,2)*pow(y1_2*betad[2] + \
-                      x1_2*betad[1]*gamma,2)*hh)*(2*x1_2*gamma*hh + \
-                      (rho2_2)*dhh_dx))/(pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + (1 \
-                      + pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx - \
-                      (pow(bh_v,2)*(pow(betad[1],2) + pow(betad[2],2) + \
-                      pow(bh_spin,2)*pow(y1_2*betad[2] + \
-                      x1_2*betad[1]*gamma,2)*hh)*dpsi4_2_dx)/((1 + \
-                      pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2))); // dgxx_dx
-
-        dg[1][1][2] = pow(gamma,2)*(-2*bh_v*(bh_v*alpha0*dalpha_dy + dbetad[1][2]) + \
-pow(bh_spin,2)*y1_2*psi4_2*(2*hh + y1_2*dhh_dy) + \
-(pow(bh_v,2)*(2*betad[1]*dbetad[1][2] + 2*betad[2]*dbetad[2][2] + \
-2*pow(bh_spin,2)*(y1_2*betad[2] + x1_2*betad[1]*gamma)*hh*(betad[2] + \
-x1_2*gamma*dbetad[1][2] + y1_2*dbetad[2][2]) + \
-pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*dhh_dy))/((1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) - \
-(pow(bh_spin,2)*pow(bh_v,2)*(pow(betad[1],2) + pow(betad[2],2) + \
-pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*hh)*(2*y1_2*hh + (rho2_2)*dhh_dy))/(pow(1 + \
-pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + (1 + \
-pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dy - \
-(pow(bh_v,2)*(pow(betad[1],2) + pow(betad[2],2) + \
-pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*hh)*dpsi4_2_dy)/((1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2))); // dgxx_dy
-
-        dg[1][1][3] = pow(gamma,2)*(-2*bh_v*(bh_v*alpha0*dalpha_dz + dbetad[1][3]) - \
-(pow(bh_spin,2)*pow(bh_v,2)*(rho2_2)*(pow(betad[1],2) + \
-pow(betad[2],2) + pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*hh)*dhh_dz)/(pow(1 + \
-pow(bh_spin,2)*(rho2_2)*hh,2)*psi4_2) + \
-pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dz + \
-(pow(bh_v,2)*(2*betad[1]*dbetad[1][3] + 2*betad[2]*dbetad[2][3] + \
-2*pow(bh_spin,2)*(y1_2*betad[2] + \
-x1_2*betad[1]*gamma)*hh*(x1_2*gamma*dbetad[1][3] + y1_2*dbetad[2][3]) \
-+ pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*dhh_dz))/((1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*psi4_2) + (1 + \
-pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dz - \
-(pow(bh_v,2)*(pow(betad[1],2) + pow(betad[2],2) + \
-pow(bh_spin,2)*pow(y1_2*betad[2] + \
-x1_2*betad[1]*gamma,2)*hh)*dpsi4_2_dz)/((1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*pow(psi4_2,2)));
-
-        dg[1][2][1] = -(pow(gamma,2)*(bh_v*dbetad[2][1] + \
-pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + \
-x1_2*gamma*dpsi4_2_dx)))); // dgxy_dx
-        dg[1][2][2] = -(gamma*(bh_v*dbetad[2][2] + \
-pow(bh_spin,2)*x1_2*gamma*(y1_2*psi4_2*dhh_dy + hh*(psi4_2 + \
-y1_2*dpsi4_2_dy)))); // dgxy_dy
-        dg[1][2][3] = -(gamma*(bh_v*dbetad[2][3] + \
-pow(bh_spin,2)*x1_2*y1_2*gamma*(psi4_2*dhh_dz + hh*dpsi4_2_dz))); // dgxy_dz
-        dg[1][3][1] = 0.0; // dgxz_dx
-        dg[1][3][2] = 0.0; // dgxz_dy
-        dg[1][3][3] = 0.0; // dgxz_dz
-        dg[2][2][1] = gamma*(pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + x1_2*gamma*dhh_dx) + \
-(1 + pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // dgyy_dx
-        dg[2][2][2] = pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dy + (1 + \
-pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dy; // dgyy_dy
-        dg[2][2][3] = pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*psi4_2*dhh_dz + (1 + \
-pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dz; // dgyy_dz
-        dg[2][3][1] = 0.0; // dgyz_dx
-        dg[2][3][2] = 0.0; // dgyz_dy
-        dg[2][3][3] = 0.0; // dgyz_dz
-        dg[3][3][1] = gamma*dpsi4_2_dx; // dgzz_dx
-        dg[3][3][2] = dpsi4_2_dy; // dgzz_dy
-        dg[3][3][3] = dpsi4_2_dz; // dgzz_dz
-        // Set symmetric components
-        dg[2][1][1] = dg[1][2][1]; // dgyx_dx = dgxy_dx
-        dg[2][1][2] = dg[1][2][2]; // dgyx_dy = dgxy_dy
-        dg[2][1][3] = dg[1][2][3]; // dgyx_dz = dgxy_dz
-        dg[3][1][1] = dg[1][3][1]; // dgzx_dx = dgxz_dx
-        dg[3][1][2] = dg[1][3][2]; // dgzx_dy = dgxz_dy
-        dg[3][1][3] = dg[1][3][3]; // dgzx_dz = dgxz_dz
-        dg[3][2][1] = dg[2][3][1]; // dgzy_dx = dgyz_dx
-        dg[3][2][2] = dg[2][3][2]; // dgzy_dy = dgyz_dy
-        dg[3][2][3] = dg[2][3][3]; // dgzy_dz = dgyz_dz
-
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            for (int c = 0; c < 4; ++c) {
+              CCTK_REAL sum = 0.0;
+              for (int mu = 0; mu < 4; ++mu)
+                for (int nu = 0; nu < 4; ++nu)
+                  for (int lam = 0; lam < 4; ++lam)
+                    sum += invLambda[mu][a]*invLambda[nu][b]*invLambda[lam][c]*dG[mu][nu][lam];
+              dg[a][b][c] = sum;
+            }
+          }
+        }
 
 
         

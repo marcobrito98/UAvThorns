@@ -839,7 +839,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         G[0][0] = -alpha02 + bphi*bphiup;
         G[0][1] = betad[1];
         G[0][2] = betad[2];
-        G[0][3] = 0.0;
+        G[0][3] = betad[3];
         G[1][1] = psi4_2*(1 + bh_spin2*hh*y1_2*y1_2);
         G[1][2] = -psi4_2*bh_spin2*hh*y1_2*x1_2*gamma;
         G[1][3] = 0.0;

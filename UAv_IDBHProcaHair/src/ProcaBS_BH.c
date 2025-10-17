@@ -1202,7 +1202,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
               sum2 += betaup1[c]*dGb[b][c][a];
               sum3 += betaup1[c]*dGb[a][c][b];
             }
-            K_A[a][b] = -1 / (2. * alpha1) * (dGb[0][a][b] - sum1 - (dGb[0][b][a] - sum2) - (dGb[0][a][b] - sum3));
+            K_A[a][b] = -1 / (2. * alpha1) * (dGb[a][b][0] - sum1 - (dGb[0][b][a] - sum2) - (dGb[0][a][b] - sum3));
           }
         }
 

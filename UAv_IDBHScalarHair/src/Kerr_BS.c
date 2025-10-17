@@ -863,17 +863,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int j = 0; j < 4; ++j)
             G_inv[i][j] = 0.0;
 
-        // // Compute determinant of the spatial part of G (indices 1..3)
-        // CCTK_REAL det_G =
-        //     G[1][1]*(G[2][2]*G[3][3] - G[2][3]*G[3][2])
-        //   - G[1][2]*(G[2][1]*G[3][3] - G[2][3]*G[3][1])
-        //   + G[1][3]*(G[2][1]*G[3][2] - G[2][2]*G[3][1]);
-
-        // if (fabs(det_G) < 1e-12) {
-        //     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-        //                "Singular G spatial metric (det_G = %e) at grid point (%d,%d,%d). Aborting.", det_G, i, j, k);
-        //     abort();
-        } else {
             G_inv[1][1] =  (1 + pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)/((1 + \
 pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
             G_inv[1][2] = (pow(bh_spin,2)*x1_2*gamma*y1_2*hh)/((1 + \
@@ -886,7 +875,7 @@ pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
             G_inv[3][1] =  G_inv[1][3];
             G_inv[3][2] = G_inv[2][3];
             G_inv[3][3] =  1/psi4_2;
-        }
+  
 
 
         

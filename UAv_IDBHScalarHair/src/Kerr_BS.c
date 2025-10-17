@@ -1125,45 +1125,6 @@ pow(bh_spin,2)*pow(x1_2*gamma,2)*hh)*dpsi4_2_dz;
         }
 
 
-        
-        //time derivatives. nas coordenadas adptadas à foliação do boost a métrica é estacionária.
-        dg[1][1][0] = (bh_v*pow(gamma,3)*(-2*pow(bh_v,2)*betad[2]*(1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*(pow(bh_spin,2)*x1_2*y1_2*gamma*hh*\
-dbetad[1][1] + (1 + pow(bh_spin,2)*pow(y1_2,2)*hh)*dbetad[2][1]) - \
-pow(1 + pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)*(-2*bh_v*(bh_v*\
-alpha0*dalpha_dx + dbetad[1][1]) + \
-pow(bh_spin,2)*pow(y1_2,2)*psi4_2*dhh_dx + (1 + \
-pow(bh_spin,2)*pow(y1_2,2)*hh)*dpsi4_2_dx) + \
-pow(bh_v,2)*pow(betad[2],2)*(pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh*(\
-1 + pow(bh_spin,2)*pow(y1_2,2)*hh) + x1_2*gamma*dhh_dx) + (1 + \
-pow(bh_spin,2)*pow(y1_2,2)*hh)*(1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx) + \
-pow(bh_v,2)*pow(betad[1],2)*(pow(bh_spin,2)*pow(y1_2,2)*psi4_2*(-2*\
-pow(bh_spin,2)*x1_2*gamma*pow(hh,2) + dhh_dx) + (1 + \
-pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*(1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx) - 2*pow(bh_v,2)*betad[1]*((1 \
-+ pow(bh_spin,2)*(rho2_2)*hh)*psi4_2*((1 + \
-pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dbetad[1][1] + \
-pow(bh_spin,2)*x1_2*y1_2*gamma*hh*dbetad[2][1]) + \
-pow(bh_spin,2)*y1_2*betad[2]*(psi4_2*(hh + \
-pow(bh_spin,2)*(pow(y1_2,2) - pow(x1_2,2)*pow(gamma,2))*pow(hh,2) + \
-x1_2*gamma*dhh_dx) - x1_2*gamma*hh*(1 + \
-pow(bh_spin,2)*(rho2_2)*hh)*dpsi4_2_dx))))/(pow(1 + \
-pow(bh_spin,2)*(rho2_2)*hh,2)*pow(psi4_2,2)); // ∂g_xx/∂t
-        dg[1][2][0] = bh_v*pow(gamma,2)*(bh_v*dbetad[2][1] + \
-pow(bh_spin,2)*y1_2*(x1_2*gamma*psi4_2*dhh_dx + hh*(psi4_2 + \
-x1_2*gamma*dpsi4_2_dx))); // ∂g_xy/∂t
-        dg[1][3][0] = 0; // ∂g_xz/∂t
-        dg[2][1][0] = dg[1][2][0]; // ∂g_yx/∂t
-        dg[2][2][0] = bh_v*gamma*(-(pow(bh_spin,2)*x1_2*gamma*psi4_2*(2*hh + \
-x1_2*gamma*dhh_dx)) - (1 + \
-pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
-        dg[2][3][0] = 0; // ∂g_yz/∂t
-        dg[3][1][0] = dg[1][3][0]; // ∂g_zx/∂t
-        dg[3][2][0] = dg[2][3][0]; // ∂g_zy/∂t
-        dg[3][3][0] = -(bh_v*gamma*dpsi4_2_dx); // ∂g_zz/∂t
-
-
 
 
         // Check for NaN or Inf in all metric derivatives
@@ -1176,37 +1137,37 @@ pow(bh_spin,2)*pow(x1_2,2)*pow(gamma,2)*hh)*dpsi4_2_dx); // ∂g_yy/∂t
             }
           }
         }
+//////////////////////////////////////////////////////////////////////////////////////////
 
 
+        // // Compute inverse metric g^{ij} (spatial part only)
+        // CCTK_REAL det_g =
+        //     g[1][1]*(g[2][2]*g[3][3] - g[2][3]*g[3][2])
+        //   - g[1][2]*(g[2][1]*g[3][3] - g[2][3]*g[3][1])
+        //   + g[1][3]*(g[2][1]*g[3][2] - g[2][2]*g[3][1]);
 
-        // Compute inverse metric g^{ij} (spatial part only)
-        CCTK_REAL det_g =
-            g[1][1]*(g[2][2]*g[3][3] - g[2][3]*g[3][2])
-          - g[1][2]*(g[2][1]*g[3][3] - g[2][3]*g[3][1])
-          + g[1][3]*(g[2][1]*g[3][2] - g[2][2]*g[3][1]);
+        // CCTK_REAL g_inv[4][4]; // Inverse metric
+        // // Initialize g_inv to zero
+        // for (int i = 0; i < 4; ++i)
+        //   for (int j = 0; j < 4; ++j)
+        //     g_inv[i][j] = 0.0;
 
-        CCTK_REAL g_inv[4][4]; // Inverse metric
-        // Initialize g_inv to zero
-        for (int i = 0; i < 4; ++i)
-          for (int j = 0; j < 4; ++j)
-            g_inv[i][j] = 0.0;
-
-        if (fabs(det_g) < 1e-12) {
-            // Abort execution due to singular metric
-            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                   "Singular spatial metric (det_g = %e) at grid point (%d,%d,%d). Aborting.", det_g, i, j, k);
-            abort();
-        } else {
-            g_inv[1][1] =  (g[2][2]*g[3][3] - g[2][3]*g[3][2]) / det_g;
-            g_inv[1][2] = -(g[1][2]*g[3][3] - g[1][3]*g[3][2]) / det_g;
-            g_inv[1][3] =  (g[1][2]*g[2][3] - g[1][3]*g[2][2]) / det_g;
-            g_inv[2][1] = -(g[2][1]*g[3][3] - g[2][3]*g[3][1]) / det_g;
-            g_inv[2][2] =  (g[1][1]*g[3][3] - g[1][3]*g[3][1]) / det_g;
-            g_inv[2][3] = -(g[1][1]*g[2][3] - g[1][3]*g[2][1]) / det_g;
-            g_inv[3][1] =  (g[2][1]*g[3][2] - g[2][2]*g[3][1]) / det_g;
-            g_inv[3][2] = -(g[1][1]*g[3][2] - g[1][2]*g[3][1]) / det_g;
-            g_inv[3][3] =  (g[1][1]*g[2][2] - g[1][2]*g[2][1]) / det_g;
-        }
+        // if (fabs(det_g) < 1e-12) {
+        //     // Abort execution due to singular metric
+        //     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+        //            "Singular spatial metric (det_g = %e) at grid point (%d,%d,%d). Aborting.", det_g, i, j, k);
+        //     abort();
+        // } else {
+        //     g_inv[1][1] =  (g[2][2]*g[3][3] - g[2][3]*g[3][2]) / det_g;
+        //     g_inv[1][2] = -(g[1][2]*g[3][3] - g[1][3]*g[3][2]) / det_g;
+        //     g_inv[1][3] =  (g[1][2]*g[2][3] - g[1][3]*g[2][2]) / det_g;
+        //     g_inv[2][1] = -(g[2][1]*g[3][3] - g[2][3]*g[3][1]) / det_g;
+        //     g_inv[2][2] =  (g[1][1]*g[3][3] - g[1][3]*g[3][1]) / det_g;
+        //     g_inv[2][3] = -(g[1][1]*g[2][3] - g[1][3]*g[2][1]) / det_g;
+        //     g_inv[3][1] =  (g[2][1]*g[3][2] - g[2][2]*g[3][1]) / det_g;
+        //     g_inv[3][2] = -(g[1][1]*g[3][2] - g[1][2]*g[3][1]) / det_g;
+        //     g_inv[3][3] =  (g[1][1]*g[2][2] - g[1][2]*g[2][1]) / det_g;
+        // }
 
 
 

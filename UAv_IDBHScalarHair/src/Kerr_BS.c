@@ -875,6 +875,13 @@ pow(bh_spin,2)*(rho2_2)*hh)*psi4_2);
             G_inv[3][1] =  G_inv[1][3];
             G_inv[3][2] = G_inv[2][3];
             G_inv[3][3] =  1/psi4_2;
+
+
+
+        CCTK_REAL betaup[4];
+        betaup[1] = G_inv[1][1] * betad[1] + G_inv[1][2] * betad[2] + G_inv[1][3] * betad[3];
+        betaup[2] = G_inv[2][1] * betad[1] + G_inv[2][2] * betad[2] + G_inv[2][3] * betad[3];
+        betaup[3] = G_inv[3][1] * betad[1] + G_inv[3][2] * betad[2] + G_inv[3][3] * betad[3];
   
 
 

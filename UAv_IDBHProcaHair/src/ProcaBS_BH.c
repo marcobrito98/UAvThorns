@@ -1029,6 +1029,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         dG[3][3][1] = 2*exp(2. * F1_1[ind])*dF1_1_dx;
         dG[3][3][2] = 2*exp(2. * F1_1[ind])*dF1_1_dy;
         dG[3][3][3] = 2*exp(2. * F1_1[ind])*dF1_1_dz;
+
+
+        dG[0][0][1] = -2*exp(2. * F0_1[ind])*dF0_1_dx;
+        dG[0][0][2] = -2*exp(2. * F0_1[ind])*dF0_1_dy;
+        dG[0][0][3] = -2*exp(2. * F0_1[ind])*dF0_1_dz;
+
+
         //symmetries
         dG[2][1][1] = dG[1][2][1];
         dG[2][1][2] = dG[1][2][2];
@@ -1078,22 +1085,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         Lambda[3][3] = 1.;
 
         // Boosted metric
-        // Gb[0][0] = gamma2*(G[0][0] + bs_v*bs_v*G[1][1]);
-        // Gb[0][1] = gamma2*bs_v*(G[0][0] + G[1][1]);
-        // Gb[1][0] = Gb[0][1];
-        // Gb[0][2] = gamma*G[0][2];
-        // Gb[2][0] = Gb[0][2];
-        // Gb[0][3] = gamma*G[0][3];
-        // Gb[3][0] = Gb[0][3];
-        // Gb[1][1] = gamma2*(G[1][1] + bs_v*bs_v*G[0][0]);
-        // Gb[1][2] = gamma*G[1][2] + gamma*bs_v*G[0][2];
-        // Gb[2][1] = Gb[1][2];
-        // Gb[1][3] = gamma*G[1][3] + gamma*bs_v*G[0][3];
-        // Gb[3][1] = Gb[1][3];
-        // Gb[2][2] = G[2][2];
-        // Gb[2][3] = G[2][3];
-        // Gb[3][2] = Gb[2][3];
-        // Gb[3][3] = G[3][3];
+
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
               CCTK_REAL sum = 0.0;
@@ -1137,8 +1129,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
             }
           }
         }
-
-
         
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {

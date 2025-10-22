@@ -1099,10 +1099,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         gammaA_inv[1][1] = (exp(2*(F0_1[ind]+F2_1[ind]))*pow(x1_1*gamma,2) + \
                            exp(2*(F0_1[ind]+F1_1[ind]))*pow(y1_1,2) - \
-                           pow(bh_v,2)*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1))/(pow(-1 + \
-                           pow(bh_v,2),2)*exp(2*(F0_1[ind]+F1_1[ind]+F2_1[ind]))*(rho2_1)*pow(gamma,2));
+                           pow(bs_v,2)*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1))/(pow(-1 + \
+                           pow(bs_v,2),2)*exp(2*(F0_1[ind]+F1_1[ind]+F2_1[ind]))*(rho2_1)*pow(gamma,2));
         gammaA_inv[1][2] = ((exp(2. * F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/((-1 + \
-                           pow(bh_v,2))*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma);
+                           pow(bs_v,2))*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma);
         gammaA_inv[1][3] = 0;
         gammaA_inv[2][1] = gammaA_inv[1][2];
         gammaA_inv[2][2] = (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
@@ -1225,7 +1225,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         CCTK_REAL y1_2  = y[ind] - y0_2;
         CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // const CCTK_REAL bh_v2 = bh_v * bh_v;
+        // const CCTK_REAL bh_v2 = bs_v * bs_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
         // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         // const CCTK_REAL gamma = sqrt(gamma2);
@@ -1477,7 +1477,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         CCTK_REAL y1_2  = y[ind] - y0_2;
         CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // const CCTK_REAL bh_v2 = bh_v * bh_v;
+        // const CCTK_REAL bh_v2 = bs_v * bs_v;
         const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
         // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         // const CCTK_REAL gamma = sqrt(gamma2);

@@ -1097,12 +1097,12 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
 
 
-        gammaA_inv[1][1] = (exp(2*(F0_1+F2_1))*pow(x1_1*gamma,2) + \
-                           exp(2*(F0_1+F1_1))*pow(y1_1,2) - \
-                           pow(bh_v,2)*exp(2*(F1_1+F2_1))*(rho2_1))/(pow(-1 + \
-                           pow(bh_v,2),2)*exp(2*(F0_1+F1_1+F2_1))*(rho2_1)*pow(gamma,2));
+        gammaA_inv[1][1] = (exp(2*(F0_1[ind]+F2_1[ind]))*pow(x1_1*gamma,2) + \
+                           exp(2*(F0_1[ind]+F1_1[ind]))*pow(y1_1,2) - \
+                           pow(bh_v,2)*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1))/(pow(-1 + \
+                           pow(bh_v,2),2)*exp(2*(F0_1[ind]+F1_1[ind]+F2_1[ind]))*(rho2_1)*pow(gamma,2));
         gammaA_inv[1][2] = ((exp(2. * F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/((-1 + \
-                           pow(bh_v,2))*exp(2*(F1_1+F2_1))*(rho2_1)*gamma);
+                           pow(bh_v,2))*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma);
         gammaA_inv[1][3] = 0;
         gammaA_inv[2][1] = gammaA_inv[1][2];
         gammaA_inv[2][2] = (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \

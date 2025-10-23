@@ -1308,7 +1308,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // add non-axisymmetric perturbation on conformal factor
         // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
         const CCTK_REAL argpert_cf = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
+        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1*gamma2 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
 
         const CCTK_REAL conf_fac = psi4_1 * pert_cf;
 
@@ -1555,7 +1555,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // add non-axisymmetric perturbation on conformal factor
         // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
         const CCTK_REAL argpert_cf = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
+        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1*gamma2 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
 
         const CCTK_REAL conf_fac = psi4_1 * pert_cf;
 
@@ -1961,7 +1961,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // shift
         if (CCTK_EQUALS(initial_shift, "ProcaBS")) {
           betax[ind] =  W_1[ind] * y1_1;
-          betay[ind] = -W_1[ind] * x1_1;
+          betay[ind] = -W_1[ind] * x1_1*gamma;
           betaz[ind] =  0.;
         }
 

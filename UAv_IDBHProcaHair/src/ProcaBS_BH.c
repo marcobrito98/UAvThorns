@@ -139,6 +139,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   CCTK_REAL *dV_dr_extd, *dV_dth_extd;
   dV_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dV_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH1_dr_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH1_dth_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   // New: same for F0_1, F1_1, F2_1
   CCTK_REAL *dF0_dr_extd, *dF1_dr_extd, *dF2_dr_extd, *dF0_dth_extd, *dF1_dth_extd, *dF2_dth_extd;
@@ -252,21 +254,30 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 4th order accuracy (forward stencils)
         V_th = (- 25 * V_in[ind]    + 48 * V_in[indjp1] - 36 * V_in[indjp2] + 16 * V_in[indjp3] - 3 * V_in[indjp4]) *
           oodth12;
+        H1_th = (- 25 * H1_in[ind]    + 48 * H1_in[indjp1] - 36 * H1_in[indjp2] + 16 * H1_in[indjp3] - 3 * H1_in[indjp4]) *
+          oodth12;
       } else if (jj==1) {
         // 1st derivative with 4th order accuracy (mixed stencils)
         V_th = (-  3 * V_in[indjm1] - 10 * V_in[ind]    + 18 * V_in[indjp1] -  6 * V_in[indjp2] +     V_in[indjp3]) * 
+          oodth12;
+        H1_th = (-  3 * H1_in[indjm1] - 10 * H1_in[ind]    + 18 * H1_in[indjp1] -  6 * H1_in[indjp2] +     H1_in[indjp3]) * 
           oodth12;
       } else if (jj==Ntheta-2) {
         // 1st derivative with 4th order accuracy (mixed stencils)
         V_th = (   3 * V_in[indjp1] + 10 * V_in[ind]    - 18 * V_in[indjm1] +  6 * V_in[indjm2] -     V_in[indjm3]) * 
           oodth12;
+        H1_th = (   3 * H1_in[indjp1] + 10 * H1_in[ind]    - 18 * H1_in[indjm1] +  6 * H1_in[indjm2] -     H1_in[indjm3]) * 
+          oodth12;
       } else if (jj==Ntheta-1) {
         // 1st derivative with 4th order accuracy (backward stencils)
         V_th = (  25 * V_in[ind]    - 48 * V_in[indjm1] + 36 * V_in[indjm2] - 16 * V_in[indjm3] + 3 * V_in[indjm4]) *
           oodth12;
+        H1_th = (  25 * H1_in[ind]    - 48 * H1_in[indjm1] + 36 * H1_in[indjm2] - 16 * H1_in[indjm3] + 3 * H1_in[indjm4]) *
       } else {
         // 1st derivative with 4th order accuracy (centered stencils)
         V_th = (-V_in[indjp2] + 8 * V_in[indjp1] - 8 * V_in[indjm1] + V_in[indjm2]) *
+          oodth12;
+        H1_th = (-H1_in[indjp2] + 8 * H1_in[indjp1] - 8 * H1_in[indjm1] + H1_in[indjm2]) *
           oodth12;
       }
 
@@ -303,7 +314,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         F2_X =(- 25 * F2_in[ind] + 48 * F2_in[indip1] - 36 * F2_in[indip2] + 16 * F2_in[indip3] - 3 * F2_in[indip4]) * oodX12;
 
 
-        
+
         // Special care at r=0
 
         // H1_X required for H1r_1 computed from H1_in/r
@@ -328,6 +339,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative, 4th order accuracy
         V_X = (- 3 * V_in[indim1] - 10 * V_in[ind] + 18 * V_in[indip1] - 6 * V_in[indip2] + V_in[indip3]) * oodX12;
 
+        H1_X = (- 3 * H1_in[indim1] - 10 * H1_in[ind] + 18 * H1_in[indip1] - 6 * H1_in[indip2] + H1_in[indip3]) * oodX12;
+
         // 1st derivative, 4th order accuracy
         F0_X = (- 3 * F0_in[indim1] - 10 * F0_in[ind] + 18 * F0_in[indip1] - 6 * F0_in[indip2] + F0_in[indip3]) * oodX12;
         // 1st derivative, 4th order accuracy
@@ -347,6 +360,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (backward stencils)
         V_X = (V_in[indim2] - 4*V_in[indim1] + 3*V_in[ind]) * 0.5 * oodX;
 
+        H1_X = (H1_in[indim2] - 4*H1_in[indim1] + 3*H1_in[ind]) * 0.5 * oodX;
+
         // 1st derivative with 2nd order accuracy (backward stencils)
         F0_X = (F0_in[indim2] - 4*F0_in[indim1] + 3*F0_in[ind]) * 0.5 * oodX;
         // 1st derivative with 2nd order accuracy (backward stencils)
@@ -364,6 +379,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (central stencils)
         V_X = (-V_in[indim1] + V_in[indip1]) * 0.5 * oodX;
 
+        H1_X = (-H1_in[indim1] + H1_in[indip1]) * 0.5 * oodX;
+
         // 1st derivative with 2nd order accuracy (central stencils)
         F0_X = (-F0_in[indim1] + F0_in[indip1]) * 0.5 * oodX;
         // 1st derivative with 2nd order accuracy (central stencils)
@@ -380,6 +397,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         
         // 4th order accurate stencils
         V_X    = (-V_in[indip2] + 8 * V_in[indip1] - 8 * V_in[indim1] + V_in[indim2]) * oodX12;
+
+        H1_X    = (-H1_in[indip2] + 8 * H1_in[indip1] - 8 * H1_in[indim1] + H1_in[indim2]) * oodX12;
 
         // 4th order accurate stencils
         F0_X    = (-F0_in[indip2] + 8 * F0_in[indip1] - 8 * F0_in[indim1] + F0_in[indim2]) * oodX12;
@@ -404,6 +423,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // At X==0 (rr_1==0), dXdr = 1/C0
         dH3_dr_extd[ind]       = H3_X / C0;
         dV_dr_extd[ind]        =  V_X / C0;
+        dH1_dr_extd[ind]       = H1_X / C0;
         dF0_dr_extd[ind]       = F0_X / C0;
         dF1_dr_extd[ind]       = F1_X / C0;
         dF2_dr_extd[ind]       = F2_X / C0;
@@ -463,6 +483,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         dH3_dr_extd[ind]    = 0.;
         dV_dr_extd[ind]    = 0.;
+        dH1_dr_extd[ind]   = 0.;
         dF0_dr_extd[ind]   = 0.;
         dF1_dr_extd[ind]   = 0.;
         dF2_dr_extd[ind]   = 0.;
@@ -481,6 +502,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         dH3_dr_extd[ind]       = dXdr * H3_X;
         dV_dr_extd[ind]        = dXdr * V_X;
+        dH1_dr_extd[ind]       = dXdr * H1_X;
         dF0_dr_extd[ind]       = dXdr * F0_X;
         dF1_dr_extd[ind]       = dXdr * F1_X;
         dF2_dr_extd[ind]       = dXdr * F2_X;
@@ -514,13 +536,14 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           break;
         }
 
-        // From H1_in/r to H1r_1
+        // From H1_in/r to H1r
         H1r_extd[ind] = H1_in[ind] / rr_1;
         
       } // if/else i==...
       
       dH3_dth_extd[ind]     = H3_th;
       dV_dth_extd[ind]      = V_th;
+      dH1_dth_extd[ind]     = H1_th; 
       dF0_dth_extd[ind]     = F0_th;
       dF1_dth_extd[ind]     = F1_th;
       dF2_dth_extd[ind]     = F2_th;
@@ -585,10 +608,12 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       dH3_dr_extd[ind]   = H3_z_sign * dH3_dr_extd[indsym];
       dV_dr_extd[ind]    =  V_z_sign *  dV_dr_extd[indsym];
+      dH1_dr_extd[ind]   = H1_z_sign * dH1_dr_extd[indsym];
       
 
       dH3_dth_extd[ind]  = - H3_z_sign * dH3_dth_extd[indsym];
       dV_dth_extd[ind]   = -  V_z_sign *  dV_dth_extd[indsym];
+      dH1_dth_extd[ind]  = - H1_z_sign * dH1_dth_extd[indsym];
       
 
       } // for i
@@ -640,8 +665,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
   const CCTK_INT N_dims  = 2;   // 2-D interpolation
 
-  const CCTK_INT N_input_arrays  = 20;
-  const CCTK_INT N_output_arrays = 20;
+  const CCTK_INT N_input_arrays  = 22;
+  const CCTK_INT N_output_arrays = 22;
 
   /* origin and stride of the input coordinates. with this Cactus reconstructs
      the whole X and theta array. */
@@ -684,6 +709,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_array_type_codes[17]= CCTK_VARIABLE_REAL;
   input_array_type_codes[18]= CCTK_VARIABLE_REAL;
   input_array_type_codes[19]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[20]= CCTK_VARIABLE_REAL;
+  input_array_type_codes[21]= CCTK_VARIABLE_REAL;
 
   /* Cactus stores and expects arrays in Fortran order, that is, faster in the
      first index. this is compatible with our input file, where the X coordinate
@@ -708,6 +735,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   input_arrays[17]= (const void *) dF0_dth_extd;
   input_arrays[18]= (const void *) dF1_dth_extd;
   input_arrays[19]= (const void *) dF2_dth_extd;
+  input_arrays[20]= (const void *) dH1_dr_extd;
+  input_arrays[21]= (const void *) dH1_dth_extd;
 
 
   /* output arrays */
@@ -716,7 +745,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   CCTK_REAL *F1_1, *F2_1, *F0_1, *W_1, *H1r_1, *H2_1, *H3_1, *V_1;
   CCTK_REAL *dW_dr_1, *dW_dth_1;
   CCTK_REAL *dH3_dr_1, *dH3_dth_1;
-  CCTK_REAL *dV_dr_1, *dV_dth_1;
+  CCTK_REAL *dV_dr_1, *dV_dth_1, *dH1_dr_1, *dH1_dth_1;
   CCTK_REAL *dF0_dr_1, *dF1_dr_1, *dF2_dr_1, *dF0_dth_1, *dF1_dth_1, *dF2_dth_1;
 
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -733,6 +762,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dH3_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dV_dr_1       = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dV_dth_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH1_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH1_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF0_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF1_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF2_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
@@ -761,6 +792,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_array_type_codes[17]= CCTK_VARIABLE_REAL;
   output_array_type_codes[18]= CCTK_VARIABLE_REAL;
   output_array_type_codes[19]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[20]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[21]= CCTK_VARIABLE_REAL;
 
   output_arrays[0] = (void *) F1_1;
   output_arrays[1] = (void *) F2_1;
@@ -782,6 +815,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_arrays[17]= (void *) dF0_dth_1;
   output_arrays[18]= (void *) dF1_dth_1;
   output_arrays[19]= (void *) dF2_dth_1;
+  output_arrays[20]= (void *) dH1_dr_1;
+  output_arrays[21]= (void *) dH1_dth_1;
 
 
   /* handle and settings for the interpolation routine */
@@ -818,6 +853,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   free(dW_dr_extd); free(dW_dth_extd);
   free(dH3_dr_extd); free(dH3_dth_extd);
   free(dV_dr_extd); free(dV_dth_extd);
+  free(dH1_dr_extd); free(dH1_dth_extd);
   free(dF0_dr_extd); free(dF1_dr_extd); free(dF2_dr_extd);
   free(dF0_dth_extd); free(dF1_dth_extd); free(dF2_dth_extd);
 
@@ -1813,8 +1849,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         A1_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_re;
         A2_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im;
 
-
-
+        const CCTK_REAL dH1r_dr_1 = dH1_dr_1[ind]/rr_1 - H1r_1[ind]/rr_1;
 
         // Build unboosted field-strength tensor F_{mu nu} (only 0i components from time/spatial derivatives)
         CCTK_REAL F1_unb[4][4], F2_unb[4][4];
@@ -1825,19 +1860,96 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           }
         }
 
+        const CCTK_REAL dV_dx = dV_dr_1[ind]*R_x_1 + dV_dth_1[ind]*th_x_1;
+        const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
+        const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
+
+        const CCTK_REAL dH1r_dx = dH1r_dr_1 * R_x_1 + dH1_dr_1[ind]*th_x_1;
+        const CCTK_REAL dH1r_dy = dH1r_dr_1 * R_y_1 + dH1_dr_1[ind]*th_y_1;
+        const CCTK_REAL dH1r_dz = dH1r_dr_1 * R_z_1 + dH1_dr_1[ind]*th_z_1;
+
+        const CCTK_REAL dH2_dx = dH2_dr_1[ind] * R_x_1 + dH2_dr_1[ind]*th_x_1;
+        const CCTK_REAL dH2_dy = dH2_dr_1[ind] * R_y_1 + dH2_dr_1[ind]*th_y_1;
+        const CCTK_REAL dH2_dz = dH2_dr_1[ind] * R_z_1 + dH2_dr_1[ind]*th_z_1;
+
+        const CCTK_REAL dH3_dx = dH3_dr_1[ind] * R_x_1 + dH3_dr_1[ind]*th_x_1;
+        const CCTK_REAL dH3_dy = dH3_dr_1[ind] * R_y_1 + dH3_dr_1[ind]*th_y_1;
+        const CCTK_REAL dH3_dz = dH3_dr_1[ind] * R_z_1 + dH3_dr_1[ind]*th_z_1;
+
+        const CCTK_REAL dA1x_dt = omega_BS * ( x1_1*gamma/rr_1 * H1r_1[ind] * harm_im + costh_1*cosph/rr_1 * H2_1[ind] * harm_im - sinph/rr_1 * H3_1[ind] * harm_re );
+        const CCTK_REAL dA1y_dt = omega_BS * ( y1_1/rr_1 * H1r_1[ind] * harm_im + costh_1*sinph/rr_1 * H2_1[ind] * harm_im + cosph/rr_1 * H3_1[ind] * harm_re );
+        const CCTK_REAL dA1z_dt = omega_BS * ( (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im );
+
+        const CCTK_REAL dA2x_dt = -omega_BS * ( x1_1*gamma/rr_1 * H1r_1[ind] * harm_re + costh_1*cosph/rr_1 * H2_1[ind] * harm_re + sinph/rr_1 * H3_1[ind] * harm_im );
+        const CCTK_REAL dA2y_dt = -omega_BS * ( y1_1/rr_1 * H1r_1[ind] * harm_re + costh_1*sinph/rr_1 * H2_1[ind] * harm_re - cosph/rr_1 * H3_1[ind] * harm_im );
+        const CCTK_REAL dA2z_dt = -omega_BS * ( (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_re );
+        
+
+        const CCTK_REAL dA1t_dx = dV_dx * sinwt;
+        const CCTK_REAL dA1t_dy = dV_dy * sinwt;
+        const CCTK_REAL dA1t_dz = dV_dz * sinwt;
+
+        const CCTK_REAL dA2t_dx = dV_dx * coswt;
+        const CCTK_REAL dA2t_dy = dV_dy * coswt;
+        const CCTK_REAL dA2t_dz = dV_dz * coswt;
+        
+
+        const CCTK_REAL dA1x_dx = 
+        const CCTK_REAL dA1x_dy = 
+        const CCTK_REAL dA1x_dz =
+
+        const CCTK_REAL dA1y_dx = 
+        const CCTK_REAL dA1y_dy = 
+        const CCTK_REAL dA1y_dz =                           
+
+        const CCTK_REAL dA1z_dx = 
+        const CCTK_REAL dA1z_dy = 
+        const CCTK_REAL dA1z_dz = 
+
+        const CCTK_REAL dA2x_dx = (gamma/rr_1 * H1r_1[ind] + x1_1*gamma * dH1r_dr_1) * harm_im * x1_1/rr_1
+                                     + (costh_1*cosph/rr_1 * H2_1[ind] + costh_1*cosph * dH2_dr_1[ind]/rr_1) * x1_1/rr_1
+                                     - (sinph/rr_1 * H3_1[ind] + sinph * dH3_dr_1[ind]/rr_1) * x1_1/rr_1;
+        const CCTK_REAL dA2x_dy = (gamma/rr_1 * H1r_1[ind] + x1_1*gamma * dH1r_dr_1) * harm_im * y1_1/rr_1
+                                     + (costh_1*cosph/rr_1 * H2_1[ind] + costh_1*cosph * dH2_dr_1[ind]/rr_1) * y1_1/rr_1
+                                     - (sinph/rr_1 * H3_1[ind] + sinph * dH3_dr_1[ind]/rr_1) * y1_1/rr_1;
+        const CCTK_REAL dA2x_dz = (gamma/rr_1 * H1r_1[ind] + x1_1*gamma * dH1r_dr_1) * harm_im * z1_1/rr_1
+                                     + (costh_1*cosph/rr_1 * H2_1[ind] + costh_1*cosph * dH2_dr_1[ind]/rr_1) * z1_1/rr_1
+                                     - (sinph /rr_1 * H3_1[ind] + sinph * dH3_dr_1[ind]/rr_1) * z1_1/rr_1; 
+        const CCTK_REAL dA2y_dx = (1/rr_1 * H1r_1[ind] + y1_1 * dH1r_dr_1) * harm_im * x1_1/rr_1
+                                     + (costh_1*sinph/rr_1 * H2_1[ind] + costh_1*sinph * dH2_dr_1[ind]/rr_1) * x1_1/rr_1
+                                     - (cosph/rr_1 * H3_1[ind] + cosph * dH3_dr_1[ind]/rr_1) * x1_1/rr_1;
+        const CCTK_REAL dA2y_dy = (1/rr_1 * H1r_1[ind] + y1_1 * dH1r_dr_1) * harm_im * y1_1/rr_1
+                                     + (costh_1*sinph/rr_1 * H2_1[ind] + costh_1*sinph * dH2_dr_1[ind]/rr_1) * y1_1/rr_1
+                                     - (cosph/rr_1 * H3_1[ind] + cosph * dH3_dr_1[ind]) * y1_1/rr_1;
+        const CCTK_REAL dA2y_dz = (1/rr_1 * H1r_1[ind] + y1_1 * dH1r_dr_1) * harm_im * z1_1/rr_1
+                                     + (costh_1*sinph/rr_1 * H2_1[ind] + costh_1*sinph * dH2_dr_1[ind]/rr_1) * z1_1/rr_1
+                                     - (cosph/rr_1 * H3_1[ind] + cosph * dH3_dr_1[ind]) * z1_1/rr_1; 
+        const CCTK_REAL dA2z_dx = (1/rr_1 * H1r_1[ind] + (z1_1/rr_1) * dH1r_dr_1 - sinth_1/rr_1 * dH2_dr_1[ind]) * harm_im * x1_1/rr_1;
+        const CCTK_REAL dA2z_dy = (1/rr_1 * H1r_1[ind] + (z1_1/rr_1) * dH1r_dr_1 - sinth_1/rr_1 * dH2 _dr_1[ind]) * harm_im * y1_1/rr_1;
+        const CCTK_REAL dA2z_dz = (1/rr_1 * H1r_1[ind] + (z1_1/rr_1) * dH1r_dr_1 - sinth_1/rr_1 * dH2_dr_1[ind]) * harm_im * z1_1/rr_1; 
+
+
+
         // Spatial derivatives of A_0 = V_1 * {sinwt, coswt}
         const CCTK_REAL dV_dx = dV_dr_1[ind]*R_x_1 + dV_dth_1[ind]*th_x_1;
         const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
         const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
 
         // F_{0i} = d_t A_i - d_i A_0  (covariant indices)
-        F1_unb[0][1] = dA1x_dt - dA10_dx; F1_unb[1][0] = -F1_unb[0][1];
-        F1_unb[0][2] = dA1y_dt - dA10_dy; F1_unb[2][0] = -F1_unb[0][2];
-        F1_unb[0][3] = dA1z_dt - dA10_dz; F1_unb[3][0] = -F1_unb[0][3];
+        F1_unb[0][1] = dA1x_dt - dA1t_dx; F1_unb[1][0] = -F1_unb[0][1];
+        F1_unb[0][2] = dA1y_dt - dA1t_dy; F1_unb[2][0] = -F1_unb[0][2];
+        F1_unb[0][3] = dA1z_dt - dA1t_dz; F1_unb[3][0] = -F1_unb[0][3];
+        F1_unb[1][2] = dA1y_dx - dA1x_dy; F1_unb[2][1] = -F1_unb[1][2];
+        F1_unb[1][3] = dA1z_dx - dA1x_dz; F1_unb[3][1] = -F1_unb[1][3];
+        F1_unb[2][3] = dA1z_dy - dA1y_dz; F1_unb[3][2] = -F1_unb[2][3];
 
-        F2_unb[0][1] = dA2x_dt - dA20_dx; F2_unb[1][0] = -F2_unb[0][1];
-        F2_unb[0][2] = dA2y_dt - dA20_dy; F2_unb[2][0] = -F2_unb[0][2];
-        F2_unb[0][3] = dA2z_dt - dA20_dz; F2_unb[3][0] = -F2_unb[0][3];
+
+        F2_unb[0][1] = dA2x_dt - dA2t_dx; F2_unb[1][0] = -F2_unb[0][1];
+        F2_unb[0][2] = dA2y_dt - dA2t_dy; F2_unb[2][0] = -F2_unb[0][2];
+        F2_unb[0][3] = dA2z_dt - dA2t_dz; F2_unb[3][0] = -F2_unb[0][3];
+        F2_unb[1][2] = dA2y_dx - dA2x_dy; F2_unb[2][1] = -F2_unb[1][2];
+        F2_unb[1][3] = dA2z_dx - dA2x_dz; F2_unb[3][1] = -F2_unb[1][3];
+        F2_unb[2][3] = dA2z_dy - dA2y_dz; F2_unb[3][2] = -F2_unb[2][3];
 
 
         CCTK_REAL A1_boosted[4]; //A_\mu real part

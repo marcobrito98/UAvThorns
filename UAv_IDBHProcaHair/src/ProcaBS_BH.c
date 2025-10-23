@@ -602,7 +602,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   X_g     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   theta_g = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
 
-    const CCTK_REAL bs_v2 = bs_v * bs_v;
+  const CCTK_REAL bs_v2 = bs_v * bs_v;
   const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
   const CCTK_REAL gamma = sqrt(gamma2);
 
@@ -1829,40 +1829,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
         const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
 
-        
-
-        // Time derivatives of A_i using harmonic relations:
-        // d/dt harm_re = (omega*gamma) * harm_im, d/dt harm_im = -(omega*gamma) * harm_re
-        const CCTK_REAL omgam = omega_BS * gamma;
-
-        // Coefficients of harm_re and harm_im in A_i
-        const CCTK_REAL baseA_x = (x1_1*gamma/rr_1) * H1r_1[ind] + (costh_1*cosph/rr_1) * H2_1[ind];
-        const CCTK_REAL baseB_x = (sinph/rr_1) * H3_1[ind];
-
-        const CCTK_REAL baseA_y = (y1_1/rr_1) * H1r_1[ind] + (costh_1*sinph/rr_1) * H2_1[ind];
-        const CCTK_REAL baseB_y = -(cosph/rr_1) * H3_1[ind];
-
-        const CCTK_REAL baseA_z = (z1_1/rr_1) * H1r_1[ind] - (sinth_1/rr_1) * H2_1[ind];
-
-        // d/dt A_i (real and imaginary parts)
-        const CCTK_REAL dA1x_dt = omgam * ( baseA_x * harm_im - baseB_x * harm_re );
-        const CCTK_REAL dA2x_dt = -omgam * ( baseA_x * harm_re + baseB_x * harm_im );
-
-        const CCTK_REAL dA1y_dt = omgam * ( baseA_y * harm_im - baseB_y * harm_re );
-        const CCTK_REAL dA2y_dt = -omgam * ( baseA_y * harm_re + baseB_y * harm_im );
-
-        const CCTK_REAL dA1z_dt = omgam * ( baseA_z * harm_im );
-        const CCTK_REAL dA2z_dt = -omgam * ( baseA_z * harm_re );
-
-        // Spatial derivatives of A_0 (real/imag)
-        const CCTK_REAL dA10_dx = dV_dx * sinwt;
-        const CCTK_REAL dA10_dy = dV_dy * sinwt;
-        const CCTK_REAL dA10_dz = dV_dz * sinwt;
-
-        const CCTK_REAL dA20_dx = dV_dx * coswt;
-        const CCTK_REAL dA20_dy = dV_dy * coswt;
-        const CCTK_REAL dA20_dz = dV_dz * coswt;
-
         // F_{0i} = d_t A_i - d_i A_0  (covariant indices)
         F1_unb[0][1] = dA1x_dt - dA10_dx; F1_unb[1][0] = -F1_unb[0][1];
         F1_unb[0][2] = dA1y_dt - dA10_dy; F1_unb[2][0] = -F1_unb[0][2];
@@ -1871,8 +1837,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         F2_unb[0][1] = dA2x_dt - dA20_dx; F2_unb[1][0] = -F2_unb[0][1];
         F2_unb[0][2] = dA2y_dt - dA20_dy; F2_unb[2][0] = -F2_unb[0][2];
         F2_unb[0][3] = dA2z_dt - dA20_dz; F2_unb[3][0] = -F2_unb[0][3];
-
-        // F_{ij} not computed here (lack of spatial derivatives of A_j); leave zero.
 
 
         CCTK_REAL A1_boosted[4]; //A_\mu real part

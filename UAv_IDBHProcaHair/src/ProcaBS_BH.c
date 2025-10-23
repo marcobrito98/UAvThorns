@@ -303,6 +303,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         F2_X =(- 25 * F2_in[ind] + 48 * F2_in[indip1] - 36 * F2_in[indip2] + 16 * F2_in[indip3] - 3 * F2_in[indip4]) * oodX12;
 
 
+        
         // Special care at r=0
 
         // H1_X required for H1r_1 computed from H1_in/r

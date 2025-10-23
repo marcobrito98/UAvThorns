@@ -1471,306 +1471,307 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
     } // end if bh_spin_direction == "z"
 
 
-    if (CCTK_EQUALS(bh_spin_direction, "y")) { // rotation applied (x',y',z') = (x,z,-y)
+    // if (CCTK_EQUALS(bh_spin_direction, "y")) { // rotation applied (x',y',z') = (x,z,-y)
 
-        CCTK_REAL x1_2  = x[ind] - x0_2;
-        CCTK_REAL y1_2  = y[ind] - y0_2;
-        CCTK_REAL z1_2  = z[ind] - z0_2;
+    //     CCTK_REAL x1_2  = x[ind] - x0_2;
+    //     CCTK_REAL y1_2  = y[ind] - y0_2;
+    //     CCTK_REAL z1_2  = z[ind] - z0_2;
 
-        // const CCTK_REAL bh_v2 = bs_v * bs_v;
-        const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
-        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        // const CCTK_REAL gamma = sqrt(gamma2);
-        CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-        if( rr2_2 < pow( eps_r, 2 ) ) {
-        rr2_2 = pow( eps_r, 2 );
-        }
-        const CCTK_REAL rr_2  = sqrt(rr2_2);
-        // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
-        // const CCTK_REAL rho_2  = sqrt(rho2_2);
-        CCTK_REAL rho2_2 = x1_2*x1_2 + z1_2*z1_2;
-        if( rho2_2 < pow( eps_r, 2 ) ){
-        rho2_2 = pow( eps_r, 2 );
-        }
-        const CCTK_REAL rho_2  = sqrt(rho2_2);
+    //     // const CCTK_REAL bh_v2 = bs_v * bs_v;
+    //     const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
+    //     // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
+    //     // const CCTK_REAL gamma = sqrt(gamma2);
+    //     CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
+    //     if( rr2_2 < pow( eps_r, 2 ) ) {
+    //     rr2_2 = pow( eps_r, 2 );
+    //     }
+    //     const CCTK_REAL rr_2  = sqrt(rr2_2);
+    //     // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
+    //     // const CCTK_REAL rho_2  = sqrt(rho2_2);
+    //     CCTK_REAL rho2_2 = x1_2*x1_2 + z1_2*z1_2;
+    //     if( rho2_2 < pow( eps_r, 2 ) ){
+    //     rho2_2 = pow( eps_r, 2 );
+    //     }
+    //     const CCTK_REAL rho_2  = sqrt(rho2_2);
         
 
-        const CCTK_REAL theta_2 = acos(y1_2/rr_2);
+    //     const CCTK_REAL theta_2 = acos(y1_2/rr_2);
 
-        const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
-        const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
+    //     const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
+    //     const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;
 
-        const CCTK_REAL costh_2  = y1_2/rr_2 ;
-        const CCTK_REAL costh2_2 = costh_2*costh_2 ;
-        const CCTK_REAL sinth2_2 = 1. - costh2_2 ;
-        const CCTK_REAL sinth_2  = sqrt(sinth2_2) ;
+    //     const CCTK_REAL costh_2  = y1_2/rr_2 ;
+    //     const CCTK_REAL costh2_2 = costh_2*costh_2 ;
+    //     const CCTK_REAL sinth2_2 = 1. - costh2_2 ;
+    //     const CCTK_REAL sinth_2  = sqrt(sinth2_2) ;
 
-        // const CCTK_REAL R_x    = gamma*x1_2/rr_2 ;
-        const CCTK_REAL R_x    = x1_2/rr_2 ;
-        const CCTK_REAL R_y    = y1_2/rr_2 ;
-        const CCTK_REAL R_z    = z1_2/rr_2 ;
+    //     // const CCTK_REAL R_x    = gamma*x1_2/rr_2 ;
+    //     const CCTK_REAL R_x    = x1_2/rr_2 ;
+    //     const CCTK_REAL R_y    = y1_2/rr_2 ;
+    //     const CCTK_REAL R_z    = z1_2/rr_2 ;
 
-        // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
-        // const CCTK_REAL x_R    = x1_2/rr_2 ;
-        // const CCTK_REAL y_R    = y1_2/rr_2 ;
-        // const CCTK_REAL z_R    = z1_2/rr_2 ;
+    //     // const CCTK_REAL x_R    = gamma*x1_2/rr_2 ;
+    //     // const CCTK_REAL x_R    = x1_2/rr_2 ;
+    //     // const CCTK_REAL y_R    = y1_2/rr_2 ;
+    //     // const CCTK_REAL z_R    = z1_2/rr_2 ;
 
-        const CCTK_REAL sinth2ph_x = z1_2/rr2_2 ;
-        const CCTK_REAL sinth2ph_y = 0;
-        const CCTK_REAL sinth2ph_z = -x1_2/rr2_2 ;
+    //     const CCTK_REAL sinth2ph_x = z1_2/rr2_2 ;
+    //     const CCTK_REAL sinth2ph_y = 0;
+    //     const CCTK_REAL sinth2ph_z = -x1_2/rr2_2 ;
 
 
-        // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
-        const CCTK_REAL sinthth_x  = x1_2*y1_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_y  = -rho2_2/(rr_2*rr2_2) ; 
-        const CCTK_REAL sinthth_z  = y1_2*z1_2/(rr_2*rr2_2) ; 
+    //     // const CCTK_REAL sinthth_x  = z1_2*gamma*x1_2/(rr_2*rr2_2) ;
+    //     const CCTK_REAL sinthth_x  = x1_2*y1_2/(rr_2*rr2_2) ; 
+    //     const CCTK_REAL sinthth_y  = -rho2_2/(rr_2*rr2_2) ; 
+    //     const CCTK_REAL sinthth_z  = y1_2*z1_2/(rr_2*rr2_2) ; 
 
   
-        const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
+    //     const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2_2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
-        const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
+    //     const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2_2 ;
 
-        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2_2 ;
-        const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
+    //     const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin2 * costh2_2 ;
+    //     const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
-        const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
-        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_2) ;
+    //     const CCTK_REAL sigma  = (2.*bh_mass*rBL)/rho2kerr;
+    //     const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2_2) ;
 
-        const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
-        const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
-        psi1_2 = sqrt(psi2_2) ;
-        // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        // const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        // psi1_1 = sqrt(psi2_1);
+    //     const CCTK_REAL psi4_2 = rho2kerr / rr2_2 ;
+    //     const CCTK_REAL psi2_2 = sqrt(psi4_2) ;
+    //     psi1_2 = sqrt(psi2_2) ;
+    //     // const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+    //     // const CCTK_REAL psi2_1 = sqrt(psi4_1);
+    //     // psi1_1 = sqrt(psi2_1);
 
-        // non-axisymmetric perturbation.
-        /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
+    //     // non-axisymmetric perturbation.
+    //     /* pert = 1. + AA * (x1_2*x1_2 - y1_2*y1_2)/(bh_mass*bh_mass) * exp( -2.*rr2_2/deltakerr2_2 ) ; */
         
-        alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
-        const CCTK_REAL alpha02 = alpha0*alpha0 ;
+    //     alpha0  = (rr_2 + 0.5*deltakerr)*(rr_2 - 0.5*deltakerr) / rr_2 * \
+    //              1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
+    //     const CCTK_REAL alpha02 = alpha0*alpha0 ;
 
        
 
-        // add non-axisymmetric perturbation on conformal factor
-        // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
-        const CCTK_REAL argpert_cf = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1*gamma2 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
+    //     // add non-axisymmetric perturbation on conformal factor
+    //     // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
+    //     const CCTK_REAL argpert_cf = (rr_1 - R0pert_conf_fac)/Sigmapert_conf_fac;
+    //     const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1_1*x1_1*gamma2 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_cf*argpert_cf );
 
-        const CCTK_REAL conf_fac = psi4_1 * pert_cf;
+    //     const CCTK_REAL conf_fac = psi4_1 * pert_cf;
 
-        // 3-metric
-        // gxx[ind] = psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
-        // gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2 - conf_fac * h_rho2_1 * sinph * cosph;
-        // gxz[ind] = 0;
-        // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
-        // gyz[ind] = 0;
-        // gzz[ind] = psi4_2 + conf_fac - 1;
-
-
-        gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + Gb[1][1] - 1;
-        gxy[ind] = 0 + Gb[1][2];
-        gxz[ind] = - psi4_2*bh_spin2*hh*z1_2*x1_2 + Gb[1][3];
-        gyy[ind] = psi4_2 + Gb[2][2] - 1;
-        gyz[ind] = 0 + Gb[2][3];
-        gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) +  Gb[3][3] - 1;
+    //     // 3-metric
+    //     // gxx[ind] = psi4_2*(1+bh_spin2*hh*y1_2*y1_2) + conf_fac * (1. + h_rho2_1 * sinph * sinph) - 1;
+    //     // gxy[ind] = -psi4_2*bh_spin2*hh*y1_2*x1_2 - conf_fac * h_rho2_1 * sinph * cosph;
+    //     // gxz[ind] = 0;
+    //     // gyy[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) + conf_fac * (1. + h_rho2_1 * cosph * cosph) - 1;
+    //     // gyz[ind] = 0;
+    //     // gzz[ind] = psi4_2 + conf_fac - 1;
 
 
-        CCTK_REAL gammaB[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            gammaB[a][b] = 0.0;
-          }
-        }
-        gammaB[1][1] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2);
-        gammaB[1][2] = 0;
-        gammaB[1][3] = - psi4_2*bh_spin2*hh*z1_2*x1_2;
-        gammaB[2][1] = gammaB[1][2];
-        gammaB[2][2] = psi4_2;
-        gammaB[2][3] = 0;
-        gammaB[3][1] = gammaB[1][3];
-        gammaB[3][2] = gammaB[2][3];
-        gammaB[3][3] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2); 
-
-        CCTK_REAL gammaB_inv[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            gammaB_inv[a][b] = 0.0;
-          }
-        }
-        CCTK_REAL det_gammaB_inv =
-            gammaB[1][1]*(gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2])
-          - gammaB[1][2]*(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1])
-          + gammaB[1][3]*(gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]);
-
-        gammaB_inv[1][1] =  (gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2]) / det_gammaB_inv;
-        gammaB_inv[1][2] = -(gammaB[1][2]*gammaB[3][3] - gammaB[1][3]*gammaB[3][2]) / det_gammaB_inv;
-        gammaB_inv[1][3] =  (gammaB[1][2]*gammaB[2][3] - gammaB[1][3]*gammaB[2][2]) / det_gammaB_inv;
-        gammaB_inv[2][1] = -(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1]) / det_gammaB_inv;
-        gammaB_inv[2][2] =  (gammaB[1][1]*gammaB[3][3] - gammaB[1][3]*gammaB[3][1]) / det_gammaB_inv;
-        gammaB_inv[2][3] = -(gammaB[1][1]*gammaB[2][3] - gammaB[1][3]*gammaB[2][1]) / det_gammaB_inv;
-        gammaB_inv[3][1] =  (gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]) / det_gammaB_inv;
-        gammaB_inv[3][2] = -(gammaB[1][1]*gammaB[3][2] - gammaB[1][2]*gammaB[3][1]) / det_gammaB_inv;
-        gammaB_inv[3][3] =  (gammaB[1][1]*gammaB[2][2] - gammaB[1][2]*gammaB[2][1]) / det_gammaB_inv;
-
-        /*
-          d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
-          d/dz   =   z/r * d/dr  -  rho_1/r^2 * d/dth
-
-          Kxx = 0.5 * 2xy/rho_1        * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * sin(2phi) * exp(2F2-F0_1) * dW/drho
-          Kyy = - Kxx
-          Kzz = 0
-          Kxy =-0.5 * (x^2-y^2)/rho_1  * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * cos(2phi) * exp(2F2-F0_1) * dW/drho
-          Kxz = 0.5 * y * exp(2F2-F0_1) * dW/dz
-          Kyz =-0.5 * x * exp(2F2-F0_1) * dW/dz
-        */
-
-        /*
-          Close to the axis and the origin, Kij = 0.
-          The "coordinate" part of the expressions above behave like rho_1 (or r).
-          Let's first consider a threshold of rho_1 < 1e-8. The sphere r < 1e-8 is included in this cylinder.
-          In this case, we just set d/drho and d/dz = 0 as proxies.
-        */
+    //     gxx[ind] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2) + Gb[1][1] - 1;
+    //     gxy[ind] = 0 + Gb[1][2];
+    //     gxz[ind] = - psi4_2*bh_spin2*hh*z1_2*x1_2 + Gb[1][3];
+    //     gyy[ind] = psi4_2 + Gb[2][2] - 1;
+    //     gyz[ind] = 0 + Gb[2][3];
+    //     gzz[ind] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2) +  Gb[3][3] - 1;
 
 
-        check_nan_or_inf("gxx",gxx[ind]);
-        check_nan_or_inf("gxy",gxy[ind]);
-        check_nan_or_inf("gxz",gxz[ind]);
-        check_nan_or_inf("gyy",gyy[ind]);
-        check_nan_or_inf("gyz",gyz[ind]);
-        check_nan_or_inf("gzz",gzz[ind]);
+    //     CCTK_REAL gammaB[4][4];
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         gammaB[a][b] = 0.0;
+    //       }
+    //     }
+    //     gammaB[1][1] = psi4_2*(1+bh_spin2*hh*z1_2*z1_2);
+    //     gammaB[1][2] = 0;
+    //     gammaB[1][3] = - psi4_2*bh_spin2*hh*z1_2*x1_2;
+    //     gammaB[2][1] = gammaB[1][2];
+    //     gammaB[2][2] = psi4_2;
+    //     gammaB[2][3] = 0;
+    //     gammaB[3][1] = gammaB[1][3];
+    //     gammaB[3][2] = gammaB[2][3];
+    //     gammaB[3][3] = psi4_2 * ( 1. + bh_spin2 * hh * x1_2*x1_2); 
+
+    //     CCTK_REAL gammaB_inv[4][4];
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         gammaB_inv[a][b] = 0.0;
+    //       }
+    //     }
+    //     CCTK_REAL det_gammaB_inv =
+    //         gammaB[1][1]*(gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2])
+    //       - gammaB[1][2]*(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1])
+    //       + gammaB[1][3]*(gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]);
+
+    //     gammaB_inv[1][1] =  (gammaB[2][2]*gammaB[3][3] - gammaB[2][3]*gammaB[3][2]) / det_gammaB_inv;
+    //     gammaB_inv[1][2] = -(gammaB[1][2]*gammaB[3][3] - gammaB[1][3]*gammaB[3][2]) / det_gammaB_inv;
+    //     gammaB_inv[1][3] =  (gammaB[1][2]*gammaB[2][3] - gammaB[1][3]*gammaB[2][2]) / det_gammaB_inv;
+    //     gammaB_inv[2][1] = -(gammaB[2][1]*gammaB[3][3] - gammaB[2][3]*gammaB[3][1]) / det_gammaB_inv;
+    //     gammaB_inv[2][2] =  (gammaB[1][1]*gammaB[3][3] - gammaB[1][3]*gammaB[3][1]) / det_gammaB_inv;
+    //     gammaB_inv[2][3] = -(gammaB[1][1]*gammaB[2][3] - gammaB[1][3]*gammaB[2][1]) / det_gammaB_inv;
+    //     gammaB_inv[3][1] =  (gammaB[2][1]*gammaB[3][2] - gammaB[2][2]*gammaB[3][1]) / det_gammaB_inv;
+    //     gammaB_inv[3][2] = -(gammaB[1][1]*gammaB[3][2] - gammaB[1][2]*gammaB[3][1]) / det_gammaB_inv;
+    //     gammaB_inv[3][3] =  (gammaB[1][1]*gammaB[2][2] - gammaB[1][2]*gammaB[2][1]) / det_gammaB_inv;
+
+    //     /*
+    //       d/drho = rho_1/r * d/dr  +    z/r^2 * d/dth
+    //       d/dz   =   z/r * d/dr  -  rho_1/r^2 * d/dth
+
+    //       Kxx = 0.5 * 2xy/rho_1        * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * sin(2phi) * exp(2F2-F0_1) * dW/drho
+    //       Kyy = - Kxx
+    //       Kzz = 0
+    //       Kxy =-0.5 * (x^2-y^2)/rho_1  * exp(2F2-F0_1) * dW/drho   = 0.5 * rho_1 * cos(2phi) * exp(2F2-F0_1) * dW/drho
+    //       Kxz = 0.5 * y * exp(2F2-F0_1) * dW/dz
+    //       Kyz =-0.5 * x * exp(2F2-F0_1) * dW/dz
+    //     */
+
+    //     /*
+    //       Close to the axis and the origin, Kij = 0.
+    //       The "coordinate" part of the expressions above behave like rho_1 (or r).
+    //       Let's first consider a threshold of rho_1 < 1e-8. The sphere r < 1e-8 is included in this cylinder.
+    //       In this case, we just set d/drho and d/dz = 0 as proxies.
+    //     */
 
 
-        const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh_2  ;  // we are dividing by sinth2_2
-        const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth_2
-
-        const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
-
-        const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
-                 1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
-
-        const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2_2
+    //     check_nan_or_inf("gxx",gxx[ind]);
+    //     check_nan_or_inf("gxy",gxy[ind]);
+    //     check_nan_or_inf("gxz",gxz[ind]);
+    //     check_nan_or_inf("gyy",gyy[ind]);
+    //     check_nan_or_inf("gyz",gyz[ind]);
+    //     check_nan_or_inf("gzz",gzz[ind]);
 
 
-        const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
-        const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
-        const CCTK_REAL Axz =    ARph * (R_x * sinth2ph_z + R_z * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_z + sinthth_z * sinth2ph_x) ; 
-        const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
-        const CCTK_REAL Ayz =    ARph * (R_y * sinth2ph_z + R_z * sinth2ph_y) +     Athph * (sinthth_y * sinth2ph_z + sinthth_z * sinth2ph_y) ;
-        const CCTK_REAL Azz = 2.*ARph *  R_z * sinth2ph_z                     +  2.*Athph *  sinthth_z * sinth2ph_z ;
+    //     const CCTK_REAL HF     = - bh_spin2*bh_spin * alpha0 * sigma/rhokerr * costh_2  ;  // we are dividing by sinth2_2
+    //     const CCTK_REAL Athph  = HF / rr_2 ;                                        // we are dividing by sinth_2
 
-        CCTK_REAL dW_drho, dW_dz;
-        const CCTK_REAL exp_auxi = exp(2. * F2_1[ind] - F0_1[ind]);
+    //     const CCTK_REAL aux    =  rho2kerr * (rBL*rBL - bh_spin2) + 2.*rBL*rBL * (rBL*rBL + bh_spin2);
 
-        if (rho_1 < 1e-8) {
-          dW_drho = 0.;
-          dW_dz   = 0.;
-        }
-        else {
-          dW_drho = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
-          dW_dz   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
-        }
+    //     const CCTK_REAL HE     = bh_spin*bh_mass * aux / (rhokerr*rhokerr*rhokerr) * 
+    //              1. / sqrt(rBL*rBL + bh_spin2 * ( 1. + sigma*sinth2_2)) ;
 
-        CCTK_REAL gamma_final[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            gamma_final[a][b] = 0.0;
-          }
-        }
-        gamma_final[1][1] = gxx[ind];
-        gamma_final[1][2] = gxy[ind];
-        gamma_final[1][3] = gxz[ind];
-        gamma_final[2][1] = gxy[ind];
-        gamma_final[2][2] = gyy[ind];
-        gamma_final[2][3] = gyz[ind];
-        gamma_final[3][1] = gxz[ind];
-        gamma_final[3][2] = gyz[ind];
-        gamma_final[3][3] = gzz[ind];
+    //     const CCTK_REAL ARph   = HE / rr2_2 ;                                       // we are dividing by sinth2_2
 
 
-        CCTK_REAL gamma_final_inv[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            gamma_final_inv[a][b] = 0.0;
-          }
-        }
-        CCTK_REAL det_gamma_final =
-            gamma_final[1][1]*(gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2])
-          - gamma_final[1][2]*(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1])
-          + gamma_final[1][3]*(gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]);
+    //     const CCTK_REAL Axx = 2.*ARph *  R_x * sinth2ph_x                     +  2.*Athph *  sinthth_x * sinth2ph_x ;
+    //     const CCTK_REAL Axy =    ARph * (R_x * sinth2ph_y + R_y * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_y + sinthth_y * sinth2ph_x) ;
+    //     const CCTK_REAL Axz =    ARph * (R_x * sinth2ph_z + R_z * sinth2ph_x) +     Athph * (sinthth_x * sinth2ph_z + sinthth_z * sinth2ph_x) ; 
+    //     const CCTK_REAL Ayy = 2.*ARph *  R_y * sinth2ph_y                     +  2.*Athph *  sinthth_y * sinth2ph_y ;
+    //     const CCTK_REAL Ayz =    ARph * (R_y * sinth2ph_z + R_z * sinth2ph_y) +     Athph * (sinthth_y * sinth2ph_z + sinthth_z * sinth2ph_y) ;
+    //     const CCTK_REAL Azz = 2.*ARph *  R_z * sinth2ph_z                     +  2.*Athph *  sinthth_z * sinth2ph_z ;
 
-        gamma_final_inv[1][1] =  (gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2]) / det_gamma_final;
-        gamma_final_inv[1][2] = -(gamma_final[1][2]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][2]) / det_gamma_final;
-        gamma_final_inv[1][3] =  (gamma_final[1][2]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][2]) / det_gamma_final;
-        gamma_final_inv[2][1] = -(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1]) / det_gamma_final;
-        gamma_final_inv[2][2] =  (gamma_final[1][1]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][1]) / det_gamma_final;
-        gamma_final_inv[2][3] = -(gamma_final[1][1]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][1]) / det_gamma_final;
-        gamma_final_inv[3][1] =  (gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]) / det_gamma_final;
-        gamma_final_inv[3][2] = -(gamma_final[1][1]*gamma_final[3][2] - gamma_final[1][2]*gamma_final[3][1]) / det_gamma_final;
-        gamma_final_inv[3][3] =  (gamma_final[1][1]*gamma_final[2][2] - gamma_final[1][2]*gamma_final[2][1]) / det_gamma_final;
+    //     CCTK_REAL dW_drho, dW_dz;
+    //     const CCTK_REAL exp_auxi = exp(2. * F2_1[ind] - F0_1[ind]);
 
+    //     if (rho_1 < 1e-8) {
+    //       dW_drho = 0.;
+    //       dW_dz   = 0.;
+    //     }
+    //     else {
+    //       dW_drho = rho_1/rr_1 * dW_dr_1[ind]  +   z1_1/rr2_1 * dW_dth_1[ind];
+    //       dW_dz   =  z1_1/rr_1 * dW_dr_1[ind]  -  rho_1/rr2_1 * dW_dth_1[ind];
+    //     }
 
-        CCTK_REAL K_B[4][4]; // extrinsic curvature
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            K_B[a][b] = 0.0;
-          }
-        } //K_0\mu might not be zero but irrelevant for what i want to compute
-
-        K_B[1][1] =  Axx / psi2_2;
-        K_B[1][2] =  Axy / psi2_2;
-        K_B[1][3] =  Axz / psi2_2;
-        K_B[2][1] =  Axy / psi2_2;
-        K_B[2][2] =  Ayy / psi2_2;
-        K_B[2][3] =  Ayz / psi2_2;
-        K_B[3][1] =  Axz / psi2_2;
-        K_B[3][2] =  Ayz / psi2_2;
-        K_B[3][3] =  Azz / psi2_2;
+    //     CCTK_REAL gamma_final[4][4];
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         gamma_final[a][b] = 0.0;
+    //       }
+    //     }
+    //     gamma_final[1][1] = gxx[ind];
+    //     gamma_final[1][2] = gxy[ind];
+    //     gamma_final[1][3] = gxz[ind];
+    //     gamma_final[2][1] = gxy[ind];
+    //     gamma_final[2][2] = gyy[ind];
+    //     gamma_final[2][3] = gyz[ind];
+    //     gamma_final[3][1] = gxz[ind];
+    //     gamma_final[3][2] = gyz[ind];
+    //     gamma_final[3][3] = gzz[ind];
 
 
-        CCTK_REAL Kfinal[4][4]; // extrinsic curvature
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            Kfinal[a][b] = 0.0;
-          }
-        }
+    //     CCTK_REAL gamma_final_inv[4][4];
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         gamma_final_inv[a][b] = 0.0;
+    //       }
+    //     }
+    //     CCTK_REAL det_gamma_final =
+    //         gamma_final[1][1]*(gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2])
+    //       - gamma_final[1][2]*(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1])
+    //       + gamma_final[1][3]*(gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]);
 
-        for (int i = 1; i < 4; ++i) {
-          for (int j = 1; j < 4; ++j) {
-            CCTK_REAL sum1 = 0.0;
-            CCTK_REAL sum2 = 0.0;
-            for (int m = 1; m < 4; ++m) {
-              for (int n = 1; n < 4; ++n) {
-                sum1 += gamma_final[m][i] * (K_A[j][n] * gammaA_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
-                sum2 += gamma_final[m][j] * (K_A[i][n] * gammaA_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
-              }
-            }
-          Kfinal[i][j] = 0.5 * (sum1 + sum2);
-          }
-        }
+    //     gamma_final_inv[1][1] =  (gamma_final[2][2]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][2]) / det_gamma_final;
+    //     gamma_final_inv[1][2] = -(gamma_final[1][2]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][2]) / det_gamma_final;
+    //     gamma_final_inv[1][3] =  (gamma_final[1][2]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][2]) / det_gamma_final;
+    //     gamma_final_inv[2][1] = -(gamma_final[2][1]*gamma_final[3][3] - gamma_final[2][3]*gamma_final[3][1]) / det_gamma_final;
+    //     gamma_final_inv[2][2] =  (gamma_final[1][1]*gamma_final[3][3] - gamma_final[1][3]*gamma_final[3][1]) / det_gamma_final;
+    //     gamma_final_inv[2][3] = -(gamma_final[1][1]*gamma_final[2][3] - gamma_final[1][3]*gamma_final[2][1]) / det_gamma_final;
+    //     gamma_final_inv[3][1] =  (gamma_final[2][1]*gamma_final[3][2] - gamma_final[2][2]*gamma_final[3][1]) / det_gamma_final;
+    //     gamma_final_inv[3][2] = -(gamma_final[1][1]*gamma_final[3][2] - gamma_final[1][2]*gamma_final[3][1]) / det_gamma_final;
+    //     gamma_final_inv[3][3] =  (gamma_final[1][1]*gamma_final[2][2] - gamma_final[1][2]*gamma_final[2][1]) / det_gamma_final;
+
+
+    //     CCTK_REAL K_B[4][4]; // extrinsic curvature
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         K_B[a][b] = 0.0;
+    //       }
+    //     } //K_0\mu might not be zero but irrelevant for what i want to compute
+
+    //     K_B[1][1] =  Axx / psi2_2;
+    //     K_B[1][2] =  Axy / psi2_2;
+    //     K_B[1][3] =  Axz / psi2_2;
+    //     K_B[2][1] =  Axy / psi2_2;
+    //     K_B[2][2] =  Ayy / psi2_2;
+    //     K_B[2][3] =  Ayz / psi2_2;
+    //     K_B[3][1] =  Axz / psi2_2;
+    //     K_B[3][2] =  Ayz / psi2_2;
+    //     K_B[3][3] =  Azz / psi2_2;
+
+
+    //     CCTK_REAL Kfinal[4][4]; // extrinsic curvature
+    //     for (int a = 0; a < 4; ++a) {
+    //       for (int b = 0; b < 4; ++b) {
+    //         Kfinal[a][b] = 0.0;
+    //       }
+    //     }
+
+    //     for (int i = 1; i < 4; ++i) {
+    //       for (int j = 1; j < 4; ++j) {
+    //         CCTK_REAL sum1 = 0.0;
+    //         CCTK_REAL sum2 = 0.0;
+    //         for (int m = 1; m < 4; ++m) {
+    //           for (int n = 1; n < 4; ++n) {
+    //             sum1 += gamma_final[m][i] * (K_A[j][n] * gammaA_inv[n][m] + K_B[j][n] * gammaB_inv[n][m]);
+    //             sum2 += gamma_final[m][j] * (K_A[i][n] * gammaA_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
+    //           }
+    //         }
+    //       Kfinal[i][j] = 0.5 * (sum1 + sum2);
+    //       }
+    //     }
 
 
 
-        kxx[ind] = Kfinal[1][1];
-        kxy[ind] = Kfinal[1][2];
-        kxz[ind] = Kfinal[1][3];
-        kyy[ind] = Kfinal[2][2];
-        kyz[ind] = Kfinal[2][3];
-        kzz[ind] = Kfinal[3][3];
+    //     kxx[ind] = Kfinal[1][1];
+    //     kxy[ind] = Kfinal[1][2];
+    //     kxz[ind] = Kfinal[1][3];
+    //     kyy[ind] = Kfinal[2][2];
+    //     kyz[ind] = Kfinal[2][3];
+    //     kzz[ind] = Kfinal[3][3];
 
-        check_nan_or_inf("kxx",kxx[ind]);
-        check_nan_or_inf("kxy",kxy[ind]);
-        check_nan_or_inf("kxz",kxz[ind]);
-        check_nan_or_inf("kyy",kyy[ind]);
-        check_nan_or_inf("kyz",kyz[ind]);
-        check_nan_or_inf("kzz",kzz[ind]);  
+    //     check_nan_or_inf("kxx",kxx[ind]);
+    //     check_nan_or_inf("kxy",kxy[ind]);
+    //     check_nan_or_inf("kxz",kxz[ind]);
+    //     check_nan_or_inf("kyy",kyy[ind]);
+    //     check_nan_or_inf("kyz",kyz[ind]);
+    //     check_nan_or_inf("kzz",kzz[ind]);  
 
           
-    } // end if bh_spin_direction == "y"
+    // } // end if bh_spin_direction == "y"
 
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
+        //pre boost since i want to compute unboosted quantities
         const CCTK_REAL alph = exp(F0_1[ind]);// + alpha0 - 1;
 
     
@@ -1780,7 +1781,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // NOTE: the perturbation is added directed to every instance of e^{i m \varphi}, hence its derivatives are not taken into account
         // TODO (?): Design perturbation more generically as ~ cos((m+1)\varphi)
         const CCTK_REAL argpert_Proca = (rr_1 - R0pert_Proca)/Sigmapert_Proca;
-        const CCTK_REAL pert_Proca = 1. + Apert_Proca * (x1_1*x1_1 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_Proca*argpert_Proca ); //ignorar por agora
+        const CCTK_REAL pert_Proca = 1. + Apert_Proca * (x1_1*x1_1*gamma2 - y1_1*y1_1)*mu*mu * exp( -0.5*argpert_Proca*argpert_Proca ); //ignorar por agora
 
 
         // ----- Proca fields -----
@@ -1812,6 +1813,68 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         A2_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im;
 
 
+
+
+        // Build unboosted field-strength tensor F_{mu nu} (only 0i components from time/spatial derivatives)
+        CCTK_REAL F1_unb[4][4], F2_unb[4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            F1_unb[a][b] = 0.0;
+            F2_unb[a][b] = 0.0;
+          }
+        }
+
+        // Spatial derivatives of A_0 = V_1 * {sinwt, coswt}
+        const CCTK_REAL dV_dx = dV_dr_1[ind]*R_x_1 + dV_dth_1[ind]*th_x_1;
+        const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
+        const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
+
+        
+
+        // Time derivatives of A_i using harmonic relations:
+        // d/dt harm_re = (omega*gamma) * harm_im, d/dt harm_im = -(omega*gamma) * harm_re
+        const CCTK_REAL omgam = omega_BS * gamma;
+
+        // Coefficients of harm_re and harm_im in A_i
+        const CCTK_REAL baseA_x = (x1_1*gamma/rr_1) * H1r_1[ind] + (costh_1*cosph/rr_1) * H2_1[ind];
+        const CCTK_REAL baseB_x = (sinph/rr_1) * H3_1[ind];
+
+        const CCTK_REAL baseA_y = (y1_1/rr_1) * H1r_1[ind] + (costh_1*sinph/rr_1) * H2_1[ind];
+        const CCTK_REAL baseB_y = -(cosph/rr_1) * H3_1[ind];
+
+        const CCTK_REAL baseA_z = (z1_1/rr_1) * H1r_1[ind] - (sinth_1/rr_1) * H2_1[ind];
+
+        // d/dt A_i (real and imaginary parts)
+        const CCTK_REAL dA1x_dt = omgam * ( baseA_x * harm_im - baseB_x * harm_re );
+        const CCTK_REAL dA2x_dt = -omgam * ( baseA_x * harm_re + baseB_x * harm_im );
+
+        const CCTK_REAL dA1y_dt = omgam * ( baseA_y * harm_im - baseB_y * harm_re );
+        const CCTK_REAL dA2y_dt = -omgam * ( baseA_y * harm_re + baseB_y * harm_im );
+
+        const CCTK_REAL dA1z_dt = omgam * ( baseA_z * harm_im );
+        const CCTK_REAL dA2z_dt = -omgam * ( baseA_z * harm_re );
+
+        // Spatial derivatives of A_0 (real/imag)
+        const CCTK_REAL dA10_dx = dV_dx * sinwt;
+        const CCTK_REAL dA10_dy = dV_dy * sinwt;
+        const CCTK_REAL dA10_dz = dV_dz * sinwt;
+
+        const CCTK_REAL dA20_dx = dV_dx * coswt;
+        const CCTK_REAL dA20_dy = dV_dy * coswt;
+        const CCTK_REAL dA20_dz = dV_dz * coswt;
+
+        // F_{0i} = d_t A_i - d_i A_0  (covariant indices)
+        F1_unb[0][1] = dA1x_dt - dA10_dx; F1_unb[1][0] = -F1_unb[0][1];
+        F1_unb[0][2] = dA1y_dt - dA10_dy; F1_unb[2][0] = -F1_unb[0][2];
+        F1_unb[0][3] = dA1z_dt - dA10_dz; F1_unb[3][0] = -F1_unb[0][3];
+
+        F2_unb[0][1] = dA2x_dt - dA20_dx; F2_unb[1][0] = -F2_unb[0][1];
+        F2_unb[0][2] = dA2y_dt - dA20_dy; F2_unb[2][0] = -F2_unb[0][2];
+        F2_unb[0][3] = dA2z_dt - dA20_dz; F2_unb[3][0] = -F2_unb[0][3];
+
+        // F_{ij} not computed here (lack of spatial derivatives of A_j); leave zero.
+
+
         CCTK_REAL A1_boosted[4]; //A_\mu real part
         CCTK_REAL A2_boosted[4]; //A_\mu imag part
         // Boosted components
@@ -1834,7 +1897,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         A2z[ind] = A2_boosted[3];
         
 
-        // A_\phi MUDAR ISTO TUDO. TENHO QUE RECALCULAR COM O NOVO VECTOR NORMAL 
         /*
           A_\phi = -n^\mu A_\mu = - (A_t + W_1*A_ph)/alpha
                 = -i * e^{i (m ph_1 - w t)} * (V_1 + W_1 H3_1 sinth_1) / alpha
@@ -1924,20 +1986,25 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
         //Boosted components
+
+        //cannot be boosted since its foliation dependent
+        //furthermore it was also wrong for a generic 4-vector boost.
+        //must compute the magnetic field?
         CCTK_REAL E1_boosted[4]; //E^\mu real part
         CCTK_REAL E2_boosted[4]; //E^\mu imag part
         for (int a = 0; a < 4; ++a) {
           E1_boosted[a] = 0.0;
           E2_boosted[a] = 0.0;
           for (int mu = 0; mu < 4; ++mu) {
-            E1_boosted[a] += Lambda[mu][a] * E1_unboosted[mu];
-            E2_boosted[a] += Lambda[mu][a] * E2_unboosted[mu];
+            E1_boosted[a] += Lambda[a][mu] * E1_unboosted[mu];
+            E2_boosted[a] += Lambda[a][mu] * E2_unboosted[mu];
           }
         }
-        /* store spatial components */
+        /* store spatial components */ 
         E1x[ind] = E1_boosted[1];
         E1y[ind] = E1_boosted[2];
         E1z[ind] = E1_boosted[3];
+
         E2x[ind] = E2_boosted[1];
         E2y[ind] = E2_boosted[2];
         E2z[ind] = E2_boosted[3];

@@ -1272,7 +1272,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         if( rr2_2 < pow( eps_r, 2 ) ) {
         rr2_2 = pow( eps_r, 2 );
         }
-        const CCTK_REAL rr_2  = sqrt(rr2_2);
+        const CCTK_REAL rr_2 = sqrt(rr2_2);
         // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
         // const CCTK_REAL rho_2  = sqrt(rho2_2);
         CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
@@ -1925,7 +1925,7 @@ rr_1*(-sinth*th_z_1))))/rr2_1;
 
         const CCTK_REAL dA1y_dx = 
         const CCTK_REAL dA1y_dy = 
-        const CCTK_REAL dA1y_dz =                           
+        const CCTK_REAL dA1y_dz = 
 
         const CCTK_REAL dA1z_dx = 
         const CCTK_REAL dA1z_dy = 

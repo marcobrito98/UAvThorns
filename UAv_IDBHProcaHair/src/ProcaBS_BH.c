@@ -803,6 +803,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dF0_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF1_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   dF2_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH2_dr_1      = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
+  dH2_dth_1     = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));
   
 
   output_array_type_codes[0] = CCTK_VARIABLE_REAL;

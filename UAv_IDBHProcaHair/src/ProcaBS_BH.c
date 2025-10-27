@@ -778,7 +778,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   CCTK_REAL *F1_1, *F2_1, *F0_1, *W_1, *H1r_1, *H2_1, *H3_1, *V_1;
   CCTK_REAL *dW_dr_1, *dW_dth_1;
   CCTK_REAL *dH3_dr_1, *dH3_dth_1;
-  CCTK_REAL *dV_dr_1, *dV_dth_1, *dH1_dr_1, *dH1_dth_1;
+  CCTK_REAL *dV_dr_1, *dV_dth_1, *dH1_dr_1, *dH1_dth_1, *dH2_dr_1, *dH2_dth_1;
   CCTK_REAL *dF0_dr_1, *dF1_dr_1, *dF2_dr_1, *dF0_dth_1, *dF1_dth_1, *dF2_dth_1;
 
   F1_1          = (CCTK_REAL *) malloc(N_interp_points * sizeof(CCTK_REAL));

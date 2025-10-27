@@ -829,6 +829,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   output_array_type_codes[19]= CCTK_VARIABLE_REAL;
   output_array_type_codes[20]= CCTK_VARIABLE_REAL;
   output_array_type_codes[21]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[22]= CCTK_VARIABLE_REAL;
+  output_array_type_codes[23]= CCTK_VARIABLE_REAL;
 
 
   output_arrays[0] = (void *) F1_1;

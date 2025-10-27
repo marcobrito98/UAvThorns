@@ -136,11 +136,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
   dH3_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dH3_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   
-  CCTK_REAL *dV_dr_extd, *dV_dth_extd;
+  CCTK_REAL *dV_dr_extd, *dV_dth_extd, *dH1_dr_extd, *dH1_dth_extd, *dH2_dr_extd, *dH2_dth_extd;
   dV_dr_extd    = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dV_dth_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dH1_dr_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
   dH1_dth_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH2_dr_extd   = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
+  dH2_dth_extd  = (CCTK_REAL *) malloc(NF * sizeof(CCTK_REAL));
 
   // New: same for F0_1, F1_1, F2_1
   CCTK_REAL *dF0_dr_extd, *dF1_dr_extd, *dF2_dr_extd, *dF0_dth_extd, *dF1_dth_extd, *dF2_dth_extd;
@@ -249,12 +251,14 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       // Symmetries of V_1 on the axis and/or the equator can vary (theta = 0, pi/2 resp.).
       // In particular, it can occur that dV/dth != 0, which can't be captured by centered finite differences and theta symmetry.
       // Since different systems have different symmetries, we resort to non-symmetric stencils in any case
-      CCTK_REAL V_th;
+      CCTK_REAL V_th, H1_th;
       if (jj==0) {
         // 1st derivative with 4th order accuracy (forward stencils)
         V_th = (- 25 * V_in[ind]    + 48 * V_in[indjp1] - 36 * V_in[indjp2] + 16 * V_in[indjp3] - 3 * V_in[indjp4]) *
           oodth12;
         H1_th = (- 25 * H1_in[ind]    + 48 * H1_in[indjp1] - 36 * H1_in[indjp2] + 16 * H1_in[indjp3] - 3 * H1_in[indjp4]) *
+          oodth12;
+        H2_th = (- 25 * H2_in[ind]    + 48 * H2_in[indjp1] - 36 * H2_in[indjp2] + 16 * H2_in[indjp3] - 3 * H2_in[indjp4]) *
           oodth12;
       } else if (jj==1) {
         // 1st derivative with 4th order accuracy (mixed stencils)
@@ -262,26 +266,35 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           oodth12;
         H1_th = (-  3 * H1_in[indjm1] - 10 * H1_in[ind]    + 18 * H1_in[indjp1] -  6 * H1_in[indjp2] +     H1_in[indjp3]) * 
           oodth12;
+        H2_th = (-  3 * H2_in[indjm1] - 10 * H2_in[ind]    + 18 * H2_in[indjp1] -  6 * H2_in[indjp2] +     H2_in[indjp3]) * 
+          oodth12;
       } else if (jj==Ntheta-2) {
         // 1st derivative with 4th order accuracy (mixed stencils)
         V_th = (   3 * V_in[indjp1] + 10 * V_in[ind]    - 18 * V_in[indjm1] +  6 * V_in[indjm2] -     V_in[indjm3]) * 
           oodth12;
         H1_th = (   3 * H1_in[indjp1] + 10 * H1_in[ind]    - 18 * H1_in[indjm1] +  6 * H1_in[indjm2] -     H1_in[indjm3]) * 
           oodth12;
+        H2_th = (   3 * H2_in[indjp1] + 10 * H2_in[ind]    - 18 * H2_in[indjm1] +  6 * H2_in[indjm2] -     H2_in[indjm3]) * 
+          oodth12;
       } else if (jj==Ntheta-1) {
         // 1st derivative with 4th order accuracy (backward stencils)
         V_th = (  25 * V_in[ind]    - 48 * V_in[indjm1] + 36 * V_in[indjm2] - 16 * V_in[indjm3] + 3 * V_in[indjm4]) *
           oodth12;
         H1_th = (  25 * H1_in[ind]    - 48 * H1_in[indjm1] + 36 * H1_in[indjm2] - 16 * H1_in[indjm3] + 3 * H1_in[indjm4]) *
+          oodth12;
+        H2_th = (  25 * H2_in[ind]    - 48 * H2_in[indjm1] + 36 * H2_in[indjm2] - 16 * H2_in[indjm3] + 3 * H2_in[indjm4]) *
+          oodth12;
       } else {
         // 1st derivative with 4th order accuracy (centered stencils)
         V_th = (-V_in[indjp2] + 8 * V_in[indjp1] - 8 * V_in[indjm1] + V_in[indjm2]) *
           oodth12;
         H1_th = (-H1_in[indjp2] + 8 * H1_in[indjp1] - 8 * H1_in[indjm1] + H1_in[indjm2]) *
           oodth12;
+        H2_th = (-H2_in[indjp2] + 8 * H2_in[indjp1] - 8 * H2_in[indjm1] + H2_in[indjm2]) *
+          oodth12;
       }
 
-      CCTK_REAL Wbar_X, H3_X, V_X,F0_X, F1_X, F2_X; // radial derivatives
+      CCTK_REAL Wbar_X, H3_X, V_X,F0_X, F1_X, F2_X,H2_X; // radial derivatives
       CCTK_REAL Wbar_XX = 0.; // Used for r=0 (i==0), if Wbar_r_power == 2.
       CCTK_REAL H1_X = 0.;    // Used for r=0 (i==0), due to H1_in/r.
 
@@ -305,6 +318,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         
         // 1st derivative with 4th order accuracy (forward stencils)
         V_X =(- 25 * V_in[ind] + 48 * V_in[indip1] - 36 * V_in[indip2] + 16 * V_in[indip3] - 3 * V_in[indip4]) * oodX12;
+
+        H2_X =(- 25 * H2_in[ind] + 48 * H2_in[indip1] - 36 * H2_in[indip2] + 16 * H2_in[indip3] - 3 * H2_in[indip4]) * oodX12;
 
         // 1st derivative with 4th order accuracy (forward stencils)
         F0_X =(- 25 * F0_in[ind] + 48 * F0_in[indip1] - 36 * F0_in[indip2] + 16 * F0_in[indip3] - 3 * F0_in[indip4]) * oodX12;
@@ -339,6 +354,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative, 4th order accuracy
         V_X = (- 3 * V_in[indim1] - 10 * V_in[ind] + 18 * V_in[indip1] - 6 * V_in[indip2] + V_in[indip3]) * oodX12;
 
+        H2_X = (- 3 * H2_in[indim1] - 10 * H2_in[ind] + 18 * H2_in[indip1] - 6 * H2_in[indip2] + H2_in[indip3]) * oodX12;
+
         H1_X = (- 3 * H1_in[indim1] - 10 * H1_in[ind] + 18 * H1_in[indip1] - 6 * H1_in[indip2] + H1_in[indip3]) * oodX12;
 
         // 1st derivative, 4th order accuracy
@@ -360,6 +377,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (backward stencils)
         V_X = (V_in[indim2] - 4*V_in[indim1] + 3*V_in[ind]) * 0.5 * oodX;
 
+        H2_X = (H2_in[indim2] - 4*H2_in[indim1] + 3*H2_in[ind]) * 0.5 * oodX;
+
         H1_X = (H1_in[indim2] - 4*H1_in[indim1] + 3*H1_in[ind]) * 0.5 * oodX;
 
         // 1st derivative with 2nd order accuracy (backward stencils)
@@ -379,6 +398,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // 1st derivative with 2nd order accuracy (central stencils)
         V_X = (-V_in[indim1] + V_in[indip1]) * 0.5 * oodX;
 
+        H2_X = (-H2_in[indim1] + H2_in[indip1]) * 0.5 * oodX;
+
         H1_X = (-H1_in[indim1] + H1_in[indip1]) * 0.5 * oodX;
 
         // 1st derivative with 2nd order accuracy (central stencils)
@@ -397,6 +418,8 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         
         // 4th order accurate stencils
         V_X    = (-V_in[indip2] + 8 * V_in[indip1] - 8 * V_in[indim1] + V_in[indim2]) * oodX12;
+
+        H2_X    = (-H2_in[indip2] + 8 * H2_in[indip1] - 8 * H2_in[indim1] + H2_in[indim2]) * oodX12;
 
         H1_X    = (-H1_in[indip2] + 8 * H1_in[indip1] - 8 * H1_in[indim1] + H1_in[indim2]) * oodX12;
 

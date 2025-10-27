@@ -651,7 +651,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL rr2_1 = x1_1*x1_1*gamma2 + y1_1*y1_1 + z1_1*z1_1;
 
         CCTK_REAL rr_1  = sqrt(rr2_1);
-        /* For the Boson Star, x1_1*gamma, r and R coordinates coincide (rH=0). */
+        /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
 	/* note that there are divisions by rr_1 in the following expressions.
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
@@ -2034,7 +2034,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
                                   rr_1*sinph*(dH2_dr_1[ind]*R_y_1 + dH2_dth_1[ind]*\
                                   th_y_1))*costh_1 - rr_1*(dH1_dr_1[ind]*R_y_1*y1_1 + \
                                   dH1_dth_1[ind]*th_y_1*y1_1 + \
-                                  H2_1[ind]*sinph*(-sinth_1*th_y_1))))/rr2_1
+                                  H2_1[ind]*sinph*(-sinth_1*th_y_1))))/rr2_1;
         const CCTK_REAL dA2y_dz = (-(rr_1*th_z_1*(-(cosph*dH3_dth_1[ind]*coswt) + (dH1_dth_1[ind]*y1_1 + \
                                   dH2_dth_1[ind]*sinph*costh_1)*sinth_1)) \
                                   + R_z_1*(cosph*(-H3_1[ind] + \

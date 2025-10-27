@@ -251,7 +251,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       // Symmetries of V_1 on the axis and/or the equator can vary (theta = 0, pi/2 resp.).
       // In particular, it can occur that dV/dth != 0, which can't be captured by centered finite differences and theta symmetry.
       // Since different systems have different symmetries, we resort to non-symmetric stencils in any case
-      CCTK_REAL V_th, H1_th;
+      CCTK_REAL V_th, H1_th, H2_th;
       if (jj==0) {
         // 1st derivative with 4th order accuracy (forward stencils)
         V_th = (- 25 * V_in[ind]    + 48 * V_in[indjp1] - 36 * V_in[indjp2] + 16 * V_in[indjp3] - 3 * V_in[indjp4]) *

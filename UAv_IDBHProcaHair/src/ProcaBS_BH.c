@@ -2051,10 +2051,10 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-        // Spatial derivatives of A_0 = V_1 * {sinwt, coswt}
-        const CCTK_REAL dV_dx = dV_dr_1[ind]*R_x_1 + dV_dth_1[ind]*th_x_1;
-        const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
-        const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
+        // // Spatial derivatives of A_0 = V_1 * {sinwt, coswt}
+        // const CCTK_REAL dV_dx = dV_dr_1[ind]*R_x_1 + dV_dth_1[ind]*th_x_1;
+        // const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
+        // const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
 
         // F_{0i} = d_t A_i - d_i A_0  (covariant indices)
         F1_unb[0][1] = dA1x_dt - dA1t_dx; F1_unb[1][0] = -F1_unb[0][1];
@@ -2222,7 +2222,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         E2_boosted[1] = 1 / alpha1 * (F2_boosted[1][0] - betaup1[1] * F2_boosted[1][1] - betaup1[2] * F2_boosted[1][2] - betaup1[3] * F2_boosted[1][3]);
         E2_boosted[2] = 1 / alpha1 * (F2_boosted[2][0] - betaup1[1] * F2_boosted[2][1] - betaup1[2] * F2_boosted[2][2] - betaup1[3] * F2_boosted[2][3]);
         E2_boosted[3] = 1 / alpha1 * (F2_boosted[3][0] - betaup1[1] * F2_boosted[3][1] - betaup1[2] * F2_boosted[3][2] - betaup1[3] * F2_boosted[3][3]);
-        
+
         /* store spatial components */ 
         E1x[ind] = E1_boosted[1];
         E1y[ind] = E1_boosted[2];

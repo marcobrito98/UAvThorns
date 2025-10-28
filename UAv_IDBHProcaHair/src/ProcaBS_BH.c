@@ -1899,7 +1899,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         A1_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_re;
         A2_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im;
 
-        const CCTK_REAL dH1r_dr_1 = dH1_dr_1[ind]/rr_1 - H1r_1[ind]/rr_1;
+        const CCTK_REAL dH1r_dr_1 = dH1_dr_1[ind]/rr_1 - H1r_1[ind]/rr2_1;
         const CCTK_REAL dH1r_dth_1 = dH1_dth_1[ind]/rr_1;
 
         // Build unboosted field-strength tensor F_{mu nu} (only 0i components from time/spatial derivatives)
@@ -2256,6 +2256,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           //   E2_boosted[a] += Lambda[a][mu] * E2_unboosted[mu];
           // }
         }
+
         E1_boosted[1] = 1 / alpha1 * (F1_boosted[1][0] - betaup1[1] * F1_boosted[1][1] - betaup1[2] * F1_boosted[1][2] - betaup1[3] * F1_boosted[1][3]);
         E1_boosted[2] = 1 / alpha1 * (F1_boosted[2][0] - betaup1[1] * F1_boosted[2][1] - betaup1[2] * F1_boosted[2][2] - betaup1[3] * F1_boosted[2][3]);
         E1_boosted[3] = 1 / alpha1 * (F1_boosted[3][0] - betaup1[1] * F1_boosted[3][1] - betaup1[2] * F1_boosted[3][2] - betaup1[3] * F1_boosted[3][3]);

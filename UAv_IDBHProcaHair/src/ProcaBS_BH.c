@@ -1900,6 +1900,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         A2_unboosted[3] = (z1_1/rr_1 * H1r_1[ind] - sinth_1/rr_1 * H2_1[ind]) * harm_im;
 
         const CCTK_REAL dH1r_dr_1 = dH1_dr_1[ind]/rr_1 - H1r_1[ind]/rr_1;
+        const CCTK_REAL dH1r_dth_1 = dH1_dth_1[ind]/rr_1;
 
         // Build unboosted field-strength tensor F_{mu nu} (only 0i components from time/spatial derivatives)
         CCTK_REAL F1_unb[4][4], F2_unb[4][4];
@@ -1914,17 +1915,17 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
         const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
 
-        const CCTK_REAL dH1r_dx = dH1r_dr_1 * R_x_1 + dH1_dr_1[ind]*th_x_1;
-        const CCTK_REAL dH1r_dy = dH1r_dr_1 * R_y_1 + dH1_dr_1[ind]*th_y_1;
-        const CCTK_REAL dH1r_dz = dH1r_dr_1 * R_z_1 + dH1_dr_1[ind]*th_z_1;
+        const CCTK_REAL dH1r_dx = dH1r_dr_1 * R_x_1 + dH1_dth_1[ind]*th_x_1;
+        const CCTK_REAL dH1r_dy = dH1r_dr_1 * R_y_1 + dH1_dth_1[ind]*th_y_1;
+        const CCTK_REAL dH1r_dz = dH1r_dr_1 * R_z_1 + dH1_dth_1[ind]*th_z_1;
 
-        const CCTK_REAL dH2_dx = dH2_dr_1[ind] * R_x_1 + dH2_dr_1[ind]*th_x_1;
-        const CCTK_REAL dH2_dy = dH2_dr_1[ind] * R_y_1 + dH2_dr_1[ind]*th_y_1;
-        const CCTK_REAL dH2_dz = dH2_dr_1[ind] * R_z_1 + dH2_dr_1[ind]*th_z_1;
+        const CCTK_REAL dH2_dx = dH2_dr_1[ind] * R_x_1 + dH2_dth_1[ind]*th_x_1;
+        const CCTK_REAL dH2_dy = dH2_dr_1[ind] * R_y_1 + dH2_dth_1[ind]*th_y_1;
+        const CCTK_REAL dH2_dz = dH2_dr_1[ind] * R_z_1 + dH2_dth_1[ind]*th_z_1;
 
-        const CCTK_REAL dH3_dx = dH3_dr_1[ind] * R_x_1 + dH3_dr_1[ind]*th_x_1;
-        const CCTK_REAL dH3_dy = dH3_dr_1[ind] * R_y_1 + dH3_dr_1[ind]*th_y_1;
-        const CCTK_REAL dH3_dz = dH3_dr_1[ind] * R_z_1 + dH3_dr_1[ind]*th_z_1;
+        const CCTK_REAL dH3_dx = dH3_dr_1[ind] * R_x_1 + dH3_dth_1[ind]*th_x_1;
+        const CCTK_REAL dH3_dy = dH3_dr_1[ind] * R_y_1 + dH3_dth_1[ind]*th_y_1;
+        const CCTK_REAL dH3_dz = dH3_dr_1[ind] * R_z_1 + dH3_dth_1[ind]*th_z_1;
 
         const CCTK_REAL dA1x_dt = omega_BS * ( x1_1*gamma/rr_1 * H1r_1[ind] * harm_im + costh_1*cosph/rr_1 * H2_1[ind] * harm_im - sinph/rr_1 * H3_1[ind] * harm_re );
         const CCTK_REAL dA1y_dt = omega_BS * ( y1_1/rr_1 * H1r_1[ind] * harm_im + costh_1*sinph/rr_1 * H2_1[ind] * harm_im + cosph/rr_1 * H3_1[ind] * harm_re );

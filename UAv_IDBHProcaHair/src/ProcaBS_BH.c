@@ -308,7 +308,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       */
 
       if (i == 0) {
-        /* For the Boson Star, there's no issue, dWbar/dX != 0 at X==0, and x1_1*gamma and r coordinates coincide. */
+        /* For the Boson Star, there's no issue, dWbar/dX != 0 at X==0, and x*gamma and r coordinates coincide. */
 
         // 1st derivative with 4th order accuracy (forward stencils)
         Wbar_X =(- 25 * Wbar_in[ind] + 48 * Wbar_in[indip1] - 36 * Wbar_in[indip2] + 16 * Wbar_in[indip3] - 3 * Wbar_in[indip4]) * oodX12;
@@ -433,7 +433,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
       
       }
 
-      // From the X coordinate used in the input files to the r coordinate (coincides with x1_1*gamma for the Boson Star, rH=0).
+      // From the X coordinate used in the input files to the r coordinate (coincides with x1 for the Boson Star, rH=0).
       // We also do the conversion from Wbar to W_1 here, and H1_in to H1r_1, to tackle r = 0 (X = 0).
 
       // i == 0  <=>  X == 0  <=>  r == 0
@@ -1305,7 +1305,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
       CCTK_REAL alpha0,psi1_2;
 
-      if (CCTK_EQUALS(bh_spin_direction, "z1_1")) { 
+      // if (CCTK_EQUALS(bh_spin_direction, "z1_1")) { 
 
         CCTK_REAL x1_2  = x[ind] - x0_2;
         CCTK_REAL y1_2  = y[ind] - y0_2;
@@ -1554,14 +1554,14 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         check_nan_or_inf("kzz",kzz[ind]);  
 
           
-    } // end if bh_spin_direction == "z1_1"
+    //} // end if bh_spin_direction == "z1_1"
 
 
-    // if (CCTK_EQUALS(bh_spin_direction, "y1_1")) { // rotation applied (x1_1*gamma',y1_1',z1_1') = (x1_1*gamma,z1_1,-y1_1)
+    // if (CCTK_EQUALS(bh_spin_direction, "y1_1")) { // rotation applied (x',y',z') = (x,z,-y)
 
-    //     CCTK_REAL x1_2  = x1_1*gamma[ind] - x0_2;
-    //     CCTK_REAL y1_2  = y1_1[ind] - y0_2;
-    //     CCTK_REAL z1_2  = z1_1[ind] - z0_2;
+    //     CCTK_REAL x1_2  = x[ind] - x0_2;
+    //     CCTK_REAL y1_2  = y[ind] - y0_2;
+    //     CCTK_REAL z1_2  = z[ind] - z0_2;
 
     //     // const CCTK_REAL bh_v2 = bs_v * bs_v;
     //     const CCTK_REAL bh_spin2 = bh_spin*bh_spin;

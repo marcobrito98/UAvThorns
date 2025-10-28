@@ -1915,9 +1915,9 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL dV_dy = dV_dr_1[ind]*R_y_1 + dV_dth_1[ind]*th_y_1;
         const CCTK_REAL dV_dz = dV_dr_1[ind]*R_z_1 + dV_dth_1[ind]*th_z_1;
 
-        const CCTK_REAL dH1r_dx = dH1r_dr_1 * R_x_1 + dH1_dth_1[ind]*th_x_1;
-        const CCTK_REAL dH1r_dy = dH1r_dr_1 * R_y_1 + dH1_dth_1[ind]*th_y_1;
-        const CCTK_REAL dH1r_dz = dH1r_dr_1 * R_z_1 + dH1_dth_1[ind]*th_z_1;
+        const CCTK_REAL dH1r_dx = dH1r_dr_1 * R_x_1 + dH1r_dth_1[ind]*th_x_1;
+        const CCTK_REAL dH1r_dy = dH1r_dr_1 * R_y_1 + dH1r_dth_1[ind]*th_y_1;
+        const CCTK_REAL dH1r_dz = dH1r_dr_1 * R_z_1 + dH1r_dth_1[ind]*th_z_1;
 
         const CCTK_REAL dH2_dx = dH2_dr_1[ind] * R_x_1 + dH2_dth_1[ind]*th_x_1;
         const CCTK_REAL dH2_dy = dH2_dr_1[ind] * R_y_1 + dH2_dth_1[ind]*th_y_1;

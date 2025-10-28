@@ -2265,13 +2265,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         E2_boosted[3] = 1 / alpha1 * (F2_boosted[3][0] - betaup1[1] * F2_boosted[3][1] - betaup1[2] * F2_boosted[3][2] - betaup1[3] * F2_boosted[3][3]);
 
         /* store spatial components */ 
-        E1x[ind] = E1_boosted[1];
-        E1y[ind] = E1_boosted[2];
-        E1z[ind] = E1_boosted[3];
+        E1x[ind] = E1_unboosted[1];
+        E1y[ind] = E1_unboosted[2];
+        E1z[ind] = E1_unboosted[3];
 
-        E2x[ind] = E2_boosted[1];
-        E2y[ind] = E2_boosted[2];
-        E2z[ind] = E2_boosted[3];
+        E2x[ind] = E2_unboosted[1];
+        E2y[ind] = E2_unboosted[2];
+        E2z[ind] = E2_unboosted[3];
 
 
 

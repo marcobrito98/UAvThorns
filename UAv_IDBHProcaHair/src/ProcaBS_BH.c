@@ -1972,7 +1972,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
                                   dH2_dth_1[ind]*th_z_1)*costh_1 + \
                                   H2_1[ind]*(-(R_z_1*costh_1) + \
                                   rr_1*(-sinth_1*th_z_1))))/rr2_1;
-
+        
         const CCTK_REAL dA1y_dx = ((H3_1[ind]*(d_cosph_dx*rr_1 - cosph*R_x_1) + \
                                   cosph*rr_1*(dH3_dr_1[ind]*R_x_1 + dH3_dth_1[ind]*\
                                   th_x_1))*sinwt + \
@@ -2279,13 +2279,13 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         E2up_boosted[3] = gammaA_inv[3][1] * E2_boosted[1] + gammaA_inv[3][2] * E2_boosted[2] + gammaA_inv[3][3] * E2_boosted[3];
 
         /* store spatial components */ 
-        E1x[ind] = E1_boosted[1];
-        E1y[ind] = E1_boosted[2];
-        E1z[ind] = E1_boosted[3];
+        E1x[ind] = E1up_boosted[1];
+        E1y[ind] = E1up_boosted[2];
+        E1z[ind] = E1up_boosted[3];
 
-        E2x[ind] = E2_boosted[1];
-        E2y[ind] = E2_boosted[2];
-        E2z[ind] = E2_boosted[3];
+        E2x[ind] = E2up_boosted[1];
+        E2y[ind] = E2up_boosted[2];
+        E2z[ind] = E2up_boosted[3];
 
 
 

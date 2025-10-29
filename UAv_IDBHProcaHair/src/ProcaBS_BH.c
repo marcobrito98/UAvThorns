@@ -1944,151 +1944,85 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         const CCTK_REAL dA2t_dy = dV_dy * coswt;
         const CCTK_REAL dA2t_dz = dV_dz * coswt;
 
-        const CCTK_REAL dA1x_dx = (-(sinwt*(H3_1[ind]*(d_sinph_dx*rr_1 - \
-                                  R_x_1*sinph) + rr_1*sinph*(dH3_dr_1[ind]*R_x_1 + \
-                                  th_x_1*dH3_dth_1[ind]))) + \
-                                  coswt*(H1r_1[ind]*(rr_1 - R_x_1*x1_1*gamma) + \
-                                  (H2_1[ind]*(d_cosph_dx*rr_1 - cosph*R_x_1) + \
-                                  cosph*rr_1*(dH2_dr_1[ind]*R_x_1 + \
-                                  dH2_dth_1[ind]*th_x_1))*costh_1 + \
-                                  rr_1*(dH1r_dr_1*R_x_1*x1_1*gamma + dH1r_dth_1*th_x_1*x1_1*gamma + \
-                                  cosph*H2_1[ind]*(-sinth_1*th_x_1))))/rr2_1;
-        const CCTK_REAL dA1x_dy = (-(sinwt*(H3_1[ind]*(d_sinph_dy*rr_1 - \
-                                  R_y_1*sinph) + rr_1*sinph*(dH3_dr_1[ind]*R_y_1 + \
-                                  th_y_1*dH3_dth_1[ind]))) + \
-                                  coswt*((-H1r_1[ind] + \
-                                  dH1r_dr_1*rr_1)*R_y_1*x1_1*gamma + \
-                                  dH1r_dth_1*rr_1*th_y_1*x1_1*gamma + \
-                                  (H2_1[ind]*(d_cosph_dy*rr_1 - cosph*R_y_1) + \
-                                  cosph*rr_1*(dH2_dr_1[ind]*R_y_1 + \
-                                  dH2_dth_1[ind]*th_y_1))*costh_1 + \
-                                  cosph*H2_1[ind]*rr_1*(-sinth_1*th_y_1)))/rr2_1;
-        const CCTK_REAL dA1x_dz = (R_z_1*((-H1r_1[ind] + \
-                                  dH1r_dr_1*rr_1)*x1_1*gamma*coswt + (H3_1[ind] - \
-                                  dH3_dr_1[ind]*rr_1)*sinph*sinwt) + \
-                                  rr_1*th_z_1*(dH1r_dth_1*x1_1*gamma*coswt - \
-                                  sinph*sinwt*dH3_dth_1[ind]) + \
-                                  cosph*coswt*(rr_1*(dH2_dr_1[ind]*R_z_1 + \
-                                  dH2_dth_1[ind]*th_z_1)*costh_1 + \
-                                  H2_1[ind]*(-(R_z_1*costh_1) + \
-                                  rr_1*(-sinth_1*th_z_1))))/rr2_1;
+        const CCTK_REAL dA1x_dx = (-(R_x_1*((cosph*costh*H2_1[ind] + H1r_1[ind]*x*gamma)*coswt - \
+H3_1[ind]*sinph*sinwt)) + rr_1*(-((d_sinph_dx*H3_1[ind] + \
+dH3_dx*sinph)*sinwt) + coswt*(H1r_1[ind] + costh*(cosph*dH2_dx + \
+d_cosph_dx*H2_1[ind]) + dH1r_dx*x*gamma + cosph*H2_1[ind]*(-sinth * \
+th_x_1))))/pow(rr_1,2);
+        const CCTK_REAL dA1x_dy = (-(R_y_1*((cosph*costh*H2_1[ind] + H1r_1[ind]*x*gamma)*coswt - \
+H3_1[ind]*sinph*sinwt)) + rr_1*(-((d_sinph_dy*H3_1[ind] + \
+dH3_dy*sinph)*sinwt) + coswt*(costh*(cosph*dH2_dy + \
+d_cosph_dx*H2_1[ind]) + dH1r_dy*x*gamma + cosph*H2_1[ind]*(-sinth * \
+th_y_1))))/pow(rr_1,2);
+        const CCTK_REAL dA1x_dz = (-(R_z_1*((cosph*costh*H2_1[ind] + H1r_1[ind]*x*gamma)*coswt - \
+H3_1[ind]*sinph*sinwt)) + rr_1*(-(dH3_dz*sinph*sinwt) + \
+coswt*(dH1r_dz*x*gamma + cosph*(costh*dH2_dz + H2_1[ind]*(-sinth * \
+th_z_1)))))/pow(rr_1,2);
         
-        const CCTK_REAL dA1y_dx = ((H3_1[ind]*(d_cosph_dx*rr_1 - cosph*R_x_1) + \
-                                  cosph*rr_1*(dH3_dr_1[ind]*R_x_1 + dH3_dth_1[ind]*\
-                                  th_x_1))*sinwt + \
-                                  coswt*((-H1r_1[ind] + dH1r_dr_1*rr_1\
-                                  )*R_x_1*y1_1 + dH1r_dth_1*rr_1*th_x_1*y1_1 + \
-                                  (H2_1[ind]*(d_sinph_dx*rr_1 - R_x_1*sinph) + \
-                                  rr_1*sinph*(dH2_dr_1[ind]*R_x_1 + dH2_dth_1[ind]*\
-                                  th_x_1))*costh_1 + \
-                                  H2_1[ind]*rr_1*sinph*(-sinth_1*th_x_1)))/rr2_1;
-        const CCTK_REAL dA1y_dy = ((H3_1[ind]*(d_cosph_dy*rr_1 - cosph*R_y_1) + \
-                                  cosph*rr_1*(dH3_dr_1[ind]*R_y_1 + dH3_dth_1[ind]*\
-                                  th_y_1))*sinwt + \
-                                  coswt*(H1r_1[ind]*(rr_1 - R_y_1*y1_1) + (\
-                                  H2_1[ind]*(d_sinph_dy*rr_1 - R_y_1*sinph) + \
-                                  rr_1*sinph*(dH2_dr_1[ind]*R_y_1 + dH2_dth_1[ind]*\
-                                  th_y_1))*costh_1 + rr_1*(dH1r_dr_1*R_y_1*y1_1 + \
-                                  dH1r_dth_1*th_y_1*y1_1 + \
-                                  H2_1[ind]*sinph*(-sinth_1*th_y_1))))/rr2_1;
-        const CCTK_REAL dA1y_dz = (rr_1*th_z_1*(coswt*(dH1r_dth_1*y1_1 + \
-                                  dH2_dth_1[ind]*sinph*costh_1) + \
-                                  cosph*dH3_dth_1[ind]*sinwt) + \
-                                  R_z_1*(coswt*(-(H1r_1[ind]*y1_1) + \
-                                  rr_1*(dH1r_dr_1*y1_1 + dH2_dr_1[ind]*sinph*costh_1)) + \
-                                  cosph*(-H3_1[ind] + dH3_dr_1[ind]*rr_1)*sinwt) \
-                                  + H2_1[ind]*sinph*coswt*(-(R_z_1*costh_1) + \
-                                  rr_1*(-sinth_1*th_z_1)))/rr2_1;
+        const CCTK_REAL dA1y_dx = (-(R_x_1*((costh*H2_1[ind]*sinph + H1r_1[ind]*y1_1)*coswt + \
+cosph*H3_1[ind]*sinwt)) + rr_1*((cosph*dH3_dx + \
+d_cosph_dx*H3_1[ind])*sinwt + coswt*(costh*(d_sinph_dx*H2_1[ind] + \
+dH2_dx*sinph) + dH1r_dx*y1_1 + H2_1[ind]*sinph*(-sinth * \
+th_x_1))))/pow(rr_1,2);
+        const CCTK_REAL dA1y_dy = (-(R_y_1*((costh*H2_1[ind]*sinph + H1r_1[ind]*y1_1)*coswt + \
+cosph*H3_1[ind]*sinwt)) + rr_1*((cosph*dH3_dy + \
+d_cosph_dx*H3_1[ind])*sinwt + coswt*(H1r_1[ind] + \
+costh*(d_sinph_dy*H2_1[ind] + dH2_dy*sinph) + dH1r_dy*y1_1 + \
+H2_1[ind]*sinph*(-sinth * th_y_1))))/pow(rr_1,2);
+        const CCTK_REAL dA1y_dz = (-(R_z_1*((costh*H2_1[ind]*sinph + H1r_1[ind]*y1_1)*coswt + \
+cosph*H3_1[ind]*sinwt)) + rr_1*(cosph*dH3_dz*sinwt + \
+coswt*(dH1r_dz*y1_1 + sinph*(costh*dH2_dz + H2_1[ind]*(-sinth * \
+th_z_1)))))/pow(rr_1,2);
 
-        const CCTK_REAL dA1z_dx = (coswt*(-(H1r_1[ind]*R_x_1*z1_1) + \
-                                  rr_1*(R_x_1*(dH1r_dr_1*z1_1 - \
-                                  dH2_dr_1[ind]*sinth_1) + th_x_1*(dH1r_dth_1*z1_1 - \
-                                  dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(R_x_1*sinth_1 - \
-                                  rr_1*(costh_1*th_x_1))))/rr2_1;
-        const CCTK_REAL dA1z_dy = (coswt*(-(H1r_1[ind]*R_y_1*z1_1) + \
-                                  rr_1*(R_y_1*(dH1r_dr_1*z1_1 - \
-                                  dH2_dr_1[ind]*sinth_1) + th_y_1*(dH1r_dth_1*z1_1 - \
-                                  dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(R_y_1*sinth_1 - \
-                                  rr_1*(costh_1*th_y_1))))/rr2_1;
-        const CCTK_REAL dA1z_dz = (coswt*(H1r_1[ind]*(rr_1 - R_z_1*z1_1) + \
-                                  rr_1*(R_z_1*(dH1r_dr_1*z1_1 - \
-                                  dH2_dr_1[ind]*sinth_1) + th_z_1*(dH1r_dth_1*z1_1 - \
-                                  dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(R_z_1*sinth_1 - \
-                                  rr_1*(costh_1*th_z_1))))/rr2_1;
+        const CCTK_REAL dA1z_dx = (coswt*(R_x_1*(H2_1[ind]*sinth - H1r_1[ind]*z1_1) + \
+rr_1*(-(dH2_dx*sinth) + dH1r_dx*z1_1 - H2_1[ind]*costh * \
+th_x_1)))/pow(rr_1,2);
+        const CCTK_REAL dA1z_dy = (coswt*(R_y_1*(H2_1[ind]*sinth - H1r_1[ind]*z1_1) + \
+rr_1*(-(dH2_dy*sinth) + dH1r_dy*z1_1 - H2_1[ind]*costh * \
+th_y_1)))/pow(rr_1,2);
+        const CCTK_REAL dA1z_dz = (coswt*(H2_1[ind]*R_z_1*sinth + H1r_1[ind]*(rr_1 - R_z_1*z1_1) + \
+rr_1*(-(dH2_dz*sinth) + dH1r_dz*z1_1 - H2_1[ind]*costh * \
+th_z_1)))/pow(rr_1,2);
 
-        const CCTK_REAL dA2x_dx = (-((H3_1[ind]*(d_sinph_dx*rr_1 - R_x_1*sinph) + \
-                                  rr_1*sinph*(dH3_dr_1[ind]*R_x_1 + \
-                                  dH3_dth_1[ind]*th_x_1))*coswt) + \
-                                  sinth_1*(H1r_1[ind]*(-rr_1 + R_x_1*x1_1*gamma) - \
-                                  (H2_1[ind]*(d_cosph_dx*rr_1 - cosph*R_x_1) + \
-                                  cosph*rr_1*(dH2_dr_1[ind]*R_x_1 + \
-                                  dH2_dth_1[ind]*th_x_1))*costh_1 - \
-                                  rr_1*(dH1r_dr_1*R_x_1*x1_1*gamma + dH1r_dth_1*th_x_1*x1_1*gamma + \
-                                  cosph*H2_1[ind]*(-sinth_1*th_x_1))))/rr2_1;                  
-        const CCTK_REAL dA2x_dy = (-((H3_1[ind]*(d_sinph_dy*rr_1 - R_y_1*sinph) + \
-                                  rr_1*sinph*(dH3_dr_1[ind]*R_y_1 + dH3_dth_1[ind]*\
-                                  th_y_1))*coswt) + \
-                                  sinth_1*(H1r_1[ind]*R_y_1*x1_1*gamma - \
-                                  (H2_1[ind]*(d_cosph_dy*rr_1 - cosph*R_y_1) + \
-                                  cosph*rr_1*(dH2_dr_1[ind]*R_y_1 + dH2_dth_1[ind]*\
-                                  th_y_1))*costh_1 - rr_1*(dH1r_dr_1*R_y_1*x1_1*gamma + \
-                                  dH1r_dth_1*th_y_1*x1_1*gamma + \
-                                  cosph*H2_1[ind]*(-sinth_1*th_y_1))))/rr2_1;
-        const CCTK_REAL dA2x_dz = (-(rr_1*th_z_1*(dH3_dth_1[ind]*sinph*coswt + dH1r_dth_1*x1_1*gamma*sinth_1)) + \
-                                  R_z_1*((H3_1[ind] - \
-                                  dH3_dr_1[ind]*rr_1)*sinph*coswt + \
-                                  (H1r_1[ind] - dH1r_dr_1*rr_1)*x1_1*gamma*sinwt) - cosph*sinth_1*(rr_1*(dH2_dr_1[ind]\
-                                  *R_z_1 + dH2_dth_1[ind]*th_z_1)*costh_1 + \
-                                  H2_1[ind]*(-(R_z_1*costh_1) + \
-                                  rr_1*(-sinth_1*th_z_1))))/rr2_1;
+        const CCTK_REAL dA2x_dx = (R_x_1*(H3_1[ind]*sinph*coswt + (cosph*costh*H2_1[ind] + \
+H1r_1[ind]*x*gamma)*sinwt) + rr_1*(-((d_sinph_dx*H3_1[ind] + \
+dH3_dx*sinph)*coswt) - sinwt*(H1r_1[ind] + costh*(cosph*dH2_dx + \
+d_cosph_dx*H2_1[ind]) + dH1r_dx*x*gamma + cosph*H2_1[ind]*(-sinth * \
+th_x_1))))/pow(rr_1,2);                  
+        const CCTK_REAL dA2x_dy = (R_y_1*(H3_1[ind]*sinph*coswt + (cosph*costh*H2_1[ind] + \
+H1r_1[ind]*x*gamma)*sinwt) + rr_1*(-((d_sinph_dy*H3_1[ind] + \
+dH3_dy*sinph)*coswt) - sinwt*(costh*(cosph*dH2_dy + \
+d_cosph_dx*H2_1[ind]) + dH1r_dy*x*gamma + cosph*H2_1[ind]*(-sinth * \
+th_y_1))))/pow(rr_1,2);
+        const CCTK_REAL dA2x_dz = (R_z_1*(H3_1[ind]*sinph*coswt + (cosph*costh*H2_1[ind] + \
+H1r_1[ind]*x*gamma)*sinwt) + rr_1*(-(dH3_dz*sinph*coswt) - \
+sinwt*(dH1r_dz*x*gamma + cosph*(costh*dH2_dz + H2_1[ind]*(-sinth * \
+th_z_1)))))/pow(rr_1,2);
         
-        const CCTK_REAL dA2y_dx = ((H3_1[ind]*(d_cosph_dx*rr_1 - cosph*R_x_1) + \
-                                  cosph*rr_1*(dH3_dr_1[ind]*R_x_1 + \
-                                  dH3_dth_1[ind]*th_x_1))*coswt + \
-                                  sinth_1*(H1r_1[ind]*R_x_1*y1_1 - \
-                                  (H2_1[ind]*(d_sinph_dx*rr_1 - R_x_1*sinph) + \
-                                  rr_1*sinph*(dH2_dr_1[ind]*R_x_1 + \
-                                  dH2_dth_1[ind]*th_x_1))*costh_1 - \
-                                  rr_1*(dH1r_dr_1*R_x_1*y1_1 + dH1r_dth_1*th_x_1*y1_1 + \
-                                  H2_1[ind]*sinph*(-sinth_1*th_x_1))))/rr2_1;
-        const CCTK_REAL dA2y_dy = ((H3_1[ind]*(d_cosph_dy*rr_1 - cosph*R_y_1) + \
-                                  cosph*rr_1*(dH3_dr_1[ind]*R_y_1 + dH3_dth_1[ind]*\
-                                  th_y_1))*coswt + \
-                                  sinth_1*(H1r_1[ind]*(-rr_1 + R_y_1*y1_1) - \
-                                  (H2_1[ind]*(d_sinph_dy*rr_1 - R_y_1*sinph) + \
-                                  rr_1*sinph*(dH2_dr_1[ind]*R_y_1 + dH2_dth_1[ind]*\
-                                  th_y_1))*costh_1 - rr_1*(dH1r_dr_1*R_y_1*y1_1 + \
-                                  dH1r_dth_1*th_y_1*y1_1 + \
-                                  H2_1[ind]*sinph*(-sinth_1*th_y_1))))/rr2_1;
-        const CCTK_REAL dA2y_dz = (-(rr_1*th_z_1*(-(cosph*dH3_dth_1[ind]*coswt) + (dH1r_dth_1*y1_1 + \
-                                  dH2_dth_1[ind]*sinph*costh_1)*sinth_1)) \
-                                  + R_z_1*(cosph*(-H3_1[ind] + \
-                                  dH3_dr_1[ind]*rr_1)*coswt + \
-                                  (H1r_1[ind]*y1_1 - rr_1*(dH1r_dr_1*y1_1 + \
-                                  dH2_dr_1[ind]*sinph*costh_1))*sinth_1) \
-                                  + H2_1[ind]*sinph*sinth_1*(R_z_1*costh_1 - rr_1*(-sinth_1*th_z_1)))/rr2_1;
+        const CCTK_REAL dA2y_dx = (R_x_1*(-(cosph*H3_1[ind]*coswt) + (costh*H2_1[ind]*sinph + \
+H1r_1[ind]*y1_1)*sinwt) + rr_1*((cosph*dH3_dx + \
+d_cosph_dx*H3_1[ind])*coswt - sinwt*(costh*(d_sinph_dx*H2_1[ind] + \
+dH2_dx*sinph) + dH1r_dx*y1_1 + H2_1[ind]*sinph*(-sinth * \
+th_x_1))))/pow(rr_1,2);
+        const CCTK_REAL dA2y_dy = (R_y_1*(-(cosph*H3_1[ind]*coswt) + (costh*H2_1[ind]*sinph + \
+H1r_1[ind]*y1_1)*sinwt) + rr_1*((cosph*dH3_dy + \
+d_cosph_dx*H3_1[ind])*coswt - sinwt*(H1r_1[ind] + \
+costh*(d_sinph_dy*H2_1[ind] + dH2_dy*sinph) + dH1r_dy*y1_1 + \
+H2_1[ind]*sinph*(-sinth * th_y_1))))/pow(rr_1,2);
+        const CCTK_REAL dA2y_dz = (R_z_1*(-(cosph*H3_1[ind]*coswt) + (costh*H2_1[ind]*sinph + \
+H1r_1[ind]*y1_1)*sinwt) + rr_1*(cosph*dH3_dz*coswt - \
+sinwt*(dH1r_dz*y1_1 + sinph*(costh*dH2_dz + H2_1[ind]*(-sinth * \
+th_z_1)))))/pow(rr_1,2);
                                                               
-        const CCTK_REAL dA2z_dx = (sinth_1*(H1r_1[ind]*R_x_1*z1_1 + \
-                                  rr_1*(R_x_1*(-(dH1r_dr_1*z1_1) + \
-                                  dH2_dr_1[ind]*sinth_1) + th_x_1*(-(dH1r_dth_1*z1_1) \
-                                  + dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(-(R_x_1*sinth_1) + \
-                                  rr_1*(costh_1*th_x_1))))/rr2_1;
-        const CCTK_REAL dA2z_dy = (sinth_1*(H1r_1[ind]*R_y_1*z1_1 + \
-                                  rr_1*(R_y_1*(-(dH1r_dr_1*z1_1) + \
-                                  dH2_dr_1[ind]*sinth_1) + th_y_1*(-(dH1r_dth_1*z1_1) \
-                                  + dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(-(R_y_1*sinth_1) + \
-                                  rr_1*(costh_1*th_y_1))))/rr2_1;
-        const CCTK_REAL dA2z_dz = (sinth_1*(H1r_1[ind]*(-rr_1 + R_z_1*z1_1) \
-                                  + rr_1*(R_z_1*(-(dH1r_dr_1*z1_1) + \
-                                  dH2_dr_1[ind]*sinth_1) + th_z_1*(-(dH1r_dth_1*z1_1) \
-                                  + dH2_dth_1[ind]*sinth_1)) + \
-                                  H2_1[ind]*(-(R_z_1*sinth_1) + \
-                                  rr_1*(costh_1*th_z_1))))/rr2_1;
+        const CCTK_REAL dA2z_dx = (sinwt*(R_x_1*(-(H2_1[ind]*sinth) + H1r_1[ind]*z1_1) + \
+rr_1*(dH2_dx*sinth - dH1r_dx*z1_1 + H2_1[ind]*costh * \
+th_x_1)))/pow(rr_1,2);
+        const CCTK_REAL dA2z_dy = (sinwt*(R_y_1*(-(H2_1[ind]*sinth) + H1r_1[ind]*z1_1) + \
+rr_1*(dH2_dy*sinth - dH1r_dy*z1_1 + H2_1[ind]*costh * \
+th_y_1)))/pow(rr_1,2);
+        const CCTK_REAL dA2z_dz = (sinwt*(-(H2_1[ind]*R_z_1*sinth) + H1r_1[ind]*(-rr_1 + R_z_1*z1_1) + \
+rr_1*(dH2_dz*sinth - dH1r_dz*z1_1 + H2_1[ind]*costh * \
+th_z_1)))/pow(rr_1,2);
 
 
 
@@ -2165,80 +2099,80 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
         // ----- Electric fields -----
         
-        // First, E_i in (R, th, ph_1) coordinates
-        CCTK_REAL E1d_r, E2d_r, E1d_th, E2d_th, E1d_ph_o_sinth, E2d_ph_o_sinth;
+        // // First, E_i in (R, th, ph_1) coordinates
+        // CCTK_REAL E1d_r, E2d_r, E1d_th, E2d_th, E1d_ph_o_sinth, E2d_ph_o_sinth;
 
-        // E_r
-        /*
-          E_r = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) H1r_1 + dV/dr + W_1 sinth_1 dH3/dr]
-        */
+        // // E_r
+        // /*
+        //   E_r = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) H1r_1 + dV/dr + W_1 sinth_1 dH3/dr]
+        // */
 
-        E1d_r = -(- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_im;
-        E2d_r =  (- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_re;
+        // E1d_r = -(- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_im;
+        // E2d_r =  (- (mm * W_1[ind] - omega_BS) * H1r_1[ind] + dV_dr_1[ind] + W_1[ind] * sinth_1 * dH3_dr_1[ind]) / alph * harm_re;
 
-        // E_th
-        /*
-          E_th = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) * H2_1 + dV/dth + W_1 * d(H3_1 * sinth_1)/dth]
-        */
-        E1d_th = -(- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_im;
-        E2d_th =  (- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_re;
+        // // E_th
+        // /*
+        //   E_th = i * e^{i(m phi - w t)} / alpha * [- (m*W_1 - w) * H2_1 + dV/dth + W_1 * d(H3_1 * sinth_1)/dth]
+        // */
+        // E1d_th = -(- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_im;
+        // E2d_th =  (- (mm * W_1[ind] - omega_BS) * H2_1[ind] + dV_dth_1[ind] + W_1[ind] * (sinth_1 * dH3_dth_1[ind] + costh_1 * H3_1[ind])) / alph * harm_re;
 
-        // E_ph / sinth_1
-        /*
-          E_ph = - (m * V_1 + w * H3_1 * sinth_1) / alpha * e^{i(m phi - w t)}
+        // // E_ph / sinth_1
+        // /*
+        //   E_ph = - (m * V_1 + w * H3_1 * sinth_1) / alpha * e^{i(m phi - w t)}
 
-          We include here the division by sinth_1 which arises when computing E^ph_1.
+        //   We include here the division by sinth_1 which arises when computing E^ph_1.
           
-          on the axis sinth_1=0, we need to regularize the division by sinth_1
-          We have V_1(theta=0,pi) = 0, so with l'Hôpital's rule
-          V_1 / sinth_1 ~ \pm dV/dth    for theta = 0, pi resp.
-        */
-        if (fabs(sinth_1) < 1e-8) {
-          // TODO: see how to deal with this if now we allow rr_1==0
-          const CCTK_INT zsign = (costh_1>=0) ? 1 : -1; // costh_1==0 shouldn't happen on the axis for a grid point, this would mean rr_1==0 too...
+        //   on the axis sinth_1=0, we need to regularize the division by sinth_1
+        //   We have V_1(theta=0,pi) = 0, so with l'Hôpital's rule
+        //   V_1 / sinth_1 ~ \pm dV/dth    for theta = 0, pi resp.
+        // */
+        // if (fabs(sinth_1) < 1e-8) {
+        //   // TODO: see how to deal with this if now we allow rr_1==0
+        //   const CCTK_INT zsign = (costh_1>=0) ? 1 : -1; // costh_1==0 shouldn't happen on the axis for a grid point, this would mean rr_1==0 too...
 
-          E1d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_re;
-          E2d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_im;
+        //   E1d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_re;
+        //   E2d_ph_o_sinth = - (mm * zsign * dV_dth_1[ind] + omega_BS * H3_1[ind]) / alph * harm_im;
         
-        } else {
-          E1d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_re;
-          E2d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_im;
-        }
+        // } else {
+        //   E1d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_re;
+        //   E2d_ph_o_sinth = - (mm * V_1[ind] / sinth_1 + omega_BS * H3_1[ind]) / alph * harm_im;
+        // }
 
 
-        // E^i components
-        // Spherical auxiliaries
+        // // E^i components
+        // // Spherical auxiliaries
         
-        // E^r/r = e^{-2*F1_1} * E_r / r
-        const CCTK_REAL E1u_r_o_r = exp(-2*F1_1[ind]) * E1d_r / rr_1;
-        const CCTK_REAL E2u_r_o_r = exp(-2*F1_1[ind]) * E2d_r / rr_1;
+        // // E^r/r = e^{-2*F1_1} * E_r / r
+        // const CCTK_REAL E1u_r_o_r = exp(-2*F1_1[ind]) * E1d_r / rr_1;
+        // const CCTK_REAL E2u_r_o_r = exp(-2*F1_1[ind]) * E2d_r / rr_1;
 
-        // E^th = e^{-2*F1_1} / r^2 * E_th
-        const CCTK_REAL E1u_th = exp(-2*F1_1[ind]) / rr2_1 * E1d_th;
-        const CCTK_REAL E2u_th = exp(-2*F1_1[ind]) / rr2_1 * E2d_th;
+        // // E^th = e^{-2*F1_1} / r^2 * E_th
+        // const CCTK_REAL E1u_th = exp(-2*F1_1[ind]) / rr2_1 * E1d_th;
+        // const CCTK_REAL E2u_th = exp(-2*F1_1[ind]) / rr2_1 * E2d_th;
 
-        // E^ph_1 = e^{-2*F2_1} / r^2 / sinth_1^2 * E_ph
-        // We compute r * sinth_1 * E^ph_1. The other division by sinth_1 is managed with E_ph above 
-        const CCTK_REAL rsinthE1u_ph = exp(-2*F2_1[ind]) / rr_1 * E1d_ph_o_sinth;
-        const CCTK_REAL rsinthE2u_ph = exp(-2*F2_1[ind]) / rr_1 * E2d_ph_o_sinth;
+        // // E^ph_1 = e^{-2*F2_1} / r^2 / sinth_1^2 * E_ph
+        // // We compute r * sinth_1 * E^ph_1. The other division by sinth_1 is managed with E_ph above 
+        // const CCTK_REAL rsinthE1u_ph = exp(-2*F2_1[ind]) / rr_1 * E1d_ph_o_sinth;
+        // const CCTK_REAL rsinthE2u_ph = exp(-2*F2_1[ind]) / rr_1 * E2d_ph_o_sinth;
 
 
-        // Finally Cartesian components
-        CCTK_REAL E1_unboosted[4]; //E^\mu real part
-        CCTK_REAL E2_unboosted[4]; //E^\mu imag part
+        // // Finally Cartesian components
+        // CCTK_REAL E1_unboosted[4]; //E^\mu real part
+        // CCTK_REAL E2_unboosted[4]; //E^\mu imag part
 
-        // E^t
-        E1_unboosted[0] = 0.;
-        E2_unboosted[0] = 0.;
-        // E^x1_1*gamma
-        E1_unboosted[1] = x1_1 * gamma * E1u_r_o_r + z1_1 * cosph * E1u_th - sinph * rsinthE1u_ph;
-        E2_unboosted[1] = x1_1 * gamma * E2u_r_o_r + z1_1 * cosph * E2u_th - sinph * rsinthE2u_ph;
-        // E^y1_1
-        E1_unboosted[2] = y1_1 * E1u_r_o_r + z1_1 * sinph * E1u_th + cosph * rsinthE1u_ph;
-        E2_unboosted[2] = y1_1 * E2u_r_o_r + z1_1 * sinph * E2u_th + cosph * rsinthE2u_ph;
-        // E^z1_1
-        E1_unboosted[3] = z1_1 * E1u_r_o_r - rho_1 * E1u_th;
-        E2_unboosted[3] = z1_1 * E2u_r_o_r - rho_1 * E2u_th;
+        // // E^t
+        // E1_unboosted[0] = 0.;
+        // E2_unboosted[0] = 0.;
+        // // E^x1_1*gamma
+        // E1_unboosted[1] = x1_1 * gamma * E1u_r_o_r + z1_1 * cosph * E1u_th - sinph * rsinthE1u_ph;
+        // E2_unboosted[1] = x1_1 * gamma * E2u_r_o_r + z1_1 * cosph * E2u_th - sinph * rsinthE2u_ph;
+        // // E^y1_1
+        // E1_unboosted[2] = y1_1 * E1u_r_o_r + z1_1 * sinph * E1u_th + cosph * rsinthE1u_ph;
+        // E2_unboosted[2] = y1_1 * E2u_r_o_r + z1_1 * sinph * E2u_th + cosph * rsinthE2u_ph;
+        // // E^z1_1
+        // E1_unboosted[3] = z1_1 * E1u_r_o_r - rho_1 * E1u_th;
+        // E2_unboosted[3] = z1_1 * E2u_r_o_r - rho_1 * E2u_th;
 
 
         //Boosted components
@@ -2289,7 +2223,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-        // zero-initialize constraint damping variable Zeta
+        // zero-initialize constraint damping variable zeta
         Zeta1[ind] = 0;
         Zeta2[ind] = 0;
 

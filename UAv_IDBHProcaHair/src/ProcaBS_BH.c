@@ -2178,8 +2178,6 @@ th_z_1)))/pow(rr_1,2);
         //Boosted components
 
         //cannot be boosted since its foliation dependent
-        //furthermore it was also wrong for a generic 4-vector boost.
-        //must compute the magnetic field?
         CCTK_REAL E1_boosted[4]; //E_\mu real part
         CCTK_REAL E2_boosted[4]; //E_\mu imag part
         for (int a = 0; a < 4; ++a) {

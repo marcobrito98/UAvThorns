@@ -2193,13 +2193,13 @@ th_z_1)))/pow(rr_1,2);
 
 
         // E_\mu
-        E1_boosted[1] = 1 / alpha1 * (F1_boosted[1][0] - betaup1[1] * F1_boosted[1][1] - betaup1[2] * F1_boosted[1][2] - betaup1[3] * F1_boosted[1][3]);
-        E1_boosted[2] = 1 / alpha1 * (F1_boosted[2][0] - betaup1[1] * F1_boosted[2][1] - betaup1[2] * F1_boosted[2][2] - betaup1[3] * F1_boosted[2][3]);
-        E1_boosted[3] = 1 / alpha1 * (F1_boosted[3][0] - betaup1[1] * F1_boosted[3][1] - betaup1[2] * F1_boosted[3][2] - betaup1[3] * F1_boosted[3][3]);
+        E1_boosted[1] = 1 / alpha1 * (F1_boosted[1][0] - betaup1[2] * F1_boosted[1][2] - betaup1[3] * F1_boosted[1][3]);
+        E1_boosted[2] = 1 / alpha1 * (F1_boosted[2][0] - betaup1[1] * F1_boosted[2][1] - betaup1[3] * F1_boosted[2][3]);
+        E1_boosted[3] = 1 / alpha1 * (F1_boosted[3][0] - betaup1[1] * F1_boosted[3][1] - betaup1[2] * F1_boosted[3][2]);
 
-        E2_boosted[1] = 1 / alpha1 * (F2_boosted[1][0] - betaup1[1] * F2_boosted[1][1] - betaup1[2] * F2_boosted[1][2] - betaup1[3] * F2_boosted[1][3]);
-        E2_boosted[2] = 1 / alpha1 * (F2_boosted[2][0] - betaup1[1] * F2_boosted[2][1] - betaup1[2] * F2_boosted[2][2] - betaup1[3] * F2_boosted[2][3]);
-        E2_boosted[3] = 1 / alpha1 * (F2_boosted[3][0] - betaup1[1] * F2_boosted[3][1] - betaup1[2] * F2_boosted[3][2] - betaup1[3] * F2_boosted[3][3]);
+        E2_boosted[1] = 1 / alpha1 * (F2_boosted[1][0] - betaup1[2] * F2_boosted[1][2] - betaup1[3] * F2_boosted[1][3]);
+        E2_boosted[2] = 1 / alpha1 * (F2_boosted[2][0] - betaup1[1] * F2_boosted[2][1] - betaup1[3] * F2_boosted[2][3]);
+        E2_boosted[3] = 1 / alpha1 * (F2_boosted[3][0] - betaup1[1] * F2_boosted[3][1] - betaup1[2] * F2_boosted[3][2]);
 
         CCTK_REAL E1up_boosted[4]; //E^\mu real part
         CCTK_REAL E2up_boosted[4]; //E^\mu imag part
@@ -2212,7 +2212,7 @@ th_z_1)))/pow(rr_1,2);
         E2up_boosted[2] = gammaA_inv[2][1] * E2_boosted[1] + gammaA_inv[2][2] * E2_boosted[2] + gammaA_inv[2][3] * E2_boosted[3];
         E2up_boosted[3] = gammaA_inv[3][1] * E2_boosted[1] + gammaA_inv[3][2] * E2_boosted[2] + gammaA_inv[3][3] * E2_boosted[3];
 
-        /* store spatial components */ 
+        /* store spatial components E^\mu */ 
         E1x[ind] = E1up_boosted[1];
         E1y[ind] = E1up_boosted[2];
         E1z[ind] = E1up_boosted[3];
@@ -2221,9 +2221,16 @@ th_z_1)))/pow(rr_1,2);
         E2y[ind] = E2up_boosted[2];
         E2z[ind] = E2up_boosted[3];
 
+        check_nan_or_inf("E1x", E1x[ind]);
+        check_nan_or_inf("E1y", E1y[ind]);
+        check_nan_or_inf("E1z", E1z[ind]);
+        check_nan_or_inf("E2x", E2x[ind]);
+        check_nan_or_inf("E2y", E2y[ind]);
+        check_nan_or_inf("E2z", E2z[ind]);
 
 
-        // zero-initialize constraint damping variable zeta
+
+        // zero-initialize constraint damping variable Z
         Zeta1[ind] = 0;
         Zeta2[ind] = 0;
 

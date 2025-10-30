@@ -2201,6 +2201,10 @@ th_z_1)))/pow(rr_1,2);
 
         CCTK_REAL E1up_boosted[4]; //E^\mu real part
         CCTK_REAL E2up_boosted[4]; //E^\mu imag part
+        for (int a = 0; a < 4; ++a) {
+          E1up_boosted[a] = 0.0;
+          E2up_boosted[a] = 0.0;
+        }
         // E^\mu /can be raised using the 3 metric since it is a spatial vector/
         E1up_boosted[1] = gammaA_inv[1][1] * E1_boosted[1] + gammaA_inv[1][2] * E1_boosted[2] + gammaA_inv[1][3] * E1_boosted[3];
         E1up_boosted[2] = gammaA_inv[2][1] * E1_boosted[1] + gammaA_inv[2][2] * E1_boosted[2] + gammaA_inv[2][3] * E1_boosted[3]; 

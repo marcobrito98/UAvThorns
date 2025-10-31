@@ -1264,7 +1264,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // Lapse
         const CCTK_REAL alpha12 = -Gb[0][0] + betaup1[1]*beta1[1] + betaup1[2]*beta1[2] + betaup1[3]*beta1[3];
         if (alpha12 < 0) {
-          fprintf(stderr, "Error: negative argument in sqrt for alpha1 at grid point (%lf,%lf,%lf)\n", x1_1, y1_1, z1_1);
+          fprintf(stderr, "Error: negative argument in sqrt for alpha1, alpha12=%lf at grid point (%lf,%lf,%lf)\n", alpha12,x1_1, y1_1, z1_1);
         }
         const CCTK_REAL alpha1 = sqrt(alpha12);
 

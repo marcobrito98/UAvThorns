@@ -946,8 +946,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         // }
         const CCTK_REAL rho_1  = sqrt(rho2_1);
 
-        
-
         const CCTK_REAL costh_1  = z1_1/rr_1;
         const CCTK_REAL costh2_1 = costh_1*costh_1;
         /*
@@ -963,9 +961,6 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           sinth2_1 = 1. - costh2_1;
           sinth_1  = sqrt(sinth2_1);
         }
-
-  
-        
 
         const CCTK_REAL ph_1 = atan2(y1_1, x1_1*gamma);
         // If x1_1=y1_1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
@@ -1018,7 +1013,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
         CCTK_REAL G[4][4]; // temporary storage for the 4-metric
-        CCTK_REAL G3_inv[4][4]; // temporary storage for the inverse of the 3-metric
+        // CCTK_REAL G3_inv[4][4]; // temporary storage for the inverse of the 3-metric
         CCTK_REAL Gb[4][4]; // temporary storage for the boosted metric
         CCTK_REAL gammaA_inv[4][4]; // temporary storage for the inverse of the boosted 3-metric
 
@@ -1026,7 +1021,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           for (int b = 0; b < 4; ++b) {
             G[a][b] = 0.0;
             gammaA_inv[a][b] = 0.0;
-            G3_inv[a][b] = 0.0;
+            // G3_inv[a][b] = 0.0;
             Gb[a][b] = 0.0;
           }
         }
@@ -1040,18 +1035,18 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
 
 
 
-        G3_inv[1][1] =  (pow(x1_1*gamma,2)/exp(2. * F1_1[ind]) + pow(y1_1,2)/exp(2. * \
-                        F2_1[ind]))/rho2_1;
-        G3_inv[1][2] = ((exp(-2. * F1_1[ind]) - \
-                       exp(-2 * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1;
-        G3_inv[1][3] =  0.0;
-        G3_inv[2][1] = G3_inv[1][2];
-        G3_inv[2][2] =  (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
-                        F1_1[ind]))/rho2_1;
-        G3_inv[2][3] = 0;
-        G3_inv[3][1] = G3_inv[1][3];
-        G3_inv[3][2] = G3_inv[2][3];
-        G3_inv[3][3] = exp(-2. * F1_1[ind]);
+        // G3_inv[1][1] =  (pow(x1_1*gamma,2)/exp(2. * F1_1[ind]) + pow(y1_1,2)/exp(2. * \
+        //                 F2_1[ind]))/rho2_1;
+        // G3_inv[1][2] = ((exp(-2. * F1_1[ind]) - \
+        //                exp(-2 * F2_1[ind]))*x1_1*gamma*y1_1)/rho2_1;
+        // G3_inv[1][3] =  0.0;
+        // G3_inv[2][1] = G3_inv[1][2];
+        // G3_inv[2][2] =  (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
+        //                 F1_1[ind]))/rho2_1;
+        // G3_inv[2][3] = 0;
+        // G3_inv[3][1] = G3_inv[1][3];
+        // G3_inv[3][2] = G3_inv[2][3];
+        // G3_inv[3][3] = exp(-2. * F1_1[ind]);
 
 
         // Derivatives of the metric functions
@@ -1188,20 +1183,49 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         }
 
 
-        gammaA_inv[1][1] = (exp(2*(F0_1[ind]+F2_1[ind]))*pow(x1_1*gamma,2) + \
-                           exp(2*(F0_1[ind]+F1_1[ind]))*pow(y1_1,2) - \
-                           bs_v2*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1))/(pow(-1 + \
-                           bs_v2,2)*exp(2*(F0_1[ind]+F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma2);
-        gammaA_inv[1][2] = ((exp(2. * F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/((-1 + \
-                           bs_v2)*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma);
-        gammaA_inv[1][3] = 0;
-        gammaA_inv[2][1] = gammaA_inv[1][2];
-        gammaA_inv[2][2] = (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
-                           F1_1[ind]))/(rho2_1);
-        gammaA_inv[2][3] = 0;
-        gammaA_inv[3][1] = gammaA_inv[1][3];
-        gammaA_inv[3][2] = gammaA_inv[2][3];
-        gammaA_inv[3][3] = exp(-2. * F1_1[ind]);
+        // gammaA_inv[1][1] = (exp(2*(F0_1[ind]+F2_1[ind]))*pow(x1_1*gamma,2) + \
+        //                    exp(2*(F0_1[ind]+F1_1[ind]))*pow(y1_1,2) - \
+        //                    bs_v2*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1))/(pow(-1 + \
+        //                    bs_v2,2)*exp(2*(F0_1[ind]+F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma2);
+        // gammaA_inv[1][2] = ((exp(2. * F1_1[ind]) - exp(2. * F2_1[ind]))*x1_1*gamma*y1_1)/((-1 + \
+        //                    bs_v2)*exp(2*(F1_1[ind]+F2_1[ind]))*(rho2_1)*gamma);
+        // gammaA_inv[1][3] = 0;
+        // gammaA_inv[2][1] = gammaA_inv[1][2];
+        // gammaA_inv[2][2] = (pow(x1_1*gamma,2)/exp(2. * F2_1[ind]) + pow(y1_1,2)/exp(2. * \
+        //                    F1_1[ind]))/(rho2_1);
+        // gammaA_inv[2][3] = 0;
+        // gammaA_inv[3][1] = gammaA_inv[1][3];
+        // gammaA_inv[3][2] = gammaA_inv[2][3];
+        // gammaA_inv[3][3] = exp(-2. * F1_1[ind]);
+
+        // Build spatial metric from boosted 4-metric Gb
+        CCTK_REAL gammaA[3][3] = {
+          { Gb[1][1], Gb[1][2], Gb[1][3] },
+          { Gb[2][1], Gb[2][2], Gb[2][3] },
+          { Gb[3][1], Gb[3][2], Gb[3][3] }
+        };
+
+        // Invert 3x3 gammaA numerically (cofactor formula)
+        CCTK_REAL det =
+            gammaA[0][0]*(gammaA[1][1]*gammaA[2][2]-gammaA[1][2]*gammaA[2][1])
+          - gammaA[0][1]*(gammaA[1][0]*gammaA[2][2]-gammaA[1][2]*gammaA[2][0])
+          + gammaA[0][2]*(gammaA[1][0]*gammaA[2][1]-gammaA[1][1]*gammaA[2][0]);
+
+        if (fabs(det) < 1e-30) {
+          fprintf(stderr,"Error: det(gammaA) ~ 0 at (%lf,%lf,%lf)\n", x1_1,y1_1,z1_1);
+        }
+
+        CCTK_REAL invdet = 1.0/det;
+        gammaA_inv[1][1] =  (gammaA[1][1]*gammaA[2][2]-gammaA[1][2]*gammaA[2][1])*invdet;
+        gammaA_inv[1][2] = -(gammaA[0][1]*gammaA[2][2]-gammaA[0][2]*gammaA[2][1])*invdet;
+        gammaA_inv[1][3] =  (gammaA[0][1]*gammaA[1][2]-gammaA[0][2]*gammaA[1][1])*invdet;
+        gammaA_inv[2][1] = -(gammaA[1][0]*gammaA[2][2]-gammaA[1][2]*gammaA[2][0])*invdet;
+        gammaA_inv[2][2] =  (gammaA[0][0]*gammaA[2][2]-gammaA[0][2]*gammaA[2][0])*invdet;
+        gammaA_inv[2][3] = -(gammaA[0][0]*gammaA[1][2]-gammaA[0][2]*gammaA[1][0])*invdet;
+        gammaA_inv[3][1] =  (gammaA[1][0]*gammaA[2][1]-gammaA[1][1]*gammaA[2][0])*invdet;
+        gammaA_inv[3][2] = -(gammaA[0][0]*gammaA[2][1]-gammaA[0][1]*gammaA[2][0])*invdet;
+        gammaA_inv[3][3] =  (gammaA[0][0]*gammaA[1][1]-gammaA[0][1]*gammaA[1][0])*invdet;
+
 
 
         // Check for NaN or Inf in gammaA_inv

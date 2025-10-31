@@ -1262,7 +1262,11 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
         betaup1[3] = gammaA_inv[3][1]*beta1[1] + gammaA_inv[3][2]*beta1[2] + gammaA_inv[3][3]*beta1[3];
 
         // Lapse
-        const CCTK_REAL alpha1 = sqrt(-Gb[0][0] + betaup1[1]*beta1[1] + betaup1[2]*beta1[2] + betaup1[3]*beta1[3]);
+        const CCTK_REAL alpha12 = -Gb[0][0] + betaup1[1]*beta1[1] + betaup1[2]*beta1[2] + betaup1[3]*beta1[3];
+        if (alpha12 < 0) {
+          fprintf(stderr, "Error: negative argument in sqrt for alpha1 at grid point (%lf,%lf,%lf)\n", x1_1, y1_1, z1_1);
+        }
+        const CCTK_REAL alpha1 = sqrt(alpha12);
 
         // Check for NaN in beta1 and betaup1
         for (int idx = 0; idx < 4; ++idx) {
@@ -1284,7 +1288,7 @@ void UAv_IDProcaBSBH(CCTK_ARGUMENTS)
           }
         } //K_0\mu might not be zero but irrelevant for what i want to compute
 
-        for (int a = 1; a < 4; ++a) { //since non rotating K=0 as a bypass
+        for (int a = 1; a < 4; ++a) { 
           for (int b = 1; b < 4; ++b) {
             CCTK_REAL sum1 = 0.0;
             CCTK_REAL sum2 = 0.0;

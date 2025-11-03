@@ -700,7 +700,7 @@ void UAv_ID_BH_BS(CCTK_ARGUMENTS)
         if (CCTK_EQUALS(initial_shift, "BH_BS")) {
           betax[ind] =  (alpha02-conf_fac_2)/(conf_fac_2-alpha02*bh_v2) * bh_v;
           betay[ind] = 0.;
-          betaz[ind] =  0.;
+          betaz[ind] = 0.;
         }
 
       } /* for i */

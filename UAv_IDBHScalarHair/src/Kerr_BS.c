@@ -588,7 +588,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
-        //Black Hole B
+        //Black Hole B  https://arxiv.org/pdf/1001.4077
 
         const CCTK_REAL deltakerr2 = bh_mass*bh_mass - (bh_spin*bh_spin + 0*0) ;
         const CCTK_REAL delta  = sqrt(deltakerr2) ;

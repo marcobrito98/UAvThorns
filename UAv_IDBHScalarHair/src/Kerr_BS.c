@@ -183,7 +183,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
                                 oodth12;
 
       CCTK_REAL Wbar_X;
-      CCTK_REAL Wbar_XX = 0.; // Used for rhor=0 (i==0), if Wbar_r_pow == 2.
+      CCTK_REAL Wbar_XX = 0.; // Used for rhor=0 (i==0), if Wbar_r_power == 2.
 
       /*
       Regarding finite differencing orders: plotting W and dW_dr, there were small discontinuities near rhor=0
@@ -201,7 +201,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // 1st derivative with 4th order accuracy (forward stencils)
         Wbar_X = (-25 * Wbar_in[ind] + 48 * Wbar_in[indip1] - 36 * Wbar_in[indip2] + 16 * Wbar_in[indip3] - 3 * Wbar_in[indip4]) * oodX12;
 
-        if (Wbar_r_power == 2)
+        if (Wbar_r_powerer == 2)
         {
           // If Wbar = rhor^2 * W, to compute W(rhor=0), we need to compute Wbar_XX.
           // 2nd derivative with 4th order accuracy (forward stencils)
@@ -242,7 +242,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dW_dth_in[ind] = 0.;
 
         // For W we need more care depending on the pow
-        switch (Wbar_r_pow)
+        switch (Wbar_r_power)
         {
         case 0: // Wbar = W
           W_in[ind] = Wbar_in[ind];
@@ -276,7 +276,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         default: // As of writing, this should be prevented by the scope of the parameter anyway
           CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                     "Unknown value of Wbar_r_pow: %d. Aborting.", Wbar_r_pow);
+                     "Unknown value of Wbar_r_power: %d. Aborting.", Wbar_r_power);
           break;
         }
       }
@@ -302,7 +302,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL Wbar_r = dXdr * Wbar_X;
 
         // Now translate from Wbar to W
-        switch (Wbar_r_pow) // We could put a generic pow for the computation here I guess...
+        switch (Wbar_r_power) // We could put a generic pow for the computation here I guess...
         {
         case 0: // Wbar = W
           W_in[ind] = Wbar_in[ind];
@@ -326,7 +326,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         default: // As of writing, this should be prevented by the scope of the parameter anyway
           CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                     "Unknown value of Wbar_r_pow: %d. Aborting.", Wbar_r_pow);
+                     "Unknown value of Wbar_r_power: %d. Aborting.", Wbar_r_power);
           break;
         }
       } // if/else i==...

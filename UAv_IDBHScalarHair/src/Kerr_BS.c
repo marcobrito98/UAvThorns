@@ -201,7 +201,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // 1st derivative with 4th order accuracy (forward stencils)
         Wbar_X = (-25 * Wbar_in[ind] + 48 * Wbar_in[indip1] - 36 * Wbar_in[indip2] + 16 * Wbar_in[indip3] - 3 * Wbar_in[indip4]) * oodX12;
 
-        if (Wbar_r_powerer == 2)
+        if (Wbar_r_power == 2)
         {
           // If Wbar = rhor^2 * W, to compute W(rhor=0), we need to compute Wbar_XX.
           // 2nd derivative with 4th order accuracy (forward stencils)

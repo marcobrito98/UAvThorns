@@ -791,9 +791,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
         // dG[a][b][c] = dG_ab/dx^c
 
-        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG + pow(x1_2 * gamma, 2) * dfctGG_dR * R_x + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH)(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG + pow(x1_2 * gamma, 2) * dfctGG_dR * R_x + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH)*(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
         dG[1][1][2] = psi4_2 * (pow(x1_2 * gamma, 2) * dfctGG_dR * R_y + pow(bh_spin, 2) * y1_2 * (2 * fctHH + y1_2 * (dfctHH_dR * R_y + dfctHH_dth * th_y))) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH)(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[1][1][3] = psi4_2 * (pow(x1_2 * gamma, 2) * dfctGG_dR * R_z + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH)(dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        dG[1][1][3] = psi4_2 * (pow(x1_2 * gamma, 2) * dfctGG_dR * R_z + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH)*(dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
         dG[1][2][1] = y1_2 * psi4_2 * (fctGG + x1_2 * gamma * dfctGG_dR * R_x - pow(bh_spin, 2) * (fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) +
                       x1_2 * gamma * y1_2 * (fctGG - pow(bh_spin, 2) * fctHH)(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
         dG[1][2][2] = x1_2 * gamma * psi4_2 * (fctGG + y1_2 * dfctGG_dR * R_y - pow(bh_spin, 2) * (fctHH + y1_2 * (dfctHH_dR * R_y + dfctHH_dth * th_y))) +
@@ -804,20 +804,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[1][3][2] = x1_2 * gamma * z1_2 * (psi4_2 * dfctGG_dR * R_y + fctGG(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y));
         dG[1][3][3] = x1_2 * gamma * (z1_2 * psi4_2 * dfctGG_dR * R_z + fctGG * (psi4_2 + z1_2(dpsi4_2_dR * R_z + dpsi4_2_dth * th_z)));
 
-        dG[2][2][1] = psi4_2 * (pow(y1_2, 2) * dfctGG_dR * R_x + pow(bh_spin, 2) * x1_2 * gamma * (2 * fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) + (1 + pow(y1_2, 2) * fctGG + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * fctHH)(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[2][2][2] = psi4_2 * (2 * y1_2 * fctGG +
-                                pow(y1_2, 2) * dfctGG_dR * R_y +
-                                pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * ((dfctHH_dR * R_y + dfctHH_dth * th_y))) +
-                      (1 + pow(y1_2, 2) * fctGG +
-                       pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * fctHH)(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
+        dG[2][2][1] = psi4_2 * (pow(y1_2, 2) * dfctGG_dR * R_x + pow(bh_spin, 2) * x1_2 * gamma * (2 * fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) + (1 + pow(y1_2, 2) * fctGG + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * fctHH)*(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[2][2][2] = psi4_2 * (2 * y1_2 * fctGG + pow(y1_2, 2) * dfctGG_dR * R_y + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * ((dfctHH_dR * R_y + dfctHH_dth * th_y))) + (1 + pow(y1_2, 2) * fctGG + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * fctHH)*(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
         dG[2][2][3] = psi4_2 * (pow(y1_2, 2) * dfctGG_dR * R_z + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + pow(y1_2, 2) * fctGG + pow(bh_spin, 2) * pow(x1_2 * gamma, 2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
-        dG[2][3][1] = y1_2 * z1_2 * (psi4_2 * dfctGG_dR * R_x + fctGG(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x));
-        dG[2][3][2] = z1_2 * (y1_2 * psi4_2 * dfctGG_dR * R_y + fctGG * (psi4_2 + y1_2(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y)));
-        dG[2][3][3] = y1_2 * (z1_2 * psi4_2 * dfctGG_dR * R_z + fctGG * (psi4_2 + z1_2(dpsi4_2_dR * R_z + dpsi4_2_dth * th_z)));
+        dG[2][3][1] = y1_2 * z1_2 * (psi4_2 * dfctGG_dR * R_x + fctGG * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x));
+        dG[2][3][2] = z1_2 * (y1_2 * psi4_2 * dfctGG_dR * R_y + fctGG * (psi4_2 + y1_2 * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y)));
+        dG[2][3][3] = y1_2 * (z1_2 * psi4_2 * dfctGG_dR * R_z + fctGG * (psi4_2 + z1_2 * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z)));
 
-        dG[3][3][1] = pow(z1_2, 2) * psi4_2 * dfctGG_dR * R_x + (1 + pow(z1_2, 2) * fctGG)(dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[3][3][2] = pow(z1_2, 2) * psi4_2 * dfctGG_dR * R_y + (1 + pow(z1_2, 2) * fctGG)(dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
+        dG[3][3][1] = pow(z1_2, 2) * psi4_2 * dfctGG_dR * R_x + (1 + pow(z1_2, 2) * fctGG) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[3][3][2] = pow(z1_2, 2) * psi4_2 * dfctGG_dR * R_y + (1 + pow(z1_2, 2) * fctGG) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
         dG[3][3][3] = z1_2 * psi4_2 * (2 * fctGG + z1_2 * dfctGG_dR * R_z) + (1 + pow(z1_2, 2) * fctGG)(dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
         // dG[mu][nu][0] = 0

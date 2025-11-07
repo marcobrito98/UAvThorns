@@ -708,7 +708,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         /*=== initialize gauge functions ===*/
         /*----------------------------------*/
 
-        const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero
+        const CCTK_REAL alpha0 = sqrt(Delt*Sigm/fctFF); //(4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero
         const CCTK_REAL alpha02 = alpha0 * alpha0;
         const CCTK_REAL bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
         const CCTK_REAL bphi = bphiup * psi4_2 * sinth2;

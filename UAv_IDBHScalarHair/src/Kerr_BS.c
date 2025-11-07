@@ -680,7 +680,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dfctFF_dR = 4 * rBL * (bh_spin2 + rBL2) * drBLdR - bh_spin2 * sinth2 * dDelt_dR;
         dfctFF_dth = -(bh_spin2 * Delt * 2 * costh * sinth);
 
-        const CCTK_REAL psi4_2 = Sigm / rr2_2;
+        const CCTK_REAL psi4_2 = Sigm / rr2_2; //psi04 no codigo original
         const CCTK_REAL psi2_2 = sqrt(psi4_2);
         const CCTK_REAL psi1_2 = sqrt(psi2_2);
         const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
@@ -707,11 +707,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero
         const CCTK_REAL alpha02 = alpha0 * alpha0;
         const CCTK_REAL bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
-        const CCTK_REAL bphi = bphiup * (fctFF / Sigm) * sinth2;
+        const CCTK_REAL bphi = bphiup * psi4_2* sinth2;
         const CCTK_REAL dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / pow(fctFF, 2);
         const CCTK_REAL dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / pow(fctFF, 2);
-        const CCTK_REAL dbphi_dR = ((bphiup * Sigm * dfctFF_dR + fctFF * (Sigm * dbphiup_dR - bphiup * dSigm_dR))); //sinth2 cancels out
-        const CCTK_REAL dbphi_dth = (sinth * (fctFF * Sigm * sinth * dbphiup_dth + bphiup * (Sigm * sinth * dfctFF_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth)))) / Sigm2;
+        const CCTK_REAL dbphi_dR = sinth2*(psi4_2*dbphiup_dR + bphiup*dpsi4_2_dR); 
+        const CCTK_REAL dbphi_dth = sinth*(psi4_2*sinth*dbphiup_dth + bphiup*(2*costh*psi4_2 + sinth*dpsi4_2_dth));
         const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
 

@@ -715,6 +715,45 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
 
+        /* NaN/Inf checks for recently computed variables */
+        check_nan_or_inf("rBL", rBL);
+        check_nan_or_inf("rBL2", rBL2);
+        check_nan_or_inf("drBLdR", drBLdR);
+
+        check_nan_or_inf("Delt", Delt);
+        check_nan_or_inf("Sigm", Sigm);
+        check_nan_or_inf("Sigm2", Sigm2);
+        check_nan_or_inf("fctFF", fctFF);
+        check_nan_or_inf("dfctFF_dR", dfctFF_dR);
+        check_nan_or_inf("dfctFF_dth", dfctFF_dth);
+
+        check_nan_or_inf("psi4_2", psi4_2);
+        check_nan_or_inf("psi2_2", psi2_2);
+        check_nan_or_inf("psi1_2", psi1_2);
+        check_nan_or_inf("psi4_1", psi4_1);
+        check_nan_or_inf("psi2_1", psi2_1);
+        check_nan_or_inf("psi1_1", psi1_1);
+
+        check_nan_or_inf("fctGG", fctGG);
+        check_nan_or_inf("fctHH", fctHH);
+        check_nan_or_inf("dfctGG_dR", dfctGG_dR);
+        check_nan_or_inf("dfctHH_dR", dfctHH_dR);
+        check_nan_or_inf("dfctHH_dth", dfctHH_dth);
+        check_nan_or_inf("dpsi4_2_dR", dpsi4_2_dR);
+        check_nan_or_inf("dpsi4_2_dth", dpsi4_2_dth);
+
+        /* Gauge functions and their derivatives */
+        check_nan_or_inf("alpha0", alpha0);
+        check_nan_or_inf("alpha02", alpha02);
+        check_nan_or_inf("bphiup", bphiup);
+        check_nan_or_inf("bphi", bphi);
+        check_nan_or_inf("dbphiup_dR", dbphiup_dR);
+        check_nan_or_inf("dbphiup_dth", dbphiup_dth);
+        check_nan_or_inf("dbphi_dR", dbphi_dR);
+        check_nan_or_inf("dbphi_dth", dbphi_dth);
+        check_nan_or_inf("dalpha0_dR", dalpha0_dR);
+        check_nan_or_inf("dalpha0_dth", dalpha0_dth);
+
         CCTK_REAL G[4][4];
         // Initialize G to zero
         for (int i = 0; i < 4; ++i)

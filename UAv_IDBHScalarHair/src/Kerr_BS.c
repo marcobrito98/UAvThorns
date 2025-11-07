@@ -863,10 +863,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[0][0][1] = -2 * alpha0 * (dalpha0_dR * R_x + dalpha0_dth * th_x) + bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
         dG[0][0][2] = -2 * alpha0 * (dalpha0_dR * R_y + dalpha0_dth * th_y) + bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) + bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
         dG[0][0][3] = -2 * alpha0 * (dalpha0_dR * R_z + dalpha0_dth * th_z) + bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) + bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
-        dG[0][1][1] = (-(y1_2 * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x)) + y1_2 * bphi * 2 * x1_2) / pow(rho2_2, 2);
+        dG[0][1][1] = (-(y1_2 * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x)) + y1_2 * bphi * 2 * x1_2 * gamma) / pow(rho2_2, 2);
         dG[0][1][2] = (-(rho2_2 * (bphi + y1_2 * (dbphi_dR * R_y + dbphi_dth * th_y))) + y1_2 * bphi * 2 * y1_2) / pow(rho2_2, 2);
         dG[0][1][3] = (-(y1_2 * rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z)) + y1_2 * bphi * 0.0) / pow(rho2_2, 2);
-        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 - x1_2 * gamma * 2 * x1_2)) / pow(rho2_2, 2);
+        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 - x1_2 * gamma * 2 * x1_2*gamma)) / pow(rho2_2, 2);
         dG[0][2][2] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y) - bphi * 2 * y1_2)) / pow(rho2_2, 2);
         dG[0][2][3] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z) - bphi * 0.0)) / pow(rho2_2, 2);
         dG[0][3][1] = 0;

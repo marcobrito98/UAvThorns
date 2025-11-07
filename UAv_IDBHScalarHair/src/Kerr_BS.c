@@ -710,7 +710,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL bphi = bphiup * (fctFF / Sigm) * sinth2;
         const CCTK_REAL dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / pow(fctFF, 2);
         const CCTK_REAL dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / pow(fctFF, 2);
-        const CCTK_REAL dbphi_dR = (sinth2 * (bphiup * Sigm * dfctFF_dR + fctFF * (Sigm * dbphiup_dR - bphiup * dSigm_dR))) / sinth2;
+        const CCTK_REAL dbphi_dR = ((bphiup * Sigm * dfctFF_dR + fctFF * (Sigm * dbphiup_dR - bphiup * dSigm_dR))); //sinth2 cancels out
         const CCTK_REAL dbphi_dth = (sinth * (fctFF * Sigm * sinth * dbphiup_dth + bphiup * (Sigm * sinth * dfctFF_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth)))) / Sigm2;
         const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);

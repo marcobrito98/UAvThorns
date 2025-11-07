@@ -1076,29 +1076,36 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           }
         } // K_0\mu might not be zero but irrelevant for what i want to compute
 
-        for (int a = 1; a < 4; ++a)
-        {
-          for (int b = 1; b < 4; ++b)
-          {
-            CCTK_REAL sum1 = 0.0;
-            CCTK_REAL sum2 = 0.0;
-            CCTK_REAL sum3 = 0.0;
-            for (int c = 1; c < 4; ++c)
-            {
-              sum1 += betaup[c] * dg[a][b][c];
-              sum2 += betaup[c] * dg[b][c][a];
-              sum3 += betaup[c] * dg[a][c][b];
-            }
-            K_B[a][b] = -1 / (2. * new_alpha) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
-          }
-        }
+        // for (int a = 1; a < 4; ++a)
+        // {
+        //   for (int b = 1; b < 4; ++b)
+        //   {
+        //     CCTK_REAL sum1 = 0.0;
+        //     CCTK_REAL sum2 = 0.0;
+        //     CCTK_REAL sum3 = 0.0;
+        //     for (int c = 1; c < 4; ++c)
+        //     {
+        //       sum1 += betaup[c] * dg[a][b][c];
+        //       sum2 += betaup[c] * dg[b][c][a];
+        //       sum3 += betaup[c] * dg[a][c][b];
+        //     }
+        //     K_B[a][b] = -1 / (2. * new_alpha) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+        //   }
+        // }
 
-        kxx[ind] = K_B[1][1];
-        kxy[ind] = K_B[1][2];
-        kxz[ind] = K_B[1][3];
-        kyy[ind] = K_B[2][2];
-        kyz[ind] = K_B[2][3];
-        kzz[ind] = K_B[3][3];
+        // kxx[ind] = K_B[1][1];
+        // kxy[ind] = K_B[1][2];
+        // kxz[ind] = K_B[1][3];
+        // kyy[ind] = K_B[2][2];
+        // kyz[ind] = K_B[2][3];
+        // kzz[ind] = K_B[3][3];
+
+        kxx[ind] = 0.0;
+        kxy[ind] = 0.0;
+        kxz[ind] = 0.0;
+        kyy[ind] = 0.0;
+        kyz[ind] = 0.0;
+        kzz[ind] = 0.0;
 
         // }
 

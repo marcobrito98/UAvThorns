@@ -972,6 +972,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         betaup[2] = Gb_inv[2][1] * beta[1] + Gb_inv[2][2] * beta[2] + Gb_inv[2][3] * beta[3];
         betaup[3] = Gb_inv[3][1] * beta[1] + Gb_inv[3][2] * beta[2] + Gb_inv[3][3] * beta[3];
 
+        /* Added NaN/Inf checks for beta and betaup */
+        check_nan_or_inf("beta[0]", beta[0]);
+        check_nan_or_inf("beta[1]", beta[1]);
+        check_nan_or_inf("beta[2]", beta[2]);
+        check_nan_or_inf("beta[3]", beta[3]);
+        check_nan_or_inf("betaup[0]", betaup[0]);
+        check_nan_or_inf("betaup[1]", betaup[1]);
+        check_nan_or_inf("betaup[2]", betaup[2]);
+        check_nan_or_inf("betaup[3]", betaup[3]);
+
         CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1] * beta[1] + betaup[2] * beta[2] + betaup[3] * beta[3]);
 
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
@@ -1104,8 +1114,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // shift
         if (CCTK_EQUALS(initial_shift, "Kerr_BS"))
         {
-          betax[ind] = beta[1]; // por enquato o shift da bs é zero pois é estática.
-          betay[ind] = beta[2];
+          betax[ind] = y1_2*bphiup; // por enquato o shift da bs é zero pois é estática.
+          betay[ind] = -x1_2*gamma*bphiup;
           betaz[ind] = 0.;
         }
 

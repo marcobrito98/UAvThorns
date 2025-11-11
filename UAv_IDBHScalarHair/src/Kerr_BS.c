@@ -711,17 +711,23 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         // const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero; sqrt(Delt*Sigm/fctFF);
         const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF);
         const CCTK_REAL alpha02 = alpha0 * alpha0;
+        const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
+        const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+        const CCTK_REAL dalpha02_dR = (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
+        const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+
         const CCTK_REAL gphiphi = fctFF / Sigm * sinth2;
         const CCTK_REAL dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;
         const CCTK_REAL dgphiphi_dth = (sinth * (Sigm * sinth * dSigm_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth))) / Sigm2;
+        
         const CCTK_REAL bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
         const CCTK_REAL dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / pow(fctFF, 2);
         const CCTK_REAL dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / pow(fctFF, 2);
+        
         const CCTK_REAL bphi = bphiup * gphiphi;
         const CCTK_REAL dbphi_dR = gphiphi * dbphiup_dR + bphiup * dgphiphi_dR;
         const CCTK_REAL dbphi_dth = gphiphi * dbphiup_dth + bphiup * dgphiphi_dth;
-        const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
-        const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+        
 
         /* NaN/Inf checks for recently computed variables */
         check_nan_or_inf("rBL", rBL);
@@ -901,9 +907,12 @@ pow(bh_spin,2)*pow(x1_2*gamma,2)*fctHH)*(dpsi4_2_dR*R_z + dpsi4_2_dth*th_z);
         dG[3][3][3] = z1_2*psi4_2*(2*fctGG + z1_2*dfctGG_dR*R_z) + (1 + pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_z + dpsi4_2_dth*th_z);
 
         // dG[mu][nu][0] = 0
-        dG[0][0][1] = -2 * alpha0 * (dalpha0_dR * R_x + dalpha0_dth * th_x) + bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
-        dG[0][0][2] = -2 * alpha0 * (dalpha0_dR * R_y + dalpha0_dth * th_y) + bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) + bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
-        dG[0][0][3] = -2 * alpha0 * (dalpha0_dR * R_z + dalpha0_dth * th_z) + bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) + bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
+        // dG[0][0][1] = -2 * alpha0 * (dalpha0_dR * R_x + dalpha0_dth * th_x) + bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
+        // dG[0][0][2] = -2 * alpha0 * (dalpha0_dR * R_y + dalpha0_dth * th_y) + bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) + bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
+        // dG[0][0][3] = -2 * alpha0 * (dalpha0_dR * R_z + dalpha0_dth * th_z) + bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) + bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
+        dG[0][0][1] = -(dalpha02_dR * R_x + dalpha02_dth * th_x) + bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
+        dG[0][0][2] = -(dalpha02_dR * R_y + dalpha02_dth * th_y) + bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) + bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
+        dG[0][0][3] = -(dalpha02_dR * R_z + dalpha02_dth * th_z) + bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) + bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
 
         dG[0][1][1] = (-(y1_2*rho2_2*(dbphi_dR*R_x + dbphi_dth*th_x)) + y1_2*bphi*(2*x1_2*gamma))/pow(rho2_2,2);
         dG[0][1][2] = (-(rho2_2*(bphi + y1_2*(dbphi_dR*R_y + dbphi_dth*th_y))) + y1_2*bphi*(2*y1_2))/pow(rho2_2,2);

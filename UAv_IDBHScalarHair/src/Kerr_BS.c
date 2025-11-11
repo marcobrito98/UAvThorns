@@ -698,7 +698,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dfctHH_dth = -(((4 * bh_mass * rBL + Sigm) * dSigm_dth) / (rr2_2 * pow(Sigm, 3)));
 
         dpsi4_2_dR = (-2 * Sigm + rr_2 * dSigm_dR) / pow(rr_2, 3);
-        dpsi4_2_dth = (-2 * bh_spin2 * costh * sinth) / rr2_2;
+        dpsi4_2_dth = dSigm_dth / rr2_2;
 
         // CCTK_REAL detgij;
         // detgij = pow(psi4_2, 3) * (1.0 + rr2_2 * fctGG) * (1.0 + bh_spin2 * rho2_2 * fctHH);
@@ -708,15 +708,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         /*=== initialize gauge functions ===*/
         /*----------------------------------*/
 
-        const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero; sqrt(Delt*Sigm/fctFF);
+        // const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero; sqrt(Delt*Sigm/fctFF);
+        const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF);
         const CCTK_REAL alpha02 = alpha0 * alpha0;
         const CCTK_REAL gphiphi = fctFF/Sigm * sinth2;
         const CCTK_REAL dgphiphi_dR = (sinth2*(Sigm*dfctFF_dR - fctFF*dSigm_dR))/Sigm2;
         const CCTK_REAL dgphiphi_dth = (sinth*(Sigm*sinth*dSigm_dth + fctFF*(2*costh*Sigm - sinth*dSigm_dth)))/Sigm2;
         const CCTK_REAL bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
-        const CCTK_REAL bphi = bphiup *gphiphi;
         const CCTK_REAL dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / pow(fctFF, 2);
         const CCTK_REAL dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / pow(fctFF, 2);
+        const CCTK_REAL bphi = bphiup *gphiphi;
         const CCTK_REAL dbphi_dR = gphiphi*dbphiup_dR + bphiup*dgphiphi_dR;
         const CCTK_REAL dbphi_dth = gphiphi*dbphiup_dth + bphiup*dgphiphi_dth;
         const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
@@ -783,6 +784,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         G[3][1] = G[1][3];
         G[3][2] = G[2][3];
         G[3][3] = psi4_2 * (1.0 + z1_2 * z1_2 * fctGG);
+
+
+        /* NaN/Inf checks for metric tensor G */
+        for (int aa = 0; aa < 4; ++aa) {
+          for (int bb = 0; bb < 4; ++bb) {
+            char name[32];
+            snprintf(name, sizeof(name), "G[%d][%d]", aa, bb);
+            check_nan_or_inf(name, G[aa][bb]);
+          }
+        }
 
         // CCTK_REAL G_inv[4][4];
         // // Initialize G_inv to zero. Inverse of 3 metric
@@ -1130,7 +1141,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         phi2[ind] = phi2_1 + phi2_2;
 
         const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = 1.0;
+        const CCTK_REAL alph_2 = new_alpha;
 
         // No regularization needed for the BS, the lapse is non-zero
 

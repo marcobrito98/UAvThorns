@@ -1075,20 +1075,26 @@ pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2)))));
 
           Gb_inv[3][1] = Gb_inv[1][3];
           Gb_inv[3][2] = Gb_inv[2][3];
-          Gb_inv[3][3] = (fctGG*rho2_2*(pow(bh_v,2)*(-pow(alpha0,2) + bphi*bphiup)*rho2_2*y1_2 \
-- bh_v*bphi*(pow(x1_2*gamma,2) + 2*pow(y1_2,2)) + \
-psi4_2*rho2_2*y1_2*(1 + pow(bh_spin,2)*fctHH*(pow(x1_2*gamma,2) + \
-pow(y1_2,2))))*z1_2)/(2*bh_v*bphi*psi4_2*rho2_2*y1_2*(1 + \
-fctGG*(rr2_2)) - \
+          Gb_inv[3][3] = -((pow(alpha0,2)*pow(bh_v,2)*psi4_2*pow(rho2_2,2)*(1 + \
+pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2) + fctGG*pow(y1_2,2)) + \
+2*bh_v*bphi*psi4_2*rho2_2*y1_2*(1 + fctGG*(pow(x1_2*gamma,2) + \
+pow(y1_2,2))) - pow(psi4_2,2)*pow(rho2_2,2)*(1 + \
+fctGG*(pow(x1_2*gamma,2) + pow(y1_2,2)))*(1 + \
+pow(bh_spin,2)*fctHH*(pow(x1_2*gamma,2) + pow(y1_2,2))) + \
+pow(bh_v,2)*bphi*(bphi*pow(x1_2*gamma,2) - \
+bphiup*psi4_2*pow(rho2_2,2)*(1 + \
+pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2) + \
+fctGG*pow(y1_2,2))))/(psi4_2*(-2*bh_v*bphi*psi4_2*rho2_2*y1_2*(1 + \
+fctGG*(pow(x1_2*gamma,2) + pow(y1_2,2) + pow(z1_2,2))) + \
 pow(psi4_2,2)*pow(rho2_2,2)*(1 + \
-pow(bh_spin,2)*fctHH*(rho2_2))*(1 + \
-fctGG*(rr2_2)) + \
+pow(bh_spin,2)*fctHH*(pow(x1_2*gamma,2) + pow(y1_2,2)))*(1 + \
+fctGG*(pow(x1_2*gamma,2) + pow(y1_2,2) + pow(z1_2,2))) - \
 pow(alpha0,2)*pow(bh_v,2)*psi4_2*pow(rho2_2,2)*(1 + \
 fctGG*(pow(y1_2,2) + pow(z1_2,2)) + \
 pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2))) + \
-pow(bh_v,2)*bphi*(bphi*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2)) - \
+pow(bh_v,2)*bphi*(-(bphi*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2))) + \
 bphiup*psi4_2*pow(rho2_2,2)*(1 + fctGG*(pow(y1_2,2) + pow(z1_2,2)) + \
-pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2)))));;
+pow(bh_spin,2)*fctHH*pow(x1_2*gamma,2)*(1 + fctGG*pow(z1_2,2)))))));
         // }
 
         // Optional checks

@@ -962,7 +962,7 @@ x1_2*gamma*(2*x1_2*gamma)))/pow(rho2_2,2);
         }
         Lambda[0][0] = gamma;
         Lambda[0][1] = -gamma * bh_v;
-        Lambda[1][0] = -gamma * bh_v;s
+        Lambda[1][0] = -gamma * bh_v;
         Lambda[1][1] = gamma;
         Lambda[2][2] = 1.;
         Lambda[3][3] = 1.;

@@ -991,59 +991,36 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           for (int b = 0; b < 4; ++b)
             Gb_inv[a][b] = 0.0;
 
-        // {
-        //   const CCTK_REAL Gb11 = Gb[1][1];
-        //   const CCTK_REAL Gb12 = Gb[1][2];
-        //   const CCTK_REAL Gb13 = Gb[1][3];
-        //   const CCTK_REAL Gb22 = Gb[2][2];
-        //   const CCTK_REAL Gb23 = Gb[2][3];
-        //   const CCTK_REAL Gb33 = Gb[3][3];
+        {
+          const CCTK_REAL Gb11 = Gb[1][1];
+          const CCTK_REAL Gb12 = Gb[1][2];
+          const CCTK_REAL Gb13 = Gb[1][3];
+          const CCTK_REAL Gb22 = Gb[2][2];
+          const CCTK_REAL Gb23 = Gb[2][3];
+          const CCTK_REAL Gb33 = Gb[3][3];
 
-        //   const CCTK_REAL detGb3 =
-        //       Gb11 * (Gb22 * Gb33 - Gb23 * Gb23) -
-        //       Gb12 * (Gb12 * Gb33 - Gb13 * Gb23) +
-        //       Gb13 * (Gb12 * Gb23 - Gb13 * Gb22);
+          const CCTK_REAL detGb3 =
+              Gb11 * (Gb22 * Gb33 - Gb23 * Gb23) -
+              Gb12 * (Gb12 * Gb33 - Gb13 * Gb23) +
+              Gb13 * (Gb12 * Gb23 - Gb13 * Gb22);
 
-        //   if (fabs(detGb3) < SMALL)
-        //     CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
+          if (fabs(detGb3) < SMALL)
+            CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
 
-        //   const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
+          const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
 
-        Gb_inv[1][1] = -((psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)))) / ((2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (rr2_2)) - pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (rho2_2)) * (1 + fctGG * (rr2_2)) + alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) + bh_v2 * bphi * (bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)) - bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))))) * pow(gamma, 2)));
-        Gb_inv[1][2] = (rho2_2 * x1_2 * gamma * (bh_v * (bphi + bphi * fctGG * pow(z1_2, 2)) + psi4_2 * rho2_2 * y1_2 * (fctGG - pow(bh_spin, 2) * fctHH - pow(bh_spin, 2) * fctGG * fctHH * pow(z1_2, 2)))) / ((2 * bh_v * bphi * psi4_2 * rho2_2 *
-                                                                                                                                                                                                                     y1_2 * (1 + fctGG * (rr2_2)) -
-                                                                                                                                                                                                                 pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (rho2_2)) * (1 + fctGG * (rr2_2)) +
-                                                                                                                                                                                                                 alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) +
-                                                                                                                                                                                                                 bh_v2 * bphi * (bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)) - bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))))) *
-                                                                                                                                                                                                                gamma);
-        Gb_inv[1][3] = (fctGG * rho2_2 * x1_2 * gamma * (-(bh_v * bphi * y1_2) + psi4_2 * rho2_2 * (1 + pow(bh_spin, 2) * fctHH * (pow(x1_2 * gamma, 2) + pow(y1_2, 2)))) * z1_2) / ((2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (rr2_2)) -
-                                                                                                                                                                                      pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (rho2_2)) * (1 + fctGG * (rr2_2)) +
-                                                                                                                                                                                      alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) +
-                                                                                                                                                                                      bh_v2 * bphi * (bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)) - bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))))) *
-                                                                                                                                                                                     gamma);
+          Gb_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
+          Gb_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
+          Gb_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
 
-        Gb_inv[2][1] = Gb_inv[1][2];
-        Gb_inv[2][2] = (rho2_2 * (-(alpha02 * bh_v2 * rho2_2 * (1 + fctGG * pow(z1_2, 2))) + bh_v2 * bphi * bphiup * rho2_2 * (1 + fctGG * pow(z1_2, 2)) -
-                                  2 * bh_v * bphi * y1_2 * (1 + fctGG * pow(z1_2, 2)) + psi4_2 * rho2_2 * (1 + fctGG * pow(x1_2 * gamma, 2) + pow(bh_spin, 2) * fctHH * pow(y1_2, 2) + fctGG * (1 + pow(bh_spin, 2) * fctHH * pow(y1_2, 2)) * pow(z1_2, 2)))) /
-                       (-2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (rho2_2 + pow(z1_2, 2))) +
-                        pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (rho2_2)) * (1 + fctGG * (rr2_2)) -
-                        alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) +
-                        bh_v2 * bphi * (-(bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) + bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)))));
-        Gb_inv[2][3] = (fctGG * rho2_2 * (bh_v2 * (-alpha02 + bphi * bphiup) * rho2_2 * y1_2 - bh_v * bphi * (pow(x1_2 * gamma, 2) + 2 * pow(y1_2, 2)) + psi4_2 * rho2_2 * y1_2 * (1 + pow(bh_spin, 2) * fctHH * (pow(x1_2 * gamma, 2) + pow(y1_2, 2)))) * z1_2) / (2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (rr2_2)) -
-                                                                                                                                                                                                                                                                                  pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (rho2_2)) * (1 + fctGG * (rr2_2)) +
-                                                                                                                                                                                                                                                                                  alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) +
-                                                                                                                                                                                                                                                                                  bh_v2 * bphi * (bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)) - bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)))));
+          Gb_inv[2][1] = Gb_inv[1][2];
+          Gb_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
+          Gb_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
 
-        Gb_inv[3][1] = Gb_inv[1][3];
-        Gb_inv[3][2] = Gb_inv[2][3];
-        Gb_inv[3][3] = -((alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) + fctGG * pow(y1_2, 2)) +
-                          2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (pow(x1_2 * gamma, 2) + pow(y1_2, 2))) - pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + fctGG * (pow(x1_2 * gamma, 2) + pow(y1_2, 2))) * (1 + pow(bh_spin, 2) * fctHH * (pow(x1_2 * gamma, 2) + pow(y1_2, 2))) +
-                          bh_v2 * bphi * (bphi * pow(x1_2 * gamma, 2) - bphiup * psi4_2 * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) + fctGG * pow(y1_2, 2)))) /
-                         (psi4_2 * (-2 * bh_v * bphi * psi4_2 * rho2_2 * y1_2 * (1 + fctGG * (pow(x1_2 * gamma, 2) + pow(y1_2, 2) + pow(z1_2, 2))) +
-                                    pow(psi4_2, 2) * pow(rho2_2, 2) * (1 + pow(bh_spin, 2) * fctHH * (pow(x1_2 * gamma, 2) + pow(y1_2, 2))) * (1 + fctGG * (pow(x1_2 * gamma, 2) + pow(y1_2, 2) + pow(z1_2, 2))) -
-                                    alpha02 * bh_v2 * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) +
-                                    bh_v2 * bphi * (-(bphi * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2))) + bphiup * psi4_2 * pow(rho2_2, 2) * (1 + fctGG * (pow(y1_2, 2) + pow(z1_2, 2)) + pow(bh_spin, 2) * fctHH * pow(x1_2 * gamma, 2) * (1 + fctGG * pow(z1_2, 2)))))));
-        // }
+          Gb_inv[3][1] = Gb_inv[1][3];
+          Gb_inv[3][2] = Gb_inv[2][3];
+          Gb_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
+        }
 
         // Optional checks
         check_nan_or_inf("Gb_inv[1][1]", Gb_inv[1][1]);

@@ -1029,6 +1029,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
         check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
+        
         // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
         {
           const CCTK_REAL tol = SMALL; //funcionou ate 10^-8

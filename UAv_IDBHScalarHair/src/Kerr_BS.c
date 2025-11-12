@@ -978,8 +978,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
 
-        CCTK_REAL Gb00up = gamma2 * bh_v2 * G_inv[1][1] + gamma2 * G_inv[0][0] - 2.0 * gamma2 * bh_v * G_inv[1][0]; // boosted Gb^{00}
-        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up);                                                                  // older version worked better
+        CCTK_REAL G00up = -((psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2))) / (alpha02 * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2)) + bphi * (bphi * (rho2_2)-bphiup * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2))))); // unboosted G^{00}
+
+        CCTK_REAL G0xup = -((bphi * rho2_2 * y1_2) / (alpha02 * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2)) + bphi * (bphi * (rho2_2)-bphiup * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2))))); // unboosted G^{0x}
+
+        CCTK_REAL Gxxup = (alpha02 * psi4_2 * (rho2_2 * rho2_2) * (1 + fctGG * (y1_2 * y1_2 + z1_2 * z1_2) + bh_spin2 * fctHH * x1_2 * x1_2 * gamma2 * (1 + fctGG * z1_2 * z1_2)) + bphi * (bphi * x1_2 * x1_2 * gamma2 * (1 + fctGG * z1_2 * z1_2) - bphiup * psi4_2 * (rho2_2 * rho2_2) * (1 + fctGG * (y1_2 * y1_2 + z1_2 * z1_2) + bh_spin2 * fctHH * x1_2 * x1_2 * gamma2 * (1 + fctGG * z1_2 * z1_2)))) / (psi4_2 * (alpha02 * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2)) + bphi * (bphi * (rho2_2)-bphiup * psi4_2 * (rho2_2 * rho2_2) * (1 + bh_spin2 * fctHH * (rho2_2)))) * (1 + fctGG * (rho2_2 + z1_2 * z1_2))); // unboosted G^{xx}
+
+        CCTK_REAL Gb00up = gamma2 * bh_v2 * Gxxup + gamma2 * G00up - 2.0 * gamma2 * bh_v * G0xup; // boosted Gb^{00}
+        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up);                                                // older version worked better
 
         // Invert the spatial 3x3 block of the boosted metric Gb into Gb_inv
         CCTK_REAL Gb_inv[4][4];
@@ -995,10 +1001,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           const CCTK_REAL Gb23 = Gb[2][3];
           const CCTK_REAL Gb33 = Gb[3][3];
 
-          const CCTK_REAL detGb3 = alpha02*(-Gb00up)*detgij; // Determinant of boosted 3-metric
+          const CCTK_REAL detGb3 = alpha02 * (-Gb00up) * detgij; // Determinant of boosted 3-metric
 
-          // if (fabs(detGb3) < SMALL)
-          //   CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
+          if (fabs(detGb3) < SMALL)
+            CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
 
           const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
 

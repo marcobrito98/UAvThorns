@@ -691,33 +691,33 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         CCTK_REAL fctGG, fctHH, dfctGG_dR, dfctHH_dR, dfctHH_dth, dpsi4_2_dR, dpsi4_2_dth;
         fctGG = rBLm / (rr2_2 * (rBL - rBLm));
-        dfctGG_dR = -((rBLm * (-2 * rBLm + 2 * rBL + rr_2 * drBLdR)) / (rr2_2*rr_2 * (rBLm - rBL)*(rBLm - rBL)));
+        dfctGG_dR = -((rBLm * (-2 * rBLm + 2 * rBL + rr_2 * drBLdR)) / (rr2_2 * rr_2 * (rBLm - rBL) * (rBLm - rBL)));
 
         fctHH = (2.0 * bh_mass * rBL + Sigm) / (rr2_2 * Sigm2);
-        dfctHH_dR = -((2 * Sigm * (2 * bh_mass * rBL + Sigm - bh_mass * rr_2 * drBLdR) + rr_2 * (4 * bh_mass * rBL + Sigm) * dSigm_dR) / (rr2_2*rr_2 * Sigm2 * Sigm));
+        dfctHH_dR = -((2 * Sigm * (2 * bh_mass * rBL + Sigm - bh_mass * rr_2 * drBLdR) + rr_2 * (4 * bh_mass * rBL + Sigm) * dSigm_dR) / (rr2_2 * rr_2 * Sigm2 * Sigm));
         dfctHH_dth = -(((4 * bh_mass * rBL + Sigm) * dSigm_dth) / (rr2_2 * Sigm2 * Sigm));
 
         dpsi4_2_dR = (-2 * Sigm + rr_2 * dSigm_dR) / (rr2_2 * rr_2);
         dpsi4_2_dth = dSigm_dth / rr2_2;
 
-        // CCTK_REAL detgij;
-        // detgij = pow(psi4_2, 3) * (1.0 + rr2_2 * fctGG) * (1.0 + bh_spin2 * rho2_2 * fctHH);
+        CCTK_REAL detgij;
+        detgij = pow(psi4_2, 3) * (1.0 + rr2_2 * fctGG) * (1.0 + bh_spin2 * rho2_2 * fctHH);
 
         /*----------------------------------*/
 
         /*=== initialize gauge functions ===*/
         /*----------------------------------*/
-        const CCTK_REAL alpha02 =(4.0 * rr_2 - rBLp)*(4.0 * rr_2 - rBLp) * (rBL - rBLm) / (16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm)));
+        const CCTK_REAL alpha02 = (4.0 * rr_2 - rBLp) * (4.0 * rr_2 - rBLp) * (rBL - rBLm) / (16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm)));
         // const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero;
-         const CCTK_REAL alpha0 = sqrt(alpha02); // primeiro termo para schwarzschild e zero;
+        const CCTK_REAL alpha0 = sqrt(alpha02); // primeiro termo para schwarzschild e zero;
         // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF); nao usar é mais impreciso.
         // const CCTK_REAL alpha02 = alpha0 * alpha0;
         // const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         // const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
         // const CCTK_REAL dalpha02_dR = (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         // const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
-        const CCTK_REAL dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2)*(rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2));
-        const CCTK_REAL dalpha02_dth = (bh_mass * bh_spin2 * (-4 * rr_2 + rBLp)*(-4 * rr_2 + rBLp) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2)*((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2));
+        const CCTK_REAL dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2) * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2));
+        const CCTK_REAL dalpha02_dth = (bh_mass * bh_spin2 * (-4 * rr_2 + rBLp) * (-4 * rr_2 + rBLp) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2) * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2));
 
         const CCTK_REAL gphiphi = fctFF / Sigm * sinth2;
         const CCTK_REAL dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;
@@ -783,11 +783,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         G[1][0] = G[0][1];
         G[2][0] = G[0][2];
         G[3][0] = G[0][3];
-        G[1][1] = psi4_2 * (1.0 + x1_2 * gamma * x1_2 * gamma * fctGG + bh_spin2 * y1_2 * y1_2 * fctHH);
+        G[1][1] = psi4_2 * (1.0 + x1_2 * x1_2 * gamma2 * fctGG + bh_spin2 * y1_2 * y1_2 * fctHH);
         G[1][2] = psi4_2 * (x1_2 * gamma * y1_2 * fctGG - bh_spin2 * x1_2 * gamma * y1_2 * fctHH);
         G[1][3] = psi4_2 * (x1_2 * gamma * z1_2 * fctGG);
         G[2][1] = G[1][2];
-        G[2][2] = psi4_2 * (1.0 + y1_2 * y1_2 * fctGG + bh_spin2 * x1_2 * gamma * x1_2 * gamma * fctHH);
+        G[2][2] = psi4_2 * (1.0 + y1_2 * y1_2 * fctGG + bh_spin2 * x1_2 * x1_2 * gamma2 * fctHH);
         G[2][3] = psi4_2 * (y1_2 * z1_2 * fctGG);
         G[3][1] = G[1][3];
         G[3][2] = G[2][3];
@@ -804,38 +804,28 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           }
         }
 
-        // CCTK_REAL G_inv[4][4];
-        // // Initialize G_inv to zero. Inverse of 3 metric
-        // for (int i = 0; i < 4; ++i)
-        //   for (int j = 0; j < 4; ++j)
-        //     G_inv[i][j] = 0.0;
+        CCTK_REAL G_inv[4][4];
+        // Initialize G_inv to zero. Inverse of 3 metric
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            G_inv[i][j] = 0.0;
 
-        // /* Invert the spatial 3x3 block of G into G_inv */
-        // {
-        //   const CCTK_REAL G11 = G[1][1];
-        //   const CCTK_REAL G12 = G[1][2];
-        //   const CCTK_REAL G13 = G[1][3];
-        //   const CCTK_REAL G22 = G[2][2];
-        //   const CCTK_REAL G23 = G[2][3];
-        //   const CCTK_REAL G33 = G[3][3];
+        /* Invert the spatial 3x3 block of G into G_inv */
+        {
+          const CCTK_REAL inv_det = 1.0 / detgij;
 
-        //   const CCTK_REAL det =
-        //       G11 * (G22 * G33 - G23 * G23) - G12 * (G12 * G33 - G13 * G23) + G13 * (G12 * G23 - G13 * G22);
+          G_inv[1][1] = (1 + fctGG * ((y1_2 * y1_2) + (z1_2 * z1_2)) + bh_spin2 * fctHH * (x1_2 * x1_2 * gamma2) * (1 + fctGG * (z1_2 * z1_2))) / (psi4_2 * (1 + bh_spin2 * fctHH * (rho2_2)) * (1 + fctGG * (rho2_2 + (z1_2 * z1_2))));
+          G_inv[1][2] = (x1_2 * gamma * y1_2 * (bh_spin2 * fctHH + fctGG * (-1 + bh_spin2 * fctHH * (z1_2 * z1_2)))) / (psi4_2 * (1 + bh_spin2 * fctHH * (rho2_2)) * (1 + fctGG * (rho2_2 + (z1_2 * z1_2))));
+          G_inv[1][3] = -((fctGG * x1_2 * gamma * z1_2) / (psi4_2 + fctGG * psi4_2 * (rho2_2 + (z1_2 * z1_2))));
 
-        //   const CCTK_REAL inv_det = 1.0 / det;
+          G_inv[2][1] = G_inv[1][2];
+          G_inv[2][2] = ((1 + bh_spin2 * fctHH * (y1_2 * y1_2)) / (1 + bh_spin2 * fctHH * (rho2_2)) - (fctGG * (y1_2 * y1_2)) / (1 + fctGG * (rho2_2 + (z1_2 * z1_2)))) / psi4_2;
+          G_inv[2][3] = -((fctGG * y1_2 * z1_2) / (psi4_2 + fctGG * psi4_2 * (rho2_2 + (z1_2 * z1_2))));
 
-        //   G_inv[1][1] = (G22 * G33 - G23 * G23) * inv_det;
-        //   G_inv[1][2] = (G13 * G23 - G12 * G33) * inv_det;
-        //   G_inv[1][3] = (G12 * G23 - G13 * G22) * inv_det;
-
-        //   G_inv[2][1] = G_inv[1][2];
-        //   G_inv[2][2] = (G11 * G33 - G13 * G13) * inv_det;
-        //   G_inv[2][3] = (G13 * G12 - G11 * G23) * inv_det;
-
-        //   G_inv[3][1] = G_inv[1][3];
-        //   G_inv[3][2] = G_inv[2][3];
-        //   G_inv[3][3] = (G11 * G22 - G12 * G12) * inv_det;
-        // }
+          G_inv[3][1] = G_inv[1][3];
+          G_inv[3][2] = G_inv[2][3];
+          G_inv[3][3] = (1 + fctGG * (rho2_2)) / (psi4_2 + fctGG * psi4_2 * (rho2_2 + (z1_2 * z1_2)));
+        }
 
         // CCTK_REAL betaup[4];
         // betaup[0] = 0.0;
@@ -857,9 +847,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
         // dG[a][b][c] = dG_ab/dx^c derivatives in c=1 are evaluated at the point x1_2*gamma, y1_2, z1_2
 
-        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG + (x1_2*x1_2*gamma2) * dfctGG_dR * R_x + bh_spin2 * (y1_2*y1_2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) + (1 + (x1_2*x1_2*gamma2) * fctGG + bh_spin2 * (y1_2*y1_2) * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[1][1][2] = psi4_2 * ((x1_2*x1_2*gamma2) * dfctGG_dR * R_y + bh_spin2 * y1_2 * (2 * fctHH + y1_2 * (dfctHH_dR * R_y + dfctHH_dth * th_y))) + (1 + (x1_2*x1_2*gamma2) * fctGG + bh_spin2 * (y1_2*y1_2) * fctHH) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[1][1][3] = psi4_2 * ((x1_2*x1_2*gamma2) * dfctGG_dR * R_z + bh_spin2 * (y1_2*y1_2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + (x1_2*x1_2*gamma2) * fctGG + bh_spin2 * (y1_2*y1_2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG + (x1_2 * x1_2 * gamma2) * dfctGG_dR * R_x + bh_spin2 * (y1_2 * y1_2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) + (1 + (x1_2 * x1_2 * gamma2) * fctGG + bh_spin2 * (y1_2 * y1_2) * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[1][1][2] = psi4_2 * ((x1_2 * x1_2 * gamma2) * dfctGG_dR * R_y + bh_spin2 * y1_2 * (2 * fctHH + y1_2 * (dfctHH_dR * R_y + dfctHH_dth * th_y))) + (1 + (x1_2 * x1_2 * gamma2) * fctGG + bh_spin2 * (y1_2 * y1_2) * fctHH) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
+        dG[1][1][3] = psi4_2 * ((x1_2 * x1_2 * gamma2) * dfctGG_dR * R_z + bh_spin2 * (y1_2 * y1_2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + (x1_2 * x1_2 * gamma2) * fctGG + bh_spin2 * (y1_2 * y1_2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
         dG[1][2][1] = y1_2 * psi4_2 * (fctGG + x1_2 * gamma * dfctGG_dR * R_x - bh_spin2 * (fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) +
                       x1_2 * gamma * y1_2 * (fctGG - bh_spin2 * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
@@ -871,17 +861,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[1][3][2] = x1_2 * gamma * z1_2 * (psi4_2 * dfctGG_dR * R_y + fctGG * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y));
         dG[1][3][3] = x1_2 * gamma * (z1_2 * psi4_2 * dfctGG_dR * R_z + fctGG * (psi4_2 + z1_2 * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z)));
 
-        dG[2][2][1] = psi4_2 * ((y1_2*y1_2) * dfctGG_dR * R_x + bh_spin2 * x1_2 * gamma * (2 * fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) + (1 + (y1_2*y1_2) * fctGG + bh_spin2 * (x1_2*x1_2*gamma2) * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[2][2][2] = psi4_2 * (2 * y1_2 * fctGG + (y1_2*y1_2) * dfctGG_dR * R_y + bh_spin2 * (x1_2*x1_2*gamma2) * (dfctHH_dR * R_y + dfctHH_dth * th_y)) + (1 + (y1_2*y1_2) * fctGG + bh_spin2 * (x1_2*x1_2*gamma2) * fctHH) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[2][2][3] = psi4_2 * ((y1_2*y1_2) * dfctGG_dR * R_z + bh_spin2 * (x1_2*x1_2*gamma2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + (y1_2*y1_2) * fctGG + bh_spin2 * (x1_2*x1_2*gamma2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        dG[2][2][1] = psi4_2 * ((y1_2 * y1_2) * dfctGG_dR * R_x + bh_spin2 * x1_2 * gamma * (2 * fctHH + x1_2 * gamma * (dfctHH_dR * R_x + dfctHH_dth * th_x))) + (1 + (y1_2 * y1_2) * fctGG + bh_spin2 * (x1_2 * x1_2 * gamma2) * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[2][2][2] = psi4_2 * (2 * y1_2 * fctGG + (y1_2 * y1_2) * dfctGG_dR * R_y + bh_spin2 * (x1_2 * x1_2 * gamma2) * (dfctHH_dR * R_y + dfctHH_dth * th_y)) + (1 + (y1_2 * y1_2) * fctGG + bh_spin2 * (x1_2 * x1_2 * gamma2) * fctHH) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
+        dG[2][2][3] = psi4_2 * ((y1_2 * y1_2) * dfctGG_dR * R_z + bh_spin2 * (x1_2 * x1_2 * gamma2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + (y1_2 * y1_2) * fctGG + bh_spin2 * (x1_2 * x1_2 * gamma2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
         dG[2][3][1] = y1_2 * z1_2 * (psi4_2 * dfctGG_dR * R_x + fctGG * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x));
         dG[2][3][2] = z1_2 * (y1_2 * psi4_2 * dfctGG_dR * R_y + fctGG * (psi4_2 + y1_2 * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y)));
         dG[2][3][3] = y1_2 * (z1_2 * psi4_2 * dfctGG_dR * R_z + fctGG * (psi4_2 + z1_2 * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z)));
 
-        dG[3][3][1] = (z1_2*z1_2) * psi4_2 * dfctGG_dR * R_x + (1 + (z1_2*z1_2) * fctGG) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[3][3][2] = (z1_2*z1_2) * psi4_2 * dfctGG_dR * R_y + (1 + (z1_2*z1_2) * fctGG) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[3][3][3] = z1_2 * psi4_2 * (2 * fctGG + z1_2 * dfctGG_dR * R_z) + (1 + (z1_2*z1_2) * fctGG) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        dG[3][3][1] = (z1_2 * z1_2) * psi4_2 * dfctGG_dR * R_x + (1 + (z1_2 * z1_2) * fctGG) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[3][3][2] = (z1_2 * z1_2) * psi4_2 * dfctGG_dR * R_y + (1 + (z1_2 * z1_2) * fctGG) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
+        dG[3][3][3] = z1_2 * psi4_2 * (2 * fctGG + z1_2 * dfctGG_dR * R_z) + (1 + (z1_2 * z1_2) * fctGG) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
         // dG[mu][nu][0] = 0
         // dG[0][0][1] = -2 * alpha0 * (dalpha0_dR * R_x + dalpha0_dth * th_x) + bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
@@ -891,13 +881,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[0][0][2] = -(dalpha02_dR * R_y + dalpha02_dth * th_y) + bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) + bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
         dG[0][0][3] = -(dalpha02_dR * R_z + dalpha02_dth * th_z) + bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) + bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
 
-        dG[0][1][1] = (-(y1_2 * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x)) + y1_2 * bphi * (2 * x1_2 * gamma)) / (rho2_2*rho2_2);
-        dG[0][1][2] = (-(rho2_2 * (bphi + y1_2 * (dbphi_dR * R_y + dbphi_dth * th_y))) + y1_2 * bphi * (2 * y1_2)) / (rho2_2*rho2_2);
-        dG[0][1][3] = (-(y1_2 * rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / (rho2_2*rho2_2);
+        dG[0][1][1] = (-(y1_2 * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x)) + y1_2 * bphi * (2 * x1_2 * gamma)) / (rho2_2 * rho2_2);
+        dG[0][1][2] = (-(rho2_2 * (bphi + y1_2 * (dbphi_dR * R_y + dbphi_dth * th_y))) + y1_2 * bphi * (2 * y1_2)) / (rho2_2 * rho2_2);
+        dG[0][1][3] = (-(y1_2 * rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / (rho2_2 * rho2_2);
 
-        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 - x1_2 * gamma * (2 * x1_2 * gamma))) / (rho2_2*rho2_2);
-        dG[0][2][2] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y) - bphi * (2 * y1_2))) / (rho2_2*rho2_2);
-        dG[0][2][3] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / (rho2_2*rho2_2);
+        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 - x1_2 * gamma * (2 * x1_2 * gamma))) / (rho2_2 * rho2_2);
+        dG[0][2][2] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y) - bphi * (2 * y1_2))) / (rho2_2 * rho2_2);
+        dG[0][2][3] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / (rho2_2 * rho2_2);
 
         dG[0][3][1] = 0;
         dG[0][3][2] = 0;
@@ -1055,7 +1045,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[2]", betaup[2]);
         check_nan_or_inf("betaup[3]", betaup[3]);
 
-        CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1] * beta[1] + betaup[2] * beta[2] + betaup[3] * beta[3]);
+        CCTK_REAL Gb00up = gamma2 * bh_v2 * G_inv[1][1] + gamma2 * G_inv[0][0] - 2.0 * gamma2 * bh_v2 * G_inv[1][0]; // boosted Gb^{00}
+        CCTK_REAL new_alpha = 1.0 / sqrt(-G00up);
 
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero

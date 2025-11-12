@@ -1031,7 +1031,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
         {
-          const CCTK_REAL tol = 1e-8;
+          const CCTK_REAL tol = SMALL;
           for (int i3 = 1; i3 <= 3; ++i3) {
             for (int j3 = 1; j3 <= 3; ++j3) {
               CCTK_REAL s = 0.0;

@@ -987,11 +987,11 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL Gb00up = gamma2 * bh_v2 * Gxxup + gamma2 * G00up - 2.0 * gamma2 * bh_v * G0xup; // boosted Gb^{00}
         CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up);                                                // older version worked better
 
-        // Invert the spatial 3x3 block of the boosted metric Gb into Gb_inv
-        CCTK_REAL Gb_inv[4][4];
+        // Invert the spatial 3x3 block of the boosted metric Gb into Gb3_inv
+        CCTK_REAL Gb3_inv[4][4];
         for (int a = 0; a < 4; ++a)
           for (int b = 0; b < 4; ++b)
-            Gb_inv[a][b] = 0.0;
+            Gb3_inv[a][b] = 0.0;
 
         {
           const CCTK_REAL Gb11 = Gb[1][1];
@@ -1008,26 +1008,26 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
           const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
 
-          Gb_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
-          Gb_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
-          Gb_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
+          Gb3_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
+          Gb3_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
+          Gb3_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
 
-          Gb_inv[2][1] = Gb_inv[1][2];
-          Gb_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
-          Gb_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
+          Gb3_inv[2][1] = Gb3_inv[1][2];
+          Gb3_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
+          Gb3_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
 
-          Gb_inv[3][1] = Gb_inv[1][3];
-          Gb_inv[3][2] = Gb_inv[2][3];
-          Gb_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
+          Gb3_inv[3][1] = Gb3_inv[1][3];
+          Gb3_inv[3][2] = Gb3_inv[2][3];
+          Gb3_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
         }
 
         // Optional checks
-        check_nan_or_inf("Gb_inv[1][1]", Gb_inv[1][1]);
-        check_nan_or_inf("Gb_inv[1][2]", Gb_inv[1][2]);
-        check_nan_or_inf("Gb_inv[1][3]", Gb_inv[1][3]);
-        check_nan_or_inf("Gb_inv[2][2]", Gb_inv[2][2]);
-        check_nan_or_inf("Gb_inv[2][3]", Gb_inv[2][3]);
-        check_nan_or_inf("Gb_inv[3][3]", Gb_inv[3][3]);
+        check_nan_or_inf("Gb3_inv[1][1]", Gb3_inv[1][1]);
+        check_nan_or_inf("Gb3_inv[1][2]", Gb3_inv[1][2]);
+        check_nan_or_inf("Gb3_inv[1][3]", Gb3_inv[1][3]);
+        check_nan_or_inf("Gb3_inv[2][2]", Gb3_inv[2][2]);
+        check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
+        check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
         CCTK_REAL beta[4];
         beta[0] = 0.0;
@@ -1037,9 +1037,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         CCTK_REAL betaup[4];
         betaup[0] = 0.0;
-        betaup[1] = Gb_inv[1][1] * beta[1] + Gb_inv[1][2] * beta[2] + Gb_inv[1][3] * beta[3];
-        betaup[2] = Gb_inv[2][1] * beta[1] + Gb_inv[2][2] * beta[2] + Gb_inv[2][3] * beta[3];
-        betaup[3] = Gb_inv[3][1] * beta[1] + Gb_inv[3][2] * beta[2] + Gb_inv[3][3] * beta[3];
+        betaup[1] = Gb3_inv[1][1] * beta[1] + Gb3_inv[1][2] * beta[2] + Gb3_inv[1][3] * beta[3];
+        betaup[2] = Gb3_inv[2][1] * beta[1] + Gb3_inv[2][2] * beta[2] + Gb3_inv[2][3] * beta[3];
+        betaup[3] = Gb3_inv[3][1] * beta[1] + Gb3_inv[3][2] * beta[2] + Gb3_inv[3][3] * beta[3];
 
         /* Added NaN/Inf checks for beta and betaup */
         check_nan_or_inf("beta[0]", beta[0]);

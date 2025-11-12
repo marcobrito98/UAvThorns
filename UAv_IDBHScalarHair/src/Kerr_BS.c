@@ -1150,24 +1150,25 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           }
         }
 
-        // kxx[ind] = K_B[1][1];
-        // kxy[ind] = K_B[1][2];
-        // kxz[ind] = K_B[1][3];
-        // kyy[ind] = K_B[2][2];
-        // kyz[ind] = K_B[2][3];
-        // kzz[ind] = K_B[3][3];
-        CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
-        auxKij = 2.0 * rBL2 * (rBL2 + bh_spin2) + Sigm * (rBL2 - bh_spin2);
-        facKij = alpha0 * bh_spin * bh_mass * sinth2 / (rr2_2 * pow(rho_2, 3) * Delt * Sigm2);
-        facKijRho = 2.0 * z1_2 * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
-        facKijZ = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2 * rr_2 * drBLdR * auxKij;
+        kxx[ind] = K_B[1][1];
+        kxy[ind] = K_B[1][2];
+        kxz[ind] = K_B[1][3];
+        kyy[ind] = K_B[2][2];
+        kyz[ind] = K_B[2][3];
+        kzz[ind] = K_B[3][3];
 
-        kxx[ind] = 2.0 * x1_2 * y1_2 * facKij * facKijRho;
-        kxy[ind] = (y1_2 * y1_2 - x1_2 * x1_2) * facKij * facKijRho;
-        kxz[ind] = -y1_2 * rho_2 * facKij * facKijZ;
-        kyy[ind] = -2.0 * x1_2 * y1_2 * facKij * facKijRho;
-        kyz[ind] = x1_2 * rho_2 * facKij * facKijZ;
-        kzz[ind] = 0.0;
+        // CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
+        // auxKij = 2.0 * rBL2 * (rBL2 + bh_spin2) + Sigm * (rBL2 - bh_spin2);
+        // facKij = alpha0 * bh_spin * bh_mass * sinth2 / (rr2_2 * pow(rho_2, 3) * Delt * Sigm2);
+        // facKijRho = 2.0 * z1_2 * bh_spin2 * rBL * Delt * costh * sinth - rho_2 * rr_2 * drBLdR * auxKij;
+        // facKijZ = 2.0 * rho_2 * bh_spin2 * rBL * Delt * costh * sinth + z1_2 * rr_2 * drBLdR * auxKij;
+
+        // kxx[ind] = 2.0 * x1_2 * y1_2 * facKij * facKijRho;
+        // kxy[ind] = (y1_2 * y1_2 - x1_2 * x1_2) * facKij * facKijRho;
+        // kxz[ind] = -y1_2 * rho_2 * facKij * facKijZ;
+        // kyy[ind] = -2.0 * x1_2 * y1_2 * facKij * facKijRho;
+        // kyz[ind] = x1_2 * rho_2 * facKij * facKijZ;
+        // kzz[ind] = 0.0;
 
         // }
 

@@ -978,12 +978,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
         // depois de testado fazer aqui a sobreposição
-        gxx[ind] = Gb[1][1];
-        gxy[ind] = Gb[1][2];
-        gxz[ind] = Gb[1][3];
-        gyy[ind] = Gb[2][2];
-        gyz[ind] = Gb[2][3];
-        gzz[ind] = Gb[3][3];
+        gxx[ind] = G[1][1];
+        gxy[ind] = G[1][2];
+        gxz[ind] = G[1][3];
+        gyy[ind] = G[2][2];
+        gyz[ind] = G[2][3];
+        gzz[ind] = G[3][3];
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

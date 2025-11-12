@@ -997,8 +997,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
           const CCTK_REAL detGb3 = alpha02*(-Gb00up)*detgij; // Determinant of boosted 3-metric
 
-          if (fabs(detGb3) < SMALL)
-            CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
+          // if (fabs(detGb3) < SMALL)
+          //   CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
 
           const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
 

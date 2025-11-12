@@ -1046,7 +1046,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[3]", betaup[3]);
 
         CCTK_REAL Gb00up = gamma2 * bh_v2 * G_inv[1][1] + gamma2 * G_inv[0][0] - 2.0 * gamma2 * bh_v2 * G_inv[1][0]; // boosted Gb^{00}
-        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up);
+        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up); //older version worked better
 
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero

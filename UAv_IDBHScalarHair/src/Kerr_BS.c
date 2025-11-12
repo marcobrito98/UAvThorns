@@ -709,10 +709,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         /*----------------------------------*/
 
         const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero; sqrt(Delt*Sigm/fctFF);
-        // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF);
+        // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF); nao usar é mais impreciso.
         const CCTK_REAL alpha02 = alpha0 * alpha0;
-        const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
-        const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+        // const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
+        // const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
         const CCTK_REAL dalpha02_dR = (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
 
@@ -764,8 +764,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("dbphiup_dth", dbphiup_dth);
         check_nan_or_inf("dbphi_dR", dbphi_dR);
         check_nan_or_inf("dbphi_dth", dbphi_dth);
-        check_nan_or_inf("dalpha0_dR", dalpha0_dR);
-        check_nan_or_inf("dalpha0_dth", dalpha0_dth);
+        check_nan_or_inf("dalpha02_dR", dalpha02_dR);
+        check_nan_or_inf("dalpha02_dth", dalpha02_dth);
 
         CCTK_REAL G[4][4];
         // Initialize G to zero
@@ -978,12 +978,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
         // depois de testado fazer aqui a sobreposição
-        gxx[ind] = G[1][1];
-        gxy[ind] = G[1][2];
-        gxz[ind] = G[1][3];
-        gyy[ind] = G[2][2];
-        gyz[ind] = G[2][3];
-        gzz[ind] = G[3][3];
+        gxx[ind] = Gb[1][1];
+        gxy[ind] = Gb[1][2];
+        gxz[ind] = Gb[1][3];
+        gyy[ind] = Gb[2][2];
+        gyz[ind] = Gb[2][3];
+        gzz[ind] = Gb[3][3];
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

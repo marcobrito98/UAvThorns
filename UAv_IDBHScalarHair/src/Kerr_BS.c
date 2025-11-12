@@ -1019,6 +1019,32 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           Gb3_inv[3][1] = Gb3_inv[1][3];
           Gb3_inv[3][2] = Gb3_inv[2][3];
           Gb3_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
+
+
+          // Optional checks
+        check_nan_or_inf("Gb3_inv[1][1]", Gb3_inv[1][1]);
+        check_nan_or_inf("Gb3_inv[1][2]", Gb3_inv[1][2]);
+        check_nan_or_inf("Gb3_inv[1][3]", Gb3_inv[1][3]);
+        check_nan_or_inf("Gb3_inv[2][2]", Gb3_inv[2][2]);
+        check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
+        check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
+
+        // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
+        {
+          const CCTK_REAL tol = 1e-8;
+          for (int i3 = 1; i3 <= 3; ++i3) {
+            for (int j3 = 1; j3 <= 3; ++j3) {
+              CCTK_REAL s = 0.0;
+              for (int k3 = 1; k3 <= 3; ++k3) s += Gb3_inv[i3][k3] * Gb[k3][j3];
+              const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
+              if (fabs(s - delta) > tol) {
+                CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
+                           "Gb3_inv check failed at (%d,%d): %g (tol=%g)", i3, j3, (double)s, (double)tol);
+                break;
+              }
+            }
+          }
+        }
         }
 
         // Optional checks

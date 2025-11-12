@@ -28,6 +28,92 @@ void check_nan_or_inf(const char *var_name, double value)
   }
 }
 
+// Numerically stable inversion of a symmetric positive-definite 3x3 matrix (indices 1..3)
+// Uses diagonal scaling and long-double accumulators, then Cholesky: M = S^{-1} A S^{-1}, A = L L^T
+// Returns 1 on success, 0 on failure (non-SPD or singular).
+static inline int invert_spd3x3(const CCTK_REAL M[4][4], CCTK_REAL Minv[4][4])
+{
+  // Enforce symmetry (guards against tiny asymmetries)
+  long double m11 = (long double)M[1][1];
+  long double m22 = (long double)M[2][2];
+  long double m33 = (long double)M[3][3];
+  long double m12 = 0.5L * ((long double)M[1][2] + (long double)M[2][1]);
+  long double m13 = 0.5L * ((long double)M[1][3] + (long double)M[3][1]);
+  long double m23 = 0.5L * ((long double)M[2][3] + (long double)M[3][2]);
+
+  // Diagonal scaling to improve conditioning: A = S M S, S = diag(1/sqrt(mii))
+  const long double eps = 1e-300L;
+  if (!(m11 > 0 && m22 > 0 && m33 > 0))
+    return 0;
+  long double s1 = 1.0L / sqrtl(fmaxl(m11, eps));
+  long double s2 = 1.0L / sqrtl(fmaxl(m22, eps));
+  long double s3 = 1.0L / sqrtl(fmaxl(m33, eps));
+
+  long double a11 = s1 * s1 * m11;
+  long double a22 = s2 * s2 * m22;
+  long double a33 = s3 * s3 * m33;
+  long double a12 = s1 * s2 * m12;
+  long double a13 = s1 * s3 * m13;
+  long double a23 = s2 * s3 * m23;
+
+  // Cholesky A = L L^T (lower triangular L)
+  if (!(a11 > 0))
+    return 0;
+  long double L11 = sqrtl(a11);
+
+  long double L21 = a12 / L11;
+  long double L31 = a13 / L11;
+
+  long double t22 = a22 - L21 * L21;
+  if (!(t22 > 0))
+    return 0;
+  long double L22 = sqrtl(t22);
+
+  long double L32 = (a23 - L31 * L21) / L22;
+
+  long double t33 = a33 - L31 * L31 - L32 * L32;
+  if (!(t33 > 0))
+    return 0;
+  long double L33 = sqrtl(t33);
+
+  // Invert L (lower triangular): compute Linv so that Linv * L = I
+  long double Linv11 = 1.0L / L11;
+  long double Linv21 = -L21 * (Linv11 / L22);
+  long double Linv22 = 1.0L / L22;
+  long double Linv31 = -(L31 * Linv11 + L32 * Linv21) / L33;
+  long double Linv32 = -L32 * (Linv22 / L33);
+  long double Linv33 = 1.0L / L33;
+
+  // A^{-1} = (L^{-T} L^{-1}) = (Linv^T * Linv)
+  long double i11 = Linv11 * Linv11 + Linv21 * Linv21 + Linv31 * Linv31;
+  long double i12 = Linv21 * Linv22 + Linv31 * Linv32 + Linv11 * 0.0L; // explicit for clarity
+  long double i13 = Linv31 * Linv33 + 0.0L;                            // since Linv is lower
+  long double i22 = Linv22 * Linv22 + Linv32 * Linv32;
+  long double i23 = Linv32 * Linv33;
+  long double i33 = Linv33 * Linv33;
+
+  // Undo scaling: M^{-1} = S * A^{-1} * S
+  long double S1 = s1, S2 = s2, S3 = s3;
+  long double mInv11 = S1 * S1 * i11;
+  long double mInv12 = S1 * S2 * i12;
+  long double mInv13 = S1 * S3 * i13;
+  long double mInv22 = S2 * S2 * i22;
+  long double mInv23 = S2 * S3 * i23;
+  long double mInv33 = S3 * S3 * i33;
+
+  Minv[1][1] = (CCTK_REAL)mInv11;
+  Minv[1][2] = (CCTK_REAL)mInv12;
+  Minv[1][3] = (CCTK_REAL)mInv13;
+  Minv[2][1] = Minv[1][2];
+  Minv[2][2] = (CCTK_REAL)mInv22;
+  Minv[2][3] = (CCTK_REAL)mInv23;
+  Minv[3][1] = Minv[1][3];
+  Minv[3][2] = Minv[2][3];
+  Minv[3][3] = (CCTK_REAL)mInv33;
+
+  return 1;
+}
+
 void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
@@ -994,58 +1080,77 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             Gb3_inv[a][b] = 0.0;
 
         {
-          const CCTK_REAL Gb11 = Gb[1][1];
-          const CCTK_REAL Gb12 = Gb[1][2];
-          const CCTK_REAL Gb13 = Gb[1][3];
-          const CCTK_REAL Gb22 = Gb[2][2];
-          const CCTK_REAL Gb23 = Gb[2][3];
-          const CCTK_REAL Gb33 = Gb[3][3];
+          // const CCTK_REAL Gb11 = Gb[1][1];
+          // const CCTK_REAL Gb12 = Gb[1][2];
+          // const CCTK_REAL Gb13 = Gb[1][3];
+          // const CCTK_REAL Gb22 = Gb[2][2];
+          // const CCTK_REAL Gb23 = Gb[2][3];
+          // const CCTK_REAL Gb33 = Gb[3][3];
 
-          const CCTK_REAL detGb3 = alpha02 * (-Gb00up) * detgij; // Determinant of boosted 3-metric
+          // const CCTK_REAL detGb3 = alpha02 * (-Gb00up) * detgij; // Determinant of boosted 3-metric
 
-          if (fabs(detGb3) < SMALL)
-            CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
+          // if (fabs(detGb3) < SMALL)
+          //   CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
 
-          const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
+          // const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
 
-          Gb3_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
-          Gb3_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
-          Gb3_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
+          // Gb3_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
+          // Gb3_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
+          // Gb3_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
 
-          Gb3_inv[2][1] = Gb3_inv[1][2];
-          Gb3_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
-          Gb3_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
+          // Gb3_inv[2][1] = Gb3_inv[1][2];
+          // Gb3_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
+          // Gb3_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
 
-          Gb3_inv[3][1] = Gb3_inv[1][3];
-          Gb3_inv[3][2] = Gb3_inv[2][3];
-          Gb3_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
+          // Gb3_inv[3][1] = Gb3_inv[1][3];
+          // Gb3_inv[3][2] = Gb3_inv[2][3];
+          // Gb3_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
 
+          // Build symmetric 3x3 block M from Gb
+          CCTK_REAL M[4][4] = {{0}};
+          M[1][1] = Gb[1][1];
+          M[1][2] = 0.5 * (Gb[1][2] + Gb[2][1]);
+          M[1][3] = 0.5 * (Gb[1][3] + Gb[3][1]);
+          M[2][1] = M[1][2];
+          M[2][2] = Gb[2][2];
+          M[2][3] = 0.5 * (Gb[2][3] + Gb[3][2]);
+          M[3][1] = M[1][3];
+          M[3][2] = M[2][3];
+          M[3][3] = Gb[3][3];
+
+          if (!invert_spd3x3(M, Gb3_inv)) {
+            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+                       "Gb_spatial not SPD or ill-conditioned at (%d,%d,%d).", i, j, k);
+          }
 
           // Optional checks
-        check_nan_or_inf("Gb3_inv[1][1]", Gb3_inv[1][1]);
-        check_nan_or_inf("Gb3_inv[1][2]", Gb3_inv[1][2]);
-        check_nan_or_inf("Gb3_inv[1][3]", Gb3_inv[1][3]);
-        check_nan_or_inf("Gb3_inv[2][2]", Gb3_inv[2][2]);
-        check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
-        check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
+          check_nan_or_inf("Gb3_inv[1][1]", Gb3_inv[1][1]);
+          check_nan_or_inf("Gb3_inv[1][2]", Gb3_inv[1][2]);
+          check_nan_or_inf("Gb3_inv[1][3]", Gb3_inv[1][3]);
+          check_nan_or_inf("Gb3_inv[2][2]", Gb3_inv[2][2]);
+          check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
+          check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
-        
-        // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
-        {
-          const CCTK_REAL tol = SMALL; //funcionou ate 10^-8
-          for (int i3 = 1; i3 <= 3; ++i3) {
-            for (int j3 = 1; j3 <= 3; ++j3) {
-              CCTK_REAL s = 0.0;
-              for (int k3 = 1; k3 <= 3; ++k3) s += Gb3_inv[i3][k3] * Gb[k3][j3];
-              const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
-              if (fabs(s - delta) > tol) {
-                CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
-                           "Gb3_inv check failed at (%d,%d): %g (tol=%g)", i3, j3, (double)s, (double)tol);
-                break;
+          // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
+          {
+            const CCTK_REAL tol = SMALL; // funcionou ate 10^-8
+            for (int i3 = 1; i3 <= 3; ++i3)
+            {
+              for (int j3 = 1; j3 <= 3; ++j3)
+              {
+                CCTK_REAL s = 0.0;
+                for (int k3 = 1; k3 <= 3; ++k3)
+                  s += Gb3_inv[i3][k3] * Gb[k3][j3];
+                const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
+                if (fabs(s - delta) > tol)
+                {
+                  CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
+                             "Gb3_inv check failed at (%d,%d): %g (tol=%g)", i3, j3, (double)s, (double)tol);
+                  break;
+                }
               }
             }
           }
-        }
         }
 
         // Optional checks

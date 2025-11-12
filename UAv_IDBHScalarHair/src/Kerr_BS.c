@@ -854,12 +854,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
         // dG[a][b][c] = dG_ab/dx^c derivatives in c=1 are evaluated at the point x1_2*gamma, y1_2, z1_2
 
-        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG +
-                                pow(x1_2 * gamma, 2) * dfctGG_dR * R_x +
-                                pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) +
-                      (1 + pow(x1_2 * gamma, 2) * fctGG +
-                       pow(bh_spin, 2) * pow(y1_2, 2) * fctHH) *
-                          (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
+        dG[1][1][1] = psi4_2 * (2 * x1_2 * gamma * fctGG + pow(x1_2 * gamma, 2) * dfctGG_dR * R_x + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_x + dfctHH_dth * th_x)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH) * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
         dG[1][1][2] = psi4_2 * (pow(x1_2 * gamma, 2) * dfctGG_dR * R_y + pow(bh_spin, 2) * y1_2 * (2 * fctHH + y1_2 * (dfctHH_dR * R_y + dfctHH_dth * th_y))) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH) * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
         dG[1][1][3] = psi4_2 * (pow(x1_2 * gamma, 2) * dfctGG_dR * R_z + pow(bh_spin, 2) * pow(y1_2, 2) * (dfctHH_dR * R_z + dfctHH_dth * th_z)) + (1 + pow(x1_2 * gamma, 2) * fctGG + pow(bh_spin, 2) * pow(y1_2, 2) * fctHH) * (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
 
@@ -897,9 +892,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[0][1][2] = (-(rho2_2 * (bphi + y1_2 * (dbphi_dR * R_y + dbphi_dth * th_y))) + y1_2 * bphi * (2 * y1_2)) / pow(rho2_2, 2);
         dG[0][1][3] = (-(y1_2 * rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / pow(rho2_2, 2);
 
-        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 -
-                                                                                             x1_2 * gamma * (2 * x1_2 * gamma))) /
-                      pow(rho2_2, 2);
+        dG[0][2][1] = (x1_2 * gamma * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x) + bphi * (rho2_2 - x1_2 * gamma * (2 * x1_2 * gamma))) / pow(rho2_2, 2);
         dG[0][2][2] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y) - bphi * (2 * y1_2))) / pow(rho2_2, 2);
         dG[0][2][3] = (x1_2 * gamma * (rho2_2 * (dbphi_dR * R_z + dbphi_dth * th_z))) / pow(rho2_2, 2);
 
@@ -1146,7 +1139,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
               sum2 += betaup[c] * dg[b][c][a];
               sum3 += betaup[c] * dg[a][c][b];
             }
-            K_B[a][b] = -1 / (2. * new_alpha) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+            K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
           }
         }
 

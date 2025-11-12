@@ -713,8 +713,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL alpha02 = alpha0 * alpha0;
         // const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
         // const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
-        const CCTK_REAL dalpha02_dR = (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
-        const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+        // const CCTK_REAL dalpha02_dR = (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
+        // const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
+        const CCTK_REAL dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * pow(rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2, 2));
+        const CCTK_REAL dalpha02_dth = (bh_mass * bh_spin2 * pow(-4 * rr_2 + rBLp, 2) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * pow((bh_spin2 + pow(rBL, 2)) * Sigm(rr_2,\[Theta]) + 2 * bh_mass * bh_spin2 * rBL * sinth2, 2));
 
         const CCTK_REAL gphiphi = fctFF / Sigm * sinth2;
         const CCTK_REAL dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;

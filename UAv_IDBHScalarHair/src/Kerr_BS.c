@@ -701,7 +701,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dpsi4_2_dth = dSigm_dth / rr2_2;
 
         CCTK_REAL detgij;
-        detgij = pow(psi4_2, 3) * (1.0 + rr2_2 * fctGG) * (1.0 + bh_spin2 * rho2_2 * fctHH);
+        detgij = psi4_2 * psi4_2 * psi4_2 * (1.0 + rr2_2 * fctGG) * (1.0 + bh_spin2 * rho2_2 * fctHH);
 
         /*----------------------------------*/
 
@@ -709,7 +709,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         /*----------------------------------*/
         const CCTK_REAL alpha02 = (4.0 * rr_2 - rBLp) * (4.0 * rr_2 - rBLp) * (rBL - rBLm) / (16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm)));
         // const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero;
-        const CCTK_REAL alpha0 = sqrt(alpha02); // primeiro termo para schwarzschild e zero;
+        const CCTK_REAL alpha0 = sqrt(alpha02);
         // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF); nao usar é mais impreciso.
         // const CCTK_REAL alpha02 = alpha0 * alpha0;
         // const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) / pow(fctFF, 2);
@@ -812,7 +812,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         /* Invert the spatial 3x3 block of G into G_inv */
         {
-          const CCTK_REAL inv_det = 1.0 / detgij;
+          // const CCTK_REAL inv_det = 1.0 / detgij;
 
           G_inv[1][1] = (1 + fctGG * ((y1_2 * y1_2) + (z1_2 * z1_2)) + bh_spin2 * fctHH * (x1_2 * x1_2 * gamma2) * (1 + fctGG * (z1_2 * z1_2))) / (psi4_2 * (1 + bh_spin2 * fctHH * (rho2_2)) * (1 + fctGG * (rho2_2 + (z1_2 * z1_2))));
           G_inv[1][2] = (x1_2 * gamma * y1_2 * (bh_spin2 * fctHH + fctGG * (-1 + bh_spin2 * fctHH * (z1_2 * z1_2)))) / (psi4_2 * (1 + bh_spin2 * fctHH * (rho2_2)) * (1 + fctGG * (rho2_2 + (z1_2 * z1_2))));
@@ -978,6 +978,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
 
+        CCTK_REAL Gb00up = gamma2 * bh_v2 * G_inv[1][1] + gamma2 * G_inv[0][0] - 2.0 * gamma2 * bh_v * G_inv[1][0]; // boosted Gb^{00}
+        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up);                                                                  // older version worked better
+
         // Invert the spatial 3x3 block of the boosted metric Gb into Gb_inv
         CCTK_REAL Gb_inv[4][4];
         for (int a = 0; a < 4; ++a)
@@ -992,10 +995,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           const CCTK_REAL Gb23 = Gb[2][3];
           const CCTK_REAL Gb33 = Gb[3][3];
 
-          const CCTK_REAL detGb3 =
-              Gb11 * (Gb22 * Gb33 - Gb23 * Gb23) -
-              Gb12 * (Gb12 * Gb33 - Gb13 * Gb23) +
-              Gb13 * (Gb12 * Gb23 - Gb13 * Gb22);
+          const CCTK_REAL detGb3 = alpha02*(-Gb00up)*detgij; // Determinant of boosted 3-metric
 
           if (fabs(detGb3) < SMALL)
             CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
@@ -1044,9 +1044,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("betaup[1]", betaup[1]);
         check_nan_or_inf("betaup[2]", betaup[2]);
         check_nan_or_inf("betaup[3]", betaup[3]);
-
-        CCTK_REAL Gb00up = gamma2 * bh_v2 * G_inv[1][1] + gamma2 * G_inv[0][0] - 2.0 * gamma2 * bh_v * G_inv[1][0]; // boosted Gb^{00}
-        CCTK_REAL new_alpha = 1.0 / sqrt(-Gb00up); //older version worked better
 
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero
@@ -1110,7 +1107,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
               sum2 += betaup[c] * dg[b][c][a];
               sum3 += betaup[c] * dg[a][c][b];
             }
-            K_B[a][b] = -0.5 *sqrt(-Gb00up) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+            K_B[a][b] = -0.5 * sqrt(-Gb00up) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
           }
         }
 

@@ -1110,7 +1110,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
               sum2 += betaup[c] * dg[b][c][a];
               sum3 += betaup[c] * dg[a][c][b];
             }
-            K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+            K_B[a][b] = -0.5 *sqrt(-Gb00up) * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
           }
         }
 

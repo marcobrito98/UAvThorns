@@ -1005,6 +1005,20 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         dG[3][0][2] = dG[0][3][2];
         dG[3][0][3] = dG[0][3][3];
 
+        /* NaN/Inf checks for dG tensor */
+        for (int aa = 0; aa < 4; ++aa)
+        {
+          for (int bb = 0; bb < 4; ++bb)
+          {
+            for (int cc = 0; cc < 4; ++cc)
+            {
+              char name[32];
+              snprintf(name, sizeof(name), "dG[%d][%d][%d]", aa, bb, cc);
+              check_nan_or_inf(name, dG[aa][bb][cc]);
+            }
+          }
+        }
+
         CCTK_REAL invLambda[4][4];
         for (int a = 0; a < 4; ++a)
         {

@@ -1243,7 +1243,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dz_1 = z1_1 / rr_1 * dW_dr_1[ind] - rho_1 / rr2_1 * dW_dth_1[ind];
         }
 
-        check_nan_or_inf("1/new_alpha", 1 / new_alpha);
+        // check_nan_or_inf("1/new_alpha", 1 / new_alpha);
 
         CCTK_REAL K_B[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a)

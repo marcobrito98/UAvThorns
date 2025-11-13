@@ -1101,31 +1101,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
             Gb3_inv[a][b] = 0.0;
 
         {
-          // const CCTK_REAL Gb11 = Gb[1][1];
-          // const CCTK_REAL Gb12 = Gb[1][2];
-          // const CCTK_REAL Gb13 = Gb[1][3];
-          // const CCTK_REAL Gb22 = Gb[2][2];
-          // const CCTK_REAL Gb23 = Gb[2][3];
-          // const CCTK_REAL Gb33 = Gb[3][3];
+         
 
           // const CCTK_REAL detGb3 = alpha02 * (-Gb00up) * detgij; // Determinant of boosted 3-metric
 
-          // if (fabs(detGb3) < SMALL)
-          //   CCTK_WARN(0, "Determinant of boosted 3-metric is too small to invert.");
-
-          // const CCTK_REAL inv_detGb3 = 1.0 / detGb3;
-
-          // Gb3_inv[1][1] = (Gb22 * Gb33 - Gb23 * Gb23) * inv_detGb3;
-          // Gb3_inv[1][2] = (Gb13 * Gb23 - Gb12 * Gb33) * inv_detGb3;
-          // Gb3_inv[1][3] = (Gb12 * Gb23 - Gb13 * Gb22) * inv_detGb3;
-
-          // Gb3_inv[2][1] = Gb3_inv[1][2];
-          // Gb3_inv[2][2] = (Gb11 * Gb33 - Gb13 * Gb13) * inv_detGb3;
-          // Gb3_inv[2][3] = (Gb13 * Gb12 - Gb11 * Gb23) * inv_detGb3;
-
-          // Gb3_inv[3][1] = Gb3_inv[1][3];
-          // Gb3_inv[3][2] = Gb3_inv[2][3];
-          // Gb3_inv[3][3] = (Gb11 * Gb22 - Gb12 * Gb12) * inv_detGb3;
 
           // Build symmetric 3x3 block M from Gb
           CCTK_REAL M[4][4] = {{0}};
@@ -1184,7 +1163,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
         CCTK_REAL beta[4];
-        beta[0] = 0.0;
+        beta[0] = NAN;
         beta[1] = Gb[1][0];
         beta[2] = Gb[2][0];
         beta[3] = Gb[3][0];
@@ -1196,7 +1175,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         betaup[3] = Gb3_inv[3][1] * beta[1] + Gb3_inv[3][2] * beta[2] + Gb3_inv[3][3] * beta[3];
 
         /* Added NaN/Inf checks for beta and betaup */
-        check_nan_or_inf("beta[0]", beta[0]);
+        // check_nan_or_inf("beta[0]", beta[0]);
         check_nan_or_inf("beta[1]", beta[1]);
         check_nan_or_inf("beta[2]", beta[2]);
         check_nan_or_inf("beta[3]", beta[3]);

@@ -729,8 +729,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         const CCTK_REAL R_y = y1_2 / rr_2;
         const CCTK_REAL R_z = z1_2 / rr_2;
 
-        const CCTK_REAL th_x = x1_2*gamma*z1_2/(rho_2*rr2_2); //costh * R_x / rho_2;
-        const CCTK_REAL th_y = y1_2*z1_2/(rho_2*rr2_2); //costh * R_y / rho_2;
+        const CCTK_REAL th_x = costh * R_x / rho_2;
+        const CCTK_REAL th_y = costh * R_y / rho_2;
         const CCTK_REAL th_z = -rho_2 / rr2_2;
 
         // const CCTK_REAL x_R = x1_2 * gamma / rr_2;

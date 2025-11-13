@@ -927,7 +927,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           {
             for (int c = 0; c < 4; ++c)
             {
-              dG[a][b][c] = 0.0;
+              if (c == 0)
+              {
+                dG[a][b][c] = 0.0; // we do not compute time derivatives of the metric
+              }
+              else
+              {
+                dG[a][b][c] = NAN;
+              }
             }
           }
         }
@@ -1118,7 +1125,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           M[3][2] = M[2][3];
           M[3][3] = Gb[3][3];
 
-          if (!invert_spd3x3(M, Gb3_inv)) {
+          if (!invert_spd3x3(M, Gb3_inv))
+          {
             CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
                        "Gb_spatial not SPD or ill-conditioned at (%d,%d,%d).", i, j, k);
           }
@@ -1133,7 +1141,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
           // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
           {
-            const CCTK_REAL tol = SMALL; // funcionou ate 10^-8
+            const CCTK_REAL tol = SMALL;
             for (int i3 = 1; i3 <= 3; ++i3)
             {
               for (int j3 = 1; j3 <= 3; ++j3)

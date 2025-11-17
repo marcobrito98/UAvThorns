@@ -1246,7 +1246,21 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3]);
 
-        check_nan_or_inf("1/new_alpha", 1 / new_alpha);
+        //   for (int aa = 0; aa < 4; ++aa)
+        // {
+        //   for (int bb = 0; bb < 4; ++bb)
+        //   {
+        //     for (int cc = 0; cc < 4; ++cc)
+        //     {
+        //       char name[32];
+        //       snprintf(name, sizeof(name), "dG[%d][%d][%d]", aa, bb, cc);
+        //       check_nan_or_inf(name, dG[aa][bb][cc]);
+        //     }
+        //   }
+        // }
+
+
+        check_nan_or_inf("new_alpha", new_alpha);
 
         CCTK_REAL K_B[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a)

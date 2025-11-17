@@ -1244,7 +1244,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
 
-        CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3]);
+        // CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3]);
 
         check_nan_or_inf("1/new_alpha", 1 / new_alpha);
 

@@ -1251,7 +1251,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           if (new_alpha2 < 0)
           {
             CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "Lapse too small (%g) at (%d,%d,%d). Setting to SMALL (%g).", (double)new_alpha, i, j, k, (double)SMALL);
+                       "Lapse (%g) at (%d,%d,%d). Setting to SMALL (%g).", (double)new_alpha2, i, j, k, (double)SMALL);
             break;
           }
         }

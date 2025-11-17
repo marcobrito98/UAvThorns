@@ -1251,7 +1251,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           if (new_alpha2 < 0)
           {
             CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "Lapse (%g) at (%d,%d,%d).", (double)new_alpha2, i, j, k);
+                       "Lapse (%g) at (%lf,%lf,%lf).", (double)new_alpha2, x1_2, y1_2, z1_2);
             break;
           }
         }

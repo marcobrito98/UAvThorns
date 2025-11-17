@@ -1243,21 +1243,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
           dW_dz_1 = z1_1 / rr_1 * dW_dr_1[ind] - rho_1 / rr2_1 * dW_dth_1[ind];
         }
 
+        CCTK_REAL new_alpha2 = -Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3]
+        CCTK_REAL new_alpha = sqrt(new_alpha2);
 
-        CCTK_REAL new_alpha = sqrt(-Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3]);
-
-        //   for (int aa = 0; aa < 4; ++aa)
-        // {
-        //   for (int bb = 0; bb < 4; ++bb)
-        //   {
-        //     for (int cc = 0; cc < 4; ++cc)
-        //     {
-        //       char name[32];
-        //       snprintf(name, sizeof(name), "dG[%d][%d][%d]", aa, bb, cc);
-        //       check_nan_or_inf(name, dG[aa][bb][cc]);
-        //     }
-        //   }
-        // }
+    
+        {
+          char name[32];
+          snprintf(name, sizeof(name), "at (x,y,z)=[%d][%d][%d]", x1_2, y1_2, z1_2);
+          check_nan_or_inf(name, new_alpha2);
+        }
+      
 
 
         check_nan_or_inf("new_alpha", new_alpha);

@@ -1249,7 +1249,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
     
         {
           char name[32];
-          snprintf(name, sizeof(name), "at (x,y,z)=[%d][%d][%d]", x1_2, y1_2, z1_2);
+          snprintf(name, sizeof(name), "at (x,y,z)=(%lf,%lf,%lf)", x1_2, y1_2, z1_2);
           check_nan_or_inf(name, new_alpha);
         }
       

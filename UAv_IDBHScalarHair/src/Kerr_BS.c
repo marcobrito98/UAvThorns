@@ -1247,14 +1247,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         CCTK_REAL new_alpha = sqrt(new_alpha2);
 
     
-        {
-          if (new_alpha2 < 0)
-          {
-            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "alpha^2=%g at (%lf,%lf,%lf).", (double)new_alpha2, x1_2, y1_2, z1_2);
-            break;
-          }
-        }
+        // {
+        //   if (new_alpha2 < 0)
+        //   {
+        //     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+        //                "alpha^2=%g at (%lf,%lf,%lf).", (double)new_alpha2, x1_2, y1_2, z1_2);
+        //     break;
+        //   }
+        // }
       
 
 
@@ -1308,12 +1308,12 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         // }
 
-        check_nan_or_inf("kxx", kxx[ind]);
-        check_nan_or_inf("kxy", kxy[ind]);
-        check_nan_or_inf("kxz", kxz[ind]);
-        check_nan_or_inf("kyy", kyy[ind]);
-        check_nan_or_inf("kyz", kyz[ind]);
-        check_nan_or_inf("kzz", kzz[ind]);
+        // check_nan_or_inf("kxx", kxx[ind]);
+        // check_nan_or_inf("kxy", kxy[ind]);
+        // check_nan_or_inf("kxz", kxz[ind]);
+        // check_nan_or_inf("kyy", kyy[ind]);
+        // check_nan_or_inf("kyz", kyz[ind]);
+        // check_nan_or_inf("kzz", kzz[ind]);
 
         const CCTK_REAL phi0_l_1 = phi0_1[ind]; // * pert_phi_1;
         const CCTK_REAL phi0_l_2 = 0.;

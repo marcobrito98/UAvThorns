@@ -1184,7 +1184,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
         CCTK_REAL beta[4];
-        beta[0] = 0.0;
+        beta[0] = NAN;
         beta[1] = Gb[1][0];
         beta[2] = Gb[2][0];
         beta[3] = Gb[3][0];

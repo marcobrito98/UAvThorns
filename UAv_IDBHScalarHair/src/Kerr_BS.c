@@ -1244,17 +1244,19 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
         }
 
         CCTK_REAL new_alpha2 = -Gb[0][0] + betaup[1]*beta[1] + betaup[2]*beta[2] + betaup[3]*beta[3];
+        if (new_alpha2 < SMALL)
+          new_alpha2 = SMALL;
         CCTK_REAL new_alpha = sqrt(new_alpha2);
 
     
-        {
-          if (new_alpha2 < 0)
-          {
-            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "alpha^2=%g at (%lf,%lf,%lf).", (double)new_alpha2, x1_2, y1_2, z1_2);
-            break;
-          }
-        }
+        // {
+        //   if (new_alpha2 < 0)
+        //   {
+        //     CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+        //                "alpha^2=%g at (%lf,%lf,%lf).", (double)new_alpha2, x1_2, y1_2, z1_2);
+        //     break;
+        //   }
+        // }
       
 
 

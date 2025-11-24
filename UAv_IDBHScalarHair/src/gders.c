@@ -24,7 +24,7 @@ void UAv_ComputeMetricDerivsAtPoint(const UAv_EvalPoint *P,
   if (!P || !D1)
     return;
 
-  // EXAMPLE: G_00 = -alpha02
+
   D1->dG[0][0][1] =
       -(P->dalpha02_dR * P->R_x + P->dalpha02_dth * P->th_x) +
       P->bphiup * (P->dbphi_dR * P->R_x + P->dbphi_dth * P->th_x) +

@@ -662,7 +662,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         const CCTK_INT ind = CCTK_GFINDEX3D(cctkGH, i, j, k);
 
-        // Boson Star A
+        // Boson Star A ignorar por agora
 
         const CCTK_REAL x1_1 = x[ind] - x0;
         const CCTK_REAL y1_1 = y[ind] - y0;
@@ -697,6 +697,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         const CCTK_REAL bh_v2 = bh_v * bh_v;
         const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
         const CCTK_REAL gamma = sqrt(gamma2);
+
+        // All quantities evaluated at point (x*gamma,y,z)
 
         CCTK_REAL rr2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2 + z1_2 * z1_2;
         if (rr2_2 < pow(eps_r, 2)) {
@@ -747,7 +749,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         dSigm_dth = -2 * bh_spin2 * costh * sinth;
 
         fctFF = (rBL2 + bh_spin2) * (rBL2 + bh_spin2) -
-                Delt * bh_spin2 * sinth2; // A no artigo
+                Delt * bh_spin2 * sinth2; // "A" no artigo
         dfctFF_dR =
             4 * rBL * (bh_spin2 + rBL2) * drBLdR - bh_spin2 * sinth2 * dDelt_dR;
         dfctFF_dth = -(bh_spin2 * Delt * 2 * costh * sinth);
@@ -795,14 +797,6 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
                       (1.0 +
                        2.0 * bh_mass * rBL * sinth2 /
                            Sigm))); // primeiro termo para schwarzschild e zero;
-        // if (fabs(rBL-rBLp) < 1e-7)
-        // {
-        //   // near the horizon
-        //   alpha0 =(2*sqrt(-rBLm + rBLp))/sqrt(rBLp*(bh_spin2 + pow(rBLp,2) +
-        //   (2*bh_spin2*bh_mass*rBLp*sinth2)/(rBLp*rBLp + bh_spin2*costh2))) *
-        //   (rr_2 - 0.25*rBLp);
-        // }
-
         const CCTK_REAL alpha02 = alpha0 * alpha0;
         // const CCTK_REAL alpha0 = sqrt(alpha02);
         // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF);
@@ -1067,6 +1061,17 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         dG[3][0][1] = dG[0][3][1];
         dG[3][0][2] = dG[0][3][2];
         dG[3][0][3] = dG[0][3][3];
+
+        // Near horizon quantities
+
+        // if (fabs(rBL-rBLp) < 1e-7) // near the horizon
+        // {
+        //   // near the horizon
+        //   alpha0 =(2*sqrt(-rBLm + rBLp))/sqrt(rBLp*(bh_spin2 + pow(rBLp,2) +
+        //   (2*bh_spin2*bh_mass*rBLp*sinth2)/(rBLp*rBLp + bh_spin2*costh2))) *
+        //   (rr_2 - 0.25*rBLp);
+        // rest of all the other quantities
+        // }
 
         /* NaN/Inf checks for dG tensor */
         for (int aa = 0; aa < 4; ++aa) {

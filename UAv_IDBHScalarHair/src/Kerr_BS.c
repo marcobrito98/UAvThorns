@@ -801,6 +801,100 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         
 
         //2nd derivatives
+        /* 2nd derivatives (Cartesian coordinates) of auxiliary quantities.
+           Skeleton for user to fill in.
+           Notation suggestion:
+             d2<name>_dx2  = ∂^2(<name>)/∂x^2
+             d2<name>_dxy  = ∂^2(<name>)/∂x∂y
+             etc.
+
+           Chain rule pattern for a scalar F(R,th):
+             Fx  = F_R * R_x + F_th * th_x
+             Fxx = F_RR * R_x*R_x + 2*F_Rth * R_x*th_x + F_thth * th_x*th_x
+             + F_R * R_xx + F_th * th_xx
+             (analogous for mixed and other second derivatives)
+
+           Provide (and fill) second derivatives of R and theta if needed:
+             R_xx, R_xy, R_xz, R_yy, R_yz, R_zz
+             th_xx, th_xy, th_xz, th_yy, th_yz, th_zz
+
+           Below everything initialized to 0.0 for later replacement.
+        */
+
+        /* Coordinate second derivatives (fill if needed) */
+        CCTK_REAL R_xx = y1_2*z1_2/(rr2_2*rr_2), R_xy = -y1_2*x1_2*gamma/(rr2_2*rr_2), R_xz = - x1_2*gamma*z1_2/(rr2_2*rr_2);
+        CCTK_REAL R_yy = x1_2*gamma*z1_2/(rr2_2*rr_2), R_yz = -y1_2*z1_2/(rr2_2*rr_2), R_zz = rho2_2/(rr2_2*rr_2);
+        CCTK_REAL th_xx = z1_2*(-2*pow(x1_2*gamma,4)-pow(x1_2*gamma*y1_2,2)+pow(y1_2,4)+pow(y1_2*z1_2,2))/(rho3_2*rr2_2*rr2_2), th_xy = -x1_2*gamma*y1_2*z1_2*(3*rho2_2+z1_2*z1_2)/(rho3_2*rr2_2*rr2_2), th_xz = x1_2*gamma*(rho2_2-z1_2*z1_2)/(rho3_2*rr2_2*rr2_2);
+        CCTK_REAL th_yy = z1_2*(pow(x1_2*gamma,4)-2*pow(y1_2,4)+x1_2*(-y1_2*y1_2+z1_2*z1_2))/(rho3_2*rr2_2*rr2_2), th_yz = y1_2*(rho2_2-z1_2*z1_2)/(rho3_2*rr2_2*rr2_2), th_zz = 2*z1_2*rho_2/rr2_2;
+
+        /* Second derivatives in (R,theta) space (to be provided) */
+        const CCTK_REAL d2rBL_dR2 = rBLp*rBLp/(8*rr2_2*rr_2), d2rBL_dRth = 0.0, d2rBL_dth2 = 0.0;
+        const CCTK_REAL d2Delt_dR2 = 2*(pow(drBLdR,2) + (-bh_mass + \
+rBL)*d2rBL_dR2), d2Delt_dRth = 0.0, d2Delt_dth2 = 0.0;
+        const CCTK_REAL d2Sigm_dR2 = 2*(pow(drBLdR,2) + rBL*d2rBL_dR2), d2Sigm_dRth = 0.0, d2Sigm_dth2 = -2*bh_spin2*(costh2 - sinth2);
+        const CCTK_REAL d2fctFF_dR2 = 4*(bh_spin2 + 3*rBL2)*pow(drBLdR,2) - bh_spin2*sinth2*d2Delt_dR2 + 4*rBL*(bh_spin2 + rBL2)*d2rBL_dR2, d2fctFF_dRth =-2*bh_spin2*costh*sinth*dDelt_dR, d2fctFF_dth2 = -2*bh_spin2*(costh2-sinth2)*Delt;
+        const CCTK_REAL d2fctGG_dR2 = (rBLm*(-6*pow(rBLm - rBL,2) + 4*rr_2*(rBLm - rBL)*drBLdR - rr2_2*(2*pow(drBLdR,2) + (rBLm - rBL)*d2rBL_dR2)))/(pow(rr_2,4)*pow(rBLm - rBL,3)), d2fctGG_dRth = 0.0, d2fctGG_dth2 = 0.0;
+        const CCTK_REAL d2fctHH_dR2 = (2*(Sigm*(3*Sigm2 + bh_mass*rr_2*Sigm*(-4*drBLdR + rr_2*Derr_2ivative(2)(rBL)(rr_2)) - 2*bh_mass*pow(rr_2,2)*drBLdR*dSigm_dR) + bh_mass*rBL*(6*Sigm2 + 2*rr2_2*pow(dSigm_dR,2) + rr_2*Sigm*(4*dSigm_dR - rr_2*d2Sigm_dR2))))/(pow(rr_2,4)*pow(Sigm,3)), d2fctHH_dRth = (2*bh_mass*dSigm_dth*(-(R*Sigm*drBLdR) + 2*rBL*(Sigm + rr_2*dSigm_dR)) - 2*bh_mass*rr_2*rBL*Sigm*d2Sigm_dRth)/(pow(rr_2,3)*pow(Sigm,3)), d2fctHH_dth2 = (-2*bh_mass*rBL*(-2*pow(dSigm_dth,2) + Sigm*d2Sigm_dR2))/(rr2_2*pow(Sigm,3));
+        const CCTK_REAL d2psi4_2_dR2 = (6*Sigm - 4*rr_2*dSigm_dR + rr2_2*d2Sigm_dR2)/pow(rr_2,4), d2psi4_2_dRth = (-2*dSigm_dth + rr_2*d2Sigm_dRth)/pow(rr_2,3), d2psi4_2_dth2 = d2Sigm_dth2/rr2_2;
+        const CCTK_REAL d2alpha02_dR2 = 0.0, d2alpha02_dRth = 0.0, d2alpha02_dth2 = 0.0;
+        const CCTK_REAL d2gphiphi_dR2 = 0.0, d2gphiphi_dRth = 0.0, d2gphiphi_dth2 = 0.0;
+        const CCTK_REAL d2bphiup_dR2 = 0.0, d2bphiup_dRth = 0.0, d2bphiup_dth2 = 0.0;
+        const CCTK_REAL d2bphi_dR2 = 0.0, d2bphi_dRth = 0.0, d2bphi_dth2 = 0.0;
+
+        /* Cartesian second derivatives (fill using chain rule) */
+        /* rBL */
+        CCTK_REAL d2rBL_dx2 = 0.0, d2rBL_dy2 = 0.0, d2rBL_dz2 = 0.0;
+        CCTK_REAL d2rBL_dxy = 0.0, d2rBL_dxz = 0.0, d2rBL_dyz = 0.0;
+
+        /* Delt */
+        CCTK_REAL d2Delt_dx2 = 0.0, d2Delt_dy2 = 0.0, d2Delt_dz2 = 0.0;
+        CCTK_REAL d2Delt_dxy = 0.0, d2Delt_dxz = 0.0, d2Delt_dyz = 0.0;
+
+        /* Sigm */
+        CCTK_REAL d2Sigm_dx2 = 0.0, d2Sigm_dy2 = 0.0, d2Sigm_dz2 = 0.0;
+        CCTK_REAL d2Sigm_dxy = 0.0, d2Sigm_dxz = 0.0, d2Sigm_dyz = 0.0;
+
+        /* fctFF */
+        CCTK_REAL d2fctFF_dx2 = 0.0, d2fctFF_dy2 = 0.0, d2fctFF_dz2 = 0.0;
+        CCTK_REAL d2fctFF_dxy = 0.0, d2fctFF_dxz = 0.0, d2fctFF_dyz = 0.0;
+
+        /* fctGG */
+        CCTK_REAL d2fctGG_dx2 = 0.0, d2fctGG_dy2 = 0.0, d2fctGG_dz2 = 0.0;
+        CCTK_REAL d2fctGG_dxy = 0.0, d2fctGG_dxz = 0.0, d2fctGG_dyz = 0.0;
+
+        /* fctHH */
+        CCTK_REAL d2fctHH_dx2 = 0.0, d2fctHH_dy2 = 0.0, d2fctHH_dz2 = 0.0;
+        CCTK_REAL d2fctHH_dxy = 0.0, d2fctHH_dxz = 0.0, d2fctHH_dyz = 0.0;
+
+        /* psi4_2 */
+        CCTK_REAL d2psi4_2_dx2 = 0.0, d2psi4_2_dy2 = 0.0, d2psi4_2_dz2 = 0.0;
+        CCTK_REAL d2psi4_2_dxy = 0.0, d2psi4_2_dxz = 0.0, d2psi4_2_dyz = 0.0;
+
+        /* alpha02 */
+        CCTK_REAL d2alpha02_dx2 = 0.0, d2alpha02_dy2 = 0.0, d2alpha02_dz2 = 0.0;
+        CCTK_REAL d2alpha02_dxy = 0.0, d2alpha02_dxz = 0.0, d2alpha02_dyz = 0.0;
+
+        /* gphiphi */
+        CCTK_REAL d2gphiphi_dx2 = 0.0, d2gphiphi_dy2 = 0.0, d2gphiphi_dz2 = 0.0;
+        CCTK_REAL d2gphiphi_dxy = 0.0, d2gphiphi_dxz = 0.0, d2gphiphi_dyz = 0.0;
+
+        /* bphiup */
+        CCTK_REAL d2bphiup_dx2 = 0.0, d2bphiup_dy2 = 0.0, d2bphiup_dz2 = 0.0;
+        CCTK_REAL d2bphiup_dxy = 0.0, d2bphiup_dxz = 0.0, d2bphiup_dyz = 0.0;
+
+        /* bphi */
+        CCTK_REAL d2bphi_dx2 = 0.0, d2bphi_dy2 = 0.0, d2bphi_dz2 = 0.0;
+        CCTK_REAL d2bphi_dxy = 0.0, d2bphi_dxz = 0.0, d2bphi_dyz = 0.0;
+
+        /* Example chain rule template (replace <F> with variable, and supply needed F_RR etc):
+           d2<F>_dx2 =
+             d2<F>_dR2 * R_x*R_x +
+             2.0 * d2<F>_dRth * R_x * th_x +
+             d2<F>_dth2 * th_x*th_x +
+             d<F>_dR * R_xx +
+             d<F>_dth * th_xx;
+           Similar for mixed and y,z derivatives.
+        */
 
 
         

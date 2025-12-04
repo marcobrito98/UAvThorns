@@ -1362,24 +1362,1165 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-        kxx[ind] = K_B[1][1];
-        kxy[ind] = K_B[1][2];
-        kxz[ind] = K_B[1][3];
-        kyy[ind] = K_B[2][2];
-        kyz[ind] = K_B[2][3];
-        kzz[ind] = K_B[3][3];
+        kxx[ind] = -0.5*(gamma2*(-2*gamma*(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))*((1 + \
+bh_v2)*y1_2*bphi*2.0*x1_2*gamma - \
+bh_v*pow(rho2_2,2)*(dalpha02_dR*R_x+dalpha02_dth*th_x) - (1 + \
+bh_v2)*y1_2*rho2_2*(dbphi_dR*R_x+dbphi_dth*th_x) + \
+bh_v*bphiup*pow(rho2_2,2)*(dbphi_dR*R_x+dbphi_dth*th_x) + \
+bh_v*bphi*pow(rho2_2,2)*(dbphiup_dR*R_x+dbphiup_dth*th_x) + \
+bh_v*psi4_2*pow(rho2_2,2)*(2*x1_2*fctGG*gamma + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_x) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_x+dfctHH_dth*th_x)) + bh_v*(1 \
++ bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x)) + \
+gamma*(bh_v*(alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + bphi*(y1_2 + \
+bh_v2*y1_2 - bh_v*bphiup*rho2_2))*(-((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*rho2_2*(bh_v2*pow(rho2_2,2)*(dalpha02_dR*R_x+dalpha02_\
+dth*th_x) + bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_x+dbphi_dth*th_x) - \
+bh_v*bphi*(2*y1_2*2.0*x1_2*gamma + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_x+dbphiup_dth*th_x)) - \
+psi4_2*pow(rho2_2,2)*(2*x1_2*fctGG*gamma + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_x) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_x+dfctHH_dth*th_x)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x))) + \
+x1_2*z1_2*fctGG*gamma*rho2_2*(bh_v*y1_2*bphi - (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(2*bh_v*y1_2*(dbphi_\
+dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(bh_v2*(dalpha02_dR*R_z+dalpha02_dth*th_z) - \
+bh_v2*bphiup*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+pow(x1_2,2)*gamma2*psi4_2*(dfctGG_dR*R_z) - \
+bh_spin2*pow(y1_2,2)*psi4_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*pow(y1_2,2)*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+2*x1_2*z1_2*gamma*psi4_2*(dfctGG_dR*R_x)) + \
+fctGG*rho2_2*(2*z1_2*psi4_2 + \
+x1_2*gamma*(-(x1_2*gamma*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z)) + 2*z1_2*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))) - \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(2*rho2_2*(bh_v*\
+bphi + y1_2*(fctGG - bh_spin2*fctHH)*psi4_2*rho2_2) + \
+bh_v2*pow(rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + \
+bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y) - 2*x1_2*gamma*(bh_v*bphi*2.0*x1_2*gamma - \
+rho2_2*(bh_v*(dbphi_dR*R_x+dbphi_dth*th_x) + \
+y1_2*rho2_2*(psi4_2*((dfctGG_dR*R_x) - \
+bh_spin2*(dfctHH_dR*R_x+dfctHH_dth*th_x)) + (fctGG - \
+bh_spin2*fctHH)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))) + \
+x1_2*gamma2*(bphi + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2)*(-(x1_2*gamma*(bphi*(bh_v \
++ bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 \
+- bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(bh_v2*pow(\
+rho2_2,2)*(dalpha02_dR*R_x+dalpha02_dth*th_x) + bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_x+dbphi_dth*th_x) - \
+bh_v*bphi*(2*y1_2*2.0*x1_2*gamma + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_x+dbphiup_dth*th_x)) - \
+psi4_2*pow(rho2_2,2)*(2*x1_2*fctGG*gamma + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_x) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_x+dfctHH_dth*th_x)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x))) + \
+z1_2*fctGG*rho2_2*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,\
+z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(2*bh_v*y1_2*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(bh_v2*(dalpha02_dR*R_z+dalpha02_dth*th_z) - \
+bh_v2*bphiup*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+pow(x1_2,2)*gamma2*psi4_2*(dfctGG_dR*R_z) - \
+bh_spin2*pow(y1_2,2)*psi4_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*pow(y1_2,2)*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+2*x1_2*z1_2*gamma*psi4_2*(dfctGG_dR*R_x)) + \
+fctGG*rho2_2*(2*z1_2*psi4_2 + \
+x1_2*gamma*(-(x1_2*gamma*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z)) + 2*z1_2*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))) - \
+((-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+pow(z1_2,2)*fctGG)) + (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+fctGG*(pow(z1_2,2) + bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(2*rho2_2*(bh_v*bphi + y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2) + \
+bh_v2*pow(rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + \
+bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y) - 2*x1_2*gamma*(bh_v*bphi*2.0*x1_2*gamma - \
+rho2_2*(bh_v*(dbphi_dR*R_x+dbphi_dth*th_x) + \
+y1_2*rho2_2*(psi4_2*((dfctGG_dR*R_x) - \
+bh_spin2*(dfctHH_dR*R_x+dfctHH_dth*th_x)) + (fctGG - \
+bh_spin2*fctHH)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))) + \
+bh_v*x1_2*z1_2*fctGG*rho2_2*(x1_2*z1_2*fctGG*pow(gamma,3)*psi4_\
+2*(bh_v*y1_2*bphi - (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(bh_v2*pow(\
+rho2_2,2)*(dalpha02_dR*R_x+dalpha02_dth*th_x) + bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_x+dbphi_dth*th_x) - \
+bh_v*bphi*(2*y1_2*2.0*x1_2*gamma + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_x+dbphiup_dth*th_x)) - \
+psi4_2*pow(rho2_2,2)*(2*x1_2*fctGG*gamma + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_x) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_x+dfctHH_dth*th_x)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x)) + (pow(x1_2,2)*pow(gamma,4)*pow(bh_v*bphi + \
+y1_2*(fctGG - bh_spin2*fctHH)*psi4_2*rho2_2,2) + \
+gamma2*(1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*rho2_2*((\
+bh_v2*alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + \
+bh_v*bphi*(2*y1_2 - \
+bh_v*bphiup*rho2_2)))*(2*bh_v*y1_2*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(bh_v2*(dalpha02_dR*R_z+dalpha02_dth*th_z) - \
+bh_v2*bphiup*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+pow(x1_2,2)*gamma2*psi4_2*(dfctGG_dR*R_z) - \
+bh_spin2*pow(y1_2,2)*psi4_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*pow(y1_2,2)*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+2*x1_2*z1_2*gamma*psi4_2*(dfctGG_dR*R_x)) + \
+fctGG*rho2_2*(2*z1_2*psi4_2 + \
+x1_2*gamma*(-(x1_2*gamma*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z)) + 2*z1_2*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))) + \
+z1_2*fctGG*gamma2*psi4_2*(y1_2*(-(bh_v2*alpha02(x1_\
+2*gamma,y1_2,z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(2*rho2_2*(bh_v*bphi + y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2) + \
+bh_v2*pow(rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + \
+bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y) - 2*x1_2*gamma*(bh_v*bphi*2.0*x1_2*gamma - \
+rho2_2*(bh_v*(dbphi_dR*R_x+dbphi_dth*th_x) + \
+y1_2*rho2_2*(psi4_2*((dfctGG_dR*R_x) - \
+bh_spin2*(dfctHH_dR*R_x+dfctHH_dth*th_x)) + (fctGG - \
+bh_spin2*fctHH)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))))))))/(pow(\
+rho2_2,2)*Sqrr_2t(-((pow(-1 + bh_v2,2)*gamma2*(1 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2))))*(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))));
+        kxy[ind] = (gamma*(gamma*rho2_2*(bphi + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2) - gamma*((1 + \
+bh_v2)*bphi*rho2_2 - (1 + bh_v2)*y1_2*bphi*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + (1 + \
+bh_v2)*y1_2*rho2_2*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphiup*pow(rho2_2,2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y) - \
+bh_v*psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - bh_v*(1 \
++ bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + \
+(gamma*rho2_2*(bh_v*(alpha02(x1_2*gamma,y1_2,z1_2) - (1 \
++ bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + bphi*(y1_2 + \
+bh_v2*y1_2 - bh_v*bphiup*rho2_2))*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*(bh_v2*pow(rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) \
++ bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + x1_2*gamma*rho2_2*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(psi4_2*(2*pow(bh_\
+spin,2)*x1_2*fctHH*gamma + pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x)) + x1_2*z1_2*fctGG*gamma*(bh_v*y1_2*bphi - \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(x1_2*gamma*(\
+bh_v*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+(bh_v*x1_2*z1_2*fctGG*rho2_2*(x1_2*z1_2*fctGG*pow(gamma,3)*\
+psi4_2*(bh_v*y1_2*bphi - (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(bh_v2*pow(\
+rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + \
+z1_2*fctGG*gamma2*psi4_2*pow(rho2_2,2)*(y1_2*(-(pow(bh_v,\
+2)*alpha02(x1_2*gamma,y1_2,z1_2)) + (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(psi4_2*(2*bh_spin2*x1_2*fctHH*gammaV(bh_\
+v) + pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x)) - (pow(x1_2,2)*pow(gamma,4)*pow(bh_v*bphi + \
+y1_2*(fctGG - bh_spin2*fctHH)*psi4_2*rho2_2,2) + \
+gamma2*(1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*rho2_2*((\
+bh_v2*alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + \
+bh_v*bphi*(2*y1_2 - \
+bh_v*bphiup*rho2_2)))*(x1_2*gamma*(bh_v*(dbphi_dR*R_z+dbphi_\
+dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) + \
+(x1_2*gamma2*(bphi + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2)*(x1_2*gamma*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(bh_v2*pow(\
+rho2_2,2)*(dalpha02_dR*R_y+dalpha02_dth*th_y) + bh_v*rho2_2*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_y+dbphi_dth*th_y) - \
+bh_v*bphi*(-2*rho2_2 + 2*y1_2*2.0*y1_2 + \
+bh_v*pow(rho2_2,2)*(dbphiup_dR*R_y+dbphiup_dth*th_y)) - \
+psi4_2*pow(rho2_2,2)*(2*bh_spin2*y1_2*fctHH + \
+pow(x1_2,2)*gamma2*(dfctGG_dR*R_y) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_y+dfctHH_dth*th_y)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + \
+pow(rho2_2,2)*((-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 \
++ pow(z1_2,2)*fctGG)) + (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+fctGG*(pow(z1_2,2) + bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(psi4_2*(2*bh_spin2*x1_2*fctHH*gamma\
+ + pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_x+\
+dpsi4_2_dth*th_x)) + \
+z1_2*fctGG*rho2_2*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,\
+z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(x1_2*gamma*(bh_v*(dbphi_dR*R_z+dbphi_\
+dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+x1_2*gamma2*(bphi*2.0*x1_2*gamma - \
+rho2_2*((dbphi_dR*R_x+dbphi_dth*th_x) + \
+bh_v*y1_2*rho2_2*(psi4_2*((dfctGG_dR*R_x) - \
+bh_spin2*(dfctHH_dR*R_x+dfctHH_dth*th_x)) + (fctGG - \
+bh_spin2*fctHH)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))))))/(2.*pow(\
+rho2_2,2)*Sqrr_2t(-((pow(-1 + bh_v2,2)*gamma2*(1 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2)))));
+        kxz[ind] = (gamma*(gamma*(2*bh_v*z1_2*fctGG*psi4_2 + \
+2*bh_v*x1_2*z1_2*gamma*psi4_2*(dfctGG_dR*R_x) + \
+2*bh_v*x1_2*z1_2*fctGG*gamma*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x) \
+- ((-(bh_v*alpha02(x1_2*gamma,y1_2,z1_2)) + bh_v*bphi*bphiup + \
+bh_v*(1 + bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2 - ((1 + \
+bh_v2)*y1_2*bphi)/rho2_2)*rho2_2*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*rho2_2*(-(bh_v2*(dalpha02_dR*R_z+dalpha02_dth*th_z)) + \
+bh_v*(bh_v*bphiup - (2*y1_2)/rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) + \
+psi4_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z)) - x1_2*z1_2*fctGG*gamma*(-(bh_v*y1_2*bphi) + (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(pow(z1_2,2)*psi4_2*(\
+dfctGG_dR*R_x) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)) - \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(x1_2*gamma*(\
+(bh_v*(dbphi_dR*R_z+dbphi_dth*th_z))/rho2_2 + \
+y1_2*fctGG*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) - z1_2*fctGG*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) \
++ y1_2*z1_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(-(bh_v2*pow(x1_2,2)\
+*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+(x1_2*gamma*(bh_v*y1_2*(fctGG - bh_spin2*fctHH)*psi4_2 + \
+bphi/rho2_2)*rho2_2*(-(x1_2*gamma*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(-(bh_v2*(\
+dalpha02_dR*R_z+dalpha02_dth*th_z)) + bh_v*(bh_v*bphiup - \
+(2*y1_2)/rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) + \
+psi4_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z))) - z1_2*fctGG*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,\
+z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)) + \
+((-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+pow(z1_2,2)*fctGG)) + (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+fctGG*(pow(z1_2,2) + bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(x1_2*gamma*((bh_v*(dbphi_dR*R_z+dbphi_\
+dth*th_z))/rho2_2 + y1_2*fctGG*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) - z1_2*fctGG*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) \
++ y1_2*z1_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(-(bh_v2*pow(x1_2,2)\
+*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+(bh_v*x1_2*z1_2*fctGG*psi4_2*rho2_2*(-(x1_2*z1_2*fctGG*pow(gammaV(bh_\
+v),2)*(-(bh_v*y1_2*bphi) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(-(bh_v2*(\
+dalpha02_dR*R_z+dalpha02_dth*th_z)) + bh_v*(bh_v*bphiup - \
+(2*y1_2)/rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+bh_v2*bphi*(dbphiup_dR*R_z+dbphiup_dth*th_z) + \
+psi4_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_\
+z))) + ((gamma2*(1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*(-(pow(\
+bh_v,2)*alpha02(x1_2*gamma,y1_2,z1_2)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2 + \
+bh_v*bphi*(bh_v*bphiup - (2*y1_2)/rho2_2)) - \
+pow(x1_2,2)*pow(gamma,4)*pow(y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2 + \
+(bh_v*bphi)/rho2_2,2))*rho2_2*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) + \
+(1 + pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))/(gammaV(\
+bh_v)*psi4_2) - \
+z1_2*fctGG*gamma*(y1_2*(-(bh_v2*alpha02(x1_2*gamma\
+,y1_2,z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(x1_2*gamma*((bh_v*(dbphi_dR*R_z+dbphi_\
+dth*th_z))/rho2_2 + y1_2*fctGG*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) + \
+psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) - z1_2*fctGG*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) \
++ y1_2*z1_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(-(bh_v2*pow(x1_2,2)\
+*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))) + \
+(-2*gamma*(bh_v2*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))*(bh_v*rho2_2*(\
+dalpha02_dR*R_z+dalpha02_dth*th_z) + (1 + \
+bh_v2)*y1_2*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v*bphiup*rho2_2*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v*bphi*rho2_2*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+bh_v*psi4_2*rho2_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) - bh_v*(1 \
++ bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*rho2_2*(dpsi4_2_dR*R_z+dpsi4_2_\
+dth*th_z)) + gamma*(bh_v*(alpha02(x1_2*gamma,y1_2,z1_2) \
+- (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + bphi*(y1_2 + \
+bh_v2*y1_2 - bh_v*bphiup*rho2_2))*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*rho2_2*(bh_v2*rho2_2*(dalpha02_dR*R_z+dalpha02_dth*th_z) \
++ bh_v*(2*y1_2 - bh_v*bphiup*rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*rho2_2*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+psi4_2*rho2_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*rho2_2*(dpsi4_2_dR*R_z+dpsi4_2_\
+dth*th_z)) - x1_2*z1_2*fctGG*gamma*rho2_2*(bh_v*y1_2*bphi - (1 \
++ bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(pow(z1_2,2)*psi4_2*(\
+dfctGG_dR*R_x) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)) + \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(x1_2*gamma*(\
+bh_v*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) + \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))) + \
+x1_2*gamma2*(bphi + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2)*(x1_2*gamma*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(bh_v2*rho2_2*\
+(dalpha02_dR*R_z+dalpha02_dth*th_z) + bh_v*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*rho2_2*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+psi4_2*rho2_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*rho2_2*(dpsi4_2_dR*R_z+dpsi4_2_\
+dth*th_z)) - \
+z1_2*fctGG*rho2_2*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,\
+z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)) + \
+((-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+pow(z1_2,2)*fctGG)) + (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+fctGG*(pow(z1_2,2) + bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(x1_2*gamma*(bh_v*(dbphi_dR*R_z+dbphi_dth*\
+th_z) + rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_\
+dth*th_z)) + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) + \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))) - \
+bh_v*x1_2*z1_2*fctGG*rho2_2*(x1_2*z1_2*fctGG*pow(gamma,3)*psi4_\
+2*(bh_v*y1_2*bphi - (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(bh_v2*rho2_2*(\
+dalpha02_dR*R_z+dalpha02_dth*th_z) + bh_v*(2*y1_2 - \
+bh_v*bphiup*rho2_2)*(dbphi_dR*R_z+dbphi_dth*th_z) - \
+bh_v2*bphi*rho2_2*(dbphiup_dR*R_z+dbphiup_dth*th_z) - \
+psi4_2*rho2_2*(pow(x1_2,2)*gamma2*(dfctGG_dR*R_z) + \
+bh_spin2*pow(y1_2,2)*(dfctHH_dR*R_z+dfctHH_dth*th_z)) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*rho2_2*(dpsi4_2_dR*R_z+dpsi4_2_\
+dth*th_z)) + (pow(x1_2,2)*pow(gamma,4)*pow(bh_v*bphi + \
+y1_2*(fctGG - bh_spin2*fctHH)*psi4_2*rho2_2,2) + \
+gamma2*(1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*rho2_2*((\
+bh_v2*alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + \
+bh_v*bphi*(2*y1_2 - \
+bh_v*bphiup*rho2_2)))*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)) + \
+z1_2*fctGG*gamma2*psi4_2*(y1_2*(-(bh_v2*alpha02(x1_\
+2*gamma,y1_2,z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(x1_2*gamma*(bh_v*(dbphi_dR*R_z+dbphi_\
+dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) - \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) + \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(rho2_2*(bh_v2*pow(\
+x1_2,2)*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))))))/(4.*Sqrr_\
+2t(-((pow(-1 + bh_v2,2)*gamma2*(1 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2)))));
+        kyy[ind] = (2*x1_2*gamma2*(bh_v2*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))*(bh_v*(fctGG \
+- bh_spin2*fctHH)*psi4_2*pow(rho2_2,2) - bphi*2.0*y1_2 + \
+rho2_2*(dbphi_dR*R_y+dbphi_dth*th_y) + \
+bh_v*y1_2*psi4_2*pow(rho2_2,2)*((dfctGG_dR*R_y) - \
+bh_spin2*(dfctHH_dR*R_y+dfctHH_dth*th_y)) + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y))\
+ + gamma*rho2_2*(bh_v*(alpha02(x1_2*gamma,y1_2,z1_2) - \
+(1 + bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + bphi*(y1_2 + \
+bh_v2*y1_2 - \
+bh_v*bphiup*rho2_2))*(x1_2*gamma*rho2_2*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(psi4_2*(2*y1_2*\
+fctGG + pow(y1_2,2)*(dfctGG_dR*R_y) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_y+dfctHH_\
+dth*th_y)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + \
+x1_2*z1_2*fctGG*gamma*rho2_2*(bh_v*y1_2*bphi - (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z) + psi4_2*(pow(y1_2,2)*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z) - 2*y1_2*z1_2*(dfctGG_dR*R_y)) + fctGG*(-2*z1_2*psi4_2 + \
+y1_2*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+2*z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - (1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*(2*x1_2*gamma*((fctGG - \
+bh_spin2*fctHH)*psi4_2*pow(rho2_2,2) - bh_v*bphi*2.0*y1_2 + \
+bh_v*rho2_2*(dbphi_dR*R_y+dbphi_dth*th_y) + \
+y1_2*psi4_2*pow(rho2_2,2)*((dfctGG_dR*R_y) - \
+bh_spin2*(dfctHH_dR*R_y+dfctHH_dth*th_y)) + y1_2*(fctGG - \
+bh_spin2*fctHH)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y))\
+ - psi4_2*pow(rho2_2,2)*(2*bh_spin2*x1_2*fctHH*gamma + \
+pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) - (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*pow(rho2_2,2)*(\
+dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))) + x1_2*gamma2*(bphi + \
+bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2)*(pow(rho2_2,2)*((-(bh_v2*\
+alpha02(x1_2*gamma,y1_2,z1_2)*(1 + pow(z1_2,2)*fctGG)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + fctGG*(pow(z1_2,2) + \
+bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(psi4_2*(2*y1_2*fctGG + \
+pow(y1_2,2)*(dfctGG_dR*R_y) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_y+dfctHH_\
+dth*th_y)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) + \
+z1_2*fctGG*pow(rho2_2,2)*(y1_2*(-(bh_v2*alpha02(x1_2*gammaV(bh_\
+v),y1_2,z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z) + psi4_2*(pow(y1_2,2)*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z) - 2*y1_2*z1_2*(dfctGG_dR*R_y)) + fctGG*(-2*z1_2*psi4_2 + \
+y1_2*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+2*z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(2*x1_2*gamma\
+*((fctGG - bh_spin2*fctHH)*psi4_2*pow(rho2_2,2) - \
+bh_v*bphi*2.0*y1_2 + bh_v*rho2_2*(dbphi_dR*R_y+dbphi_dth*th_y) + \
+y1_2*psi4_2*pow(rho2_2,2)*((dfctGG_dR*R_y) - \
+bh_spin2*(dfctHH_dR*R_y+dfctHH_dth*th_y)) + y1_2*(fctGG - \
+bh_spin2*fctHH)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y))\
+ - psi4_2*pow(rho2_2,2)*(2*bh_spin2*x1_2*fctHH*gamma + \
+pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) - (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*pow(rho2_2,2)*(\
+dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))) - \
+bh_v*x1_2*z1_2*fctGG*rho2_2*(z1_2*fctGG*gamma2*psi4_2*\
+pow(rho2_2,2)*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_\
+2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(psi4_2*(2*y1_2*fctGG + \
+pow(y1_2,2)*(dfctGG_dR*R_y) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_y+dfctHH_\
+dth*th_y)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_y+\
+dpsi4_2_dth*th_y)) - \
+rho2_2*(pow(x1_2,2)*pow(gamma,4)*pow(bh_v*bphi + y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2,2) + gamma2*(1 + \
+pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*rho2_2*((\
+bh_v2*alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + \
+bh_v*bphi*(2*y1_2 - bh_v*bphiup*rho2_2)))*((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z) + psi4_2*(pow(y1_2,2)*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z) - 2*y1_2*z1_2*(dfctGG_dR*R_y)) + fctGG*(-2*z1_2*psi4_2 + \
+y1_2*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+2*z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+x1_2*z1_2*fctGG*pow(gamma,3)*psi4_2*(bh_v*y1_2*bphi - (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(2*x1_2*gamma*\
+((fctGG - bh_spin2*fctHH)*psi4_2*pow(rho2_2,2) - \
+bh_v*bphi*2.0*y1_2 + bh_v*rho2_2*(dbphi_dR*R_y+dbphi_dth*th_y) + \
+y1_2*psi4_2*pow(rho2_2,2)*((dfctGG_dR*R_y) - \
+bh_spin2*(dfctHH_dR*R_y+dfctHH_dth*th_y)) + y1_2*(fctGG - \
+bh_spin2*fctHH)*pow(rho2_2,2)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y))\
+ - psi4_2*pow(rho2_2,2)*(2*bh_spin2*x1_2*fctHH*gamma + \
+pow(y1_2,2)*(dfctGG_dR*R_x) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_x+dfctHH_\
+dth*th_x)) - (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*pow(rho2_2,2)*(\
+dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))))/(2.*pow(rho2_2,2)*Sqrr_2t(-((pow(-\
+1 + bh_v2,2)*gamma2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2))))*(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))));
+        kyz[ind] = (x1_2*gamma2*((dbphi_dR*R_z+dbphi_dth*th_z)/rho2_2 + \
+bh_v*y1_2*(psi4_2*((dfctGG_dR*R_z) - \
+bh_spin2*(dfctHH_dR*R_z+dfctHH_dth*th_z)) + (fctGG - \
+bh_spin2*fctHH)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))) + \
+bh_v*x1_2*z1_2*gamma2*psi4_2*(dfctGG_dR*R_y) + \
+bh_v*x1_2*z1_2*fctGG*gamma2*(dpsi4_2_dR*R_y+dpsi4_2_dth*\
+th_y) + (gamma*(bh_v*(alpha02(x1_2*gamma,y1_2,z1_2) - \
+(1 + bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + bphi*(y1_2 + \
+bh_v2*y1_2 - \
+bh_v*bphiup*rho2_2))*(x1_2*gamma*(bphi*(bh_v + \
+bh_v*pow(z1_2,2)*fctGG) + y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(psi4_2*(pow(y1_2,2)\
+*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z)) - x1_2*z1_2*fctGG*gamma*(bh_v*y1_2*bphi - \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(pow(z1_2,2)*psi4_2*(\
+dfctGG_dR*R_y) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) - (1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*(x1_2*gamma*(bh_v*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) + \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
++ z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) + \
+(x1_2*gamma2*(bphi + bh_v*y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2*rho2_2)*(rho2_2*((-(bh_v2*alpha02(\
+x1_2*gamma,y1_2,z1_2)*(1 + pow(z1_2,2)*fctGG)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + fctGG*(pow(z1_2,2) + \
+bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(psi4_2*(pow(y1_2,2)*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z)) - \
+z1_2*fctGG*rho2_2*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,\
+z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_y) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) - \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(x1_2*gamma*(\
+bh_v*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) + \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
++ z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(rho2_2*(bh_v2*pow(\
+x1_2,2)*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))) - \
+(bh_v*x1_2*z1_2*fctGG*(z1_2*fctGG*gamma2*psi4_2*rho2_2*(\
+y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)) + (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(psi4_2*(pow(y1_2,2)*(dfctGG_dR*R_z) + \
+bh_spin2*pow(x1_2,2)*gamma2*(dfctHH_dR*R_z+dfctHH_\
+dth*th_z)) + (1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*(dpsi4_2_dR*R_z+\
+dpsi4_2_dth*th_z)) + (pow(x1_2,2)*pow(gamma,4)*pow(bh_v*bphi + \
+y1_2*(fctGG - bh_spin2*fctHH)*psi4_2*rho2_2,2) + \
+gamma2*(1 + pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*rho2_2*((\
+bh_v2*alpha02(x1_2*gamma,y1_2,z1_2) - (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2)*rho2_2 + \
+bh_v*bphi*(2*y1_2 - \
+bh_v*bphiup*rho2_2)))*(pow(z1_2,2)*psi4_2*(dfctGG_dR*R_y) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)) - \
+x1_2*z1_2*fctGG*pow(gamma,3)*psi4_2*(bh_v*y1_2*bphi - (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(x1_2*gamma*(\
+bh_v*(dbphi_dR*R_z+dbphi_dth*th_z) + \
+rho2_2*(-(bh_spin2*y1_2*fctHH*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))\
+ + psi4_2*(y1_2*(dfctGG_dR*R_z) - \
+bh_spin2*y1_2*(dfctHH_dR*R_z+dfctHH_dth*th_z) + \
+z1_2*(dfctGG_dR*R_y)) + fctGG*(y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
++ z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+y1_2*z1_2*rho2_2*(psi4_2*(dfctGG_dR*R_x) + \
+fctGG*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(bh_v2*pow(x1_2,2)*\
+pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2 - \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
+- bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))))/(2.*Sqrr_2t(-\
+((pow(-1 + bh_v2,2)*gamma2*(1 + fctGG*(pow(y1_2,2) \
++ pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2)))));
+        kzz[ind] = (gamma2*(2*bh_v*x1_2*fctGG*psi4_2 + \
+2*bh_v*x1_2*z1_2*psi4_2*(dfctGG_dR*R_z) + \
+2*bh_v*x1_2*z1_2*fctGG*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+(x1_2*(bh_v*y1_2*(fctGG - bh_spin2*fctHH)*psi4_2 + \
+bphi/rho2_2)*rho2_2*(-(z1_2*fctGG*(y1_2*(-(bh_v2*alpha02(x1_2*\
+gamma,y1_2,z1_2)) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(z1_2*psi4_2*(2*fctGG + z1_2*(dfctGG_dR*R_z)) + \
+(1 + pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))) + \
+((-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+pow(z1_2,2)*fctGG)) + (1 + bh_spin2*pow(y1_2,2)*fctHH + \
+fctGG*(pow(z1_2,2) + bh_spin2*pow(y1_2,2)*pow(z1_2,2)*fctHH + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + bh_v*bphi*(1 + \
+pow(z1_2,2)*fctGG)*(-2*y1_2 + \
+bh_v*bphiup*rho2_2))*(z1_2*psi4_2*(2*y1_2*(dfctGG_dR*R_z) - \
+z1_2*(dfctGG_dR*R_y)) - (dpsi4_2_dR*R_y+dpsi4_2_dth*th_y) + \
+fctGG*(2*y1_2*psi4_2 + z1_2*(2*y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+x1_2*gamma*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(2*x1_2*z1_2*gammaV(\
+bh_v)*psi4_2*(dfctGG_dR*R_z) - pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) - \
+(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x) + \
+fctGG*(2*x1_2*gamma*(psi4_2 + \
+z1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z)) - \
+pow(z1_2,2)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(-(bh_v2*pow(\
+x1_2,2)*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+(bh_v*x1_2*z1_2*fctGG*psi4_2*rho2_2*(((gamma2*(1 + \
+pow(y1_2,2)*fctGG + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*psi4_2*(-(pow(\
+bh_v,2)*alpha02(x1_2*gamma,y1_2,z1_2)) + (1 + \
+bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2 + \
+bh_v*bphi*(bh_v*bphiup - (2*y1_2)/rho2_2)) - \
+pow(x1_2,2)*pow(gamma,4)*pow(y1_2*(fctGG - \
+bh_spin2*fctHH)*psi4_2 + \
+(bh_v*bphi)/rho2_2,2))*rho2_2*(z1_2*psi4_2*(2*fctGG + \
+z1_2*(dfctGG_dR*R_z)) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z)))/(pow(gammaV(bh_\
+v),2)*psi4_2) - \
+z1_2*fctGG*(y1_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)) \
++ (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2)*rho2_2 + \
+bh_v*bphi*(-(pow(x1_2,2)*gamma2) + y1_2*(-2*y1_2 + \
+bh_v*bphiup*rho2_2)))*(z1_2*psi4_2*(2*y1_2*(dfctGG_dR*R_z) - \
+z1_2*(dfctGG_dR*R_y)) - (dpsi4_2_dR*R_y+dpsi4_2_dth*th_y) + \
+fctGG*(2*y1_2*psi4_2 + z1_2*(2*y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) \
+- z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - \
+x1_2*z1_2*fctGG*gamma*(-(bh_v*y1_2*bphi) + (1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(2*x1_2*z1_2*gammaV(\
+bh_v)*psi4_2*(dfctGG_dR*R_z) - pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) - \
+(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x) + \
+fctGG*(2*x1_2*gamma*(psi4_2 + \
+z1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z)) - \
+pow(z1_2,2)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x)))))/(-(bh_v2*pow(\
+x1_2,2)*pow(bphi,2)*(1 + pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2)))) - \
+((-(bh_v*alpha02(x1_2*gamma,y1_2,z1_2)) + bh_v*bphi*bphiup + \
+bh_v*(1 + bh_spin2*pow(y1_2,2)*fctHH + \
+pow(x1_2,2)*fctGG*gamma2)*psi4_2 - ((1 + \
+bh_v2)*y1_2*bphi)/rho2_2)*rho2_2*(-(x1_2*z1_2*fctGG*(-(bh_v*y1_\
+2*bphi) + (1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*rho2_2)*(z1_2*psi4_2*(2*\
+fctGG + z1_2*(dfctGG_dR*R_z)) + (1 + \
+pow(z1_2,2)*fctGG)*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z))) - \
+x1_2*(bphi*(bh_v + bh_v*pow(z1_2,2)*fctGG) + \
+y1_2*(-(bh_spin2*fctHH) + fctGG*(1 - \
+bh_spin2*pow(z1_2,2)*fctHH))*psi4_2*rho2_2)*(z1_2*psi4_2*(2*y1_\
+2*(dfctGG_dR*R_z) - z1_2*(dfctGG_dR*R_y)) - \
+(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y) + fctGG*(2*y1_2*psi4_2 + \
+z1_2*(2*y1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z) - \
+z1_2*(dpsi4_2_dR*R_y+dpsi4_2_dth*th_y)))) - ((1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))*\
+psi4_2*rho2_2*(-2*x1_2*z1_2*gamma*psi4_2*(dfctGG_dR*R_z) + \
+pow(z1_2,2)*psi4_2*(dfctGG_dR*R_x) + \
+(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x) + \
+fctGG*(-2*x1_2*gamma*(psi4_2 + \
+z1_2*(dpsi4_2_dR*R_z+dpsi4_2_dth*th_z)) + \
+pow(z1_2,2)*(dpsi4_2_dR*R_x+dpsi4_2_dth*th_x))))/gamma))/(-(\
+bh_v2*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(-(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2))) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2 + bh_v*bphiup*(1 + \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2)*rho2_2 + \
+fctGG*(-((pow(y1_2,2) + pow(z1_2,2))*(2*y1_2 - bh_v*bphiup*rho2_2)) + \
+pow(x1_2,2)*gamma2*(-2*y1_2 + \
+bh_spin2*bh_v*pow(z1_2,2)*bphiup*fctHH*rho2_2))))))/(2.*Sqrr_2t(\
+-((pow(-1 + bh_v2,2)*gamma2*(1 + \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*(-(pow(bphi,2)*(pow(y1_2,2) \
++ pow(x1_2,2)*gamma2)) - \
+(alpha02(x1_2*gamma,y1_2,z1_2) - bphi*bphiup)*(1 + \
+bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*psi4_2*pow(rho2_2,2)))/(-(pow(bh_v,\
+2)*pow(x1_2,2)*pow(bphi,2)*(1 + \
+pow(z1_2,2)*fctGG)*gamma2) + \
+psi4_2*(bh_v2*alpha02(x1_2*gamma,y1_2,z1_2)*(-1 - \
+bh_spin2*pow(x1_2,2)*fctHH*gamma2 - \
+fctGG*(pow(y1_2,2) + pow(z1_2,2) + \
+bh_spin2*pow(x1_2,2)*pow(z1_2,2)*fctHH*gamma2)) + \
+(1 + bh_spin2*fctHH*(pow(y1_2,2) + \
+pow(x1_2,2)*gamma2))*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2))*psi4_2)*pow(rho2_2,2) \
++ bh_v*bphi*psi4_2*rho2_2*(-2*y1_2*(1 + fctGG*(pow(y1_2,2) + \
+pow(z1_2,2) + pow(x1_2,2)*gamma2)) + bh_v*bphiup*(1 + \
+pow(y1_2,2)*fctGG + pow(z1_2,2)*fctGG + bh_spin2*pow(x1_2,2)*(1 \
++ pow(z1_2,2)*fctGG)*fctHH*gamma2)*rho2_2)))));
 
-        if (bh_mass == 0.0) {
-          CCTK_REAL maxK = 0.0;
-          for (int i3 = 1; i3 <= 3; ++i3)
-            for (int j3 = 1; j3 <= 3; ++j3)
-              maxK = fmax(maxK, fabs(K_B[i3][j3]));
-          if (maxK > 1e-12) {
-            CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "Boosted Minkowski test: |K|=%g", maxK);
-            break;
-          }
-        }
+        // if (bh_mass == 0.0) {
+        //   CCTK_REAL maxK = 0.0;
+        //   for (int i3 = 1; i3 <= 3; ++i3)
+        //     for (int j3 = 1; j3 <= 3; ++j3)
+        //       maxK = fmax(maxK, fabs(K_B[i3][j3]));
+        //   if (maxK > 1e-12) {
+        //     CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
+        //                "Boosted Minkowski test: |K|=%g", maxK);
+        //     break;
+        //   }
+        // }
 
         // CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
         // auxKij = 2.0 * rBL2 * (rBL2 + bh_spin2) + Sigm * (rBL2 - bh_spin2);

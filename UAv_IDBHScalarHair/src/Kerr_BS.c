@@ -653,14 +653,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         CCTK_REAL alpha0 = (rr_2 + horizon_radius) * (rr_2 - horizon_radius) / rr_2 *
                            1. / sqrt(rBL * rBL + bh_spin2 * (1. + sigma * sinth2));
         // check_nan_or_inf("alpha0", alpha0);
-        if (alpha0 < SMALL) {
-          // If alpha0 is too small, we set it to zero to avoid division by zero.
-          // This is a safeguard against numerical issues, especially near the horizon.
-          // It should not affect the physics significantly, as alpha0 is a small correction.
-          // In the context of the Kerr metric, this corresponds to the case where we are very
-          // close to the horizon, where the metric becomes singular.
-          alpha0 = SMALL;
-        }
+        // if (alpha0 < SMALL) {
+        //   // If alpha0 is too small, we set it to zero to avoid division by zero.
+        //   // This is a safeguard against numerical issues, especially near the horizon.
+        //   // It should not affect the physics significantly, as alpha0 is a small correction.
+        //   // In the context of the Kerr metric, this corresponds to the case where we are very
+        //   // close to the horizon, where the metric becomes singular.
+        //   alpha0 = SMALL;
+        // }
         const CCTK_REAL alpha02 = alpha0 * alpha0;
 
         // fazer as derivadas das funcoes auxiliares
@@ -1099,17 +1099,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
 
-        CCTK_REAL Gb3_inv[4][4];
-        for (int a = 0; a < 4; ++a) {
-          for (int b = 0; b < 4; ++b) {
-            CCTK_REAL sum = 0.0;
-            for (int mu = 0; mu < 4; ++mu)
-              for (int nu = 0; nu < 4; ++nu)
-                sum += invLambda[mu][a] * invLambda[nu][b] * G3_inv[mu][nu];
-            Gb3_inv[a][b] = sum;
-          }
-        }
-
+        // Derivatives of the boosted metric
         CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)

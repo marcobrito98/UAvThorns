@@ -1290,8 +1290,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("betaup[2]", betaup[2]);
         check_nan_or_inf("betaup[3]", betaup[3]);
 
-        CCTK_REAL dg[4][4]
-                    [4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
+        CCTK_REAL dg[4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)
           for (int jj = 0; jj < 4; ++jj)

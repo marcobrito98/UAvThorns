@@ -734,6 +734,10 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         const CCTK_REAL R_y = y1_2 / rr_2;
         const CCTK_REAL R_z = z1_2 / rr_2;
 
+        const CCTK_REAL x_R = x1_2 * gamma / rr_2;
+        const CCTK_REAL y_R = y1_2 / rr_2;
+        const CCTK_REAL z_R = z1_2 / rr_2;
+
         const CCTK_REAL th_x = costh * R_x / rho_2;
         const CCTK_REAL th_y = costh * R_y / rho_2;
         const CCTK_REAL th_z = -rho_2 / rr2_2;
@@ -1262,7 +1266,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-                CCTK_REAL dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
+        CCTK_REAL dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
 
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)
@@ -1480,6 +1484,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         CCTK_REAL hor_R_x = hor_x1_2 * gamma / hor_rr_2;
         CCTK_REAL hor_R_y = hor_y1_2 / hor_rr_2;
         CCTK_REAL hor_R_z = hor_z1_2 / hor_rr_2;
+        CCTK_REAL hor_x_R = hor_x1_2 * gamma / hor_rr_2;
+        CCTK_REAL hor_y_R = hor_y1_2 / hor_rr_2;
+        CCTK_REAL hor_z_R = hor_z1_2 / hor_rr_2;
 
         CCTK_REAL hor_costh = hor_z1_2 / hor_rr_2;
         CCTK_REAL hor_costh2 = hor_costh * hor_costh;
@@ -1718,6 +1725,41 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         CCTK_REAL hor_d2bphi_dxz = hor_d2bphi_dR2 * hor_R_x * hor_R_z + hor_d2bphi_dRth * (hor_R_x * hor_th_z + hor_R_z * hor_th_x) + hor_d2bphi_dth2 * hor_th_x * hor_th_z + hor_dbphi_dR * hor_R_xz + hor_dbphi_dth * hor_th_xz;
         CCTK_REAL hor_d2bphi_dyz = hor_d2bphi_dR2 * hor_R_y * hor_R_z + hor_d2bphi_dRth * (hor_R_y * hor_th_z + hor_R_z * hor_th_y) + hor_d2bphi_dth2 * hor_th_y * hor_th_z + hor_dbphi_dR * hor_R_yz + hor_dbphi_dth * hor_th_yz;
 
+        /* horizon shift derivative*/
+        CCTK_REAL hor_beta[4];
+        hor_beta[0] = 0;
+        hor_beta[1] = -hor_y1_2*hor_bphi;
+        hor_beta[2] = -hor_bphiup * hor_x1_2 * gamma;
+        hor_beta[3] = 0.0; // because b^z=0
+                                                          //estas partes estão mal!!!!!!!!! tem de ser o shift da metrica boosted.
+
+        CCTK_REAL hor_betaup[4];
+        hor_betaup[0] = 0;
+        hor_betaup[1] = -hor_y1_2*hor_bphiup;
+        hor_betaup[2] = hor_x1_2*gamma*hor_bphiup;
+        hor_betaup[3] = 0.0; // because b^z=0
+
+
+        CCTK_REAL hor_dbetaup[4][4];
+        hor_dbetaup[1][0] = gamma * bh_v * (-hor_y1_2) * (hor_dbphiup_dR * hor_R_x + hor_dbphiup_dth * hor_th_x);
+        hor_dbetaup[2][0] = gamma * bh_v * (hor_bphiup + hor_x1_2 * gamma * (hor_dbphiup_dR * hor_R_x + hor_dbphiup_dth * hor_th_x));
+        hor_dbetaup[3][0] = 0.0; // because b^z=0
+        hor_dbetaup[1][1] = (-hor_y1_2) * (hor_dbphiup_dR * hor_R_x + hor_dbphiup_dth * hor_th_x);
+        hor_dbetaup[2][1] = (hor_bphiup * hor_x1_2 * gamma * (hor_dbphiup_dR * hor_R_x + hor_dbphiup_dth * hor_th_x));
+        hor_dbetaup[3][1] = 0.0; // because b^z=0
+        hor_dbetaup[1][2] = (-hor_bphiup - hor_y1_2 * (hor_dbphiup_dR * hor_R_y + hor_dbphiup_dth * hor_th_y));
+        hor_dbetaup[2][2] = hor_x1_2 * gamma * (hor_dbphiup_dR * hor_R_y + hor_dbphiup_dth * hor_th_y);
+        hor_dbetaup[3][2] = 0.0; // because b^z=0
+        hor_dbetaup[1][3] = (-hor_y1_2) * (hor_dbphiup_dR * hor_R_z + hor_dbphiup_dth * hor_th_z);
+        hor_dbetaup[2][3] = hor_x1_2 * gamma * (hor_dbphiup_dR * hor_R_z + hor_dbphiup_dth * hor_th_z);
+        hor_dbetaup[3][3] = 0.0; // because b^z=0
+
+        CCTK_REAL hor_dbetaup_dR[4];
+        hor_dbetaup_dR[0] = 0.0;
+        hor_dbetaup_dR[1] = hor_dbetaup[1][1] * hor_x_R + hor_dbetaup[1][2] * hor_y_R + hor_dbetaup[1][3] * hor_z_R;
+        hor_dbetaup_dR[2] = hor_dbetaup[2][1] * hor_x_R + hor_dbetaup[2][2] * hor_y_R + hor_dbetaup[2][3] * hor_z_R;
+        hor_dbetaup_dR[3] = hor_dbetaup[3][1] * hor_x_R + hor_dbetaup[3][2] * hor_y_R + hor_dbetaup[3][3] * hor_z_R;
+
         UAv_EvalPoint hor_P = {
             .bh_mass = bh_mass,
             .bh_spin = bh_spin,
@@ -1933,36 +1975,41 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         UAv_MetricDerivs2 hor_D2;
         UAv_ComputeMetricDerivsAtPoint(&hor_P, &hor_D1, &hor_D2);
 
-          // make if statement at the horizon for betaup and dg.
+        // make if statement at the horizon for betaup and dg.
 
-          
+        CCTK_REAL hor_dg[4][4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            for (int c = 0; c < 4; ++c) {
+              CCTK_REAL sum = 0.0;
+              for (int mu = 0; mu < 4; ++mu)
+                for (int nu = 0; nu < 4; ++nu)
+                  for (int lam = 0; lam < 4; ++lam)
+                    sum += invLambda[mu][a] * invLambda[nu][b] * invLambda[lam][c] * hor_D1.dG[mu][nu][lam];
+              hor_dg[a][b][c] = sum;
+            }
+          }
+        }
+        
+        
+        
+        CCTK_REAL hor_ddg[4][4][4][4];
 
-
-        //   CCTK_REAL hor_dG[4][4][4][4];
-        //   for (int a = 0; a < 4; ++a) {
-        //     for (int b = 0; b < 4; ++b) {
-        //       for (int c = 0; c < 4; ++c) {
-        //         hor_dG[a][b][c] = hor_D1.dG[a][b][c];
-        //       }
-        //     }
-        //   }
-
-        //   CCTK_REAL hor_ddG[4][4][4][4];
-        //   for (int a = 0; a < 4; ++a) {
-        //     for (int b = 0; b < 4; ++b) {
-        //       for (int c = 0; c < 4; ++c) {
-        //         for (int d = 0; d < 4; ++d) {
-        //           hor_ddG[a][b][c][d] = hor_D2.ddG[a][b][c][d];
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
-        /////////////////////////////////////////////////////////////////////
-
-      
-
-
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            for (int c = 0; c < 4; ++c) {
+              for (int d = 0; d < 4; ++d) {
+                CCTK_REAL sum = 0.0;
+                for (int mu = 0; mu < 4; ++mu)
+                  for (int nu = 0; nu < 4; ++nu)
+                    for (int lam = 0; lam < 4; ++lam)
+                      for (int sig = 0; sig < 4; ++sig)
+                        sum += invLambda[mu][a] * invLambda[nu][b] * invLambda[lam][c] * invLambda[sig][d] * hor_D2.ddG[mu][nu][lam][sig];
+                hor_ddg[a][b][c][d] = sum;
+              }
+            }
+          }
+        }
 
         CCTK_REAL K_B[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a) {
@@ -1971,17 +2018,37 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         } // K_0\mu might not be zero but irrelevant for what i want to compute
 
-        for (int a = 1; a < 4; ++a) {
-          for (int b = 1; b < 4; ++b) {
-            CCTK_REAL sum1 = 0.0;
-            CCTK_REAL sum2 = 0.0;
-            CCTK_REAL sum3 = 0.0;
-            for (int c = 1; c < 4; ++c) {
-              sum1 += betaup[c] * dg[a][b][c];
-              sum2 += betaup[c] * dg[b][c][a];
-              sum3 += betaup[c] * dg[a][c][b];
+        CCTK_REAL hor_Gb00 = gamma2* (-hor_alpha02+hor_bphi*hor_bphiup) + gamma2*bh_v2*(hor_psi4_2 * (1.0 + hor_x1_2 * hor_x1_2 * gamma2 * hor_fctGG + bh_spin2 * hor_y1_2 * hor_y1_2 * hor_fctHH)) + 2.0*gamma2*bh_v*(-hor_y1_2 / hor_rho2_2 * hor_bphi);
+        CCTK_REAL hor_new_lapse = -hor_Gb00 + hor_betaup[1] * hor_beta[1] + hor_betaup[2] * hor_beta[2] + hor_betaup[3] * hor_beta[3];
+
+        if (fabs(rr_2) > 1e-8) {
+          for (int a = 1; a < 4; ++a) {
+            for (int b = 1; b < 4; ++b) {
+              CCTK_REAL sum1 = 0.0;
+              CCTK_REAL sum2 = 0.0;
+              CCTK_REAL sum3 = 0.0;
+              for (int c = 1; c < 4; ++c) {
+                sum1 += betaup[c] * dg[a][b][c];
+                sum2 += betaup[c] * dg[b][c][a];
+                sum3 += betaup[c] * dg[a][c][b];
+              }
+              K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
             }
-            K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+          }
+        } else if (fabs(rr_2) <= 1e-8) {
+          // inside the BH horizon
+          for (int a = 1; a < 4; ++a) {
+            for (int b = 1; b < 4; ++b) {
+              CCTK_REAL sum1 = 0.0;
+              CCTK_REAL sum2 = 0.0;
+              CCTK_REAL sum3 = 0.0;
+              for (int c = 1; c < 4; ++c) {
+                sum1 += hor_dbetaup_dR[c] * hor_dg[a][b][c] + hor_betaup[c] * (hor_ddg[a][b][c][1] * hor_x_R + hor_ddg[a][b][c][2] * hor_y_R + hor_ddg[a][b][c][3] * hor_z_R);
+                sum2 += hor_dbetaup_dR[c] * hor_dg[b][c][a] + hor_betaup[c] * (hor_ddg[b][c][a][1] * hor_x_R + hor_ddg[b][c][a][2] * hor_y_R + hor_ddg[b][c][a][3] * hor_z_R);
+                sum3 += hor_dbetaup_dR[c] * hor_dg[a][c][b] + hor_betaup[c] * (hor_ddg[a][c][b][1] * hor_x_R + hor_ddg[a][c][b][2] * hor_y_R + hor_ddg[a][c][b][3] * hor_z_R);
+              }
+              K_B[a][b] = -0.5 * ((hor_ddg[a][b][0][1] * hor_x_R + hor_ddg[a][b][0][2] * hor_y_R + hor_ddg[a][b][0][3]*hor_z_R) - sum1 - ((hor_ddg[0][b][a][1] * hor_x_R + hor_ddg[0][b][a][2] * hor_y_R + hor_ddg[0][b][a][3] * hor_z_R) - sum2) - ((hor_ddg[0][a][b][1] * hor_x_R + hor_ddg[0][a][b][2] * hor_y_R + hor_ddg[0][a][b][3] * hor_z_R) - sum3)) / (dalpha02_dR);
+            }
           }
         }
 

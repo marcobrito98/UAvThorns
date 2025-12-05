@@ -13,6 +13,7 @@ typedef struct {
   // First derivatives of coordinates
   CCTK_REAL R_x, R_y, R_z;
   CCTK_REAL th_x, th_y, th_z;
+  CCTK_REAL costh, costh2, sinth, sinth2;
 
   // Coordinate second derivatives
   CCTK_REAL R_xx, R_xy, R_xz, R_yy, R_yz, R_zz;

@@ -2021,7 +2021,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         CCTK_REAL hor_Gb00 = gamma2* (-hor_alpha02+hor_bphi*hor_bphiup) + gamma2*bh_v2*(hor_psi4_2 * (1.0 + hor_x1_2 * hor_x1_2 * gamma2 * hor_fctGG + bh_spin2 * hor_y1_2 * hor_y1_2 * hor_fctHH)) + 2.0*gamma2*bh_v*(-hor_y1_2 / hor_rho2_2 * hor_bphi);
         CCTK_REAL hor_new_lapse = -hor_Gb00 + hor_betaup[1] * hor_beta[1] + hor_betaup[2] * hor_beta[2] + hor_betaup[3] * hor_beta[3];
 
-        if (fabs(rr_2) > 1e-8) {
+        if (fabs(rr_2-rBLp/4) > 1e-8) {
           for (int a = 1; a < 4; ++a) {
             for (int b = 1; b < 4; ++b) {
               CCTK_REAL sum1 = 0.0;
@@ -2035,7 +2035,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
               K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
             }
           }
-        } else if (fabs(rr_2) <= 1e-8) {
+        } else if (fabs(rr_2-rBLp/4) <= 1e-8) {
           // inside the BH horizon
           for (int a = 1; a < 4; ++a) {
             for (int b = 1; b < 4; ++b) {
@@ -2047,7 +2047,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
                 sum2 += hor_dbetaup_dR[c] * hor_dg[b][c][a] + hor_betaup[c] * (hor_ddg[b][c][a][1] * hor_x_R + hor_ddg[b][c][a][2] * hor_y_R + hor_ddg[b][c][a][3] * hor_z_R);
                 sum3 += hor_dbetaup_dR[c] * hor_dg[a][c][b] + hor_betaup[c] * (hor_ddg[a][c][b][1] * hor_x_R + hor_ddg[a][c][b][2] * hor_y_R + hor_ddg[a][c][b][3] * hor_z_R);
               }
-              K_B[a][b] = -0.5 * ((hor_ddg[a][b][0][1] * hor_x_R + hor_ddg[a][b][0][2] * hor_y_R + hor_ddg[a][b][0][3]*hor_z_R) - sum1 - ((hor_ddg[0][b][a][1] * hor_x_R + hor_ddg[0][b][a][2] * hor_y_R + hor_ddg[0][b][a][3] * hor_z_R) - sum2) - ((hor_ddg[0][a][b][1] * hor_x_R + hor_ddg[0][a][b][2] * hor_y_R + hor_ddg[0][a][b][3] * hor_z_R) - sum3)) / (dalpha02_dR);
+              K_B[a][b] = -0.5 * ((hor_ddg[a][b][0][1] * hor_x_R + hor_ddg[a][b][0][2] * hor_y_R + hor_ddg[a][b][0][3]*hor_z_R) - sum1 - ((hor_ddg[0][b][a][1] * hor_x_R + hor_ddg[0][b][a][2] * hor_y_R + hor_ddg[0][b][a][3] * hor_z_R) - sum2) - ((hor_ddg[0][a][b][1] * hor_x_R + hor_ddg[0][a][b][2] * hor_y_R + hor_ddg[0][a][b][3] * hor_z_R) - sum3)) / (hor_dalpha02_dR); //por o alpha boosted
             }
           }
         }

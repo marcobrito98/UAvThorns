@@ -1728,8 +1728,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         /* horizon shift derivative*/
         CCTK_REAL hor_beta[4];
         hor_beta[0] = 0;
-        hor_beta[1] = -hor_y1_2*hor_bphi;
-        hor_beta[2] = -hor_bphiup * hor_x1_2 * gamma;
+        hor_beta[1] = -hor_y1_2*hor_bphi/hor_rho2_2;
+        hor_beta[2] = hor_bphi * hor_x1_2 * gamma/hor_rho2_2;
         hor_beta[3] = 0.0; // because b^z=0
                                                           //estas partes estão mal!!!!!!!!! tem de ser o shift da metrica boosted.
 
@@ -2020,6 +2020,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         CCTK_REAL hor_Gb00 = gamma2* (-hor_alpha02+hor_bphi*hor_bphiup) + gamma2*bh_v2*(hor_psi4_2 * (1.0 + hor_x1_2 * hor_x1_2 * gamma2 * hor_fctGG + bh_spin2 * hor_y1_2 * hor_y1_2 * hor_fctHH)) + 2.0*gamma2*bh_v*(-hor_y1_2 / hor_rho2_2 * hor_bphi);
         CCTK_REAL hor_new_lapse = -hor_Gb00 + hor_betaup[1] * hor_beta[1] + hor_betaup[2] * hor_beta[2] + hor_betaup[3] * hor_beta[3];
+        // CCTK_REAL hor_dnew_lapse_dR = hor_ddg[0][0][1] * hor_x_R + hor_ddg[0][0][2] * hor_y_R + hor_ddg[0][0][3] * hor_z_R + hor_dbetaup_dR[1] * hor_beta[1] + hor_dbetaup_dR[2] * hor_beta[2] + hor_dbetaup_dR[3] * hor_beta[3];
 
         if (fabs(rr_2-rBLp/4) > 1e-8) {
           for (int a = 1; a < 4; ++a) {

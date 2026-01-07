@@ -623,7 +623,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         const CCTK_REAL costh2_y = -2 * y1_2 * pow(z1_2, 2) / pow(rr2_2, 2);
         const CCTK_REAL costh2_z = 2 * rho2_2 * z1_2 / pow(rr2_2, 2);
 
-        const CCTK_REAL rBL = rr_2 + bh_mass + 0.25 * (bh_mass2 - bh_spin2) / rr_2; // Boyer-Lindquist coordinate rhor
+        const CCTK_REAL rBL = rr_2 + bh_mass + 0.25 * (bh_mass2 - bh_spin2) / rr_2; // Boyer-Lindquist coordinate r
 
         // const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*(bh_mass2-bh_spin2);
 
@@ -782,9 +782,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("drho2kerr_dy", drho2kerr_dy);
         check_nan_or_inf("drho2kerr_dz", drho2kerr_dz);
 
-        check_nan_or_inf("dbetadphi_dx", drho2kerr_dx);
-        check_nan_or_inf("dbetadphi_dy", drho2kerr_dy);
-        check_nan_or_inf("dbetadphi_dz", drho2kerr_dz);
+        check_nan_or_inf("dbetadphi_dx", dbetadphi_dx);
+        check_nan_or_inf("dbetadphi_dy", dbetadphi_dy);
+        check_nan_or_inf("dbetadphi_dz", dbetadphi_dz);
 
         // capital Gs refer to the unboosted frame.
 

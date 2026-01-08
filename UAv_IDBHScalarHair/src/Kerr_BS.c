@@ -1446,8 +1446,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         // shift
         if (CCTK_EQUALS(initial_shift, "Kerr_BS")) {
-          betax[ind] = betad[1]; // por enquato o shift da bs é zero pois é estática.
-          betay[ind] = betad[2];
+          betax[ind] = betaup[1]; // por enquato o shift da bs é zero pois é estática.
+          betay[ind] = betaup[2];
           betaz[ind] = 0.;
         }
 

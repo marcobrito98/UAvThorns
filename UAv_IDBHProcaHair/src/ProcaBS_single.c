@@ -942,16 +942,16 @@ void UAv_IDProcaBS_single(CCTK_ARGUMENTS) {
         Zeta2[ind] = 0;
 
         // lapse
-        if (CCTK_EQUALS(initial_lapse, "PS_single"))
+        if (CCTK_EQUALS(post_initial_lapse, "PS_single"))
           alp[ind] = alp[ind] + pow(psi1, initial_lapse_psi_exponent) - 1.0;
-        else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
-          alp[ind] = alph;
-          if (alp[ind] < SMALL)
-            alp[ind] = SMALL;
-        }
+        // else if (CCTK_EQUALS(post_initial_lapse, "ProcaBS")) {
+        //   alp[ind] = alph;
+        //   if (alp[ind] < SMALL)
+        //     alp[ind] = SMALL;
+        // }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "ProcaBS")) {
+        if (CCTK_EQUALS(post_initial_shift, "PS_single")) {
           betax[ind] = betax[ind] + W[ind] * y1;
           betay[ind] = betay[ind] - W[ind] * x1;
           betaz[ind] = betaz[ind] + 0.;

@@ -572,16 +572,11 @@ void UAv_IDScalarBS_single(CCTK_ARGUMENTS) {
         Kphi2[ind] = 0.5 * (omega_BS - mm * W[ind]) / alph * phi1[ind];
 
         // lapse
-        if (CCTK_EQUALS(initial_lapse, "BS_single"))
+        if (CCTK_EQUALS(post_initial_lapse, "BS_single"))
           alp[ind] = alp[ind] + pow(psi1, initial_lapse_psi_exponent) - 1;
-        else if (CCTK_EQUALS(initial_lapse, "ScalarBS")) {
-          alp[ind] = alph;
-          if (alp[ind] < SMALL)
-            alp[ind] = SMALL;
-        }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "BS_single")) {
+        if (CCTK_EQUALS(post_initial_shift, "BS_single")) {
           betax[ind] = betax[ind] + W[ind] * y1;
           betay[ind] = betay[ind] + (-W[ind] * x1);
           betaz[ind] = betaz[ind] + 0.;

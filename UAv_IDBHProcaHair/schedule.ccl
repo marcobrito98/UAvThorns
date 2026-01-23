@@ -19,9 +19,9 @@ if (CCTK_Equals(initial_data, "ProcaBS"))
 }
 
 
-if (CCTK_Equals(initial_data, "ProcaBSBH"))
+if (CCTK_Equals(initial_data, "ProcaBSboost"))
 {
-  SCHEDULE UAv_IDProcaBSBH IN ADMBase_InitialData
+  SCHEDULE UAv_IDProcaBSboost IN ADMBase_InitialData
   {
     LANG: C
     OPTIONS: Local

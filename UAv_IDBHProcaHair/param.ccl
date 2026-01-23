@@ -9,7 +9,7 @@ EXTENDS KEYWORD initial_data
 {
   "ProcaHairyBH"   :: "ProcaHairyBH initial data"
   "ProcaBS"        :: "Proca bosonic star initial data"
-  "ProcaBSBH"      :: "Proca collision with kerr black hole at rest"
+  "ProcaBSboost"      :: "Proca collision with kerr black hole at rest"
 }
 
 EXTENDS KEYWORD initial_lapse
@@ -17,14 +17,14 @@ EXTENDS KEYWORD initial_lapse
   "ProcaHairyBH"   :: "ProcaHairyBH initial lapse profile"
   "ProcaBS"        :: "Proca bosonic star initial lapse profile"
   "psi^n"          :: "psi^n initial lapse profile"
-  "ProcaBSBH"      :: "Proca lapse"
+  "ProcaBSboost"      :: "Proca lapse"
 }
 
 EXTENDS KEYWORD initial_shift
 {
   "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
   "ProcaBS"        :: "Proca bosonic star initial shift profile"
-  "ProcaBSBH"      :: "Proca Shift: later on superimpose etc."
+  "ProcaBSboost"      :: "Proca Shift: later on superimpose etc."
 }
 
 

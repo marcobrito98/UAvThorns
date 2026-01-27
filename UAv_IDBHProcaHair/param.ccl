@@ -71,12 +71,12 @@ REAL bs_vx "Velocity along x of the boson star. Incompatible with the Scalar Bos
   -1:1 :: "any number in this interval"
 } 0.0
 
-REAL bs_vy "Velocity along x of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
+REAL bs_vy "Velocity along y of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
 {
   -1:1 :: "any number in this interval"
 } 0.0
 
-REAL bs_vz "Velocity along x of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
+REAL bs_vz "Velocity along z of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
 {
   -1:1 :: "any number in this interval"
 } 0.0

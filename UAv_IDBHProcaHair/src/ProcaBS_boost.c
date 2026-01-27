@@ -649,9 +649,9 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        const CCTK_REAL x1rest = x1 + (gamma - 1.) * (bs_vx / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL y1rest = y1 + (gamma - 1.) * (bs_vy / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL z1rest = z1 + (gamma - 1.) * (bs_vz / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL x1rest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL y1rest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL z1rest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
 
         const CCTK_REAL rr2 = x1rest * x1rest + y1rest * y1rest + z1rest * z1rest;
 
@@ -928,9 +928,9 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        const CCTK_REAL x1rest = x1 + (gamma - 1.) * (bs_vx / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL y1rest = y1 + (gamma - 1.) * (bs_vy / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL z1rest = z1 + (gamma - 1.) * (bs_vz / bs_v2) * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL x1rest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL y1rest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL z1rest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
 
         // For the Boson Star, r = R, no coordinate change needed.
         CCTK_REAL rr2 = x1rest * x1rest + y1rest * y1rest + z1rest * z1rest;
@@ -939,8 +939,9 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         // }
         const CCTK_REAL rr = sqrt(rr2);
         /* note that there are divisions by rr in the following expressions.
-     divisions by zero should be avoided by choosing a non-zero value for
-     z0 (for instance) */
+          divisions by zero should be avoided by choosing a non-zero value for
+          z0 (for instance)
+        */
 
         CCTK_REAL rho2 = x1rest * x1rest + y1rest * y1rest;
         // if( rho2 < pow( eps_r, 2 ) ){
@@ -1052,7 +1053,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
             }
           }
         }
-        // dG[a][b][c] = dG_ab/dx^c
+        // dG[a][b][c] = dG_ab/dx^c at rest
 
         dG[1][1][1] = (2 * exp(2. * F1[ind]) * x1rest * (pow(y1rest, 2) + x1rest * (pow(x1rest, 2) + pow(y1rest, 2)) * dF1_dx) + 2 * exp(2. * F2[ind]) * pow(y1rest, 2) * (-x1rest + (pow(x1rest, 2) + pow(y1rest, 2)) * dF2_dx)) / pow(pow(x1rest, 2) + pow(y1rest, 2), 2);
 
@@ -1114,17 +1115,17 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         invLambda[0][2] = gamma * bs_vy;
         invLambda[0][3] = gamma * bs_vz;
         invLambda[1][0] = gamma * bs_vx;
-        invLambda[1][1] = 1. + (gamma - 1.) * (bs_vx * bs_vx) / bs_v2;
-        invLambda[1][2] = (gamma - 1.) * (bs_vx * bs_vy) / bs_v2;
-        invLambda[1][3] = (gamma - 1.) * (bs_vx * bs_vz) / bs_v2;
+        invLambda[1][1] = 1. + gamma2 / (gamma + 1.) * (bs_vx * bs_vx);
+        invLambda[1][2] = gamma2 / (gamma + 1.) * (bs_vx * bs_vy);
+        invLambda[1][3] = gamma2 / (gamma + 1.) * (bs_vx * bs_vz);
         invLambda[2][0] = gamma * bs_vy;
-        invLambda[2][1] = (gamma - 1.) * (bs_vy * bs_vx) / bs_v2;
-        invLambda[2][2] = 1. + (gamma - 1.) * (bs_vy * bs_vy) / bs_v2;
-        invLambda[2][3] = (gamma - 1.) * (bs_vy * bs_vz) / bs_v2;
+        invLambda[2][1] = gamma2 / (gamma + 1.) * (bs_vy * bs_vx);
+        invLambda[2][2] = 1. + gamma2 / (gamma + 1.) * (bs_vy * bs_vy);
+        invLambda[2][3] = gamma2 / (gamma + 1.) * (bs_vy * bs_vz);
         invLambda[3][0] = gamma * bs_vz;
-        invLambda[3][1] = (gamma - 1.) * (bs_vz * bs_vx) / bs_v2;
-        invLambda[3][2] = (gamma - 1.) * (bs_vz * bs_vy) / bs_v2;
-        invLambda[3][3] = 1. + (gamma - 1.) * (bs_vz * bs_vz) / bs_v2;
+        invLambda[3][1] = gamma2 / (gamma + 1.) * (bs_vz * bs_vx);
+        invLambda[3][2] = gamma2 / (gamma + 1.) * (bs_vz * bs_vy);
+        invLambda[3][3] = 1. + gamma2 / (gamma + 1.) * (bs_vz * bs_vz);
 
         CCTK_REAL Lambda[4][4];
         for (int a = 0; a < 4; ++a) {
@@ -1137,17 +1138,17 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         Lambda[0][2] = -gamma * bs_vy;
         Lambda[0][3] = -gamma * bs_vz;
         Lambda[1][0] = -gamma * bs_vx;
-        Lambda[1][1] = 1. + (gamma - 1.) * (bs_vx * bs_vx) / bs_v2;
-        Lambda[1][2] = (gamma - 1.) * (bs_vx * bs_vy) / bs_v2;
-        Lambda[1][3] = (gamma - 1.) * (bs_vx * bs_vz) / bs_v2;
+        Lambda[1][1] = 1. + gamma2 / (gamma + 1.) * (bs_vx * bs_vx);
+        Lambda[1][2] = gamma2 / (gamma + 1.) * (bs_vx * bs_vy);
+        Lambda[1][3] = gamma2 / (gamma + 1.) * (bs_vx * bs_vz);
         Lambda[2][0] = -gamma * bs_vy;
-        Lambda[2][1] = (gamma - 1.) * (bs_vy * bs_vx) / bs_v2;
-        Lambda[2][2] = 1. + (gamma - 1.) * (bs_vy * bs_vy) / bs_v2;
-        Lambda[2][3] = (gamma - 1.) * (bs_vy * bs_vz) / bs_v2;
+        Lambda[2][1] = gamma2 / (gamma + 1.) * (bs_vy * bs_vx);
+        Lambda[2][2] = 1. + gamma2 / (gamma + 1.) * (bs_vy * bs_vy);
+        Lambda[2][3] = gamma2 / (gamma + 1.) * (bs_vy * bs_vz);
         Lambda[3][0] = -gamma * bs_vz;
-        Lambda[3][1] = (gamma - 1.) * (bs_vz * bs_vx) / bs_v2;
-        Lambda[3][2] = (gamma - 1.) * (bs_vz * bs_vy) / bs_v2;
-        Lambda[3][3] = 1. + (gamma - 1.) * (bs_vz * bs_vz) / bs_v2;
+        Lambda[3][1] = gamma2 / (gamma + 1.) * (bs_vz * bs_vx);
+        Lambda[3][2] = gamma2 / (gamma + 1.) * (bs_vz * bs_vy);
+        Lambda[3][3] = 1. + gamma2 / (gamma + 1.) * (bs_vz * bs_vz);
 
         // Boosted metric
 
@@ -1161,15 +1162,61 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
           }
         }
 
-        gammaA_inv[1][1] = 1 / ((-(pow(bs_v, 2) * exp(2. * F0[ind])) + (exp(2 * (F1[ind] + F2[ind])) * (pow(x1rest, 2) + pow(y1rest, 2))) / (exp(2. * F2[ind]) * pow(x1rest, 2) + exp(2. * F1[ind]) * pow(y1rest, 2))) * pow(gamma, 2));
-        gammaA_inv[1][2] = ((-exp(2. * F1[ind]) + exp(2. * F2[ind])) * x1rest * y1rest) / ((exp(2 * (F1[ind] + F2[ind])) * (pow(x1rest, 2) + pow(y1rest, 2)) - pow(bs_v, 2) * exp(2. * F0[ind]) * (exp(2. * F2[ind]) * pow(x1rest, 2) + exp(2. * F1[ind]) * pow(y1rest, 2))) * gamma);
-        gammaA_inv[1][3] = 0;
+        gammaA_inv[1][1] = (-(exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vy, 2) * pow(bs_vz, 2) * pow(x1rest, 2) *
+                              pow(gamma, 4)) -
+                            exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * (pow(bs_vy, 2) * pow(y1rest, 2) + pow(bs_vx, 2) * (pow(x1rest, 2) + pow(y1rest, 2))) * pow(gamma, 4) +
+                            exp(4*F1[ind]) * pow(bs_vx * x1rest * gamma * (1 + gamma) + y1rest * (1 + gamma + (pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(gamma, 2)), 2) + exp(2 * F1[ind] + 2 * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) * pow(1 + gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) * (1 + gamma + (pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(gamma, 2)) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vx, 4) * pow(gamma, 3) + 2 * pow(bs_vx, 2) * gamma * (1 + gamma + pow(bs_vy, 2) * pow(gamma, 2)) + pow(bs_vy, 2) * gamma * (3 + gamma * (4 + gamma + pow(bs_vy, 2) * gamma)))))) /
+                           (exp(2. *
+                                F1[ind]) *
+                            pow(gamma, 2) * (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) + exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
+        gammaA_inv[1][2] = (exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vy, 2) * pow(bs_vz, 2) * x1rest * y1rest *
+                                pow(gamma, 3) +
+                            exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * pow(gamma, 2) * (-(pow(bs_vy, 2) * x1rest * y1rest * gamma) + bs_vx * (pow(x1rest, 2) + pow(y1rest, 2)) * (1 + gamma)) + exp(4*F1[ind]) * (-(bs_vx * y1rest * (1 + gamma)) + x1rest * (-1 + (-1 + pow(bs_vy, 2)) * gamma)) * (bs_vx * x1rest * gamma * (1 + gamma) + y1rest * (1 + gamma + (pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(gamma, 2))) +
+                            exp(2 * F1[ind] + 2 * F2[ind]) * (-(pow(bs_vx, 3) * pow(x1rest, 2) * pow(gamma, 2) * (1 + gamma)) - x1rest * y1rest * (-1 + (-1 + pow(bs_vy, 2)) * gamma) * (1 + gamma + pow(bs_vy, 2) * pow(gamma, 2)) +
+                                                              pow(bs_vx, 2) * x1rest * y1rest * gamma * (1 + gamma * (3 - (-2 + pow(bs_vy, 2)) * gamma)) - bs_vx * (1 + gamma) * (pow(y1rest, 2) * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma + 2 * pow(bs_vy, 2) * pow(gamma, 2))))) /
+                           (exp(2. *
+                                F1[ind]) *
+                            gamma * (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) + exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
+        gammaA_inv[1][3] = (bs_vy * (exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * y1rest * pow(gamma, 2) * (y1rest + bs_vx * x1rest * gamma + y1rest * gamma) +
+                                     exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vz, 2) * x1rest * pow(gamma, 2) * (x1rest + x1rest * gamma - bs_vx * y1rest * gamma) -
+                                     exp(4*F1[ind]) * (y1rest + bs_vx * x1rest * gamma + y1rest * gamma) * (bs_vx * x1rest * gamma * (1 + gamma) + y1rest * (1 + gamma + (pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(gamma, 2))) -
+                                     exp(2 * F1[ind] + 2 * F2[ind]) * (pow(y1rest, 2) * gamma * pow(1 + gamma, 2) +
+                                                                       pow(x1rest, 2) * (1 + gamma) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma)) - bs_vx * x1rest * y1rest * gamma * (2 + gamma * (3 + (1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma))))) /
+                           (exp(2. *
+                                F1[ind]) *
+                            gamma * (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) + exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
         gammaA_inv[2][1] = gammaA_inv[1][2];
-        gammaA_inv[2][2] = (exp(2. * F1[ind]) * pow(x1rest, 2) + exp(2. * F2[ind]) * pow(y1rest, 2) - pow(bs_v, 2) * exp(2. * F0[ind]) * (pow(x1rest, 2) + pow(y1rest, 2))) / (exp(2 * (F1[ind] + F2[ind])) * (pow(x1rest, 2) + pow(y1rest, 2)) - pow(bs_v, 2) * exp(2. * F0[ind]) * (exp(2. * F2[ind]) * pow(x1rest, 2) + exp(2. * F1[ind]) * pow(y1rest, 2)));
-        gammaA_inv[2][3] = 0;
+        gammaA_inv[2][2] = (-(exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vy, 2) * pow(bs_vz, 2) * pow(y1rest, 2) *
+                              pow(gamma, 2)) +
+                            exp(4*F1[ind]) * pow(bs_vx * y1rest * (1 + gamma) + x1rest * (1 + gamma - pow(bs_vy, 2) * gamma), 2) -
+                            exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * (pow(y1rest, 2) * pow(1 + gamma, 2) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))) +
+                            exp(2 * F1[ind] + 2 * F2[ind]) * (pow(y1rest, 2) * pow(1 + gamma -
+                                                                                       pow(bs_vy, 2) * gamma,
+                                                                                   2) +
+                                                              2 * bs_vx * x1rest * y1rest * (1 + gamma) * (-1 + (-1 + pow(bs_vy, 2)) * gamma) +
+                                                              pow(bs_vx, 2) * (pow(bs_vy, 2) * pow(y1rest, 2) * pow(gamma, 2) +
+                                                                               pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))) /
+                           (exp(2. * F1[ind]) * (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) +
+                                                 exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
+        gammaA_inv[2][3] = (bs_vy * (exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * x1rest * gamma * (y1rest + bs_vx * x1rest * gamma + y1rest * gamma) +
+                                     exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vz, 2) * y1rest * gamma * (bs_vx * y1rest * gamma - x1rest * (1 + gamma)) +
+                                     exp(4*F1[ind]) * (y1rest + bs_vx * x1rest * gamma + y1rest * gamma) * (bs_vx * y1rest * (1 + gamma) + x1rest * (1 + gamma - pow(bs_vy, 2) * gamma)) +
+                                     exp(2 * F1[ind] + 2 * F2[ind]) * (-(pow(bs_vx, 3) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(gamma, 2)) - pow(bs_vx, 2) * x1rest * y1rest * gamma * (1 + gamma) + x1rest * y1rest * (1 + gamma) * (-1 + (-1 + pow(bs_vy, 2)) * gamma) +
+                                                                       bs_vx * (pow(x1rest, 2) * (1 + gamma) * (1 + 2 * gamma) +
+                                                                                pow(y1rest, 2) * gamma * (2 + 2 * gamma - pow(bs_vy, 2) * gamma))))) /
+                           (exp(2. *
+                                F1[ind]) *
+                            (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) +
+                             exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
         gammaA_inv[3][1] = gammaA_inv[1][3];
         gammaA_inv[3][2] = gammaA_inv[2][3];
-        gammaA_inv[3][3] = exp(-2. * F1[ind]);
+        gammaA_inv[3][3] = (exp(4*F1[ind]) * pow(bs_vy, 2) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2) -
+                            exp(2 * F0[ind] + 2 * F1[ind]) * pow(bs_vz, 2) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2) - exp(2 * F0[ind] + 2 * F2[ind]) * pow(bs_vz, 2) * pow(x1rest + x1rest * gamma - bs_vx * y1rest * gamma, 2) +
+                            exp(2 * F1[ind] + 2 * F2[ind]) * (-2 * bs_vx * pow(bs_vy, 2) * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (pow(bs_vy, 2) * pow(1 + gamma, 2) + pow(1 + gamma - pow(bs_vx, 2) * gamma, 2)) + pow(y1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vx, 2) * (-2 + (-2 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma))))) /
+                           (exp(2. *
+                                F1[ind]) *
+                            (exp(2 * F1[ind] + 2 * F2[ind]) * (pow(x1rest, 2) + pow(y1rest, 2)) * pow(-1 + (-1 + pow(bs_vx, 2) + pow(bs_vy, 2)) * gamma, 2) +
+                             exp(2. * F0[ind]) * pow(bs_vz, 2) * (-(exp(2. * F1[ind]) * pow(y1rest + bs_vx * x1rest * gamma + y1rest * gamma, 2)) - exp(2. * F2[ind]) * ((pow(bs_vx, 2) + pow(bs_vy, 2)) * pow(y1rest, 2) * pow(gamma, 2) - 2 * bs_vx * x1rest * y1rest * gamma * (1 + gamma) + pow(x1rest, 2) * (1 + gamma * (2 + gamma + pow(bs_vy, 2) * gamma))))));
 
         // // Build spatial metric from boosted 4-metric Gb
         // CCTK_REAL gammaA[3][3] = {
@@ -1542,7 +1589,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
                                             H3[ind] * sinph * sinwt)) +
                                    rr * (-(dH3_dz * sinph * sinwt) +
                                          coswt * (dH1r_dz * x1rest + cosph * (costh * dH2_dz + H2[ind] * (-sinth *
-                                                                                                              th_z))))) /
+                                                                                                          th_z))))) /
                                   rr2;
 
         const CCTK_REAL dA1y_dx = (-(R_x * ((costh * H2[ind] * sinph + H1r[ind] * y1rest) * coswt +
@@ -1567,7 +1614,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
                                             cosph * H3[ind] * sinwt)) +
                                    rr * (cosph * dH3_dz * sinwt +
                                          coswt * (dH1r_dz * y1rest + sinph * (costh * dH2_dz + H2[ind] * (-sinth *
-                                                                                                      th_z))))) /
+                                                                                                          th_z))))) /
                                   rr2;
 
         const CCTK_REAL dA1z_dx = (coswt * (R_x * (H2[ind] * sinth - H1r[ind] * z1rest) +
@@ -1603,7 +1650,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
                                                                         sinwt) +
                                    rr * (-(dH3_dz * sinph * coswt) -
                                          sinwt * (dH1r_dz * x1rest + cosph * (costh * dH2_dz + H2[ind] * (-sinth *
-                                                                                                              th_z))))) /
+                                                                                                          th_z))))) /
                                   rr2;
 
         const CCTK_REAL dA2y_dx = (R_x * (-(cosph * H3[ind] * coswt) + (costh * H2[ind] * sinph +
@@ -1631,7 +1678,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
                                                                            sinwt) +
                                    rr * (cosph * dH3_dz * coswt -
                                          sinwt * (dH1r_dz * y1rest + sinph * (costh * dH2_dz + H2[ind] * (-sinth *
-                                                                                                      th_z))))) /
+                                                                                                          th_z))))) /
                                   rr2;
 
         const CCTK_REAL dA2z_dx = (sinwt * (R_x * (-(H2[ind] * sinth) + H1r[ind] * z1rest) +

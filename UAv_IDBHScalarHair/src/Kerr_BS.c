@@ -588,35 +588,28 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS)
 
         const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
-        //Black Hole B
+        //Black Hole B  https://arxiv.org/pdf/1001.4077
 
-        const CCTK_REAL x1_2  = x[ind] - x0_2;
-        const CCTK_REAL y1_2  = y[ind] - y0_2;
-        const CCTK_REAL z1_2  = z[ind] - z0_2;
+        const CCTK_REAL deltakerr2 = bh_mass*bh_mass - (bh_spin*bh_spin + 0*0) ;
+        const CCTK_REAL delta  = sqrt(deltakerr2) ;
 
-        const CCTK_REAL bh_v2 = bh_v * bh_v;
-        const CCTK_REAL bh_spin2 = bh_spin*bh_spin;
-        // const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        // const CCTK_REAL gamma = sqrt(gamma2);
-        // const CCTK_REAL rr2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-        // const CCTK_REAL rr_2  = sqrt(rr2_2);
-        CCTK_REAL rr2_2 = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2;
-        if( rr2_2 < pow( eps_r, 2 ) ) {
+        const CCTK_REAL x1_2     = x[ind] - x0_2;
+        const CCTK_REAL y1_2     = y[ind] - y0_2;
+        const CCTK_REAL z1_2     = z[ind] - z0_2;
+
+        CCTK_REAL rr2_2    = x1_2*x1_2 + y1_2*y1_2 + z1_2*z1_2 ;
+        if( rr2_2 < pow( eps_r, 2 ) ){ 
         rr2_2 = pow( eps_r, 2 );
         }
-        const CCTK_REAL rr_2  = sqrt(rr2_2);
+        CCTK_REAL rr_2     = sqrt(rr2_2) ;
 
-
-        // const CCTK_REAL rho2_2 = gamma2*x1_2*x1_2 + y1_2*y1_2;
-        // const CCTK_REAL rho_2  = sqrt(rho2_2);
-        CCTK_REAL rho2_2 = x1_2*x1_2 + y1_2*y1_2;
+        CCTK_REAL rho_2, rho2_2, rho3_2;
+        rho2_2 = x1_2 * x1_2 + y1_2 * y1_2; 
         if( rho2_2 < pow( eps_r, 2 ) ){
         rho2_2 = pow( eps_r, 2 );
         }
-        const CCTK_REAL rho_2  = sqrt(rho2_2);
-        
-
-        const CCTK_REAL theta_2 = acos(z1_2/rr_2);
+        rho_2  = sqrt( rho2_2 );
+        rho3_2 = rho2_2 * rho_2;
 
         const CCTK_REAL deltakerr2_2 = bh_mass*bh_mass - bh_spin2 ;
         const CCTK_REAL deltakerr  = sqrt(deltakerr2_2) ;

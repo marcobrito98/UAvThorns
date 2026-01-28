@@ -1,0 +1,100 @@
+# Interface definition for thorn ComplexProcaEvolve
+
+implements: ComplexProcaEvolve
+inherits: ADMBase Tmunubase ComplexProcaBase Boundary
+
+
+CCTK_INT FUNCTION                        \
+    Boundary_SelectVarForBC            \
+        (CCTK_POINTER_TO_CONST IN GH,    \
+         CCTK_INT IN faces,              \
+         CCTK_INT IN boundary_width,     \
+         CCTK_INT IN table_handle,       \
+         CCTK_STRING IN var_name,      \
+         CCTK_STRING IN bc_name)
+REQUIRES FUNCTION Boundary_SelectVarForBC
+
+CCTK_INT FUNCTION                        \
+    Boundary_SelectGroupForBC            \
+        (CCTK_POINTER_TO_CONST IN GH,    \
+         CCTK_INT IN faces,              \
+         CCTK_INT IN boundary_width,     \
+         CCTK_INT IN table_handle,       \
+         CCTK_STRING IN group_name,      \
+         CCTK_STRING IN bc_name)
+REQUIRES FUNCTION Boundary_SelectGroupForBC
+
+CCTK_INT FUNCTION                         \
+    NewRad_Apply                          \
+        (CCTK_POINTER_TO_CONST IN cctkGH, \
+         CCTK_REAL ARRAY IN var,          \
+         CCTK_REAL ARRAY INOUT rhs,       \
+         CCTK_REAL IN var0,               \
+         CCTK_REAL IN v0,                 \
+         CCTK_INT IN radpower)
+REQUIRES FUNCTION NewRad_Apply
+
+####################################################
+###  Functions provided by MoL for registration  ###
+####################################################
+
+CCTK_INT FUNCTION MoLRegisterEvolved(CCTK_INT IN EvolvedIndex, \
+                                     CCTK_INT IN RHSIndex)
+CCTK_INT FUNCTION MoLRegisterEvolvedGroup(CCTK_INT IN EvolvedIndex, \
+                                          CCTK_INT IN RHSIndex)
+CCTK_INT FUNCTION MoLRegisterSaveAndRestoreGroup(CCTK_INT IN SandRIndex)
+CCTK_INT FUNCTION MoLRegisterConstrainedGroup(CCTK_INT IN ConstrainedIndex)
+
+USES FUNCTION MoLRegisterEvolved
+USES FUNCTION MoLRegisterEvolvedGroup
+USES FUNCTION MoLRegisterSaveAndRestoreGroup
+USES FUNCTION MoLRegisterConstrainedGroup
+
+private:
+
+# Right-hand sides
+#------------------
+CCTK_REAL rhs_E1i type=gf tags='tensortypealias="U" tensorweight=0 prolongation="none" Checkpoint="no"'
+{
+  rhs_E1x rhs_E1y rhs_E1z
+} "right hand sides for E^i evolution equations"
+
+CCTK_REAL rhs_A1i type=gf tags='tensortypealias="D" tensorweight=0 prolongation="none" Checkpoint="no"'
+{
+  rhs_A1x rhs_A1y rhs_A1z
+} "right hand sides for A_i evolution equations"
+
+CCTK_REAL rhs_Aphi1 type=gf tags='tensortypealias="Scalar" tensorweight=0 prolongation="none" Checkpoint="no"' "right hand sides for Aphi evolution equation"
+
+CCTK_REAL rhs_Zeta1 type=gf tags='tensortypealias="Scalar" tensorweight=0 prolongation="none" Checkpoint="no"' "right hand sides for Zeta evolution equation"
+
+CCTK_REAL rhs_E2i type=gf tags='tensortypealias="U" tensorweight=0 prolongation="none" Checkpoint="no"'
+{
+  rhs_E2x rhs_E2y rhs_E2z
+} "right hand sides for E^i evolution equations"
+
+CCTK_REAL rhs_A2i type=gf tags='tensortypealias="D" tensorweight=0 prolongation="none" Checkpoint="no"'
+{
+  rhs_A2x rhs_A2y rhs_A2z
+} "right hand sides for A_i evolution equations"
+
+CCTK_REAL rhs_Aphi2 type=gf tags='tensortypealias="Scalar" tensorweight=0 prolongation="none" Checkpoint="no"' "right hand sides for Aphi evolution equation"
+
+CCTK_REAL rhs_Zeta2 type=gf tags='tensortypealias="Scalar" tensorweight=0 prolongation="none" Checkpoint="no"' "right hand sides for Zeta evolution equation"
+
+# BSSN-like variables
+#---------------------
+CCTK_REAL hmetric type=gf tags='tensortypealias="DD_sym" tensorweight=-0.66666666666666666667 prolongation="none" Checkpoint="no"'
+{
+  hxx hxy hxz hyy hyz hzz
+} "\tilde gamma_ij"
+
+CCTK_REAL conf_fac_chi type=gf tags='tensortypealias="Scalar" tensorweight=-0.66666666666666666667 prolongation="none" Checkpoint="no"'
+{
+  chi
+} "conformal factor \chi"
+
+CCTK_REAL trk type=gf tags='tensortypealias="Scalar" tensorweight=0 prolongation="none" Checkpoint="no"'
+{
+  tracek
+} "Tr(K)"

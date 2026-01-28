@@ -1155,9 +1155,9 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             CCTK_REAL sum = 0.0;
-            for (int mu = 0; mu < 4; ++mu)
+            for (int chi = 0; chi < 4; ++chi) //making \mu\to\chi to avoid conflict with field mass \mu
               for (int nu = 0; nu < 4; ++nu)
-                sum += invLambda[mu][a] * invLambda[nu][b] * G[mu][nu];
+                sum += invLambda[chi][a] * invLambda[nu][b] * G[chi][nu];
             Gb[a][b] = sum;
           }
         }
@@ -1231,10 +1231,10 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
           for (int b = 0; b < 4; ++b) {
             for (int c = 0; c < 4; ++c) {
               CCTK_REAL sum = 0.0;
-              for (int mu = 0; mu < 4; ++mu)
+              for (int chi = 0; chi < 4; ++chi)
                 for (int nu = 0; nu < 4; ++nu)
                   for (int lam = 0; lam < 4; ++lam)
-                    sum += invLambda[mu][a] * invLambda[nu][b] * invLambda[lam][c] * dG[mu][nu][lam];
+                    sum += invLambda[chi][a] * invLambda[nu][b] * invLambda[lam][c] * dG[chi][nu][lam];
               dGb[a][b][c] = sum;
             }
           }
@@ -1287,7 +1287,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
           for (int b = 0; b < 4; ++b) {
             K_A[a][b] = 0.0;
           }
-        } // K_0\mu might not be zero but irrelevant for what i want to compute
+        } // K_0\chi might not be zero but irrelevant for what i want to compute
 
         for (int a = 1; a < 4; ++a) {
           for (int b = 1; b < 4; ++b) {
@@ -1401,7 +1401,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
           for (int b = 0; b < 4; ++b) {
             K_B[a][b] = 0.0;
           }
-        } // K_0\mu might not be zero but irrelevant for what i want to compute
+        } // K_0\chi might not be zero but irrelevant for what i want to compute
 
         // K_B[1][1] = Axx / psi2_2;
         // K_B[1][2] = Axy / psi2_2;
@@ -1469,8 +1469,8 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
 
         // No need to change the radial component, R and r coincide
 
-        CCTK_REAL A1_unboosted[4]; // A_\mu real part
-        CCTK_REAL A2_unboosted[4]; // A_\mu imag part
+        CCTK_REAL A1_unboosted[4]; // A_\chi real part
+        CCTK_REAL A2_unboosted[4]; // A_\chi imag part
 
         // A_t
         A1_unboosted[0] = V[ind] * sinwt;
@@ -1491,7 +1491,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         const CCTK_REAL dH1r_dr = dH1_dr[ind] / rr - H1r[ind] / rr;
         const CCTK_REAL dH1r_dth = dH1_dth[ind] / rr;
 
-        // Build unboosted field-strength tensor F_{mu nu} (only 0i components from time/spatial derivatives)
+        // Build unboosted field-strength tensor F_{chi nu} (only 0i components from time/spatial derivatives)
         CCTK_REAL F1_unb[4][4], F2_unb[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
@@ -1686,15 +1686,15 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         F2_unb[2][3] = dA2z_dy - dA2y_dz;
         F2_unb[3][2] = -F2_unb[2][3];
 
-        CCTK_REAL A1_boosted[4]; // A_\mu real part
-        CCTK_REAL A2_boosted[4]; // A_\mu imag part
+        CCTK_REAL A1_boosted[4]; // A_\chi real part
+        CCTK_REAL A2_boosted[4]; // A_\chi imag part
         // Boosted components
         for (int a = 0; a < 4; ++a) {
           A1_boosted[a] = 0.0;
           A2_boosted[a] = 0.0;
-          for (int mu = 0; mu < 4; ++mu) {
-            A1_boosted[a] += invLambda[mu][a] * A1_unboosted[mu];
-            A2_boosted[a] += invLambda[mu][a] * A2_unboosted[mu];
+          for (int chi = 0; chi < 4; ++chi) {
+            A1_boosted[a] += invLambda[chi][a] * A1_unboosted[chi];
+            A2_boosted[a] += invLambda[chi][a] * A2_unboosted[chi];
           }
         }
 
@@ -1708,7 +1708,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         A2z[ind] = A2_boosted[3];
 
         /*
-          A_\phi = -n^\mu A_\mu = - (A_t + W*A_ph)/alpha
+          A_\phi = -n^\chi A_\chi = - (A_t + W*A_ph)/alpha
                 = -i * e^{i (m ph - w t)} * (V + W H3 sinth) / alpha
         */
         // Aphi1[ind] = (V[ind] + W[ind] * sinth * H3[ind]) / alph * harm_im;
@@ -1717,16 +1717,16 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         Aphi1[ind] = 1 / alpha * (-A1_boosted[0] + betaup[1] * A1_boosted[1] + betaup[2] * A1_boosted[2] + betaup[3] * A1_boosted[3]);
         Aphi2[ind] = 1 / alpha * (-A2_boosted[0] + betaup[1] * A2_boosted[1] + betaup[2] * A2_boosted[2] + betaup[3] * A2_boosted[3]);
 
-        //------ Boosted field-strength tensor F_{mu nu} ------
+        //------ Boosted field-strength tensor F_{chi nu} ------
         CCTK_REAL F1_boosted[4][4], F2_boosted[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             F1_boosted[a][b] = 0.0;
             F2_boosted[a][b] = 0.0;
-            for (int mu = 0; mu < 4; ++mu) {
+            for (int chi = 0; chi < 4; ++chi) {
               for (int nu = 0; nu < 4; ++nu) {
-                F1_boosted[a][b] += invLambda[mu][a] * invLambda[nu][b] * F1_unb[mu][nu];
-                F2_boosted[a][b] += invLambda[mu][a] * invLambda[nu][b] * F2_unb[mu][nu];
+                F1_boosted[a][b] += invLambda[chi][a] * invLambda[nu][b] * F1_unb[chi][nu];
+                F2_boosted[a][b] += invLambda[chi][a] * invLambda[nu][b] * F2_unb[chi][nu];
               }
             }
           }
@@ -1735,18 +1735,18 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         // Boosted components
 
         // cannot be boosted since its foliation dependent
-        CCTK_REAL E1_boosted[4]; // E_\mu real part
-        CCTK_REAL E2_boosted[4]; // E_\mu imag part
+        CCTK_REAL E1_boosted[4]; // E_\chi real part
+        CCTK_REAL E2_boosted[4]; // E_\chi imag part
         for (int a = 0; a < 4; ++a) {
           E1_boosted[a] = 0.0;
           E2_boosted[a] = 0.0;
-          // for (int mu = 0; mu < 4; ++mu) {
-          //   E1_boosted[a] += Lambda[a][mu] * E1_unboosted[mu];
-          //   E2_boosted[a] += Lambda[a][mu] * E2_unboosted[mu];
+          // for (int chi = 0; chi < 4; ++chi) {
+          //   E1_boosted[a] += Lambda[a][chi] * E1_unboosted[chi];
+          //   E2_boosted[a] += Lambda[a][chi] * E2_unboosted[chi];
           // }
         }
 
-        // E_\mu
+        // E_\chi
         E1_boosted[1] = 1 / alpha * (F1_boosted[1][0] - betaup[2] * F1_boosted[1][2] - betaup[3] * F1_boosted[1][3]);
         E1_boosted[2] = 1 / alpha * (F1_boosted[2][0] - betaup[1] * F1_boosted[2][1] - betaup[3] * F1_boosted[2][3]);
         E1_boosted[3] = 1 / alpha * (F1_boosted[3][0] - betaup[1] * F1_boosted[3][1] - betaup[2] * F1_boosted[3][2]);
@@ -1755,13 +1755,13 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         E2_boosted[2] = 1 / alpha * (F2_boosted[2][0] - betaup[1] * F2_boosted[2][1] - betaup[3] * F2_boosted[2][3]);
         E2_boosted[3] = 1 / alpha * (F2_boosted[3][0] - betaup[1] * F2_boosted[3][1] - betaup[2] * F2_boosted[3][2]);
 
-        CCTK_REAL E1up_boosted[4]; // E^\mu real part
-        CCTK_REAL E2up_boosted[4]; // E^\mu imag part
+        CCTK_REAL E1up_boosted[4]; // E^\chi real part
+        CCTK_REAL E2up_boosted[4]; // E^\chi imag part
         for (int a = 0; a < 4; ++a) {
           E1up_boosted[a] = 0.0;
           E2up_boosted[a] = 0.0;
         }
-        // E^\mu /can be raised using the 3 metric since it is a spatial vector/
+        // E^\chi /can be raised using the 3 metric since it is a spatial vector/
         E1up_boosted[1] = gammaA_inv[1][1] * E1_boosted[1] + gammaA_inv[1][2] * E1_boosted[2] + gammaA_inv[1][3] * E1_boosted[3];
         E1up_boosted[2] = gammaA_inv[2][1] * E1_boosted[1] + gammaA_inv[2][2] * E1_boosted[2] + gammaA_inv[2][3] * E1_boosted[3];
         E1up_boosted[3] = gammaA_inv[3][1] * E1_boosted[1] + gammaA_inv[3][2] * E1_boosted[2] + gammaA_inv[3][3] * E1_boosted[3];
@@ -1770,7 +1770,7 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         E2up_boosted[2] = gammaA_inv[2][1] * E2_boosted[1] + gammaA_inv[2][2] * E2_boosted[2] + gammaA_inv[2][3] * E2_boosted[3];
         E2up_boosted[3] = gammaA_inv[3][1] * E2_boosted[1] + gammaA_inv[3][2] * E2_boosted[2] + gammaA_inv[3][3] * E2_boosted[3];
 
-        /* store spatial components E^\mu */
+        /* store spatial components E^\chi */
         E1x[ind] = E1up_boosted[1];
         E1y[ind] = E1up_boosted[2];
         E1z[ind] = E1up_boosted[3];

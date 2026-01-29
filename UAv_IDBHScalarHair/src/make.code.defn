@@ -1,7 +1,0 @@
-# Main make.code.defn file for thorn UAv_IDBHScalarHair
-
-# Source files in this directory
-SRCS = BHScalarHair.c  read_data.c  Kerr_test.c ScalarBS.c ParamCheck.c Collision.c BH_BS.c Kerr_BS.c ScalarBS_single_BH.c
-
-# Subdirectories containing source files
-SUBDIRS =

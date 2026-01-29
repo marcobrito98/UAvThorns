@@ -1,7 +1,0 @@
-# $Header:$
-
-# Source files in this directory
-SRCS = Basegrid.F90
-
-# Subdirectories containing source files
-SUBDIRS = 

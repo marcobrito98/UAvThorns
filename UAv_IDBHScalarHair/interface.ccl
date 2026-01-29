@@ -1,4 +1,0 @@
-# Interface definition for thorn UAv_IDBHScalarHair
-
-implements: UAv_IDBHScalarHair
-inherits: ADMBase grid ScalarBase

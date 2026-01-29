@@ -1,6 +1,0 @@
-
-# Source files in this directory
-SRCS = MagScalar_Symmetries.F90 init.c
-
-# Subdirectories containing source files
-SUBDIRS = 

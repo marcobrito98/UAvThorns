@@ -1,0 +1,63 @@
+# Schedule definitions for thorn ComplexProcaEvolve
+
+# Schedule ComplexProca evolution if evolution_method=ComplexProcaEvolve
+if (CCTK_EQUALS (evolution_method, "ComplexProcaEvolve")) {
+
+  STORAGE: rhs_E1i rhs_A1i rhs_Aphi1 rhs_Zeta1
+  STORAGE: rhs_E2i rhs_A2i rhs_Aphi2 rhs_Zeta2
+  STORAGE: hmetric conf_fac_chi trk
+
+  schedule ComplexProca_InitSymBound at BASEGRID
+  {
+    LANG: Fortran
+    OPTIONS: META
+  } "Schedule symmetries"
+
+  schedule ComplexProca_zero_rhs at BASEGRID after ComplexProca_InitSymBound
+  {
+    LANG: Fortran
+  } "set all rhs functions to zero to prevent spurious nans"
+
+  schedule ComplexProca_RegisterVars in MoL_Register
+  {
+    LANG: C
+    OPTIONS: META
+  } "Register variables for MoL"
+
+  schedule ComplexProca_calc_rhs in MoL_CalcRHS as ComplexProca_CalcRHS
+  {
+    LANG: Fortran
+  } "MoL RHS calculation for ComplexProca variables"
+
+  schedule ComplexProca_calc_rhs_bdry in MoL_CalcRHS as ComplexProca_CalcRHS_Bdry \
+           after ComplexProca_CalcRHS
+  {
+    LANG: Fortran
+  } "MoL boundary RHS calculation for ComplexProca variables"
+
+
+  schedule ComplexProca_Boundaries in MoL_PostStep
+  {
+    LANG: Fortran
+    OPTIONS: LEVEL
+    SYNC: ComplexProcaBase::E1i
+    SYNC: ComplexProcaBase::A1i
+    SYNC: ComplexProcaBase::Aphi1
+    SYNC: ComplexProcaBase::Zeta1
+    SYNC: ComplexProcaBase::E2i
+    SYNC: ComplexProcaBase::A2i
+    SYNC: ComplexProcaBase::Aphi2
+    SYNC: ComplexProcaBase::Zeta2
+  } "MoL boundary enforcement for ComplexProca variables"
+
+  schedule GROUP ApplyBCs as ComplexProca_ApplyBCs in MoL_PostStep after ComplexProca_Boundaries
+  {
+  } "Apply boundary conditions"
+
+
+  schedule ComplexProca_calc_Tmunu in AddToTmunu as ComplexProca_AddToTmunu
+  {
+    LANG: Fortran
+  } "Compute the energy-momentum tensor"
+
+}

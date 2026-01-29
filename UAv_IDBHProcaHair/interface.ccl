@@ -1,0 +1,4 @@
+# Interface definition for thorn UAv_IDBHProcaHair
+
+implements: UAv_IDBHProcaHair
+inherits: ADMBase grid ComplexProcaBase

@@ -726,7 +726,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
   const CCTK_REAL gamma = sqrt(gamma2);
 
-  for (int k = 0; k < cctk_lsh[2]; ++k) { // code is in boosted coordinates. need to write functions as functions of rest frame coords
+  for (int k = 0; k < cctk_lsh[2]; ++k) { // code is in lab-frame coordinates. need to write functions as functions of rest frame coords
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
 
@@ -1118,7 +1118,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         G[2][2] = psi4 * (1. + h_rho2 * cosph * cosph);
         G[3][3] = psi4;
 
-
         // Derivatives of the metric functions
         CCTK_REAL dG[4][4][4];
         for (int a = 0; a < 4; ++a) {
@@ -1230,7 +1229,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             CCTK_REAL sum = 0.0;
-            for (int chi = 0; chi < 4; ++chi) // making \mu\to\chi to avoid conflict with field mass \mu
+            for (int chi = 0; chi < 4; ++chi) // making \mu\ -> \chi to avoid conflict with field mass \mu
               for (int nu = 0; nu < 4; ++nu)
                 sum += invLambda[chi][a] * invLambda[nu][b] * G[chi][nu];
             Gb[a][b] = sum;
@@ -1414,50 +1413,49 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         // FAZER A INVERSÃO NUMÉRICA!!!!
 
         // Build symmetric 3x3 block M from Gb
-          CCTK_REAL M[4][4] = {{0}};
-          M[1][1] = gammaB[1][1];
-          M[1][2] = 0.5 * (gammaB[1][2] + gammaB[2][1]);
-          M[1][3] = 0.5 * (gammaB[1][3] + gammaB[3][1]);
-          M[2][1] = M[1][2];
-          M[2][2] = gammaB[2][2];
-          M[2][3] = 0.5 * (gammaB[2][3] + gammaB[3][2]);
-          M[3][1] = M[1][3];
-          M[3][2] = M[2][3];
-          M[3][3] = gammaB[3][3];
+        CCTK_REAL M[4][4] = {{0}};
+        M[1][1] = gammaB[1][1];
+        M[1][2] = 0.5 * (gammaB[1][2] + gammaB[2][1]);
+        M[1][3] = 0.5 * (gammaB[1][3] + gammaB[3][1]);
+        M[2][1] = M[1][2];
+        M[2][2] = gammaB[2][2];
+        M[2][3] = 0.5 * (gammaB[2][3] + gammaB[3][2]);
+        M[3][1] = M[1][3];
+        M[3][2] = M[2][3];
+        M[3][3] = gammaB[3][3];
 
-          if (!invert_spd3x3(M, gammaB_inv)) {
-            CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
-                       "gammaB not SPD or ill-conditioned at (%d,%d,%d).",
-                       i, j, k);
-          }
+        if (!invert_spd3x3(M, gammaB_inv)) {
+          CCTK_VWarn(0, __LINE__, __FILE__, CCTK_THORNSTRING,
+                     "gammaB not SPD or ill-conditioned at (%d,%d,%d).",
+                     i, j, k);
+        }
 
-          // Optional checks
-          check_nan_or_inf("gammaB_inv[1][1]", gammaB_inv[1][1]);
-          check_nan_or_inf("gammaB_inv[1][2]", gammaB_inv[1][2]);
-          check_nan_or_inf("gammaB_inv[1][3]", gammaB_inv[1][3]);
-          check_nan_or_inf("gammaB_inv[2][2]", gammaB_inv[2][2]);
-          check_nan_or_inf("gammaB_inv[2][3]", gammaB_inv[2][3]);
-          check_nan_or_inf("gammaB_inv[3][3]", gammaB_inv[3][3]);
+        // Optional checks
+        check_nan_or_inf("gammaB_inv[1][1]", gammaB_inv[1][1]);
+        check_nan_or_inf("gammaB_inv[1][2]", gammaB_inv[1][2]);
+        check_nan_or_inf("gammaB_inv[1][3]", gammaB_inv[1][3]);
+        check_nan_or_inf("gammaB_inv[2][2]", gammaB_inv[2][2]);
+        check_nan_or_inf("gammaB_inv[2][3]", gammaB_inv[2][3]);
+        check_nan_or_inf("gammaB_inv[3][3]", gammaB_inv[3][3]);
 
-          // Verify gammaB_inv * gammaB ≈ I (indices 1..3)
-          {
-            const CCTK_REAL tol = SMALL;
-            for (int i3 = 1; i3 <= 3; ++i3) {
-              for (int j3 = 1; j3 <= 3; ++j3) {
-                CCTK_REAL s = 0.0;
-                for (int k3 = 1; k3 <= 3; ++k3)
-                  s += gammaB_inv[i3][k3] * gammaB[k3][j3];
-                const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
-                if (fabs(s - delta) > tol) {
-                  CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
-                             "gammaB_inv check failed at (%d,%d): %g (tol=%g)", i3,
-                             j3, (double)s, (double)tol);
-                  break;
-                }
+        // Verify gammaB_inv * gammaB ≈ I (indices 1..3)
+        {
+          const CCTK_REAL tol = SMALL;
+          for (int i3 = 1; i3 <= 3; ++i3) {
+            for (int j3 = 1; j3 <= 3; ++j3) {
+              CCTK_REAL s = 0.0;
+              for (int k3 = 1; k3 <= 3; ++k3)
+                s += gammaB_inv[i3][k3] * gammaB[k3][j3];
+              const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
+              if (fabs(s - delta) > tol) {
+                CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
+                           "gammaB_inv check failed at (%d,%d): %g (tol=%g)", i3,
+                           j3, (double)s, (double)tol);
+                break;
               }
             }
           }
-        
+        }
 
         // 3-metric (added Bowen-York 3-metric)
         gxx[ind] = gammaB[1][1] + Gb[1][1] - 1.0;
@@ -1473,7 +1471,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         check_nan_or_inf("gyy", gyy[ind]);
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
-
 
         CCTK_REAL dW_drho, dW_dz;
         const CCTK_REAL exp_auxi = exp(2. * F2[ind] - F0[ind]);
@@ -1899,11 +1896,11 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         // lapse
         if (CCTK_EQUALS(post_initial_lapse, "PS_single"))
           alp[ind] = alp[ind] + pow(psi1, initial_lapse_psi_exponent) - 1.0;
-        // else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
-        //   alp[ind] = alph;
-        //   if (alp[ind] < SMALL)
-        //     alp[ind] = SMALL;
-        // }
+        else if (CCTK_EQUALS(post_initial_lapse, "PS_lapse_single")) {
+          alp[ind] = alp[ind] + alpha - 1.0;
+          if (alp[ind] < SMALL)
+            alp[ind] = SMALL;
+        }
 
         // shift
         if (CCTK_EQUALS(initial_shift, "PS_single")) {

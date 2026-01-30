@@ -9,6 +9,7 @@ KEYWORD post_initial_data "post initial data"
 KEYWORD post_initial_lapse "post initial lapse"
 {
   "PS_single" :: "Single BS lapse for superposition with TwoPunctures"
+  "PS_lapse_single" :: "Lapse adapted to Proca Star for superposition with two punctures"
   "none"      :: "Disabled"
 } "none"
 
@@ -43,7 +44,7 @@ EXTENDS KEYWORD initial_shift
 {
   "ProcaHairyBH"   :: "ProcaHairyBH initial shift profile"
   "ProcaBS"        :: "Proca bosonic star initial shift profile"
-  "ProcaBSboost"      :: "Proca Shift: later on superimpose etc."
+  "ProcaBSboost"      :: "Proca Shift boosted"
 }
 
 
@@ -64,26 +65,11 @@ INT maxNF "maximum number of lines allowed in the input file"
 } 100000
 
 
-KEYWORD bh_spin_direction "Rotation axis for the BH spin"
-{
-  "z" :: "Spin around z axis"
-  "y" :: "Spin around y axis"
-} "z"
-
 REAL C0 "parameter for R to X coordinate transformation"
 {
   (0:* :: "greater than zero"
 } 1.0
 
-REAL bh_spin "spin of the black hole"
-{
-  *:* :: "a=J/M"
-} 0.0
-
-REAL bh_mass "BH mass parameter. Incompatible with the Scalar Boson Star and HairyBH."
-{
-  0:* :: "non-negative"
-} 0.0
 
 REAL bs_vx "Velocity along x of the boson star. Incompatible with the Scalar Boson Star and HairyBH."
 {
@@ -148,22 +134,6 @@ REAL z0 "z coordinate of central point"
 {
   *:* :: "any real number"
 } 0.0
-
-REAL x0_2 "x coordinate of central point"
-{
-  *:* :: "any real number"
-} 0.0
-
-REAL y0_2 "y coordinate of central point"
-{
-  *:* :: "any real number"
-} 0.0
-
-REAL z0_2 "z coordinate of central point"
-{
-  *:* :: "any real number"
-} 0.0
-
 
 
 REAL Apert_conf_fac "amplitude for conformal factor perturbation"

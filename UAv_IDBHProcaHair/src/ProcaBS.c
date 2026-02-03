@@ -855,16 +855,16 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // No need to change the radial component, R and r coincide
         // A_x
-        A1x[ind] = hx / rr * H1r[ind]*mu * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
-        A2x[ind] = hx / rr * H1r[ind]*mu* harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
+        A1x[ind] = hx / rr * H1r[ind] * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
+        A2x[ind] = hx / rr * H1r[ind] * harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
 
         // A_y
-        A1y[ind] = hy / rr * H1r[ind]*mu * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
-        A2y[ind] = hy / rr * H1r[ind]*mu * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
+        A1y[ind] = hy / rr * H1r[ind] * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
+        A2y[ind] = hy / rr * H1r[ind] * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
 
         // A_z
-        A1z[ind] = (hz / rr * H1r[ind]*mu - sinth / rr * H2[ind]) * harm_re;
-        A2z[ind] = (hz / rr * H1r[ind]*mu - sinth / rr * H2[ind]) * harm_im;
+        A1z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_re;
+        A2z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_im;
 
         // A_\phi
         /*
@@ -884,8 +884,8 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
           E_r = i * e^{i(m phi - w t)} / alpha * [- (m*W - w) H1r + dV/dr + W sinth dH3/dr]
         */
 
-        E1d_r = -(-(mm * W[ind] - omega_BS*mu) * H1r[ind]*mu + dV_dr[ind]*mu*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_im;
-        E2d_r = (-(mm * W[ind] - omega_BS*mu) * H1r[ind]*mu + dV_dr[ind]*mu*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_re;
+        E1d_r = -(-(mm * W[ind] - omega_BS*mu) * H1r[ind] + dV_dr[ind]*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_im;
+        E2d_r = (-(mm * W[ind] - omega_BS*mu) * H1r[ind] + dV_dr[ind]*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_re;
 
         // E_th
         /*

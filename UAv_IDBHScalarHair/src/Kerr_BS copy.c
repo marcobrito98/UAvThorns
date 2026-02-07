@@ -1,19 +1,19 @@
 // este e o codigo copiado do kerrnewman.
-#include <mpfr.h>
+#include "UAv_Derivatives.h"
 #include "cctk.h"
 #include "cctk_Arguments.h"
 #include "cctk_Functions.h"
 #include "cctk_Parameters.h"
 #include "util_Table.h"
 #include <math.h>
-#include <quadmath.h>
+#include <mpfr.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define SMALL (1.e-9)
-#define MPFR_PREC 512                // ~154 decimal digits
-#define HORIZON_PROXIMITY_FACTOR 0.2 // compute with high precision within 10% of horizon
+#define MPFR_PREC 1024                // ~308 decimal digits
+#define HORIZON_PROXIMITY_FACTOR 0.2 // compute with high precision within 20% of horizon
 
 void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL[], CCTK_REAL[],
                       CCTK_REAL[], CCTK_REAL[], CCTK_REAL[], CCTK_REAL[],
@@ -33,85 +33,85 @@ void check_nan_or_inf(const char *var_name, double value) {
 // (indices 1..3) Uses diagonal scaling and long-double accumulators, then
 // Cholesky: M = S^{-1} A S^{-1}, A = L L^T Returns 1 on success, 0 on failure
 // (non-SPD or singular).
-static inline int invert_spd3x3(const __float128 M[4][4], __float128 Minv[4][4]) {
+static inline int invert_spd3x3(const CCTK_REAL M[4][4], CCTK_REAL Minv[4][4]) {
   // Enforce symmetry (guards against tiny asymmetries)
-  __float128 m11 = (__float128)M[1][1];
-  __float128 m22 = (__float128)M[2][2];
-  __float128 m33 = (__float128)M[3][3];
-  __float128 m12 = 0.5Q * ((__float128)M[1][2] + (__float128)M[2][1]);
-  __float128 m13 = 0.5Q * ((__float128)M[1][3] + (__float128)M[3][1]);
-  __float128 m23 = 0.5Q * ((__float128)M[2][3] + (__float128)M[3][2]);
+  long double m11 = (long double)M[1][1];
+  long double m22 = (long double)M[2][2];
+  long double m33 = (long double)M[3][3];
+  long double m12 = 0.5L * ((long double)M[1][2] + (long double)M[2][1]);
+  long double m13 = 0.5L * ((long double)M[1][3] + (long double)M[3][1]);
+  long double m23 = 0.5L * ((long double)M[2][3] + (long double)M[3][2]);
 
-  // Diagonal scaling to improve conditioning: A = S M S, S = diag(1/sqrtq(mii))
-  const __float128 eps = 1e-300L;
+  // Diagonal scaling to improve conditioning: A = S M S, S = diag(1/sqrt(mii))
+  const long double eps = 1e-300L;
   if (!(m11 > 0 && m22 > 0 && m33 > 0))
     return 0;
-  __float128 s1 = 1.0Q / sqrtq(fmaxq(m11, eps));
-  __float128 s2 = 1.0Q / sqrtq(fmaxq(m22, eps));
-  __float128 s3 = 1.0Q / sqrtq(fmaxq(m33, eps));
+  long double s1 = 1.0L / sqrtl(fmaxl(m11, eps));
+  long double s2 = 1.0L / sqrtl(fmaxl(m22, eps));
+  long double s3 = 1.0L / sqrtl(fmaxl(m33, eps));
 
-  __float128 a11 = s1 * s1 * m11;
-  __float128 a22 = s2 * s2 * m22;
-  __float128 a33 = s3 * s3 * m33;
-  __float128 a12 = s1 * s2 * m12;
-  __float128 a13 = s1 * s3 * m13;
-  __float128 a23 = s2 * s3 * m23;
+  long double a11 = s1 * s1 * m11;
+  long double a22 = s2 * s2 * m22;
+  long double a33 = s3 * s3 * m33;
+  long double a12 = s1 * s2 * m12;
+  long double a13 = s1 * s3 * m13;
+  long double a23 = s2 * s3 * m23;
 
   // Cholesky A = L L^T (lower triangular L)
   if (!(a11 > 0))
     return 0;
-  __float128 L11 = sqrtq(a11);
+  long double L11 = sqrtl(a11);
 
-  __float128 L21 = a12 / L11;
-  __float128 L31 = a13 / L11;
+  long double L21 = a12 / L11;
+  long double L31 = a13 / L11;
 
-  __float128 t22 = a22 - L21 * L21;
+  long double t22 = a22 - L21 * L21;
   if (!(t22 > 0))
     return 0;
-  __float128 L22 = sqrtq(t22);
+  long double L22 = sqrtl(t22);
 
-  __float128 L32 = (a23 - L31 * L21) / L22;
+  long double L32 = (a23 - L31 * L21) / L22;
 
-  __float128 t33 = a33 - L31 * L31 - L32 * L32;
+  long double t33 = a33 - L31 * L31 - L32 * L32;
   if (!(t33 > 0))
     return 0;
-  __float128 L33 = sqrtq(t33);
+  long double L33 = sqrtl(t33);
 
   // Invert L (lower triangular): compute Linv so that Linv * L = I
-  __float128 Linv11 = 1.0Q / L11;
-  __float128 Linv21 = -L21 * (Linv11 / L22);
-  __float128 Linv22 = 1.0Q / L22;
-  __float128 Linv31 = -(L31 * Linv11 + L32 * Linv21) / L33;
-  __float128 Linv32 = -L32 * (Linv22 / L33);
-  __float128 Linv33 = 1.0Q / L33;
+  long double Linv11 = 1.0L / L11;
+  long double Linv21 = -L21 * (Linv11 / L22);
+  long double Linv22 = 1.0L / L22;
+  long double Linv31 = -(L31 * Linv11 + L32 * Linv21) / L33;
+  long double Linv32 = -L32 * (Linv22 / L33);
+  long double Linv33 = 1.0L / L33;
 
   // A^{-1} = (L^{-T} L^{-1}) = (Linv^T * Linv)
-  __float128 i11 = Linv11 * Linv11 + Linv21 * Linv21 + Linv31 * Linv31;
-  __float128 i12 =
-      Linv21 * Linv22 + Linv31 * Linv32 + Linv11 * 0.0Q; // explicit for clarity
-  __float128 i13 = Linv31 * Linv33 + 0.0Q;              // since Linv is lower
-  __float128 i22 = Linv22 * Linv22 + Linv32 * Linv32;
-  __float128 i23 = Linv32 * Linv33;
-  __float128 i33 = Linv33 * Linv33;
+  long double i11 = Linv11 * Linv11 + Linv21 * Linv21 + Linv31 * Linv31;
+  long double i12 =
+      Linv21 * Linv22 + Linv31 * Linv32 + Linv11 * 0.0L; // explicit for clarity
+  long double i13 = Linv31 * Linv33 + 0.0L;              // since Linv is lower
+  long double i22 = Linv22 * Linv22 + Linv32 * Linv32;
+  long double i23 = Linv32 * Linv33;
+  long double i33 = Linv33 * Linv33;
 
   // Undo scaling: M^{-1} = S * A^{-1} * S
-  __float128 S1 = s1, S2 = s2, S3 = s3;
-  __float128 mInv11 = S1 * S1 * i11;
-  __float128 mInv12 = S1 * S2 * i12;
-  __float128 mInv13 = S1 * S3 * i13;
-  __float128 mInv22 = S2 * S2 * i22;
-  __float128 mInv23 = S2 * S3 * i23;
-  __float128 mInv33 = S3 * S3 * i33;
+  long double S1 = s1, S2 = s2, S3 = s3;
+  long double mInv11 = S1 * S1 * i11;
+  long double mInv12 = S1 * S2 * i12;
+  long double mInv13 = S1 * S3 * i13;
+  long double mInv22 = S2 * S2 * i22;
+  long double mInv23 = S2 * S3 * i23;
+  long double mInv33 = S3 * S3 * i33;
 
-  Minv[1][1] = (__float128)mInv11;
-  Minv[1][2] = (__float128)mInv12;
-  Minv[1][3] = (__float128)mInv13;
+  Minv[1][1] = (CCTK_REAL)mInv11;
+  Minv[1][2] = (CCTK_REAL)mInv12;
+  Minv[1][3] = (CCTK_REAL)mInv13;
   Minv[2][1] = Minv[1][2];
-  Minv[2][2] = (__float128)mInv22;
-  Minv[2][3] = (__float128)mInv23;
+  Minv[2][2] = (CCTK_REAL)mInv22;
+  Minv[2][3] = (CCTK_REAL)mInv23;
   Minv[3][1] = Minv[1][3];
   Minv[3][2] = Minv[2][3];
-  Minv[3][3] = (__float128)mInv33;
+  Minv[3][3] = (CCTK_REAL)mInv33;
 
   return 1;
 }
@@ -643,18 +643,18 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
      to the axis and the origin, K_ij = 0.
   */
 
-  const __float128 tt = cctk_time;
+  const CCTK_REAL tt = cctk_time;
 
-  const __float128 coswt = cos(omega_BS * tt);
-  const __float128 sinwt = sin(omega_BS * tt);
+  const CCTK_REAL coswt = cos(omega_BS * tt);
+  const CCTK_REAL sinwt = sin(omega_BS * tt);
 
-  const __float128 bh_spin2 = bh_spin * bh_spin;
-  const __float128 bh_mass2 = bh_mass * bh_mass;
+  const CCTK_REAL bh_spin2 = bh_spin * bh_spin;
+  const CCTK_REAL bh_mass2 = bh_mass * bh_mass;
 
-  const __float128 rBLp = bh_mass + sqrtq(bh_mass2 - bh_spin2);
-  const __float128 rBLm = bh_mass - sqrtq(bh_mass2 - bh_spin2);
+  const CCTK_REAL rBLp = bh_mass + sqrt(bh_mass2 - bh_spin2);
+  const CCTK_REAL rBLm = bh_mass - sqrt(bh_mass2 - bh_spin2);
 
-  const __float128 horizon_radius = rBLp / 4; // 0.5 * sqrtq(bh_mass2 - bh_spin2);
+  const CCTK_REAL horizon_radius = 0.5 * sqrt(bh_mass2 - bh_spin2);
 
   // printf("cctk_lsh[0] = %d\n",cctk_lsh[0]);
   // printf("cctk_lsh[1] = %d\n",cctk_lsh[1]);
@@ -668,173 +668,257 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         // Boson Star A ignorar por agora
 
-        const __float128 x1_1 = x[ind] - x0;
-        const __float128 y1_1 = y[ind] - y0;
-        const __float128 z1_1 = z[ind] - z0;
+        const CCTK_REAL x1_1 = x[ind] - x0;
+        const CCTK_REAL y1_1 = y[ind] - y0;
+        const CCTK_REAL z1_1 = z[ind] - z0;
 
         // For the Boson Star, rhor = R, no coordinate change needed.
-        const __float128 rr2_1 = x1_1 * x1_1 + y1_1 * y1_1 + z1_1 * z1_1;
-        const __float128 rr_1 = sqrtq(rr2_1);
+        const CCTK_REAL rr2_1 = x1_1 * x1_1 + y1_1 * y1_1 + z1_1 * z1_1;
+        const CCTK_REAL rr_1 = sqrt(rr2_1);
 
-        const __float128 rho2_1 = x1_1 * x1_1 + y1_1 * y1_1;
-        const __float128 rho_1 = sqrtq(rho2_1);
+        const CCTK_REAL rho2_1 = x1_1 * x1_1 + y1_1 * y1_1;
+        const CCTK_REAL rho_1 = sqrt(rho2_1);
 
-        const __float128 ph_1 = atan2(y1_1, x1_1);
+        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
         // If x1_2=y1_2=0, should return 0? The other metric functions should
         // vanish anyway to make sure that this doesn't matter, but can this
         // lead to nan depending on the C implementation?
 
-        const __float128 cosph_1 = cos(ph_1);
-        const __float128 sinph_1 = sin(ph_1);
+        const CCTK_REAL cosph_1 = cos(ph_1);
+        const CCTK_REAL sinph_1 = sin(ph_1);
 
-        const __float128 cosmph_1 = cos(mm * ph_1);
-        const __float128 sinmph_1 = sin(mm * ph_1);
+        const CCTK_REAL cosmph_1 = cos(mm * ph_1);
+        const CCTK_REAL sinmph_1 = sin(mm * ph_1);
 
-        const __float128 h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
+        const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
         // Black Hole B
 
-        const __float128 x1_2 = x[ind] - x0_2;
-        const __float128 y1_2 = y[ind] - y0_2;
-        const __float128 z1_2 = z[ind] - z0_2;
+        const CCTK_REAL x1_2 = x[ind] - x0_2;
+        const CCTK_REAL y1_2 = y[ind] - y0_2;
+        const CCTK_REAL z1_2 = z[ind] - z0_2;
 
-        const __float128 bh_v2 = bh_v * bh_v;
-        const __float128 gamma2 = 1. / (1. - bh_v2);
-        const __float128 gamma = sqrtq(gamma2);
+        const CCTK_REAL bh_v2 = bh_v * bh_v;
+        const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
+        const CCTK_REAL gamma = sqrt(gamma2);
 
         // All quantities evaluated at point (x*gamma,y,z)
 
-        __float128 rr2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2 + z1_2 * z1_2;
+        CCTK_REAL rr2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2 + z1_2 * z1_2;
         if (rr2_2 < pow(eps_r, 2)) {
           rr2_2 = pow(eps_r, 2);
         }
-        const __float128 rr_2 = sqrtq(rr2_2);
+        const CCTK_REAL rr_2 = sqrt(rr2_2);
 
-        __float128 rho2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2;
+        CCTK_REAL rho2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2;
         if (rho2_2 < pow(eps_r, 2)) {
           rho2_2 = pow(eps_r, 2);
         }
-        const __float128 rho_2 = sqrtq(rho2_2);
+        const CCTK_REAL rho_2 = sqrt(rho2_2);
 
-        const __float128 rho3_2 = rho2_2 * rho_2;
+        const CCTK_REAL rho3_2 = rho2_2 * rho_2;
 
-        // R0pert2 = (rr_2 - R0pert)*(rr_2 - R0pert) ;
+        const CCTK_REAL deltakerr2 = bh_mass * bh_mass - bh_spin2;
+        const CCTK_REAL deltakerr = sqrt(deltakerr2);
 
-        const __float128 costh = z1_2 / rr_2;
-        const __float128 costh2 = costh * costh;
-        const __float128 sinth2 = 1. - costh2;
-        const __float128 sinth = sqrtq(sinth2);
+        const CCTK_REAL costh  = z1_2/rr_2 ;
+        const CCTK_REAL costh2 = costh*costh ;
+        const CCTK_REAL sinth2 = 1. - costh2 ;
+        const CCTK_REAL sinth  = sqrt(sinth2) ;
 
-        const __float128 ph_2 = atan2(y1_2, x1_2);
-        // If x1_2=y1_2=0, should return 0? The other metric functions should
-        // vanish anyway to make sure that this doesn't matter, but can this
-        // lead to nan depending on the C implementation?
+        const CCTK_REAL R_x    = x1_2/rr_2 ;
+        const CCTK_REAL R_y    = y1_2/rr_2 ;
+        const CCTK_REAL R_z    = z1_2/rr_2 ;
 
-        const __float128 cosph_2 = cos(ph_2);
-        const __float128 sinph_2 = sin(ph_2);
+        const CCTK_REAL x_R    = x1_2/rr_2 ;
+        const CCTK_REAL y_R    = y1_2/rr_2 ;
+        const CCTK_REAL z_R    = z1_2/rr_2 ;
 
-        const __float128 R_x = x1_2 * gamma / rr_2;
-        const __float128 R_y = y1_2 / rr_2;
-        const __float128 R_z = z1_2 / rr_2;
+        const CCTK_REAL sinth2ph_x = -y1_2/rr2_2 ;
+        const CCTK_REAL sinth2ph_y =  x1_2/rr2_2 ;
 
-        const __float128 x_R = x1_2 * gamma / rr_2;
-        const __float128 y_R = y1_2 / rr_2;
-        const __float128 z_R = z1_2 / rr_2;
+        const CCTK_REAL sinthth_x  = z1_2*x1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_y  = z1_2*y1_2/(rr_2*rr2_2) ; 
+        const CCTK_REAL sinthth_z  = -sinth2/rr_2 ; 
 
-        const __float128 th_x = costh * R_x / rho_2;
-        const __float128 th_y = costh * R_y / rho_2;
-        const __float128 th_z = -rho_2 / rr2_2;
-        // auxilliary quantities
-        __float128 rBL, rBL2;
-        rBL = rr_2 * (1.0 + 0.25 * rBLp / rr_2) * (1.0 + 0.25 * rBLp / rr_2);
-        rBL2 = rBL * rBL;
-        __float128 Delt, Sigm, Sigm2, fctFF;
-        Delt = (rBL - rBLp) * (rBL - rBLm); // rBL2 + bh_spin2 - 2 * bh_mass * rBL;
-        Sigm = rBL2 + bh_spin2 * costh2;
-        Sigm2 = Sigm * Sigm;
-        fctFF = (rBL2 + bh_spin2) * (rBL2 + bh_spin2) - Delt * bh_spin2 * sinth2; // "A" no artigo
+        const CCTK_REAL sinthx_th  = x1_2 * costh ;
+        const CCTK_REAL sinthy_th  = y1_2 * costh ;
+        const CCTK_REAL sinthz_th  = -rr_2 * sinth2 ;
 
-        const __float128 psi4_2 = Sigm / rr2_2; // psi04 no codigo original
-        const __float128 psi2_2 = sqrtq(psi4_2);
-        const __float128 psi1_2 = sqrtq(psi2_2);
-        const __float128 psi4_1 = exp(2. * F1_1[ind]);
-        const __float128 psi2_1 = sqrtq(psi4_1);
-        const __float128 psi1_1 = sqrtq(psi2_1);
+        const CCTK_REAL costh2_x = -2 * x1_2 * gamma * pow(z1_2, 2) / pow(rr2_2, 2);
+        const CCTK_REAL costh2_y = -2 * y1_2 * pow(z1_2, 2) / pow(rr2_2, 2);
+        const CCTK_REAL costh2_z = 2 * rho2_2 * z1_2 / pow(rr2_2, 2);
 
-        __float128 fctGG, fctHH;
-        fctGG = rBLm / (rr2_2 * (rBL - rBLm));
-        fctHH = (2.0 * bh_mass * rBL + Sigm) / (rr2_2 * Sigm2);
 
-        // __float128 detgij;
-        // detgij = psi4_2 * psi4_2 * psi4_2 * (1.0 + rr2_2 * fctGG) * (1.0 +
-        // bh_spin2 * rho2_2 * fctHH);
+        const CCTK_REAL rBL    = rr_2 + bh_mass + 0.25*deltakerr2 / rr_2 ;   // Boyer-Lindquist coordinate r
 
-        /*----------------------------------*/
+        const CCTK_REAL RRrBL  = rr2_2 + rr_2*bh_mass + 0.25*deltakerr2 ;
 
-        // const __float128 alpha02 = (4.0 * rr_2 - rBLp) * (4.0 * rr_2 - rBLp) *
-        // (rBL - rBLm) / (16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass
-        // * rBL * sinth2 / Sigm)));
-        const __float128 alpha0 = (4.0 * rr_2 - rBLp) * sqrtq(rBL - rBLm) / sqrtq(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero;
-        const __float128 alpha02 = alpha0 * alpha0;
-        // const __float128 alpha0 = sqrtq(alpha02);
-        // const __float128 alpha0 = sqrtq(Delt * Sigm / fctFF);
-        // const __float128 alpha02 = Delt * Sigm / fctFF;
-        // const __float128 alpha0 = sqrtq(alpha02);
-        // const __float128 dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm *
-        // dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) /
-        // pow(fctFF, 2);
-        // const __float128 dalpha0_dth = 0.5 / alpha0 * (Delt *
-        // (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
-        // const __float128 dalpha02_dR =(-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) /(fctFF * fctFF);
-        // const __float128 dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / (fctFF * fctFF);
-        const __float128 gphiphi = fctFF / Sigm * sinth2;
-        const __float128 bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
-        const __float128 bphi = bphiup * gphiphi;
+        const CCTK_REAL rho2kerr   = rBL*rBL + bh_spin*bh_spin * costh2 ;
+        const CCTK_REAL rhokerr    = sqrt(rho2kerr) ;
 
-        // 1st derivatives of auxiliary quantities
-        __float128 drBLdR, dfctGG_dR, dfctHH_dR, dfctHH_dth, dpsi4_2_dR, dpsi4_2_dth, dDelt_dR, dSigm_dR, dSigm_dth, dfctFF_dR, dfctFF_dth;
-        drBLdR = 1.0 - rBLp * rBLp / (16.0 * rr2_2);
-        dDelt_dR = drBLdR * (rBL - rBLp) + drBLdR * (rBL - rBLm); //(2 * rBL - 2 * bh_mass) * drBLdR;
-        dSigm_dR = 2 * rBL * drBLdR;
-        dSigm_dth = -2 * bh_spin2 * costh * sinth;
-        dfctFF_dR = 4 * rBL * (bh_spin2 + rBL2) * drBLdR - bh_spin2 * sinth2 * dDelt_dR;
-        dfctFF_dth = -(bh_spin2 * Delt * 2 * costh * sinth);
-        dfctGG_dR = -((rBLm * (-2 * rBLm + 2 * rBL + rr_2 * drBLdR)) / (rr2_2 * rr_2 * (rBLm - rBL) * (rBLm - rBL)));
-        dfctHH_dR = -((2 * Sigm * (2 * bh_mass * rBL + Sigm - bh_mass * rr_2 * drBLdR) + rr_2 * (4 * bh_mass * rBL + Sigm) * dSigm_dR) / (rr2_2 * rr_2 * Sigm2 * Sigm));
-        dfctHH_dth = -(((4 * bh_mass * rBL + Sigm) * dSigm_dth) / (rr2_2 * Sigm2 * Sigm));
-        dpsi4_2_dR = (-2 * Sigm + rr_2 * dSigm_dR) / (rr2_2 * rr_2);
-        dpsi4_2_dth = dSigm_dth / rr2_2;
-        __float128 dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2) * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2));
-        __float128 dalpha02_dth = (bh_mass * bh_spin2 * (-4 * rr_2 + rBLp) * (-4 * rr_2 + rBLp) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2) * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2));
-        __float128 dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;
-        __float128 dgphiphi_dth = (sinth * (Sigm * sinth * dfctFF_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth))) / Sigm2;
-        __float128 dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / (fctFF * fctFF);
-        __float128 dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / (fctFF * fctFF);
-        __float128 dbphi_dR = gphiphi * dbphiup_dR + bphiup * dgphiphi_dR;
-        __float128 dbphi_dth = gphiphi * dbphiup_dth + bphiup * dgphiphi_dth;
+        // sigma = (2.*bh_mass*rBL - 0*0) / rho2kerr ;
+        const CCTK_REAL sigma  = (2.*bh_mass*RRrBL - 0*0*rr_2) * rr_2 / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
 
-        __float128 G[4][4];
+        const CCTK_REAL hh     = (1 + sigma) / (RRrBL*RRrBL + rr2_2*bh_spin*bh_spin * costh2) ;
+
+        const CCTK_REAL psi4_2   = rho2kerr / rr2_2 ;
+        const CCTK_REAL psi2_2   = sqrt(psi4_2) ;
+        const CCTK_REAL psi1_2   = sqrt(psi2_2) ;
+        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
+        const CCTK_REAL psi2_1 = sqrt(psi4_1);
+        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+
+        const CCTK_REAL alpha0  = (rr_2 + 0.5*horizon_radius)*(rr_2 - 0.5*horizon_radius) / rr_2 *
+                 1. / sqrt(rBL*rBL + bh_spin*bh_spin * ( 1. + sigma*sinth2)) ;
+        const CCTK_REAL alpha02 = alpha0*alpha0;
+
+         const CCTK_REAL dr_dR = 1 + (bh_spin2 - bh_mass * bh_mass) / (4 * rr2_2);
+
+        const CCTK_REAL drho2kerr_dx = 2 * rBL * dr_dR * R_x + bh_spin2 * costh2_x;
+        const CCTK_REAL drho2kerr_dy = 2 * rBL * dr_dR * R_y + bh_spin2 * costh2_y;
+        const CCTK_REAL drho2kerr_dz = 2 * rBL * dr_dR * R_z + bh_spin2 * costh2_z;
+
+        const CCTK_REAL dsigma_dx = (2 * bh_mass * (rho2kerr * R_x * dr_dR - rBL * drho2kerr_dx)) / pow(rho2kerr, 2);
+        const CCTK_REAL dsigma_dy = (2 * bh_mass * (rho2kerr * R_y * dr_dR - rBL * drho2kerr_dy)) / pow(rho2kerr, 2);
+        const CCTK_REAL dsigma_dz = (2 * bh_mass * (rho2kerr * R_z * dr_dR - rBL * drho2kerr_dz)) / pow(rho2kerr, 2);
+
+        const CCTK_REAL dpsi4_2_dx = (-2 * rho2kerr * R_x + rr_2 * drho2kerr_dx) / pow(rr_2, 3);
+        const CCTK_REAL dpsi4_2_dy = (-2 * rho2kerr * R_y + rr_2 * drho2kerr_dy) / pow(rr_2, 3);
+        const CCTK_REAL dpsi4_2_dz = (-2 * rho2kerr * R_z + rr_2 * drho2kerr_dz) / pow(rr_2, 3);
+
+        const CCTK_REAL bphi = -bh_spin * sigma * sinth2;
+        // const CCTK_REAL gammaphiphi = psi4_2 * rr2_2 * sinth2 * (1 + bh_spin2 * hh * rr2_2 * sinth2);
+        const CCTK_REAL gammaphiphi = rho2kerr * rho2_2 / rr2_2 * (1 + bh_spin2 * hh * rho2_2);
+        const CCTK_REAL bphiup = bphi / gammaphiphi;
+
+        // Check for NaN or Inf in these quantities
+        check_nan_or_inf("bphi", bphi);
+        check_nan_or_inf("gammaphiphi", gammaphiphi);
+        check_nan_or_inf("bphiup", bphiup);
+
+        CCTK_REAL betadrest[4] = {0.0, 0.0, 0.0, 0.0};
+        betadrest[1] = -y1_2 / rho2_2 * bphi;
+        betadrest[2] = x1_2 * gamma / rho2_2 * bphi;
+        betadrest[3] = 0.;
+
+        // Check for NaN or Inf in betadrest components
+        check_nan_or_inf("betadrest[1]", betadrest[1]);
+        check_nan_or_inf("betadrest[2]", betadrest[2]);
+        check_nan_or_inf("betadrest[3]", betadrest[3]);
+
+        // To change the spin direction, change the indices accordingly.
+        const CCTK_REAL dbetadrestphi_dx = (-2 * bh_spin * pow(z1_2, 2) * sigma * R_x) / pow(rr_2, 3) - bh_spin * (1 - pow(z1_2, 2) / pow(rr_2, 2)) * dsigma_dx;
+        const CCTK_REAL dbetadrestphi_dy = (-2 * bh_spin * pow(z1_2, 2) * sigma * R_y) / pow(rr_2, 3) - bh_spin * (1 - pow(z1_2, 2) / pow(rr_2, 2)) * dsigma_dy;
+        const CCTK_REAL dbetadrestphi_dz = (bh_spin * (2 * z1_2 * sigma * (rr_2 - z1_2 * R_z) + rr_2 * (-rho2_2) * dsigma_dz)) / pow(rr_2, 3);
+
+        CCTK_REAL dbetadrest[4][4];
+        // Initialize g to zero
+        for (int i = 0; i < 4; ++i)
+          for (int j = 0; j < 4; ++j)
+            dbetadrest[i][j] = 0.0;
+        // Compute derivatives of the betadrest vector. To change the spin direction, change the indices accordingly.
+        dbetadrest[1][1] = (2 * x1_2 * gamma * y1_2 * bphi - y1_2 * rho2_2 * dbetadrestphi_dx) / pow(rho2_2, 2);
+        dbetadrest[1][2] = ((-pow(x1_2, 2) * gamma2 + pow(y1_2, 2)) * bphi - y1_2 * (rho2_2)*dbetadrestphi_dy) / pow(rho2_2, 2);
+        dbetadrest[1][3] = -((y1_2 * dbetadrestphi_dz) / (rho2_2));
+        dbetadrest[2][1] = ((-pow(x1_2, 2) * gamma2 + pow(y1_2, 2)) * bphi + x1_2 * gamma * rho2_2 * dbetadrestphi_dx) / pow(rho2_2, 2);
+        dbetadrest[2][2] = (x1_2 * gamma * (-2 * y1_2 * bphi + rho2_2 * dbetadrestphi_dy)) / pow(rho2_2, 2);
+        dbetadrest[2][3] = (x1_2 * gamma * dbetadrestphi_dz) / (rho2_2);
+        dbetadrest[3][1] = 0;
+        dbetadrest[3][2] = 0;
+        dbetadrest[3][3] = 0;
+
+        // Check for NaN or Inf in all dbetadrest[i][j] components
+        for (int ii = 1; ii <= 3; ++ii) {
+          for (int jj = 1; jj <= 3; ++jj) {
+            char dbetadrest_name[32];
+            snprintf(dbetadrest_name, sizeof(dbetadrest_name), "dbetadrest[%d][%d]", ii, jj);
+            check_nan_or_inf(dbetadrest_name, dbetadrest[ii][jj]);
+          }
+        }
+
+        const CCTK_REAL dhh_dx = (-((1 + sigma) * (2 * rho2kerr * R_x +
+                                                   rr_2 * drho2kerr_dx)) +
+                                  rr_2 * rho2kerr * dsigma_dx) /
+                                 (pow(rr_2, 3) * pow(rho2kerr, 2));
+        const CCTK_REAL dhh_dy = (-((1 + sigma) * (2 * rho2kerr * R_y +
+                                                   rr_2 * drho2kerr_dy)) +
+                                  rr_2 * rho2kerr * dsigma_dy) /
+                                 (pow(rr_2, 3) * pow(rho2kerr, 2));
+        const CCTK_REAL dhh_dz = (-((1 + sigma) * (2 * rho2kerr * R_z +
+                                                   rr_2 * drho2kerr_dz)) +
+                                  rr_2 * rho2kerr * dsigma_dz) /
+                                 (pow(rr_2, 3) * pow(rho2kerr, 2));
+
+        const CCTK_REAL dalpha_dx = (2 * pow(rr_2, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_x +
+                                     2 * pow(horizon_radius, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_x +
+                                     rr_2 * pow(horizon_radius, 2) * (2 * rBL * R_x * dr_dR + bh_spin2 * (-(sigma * costh2_x) - (-1 + costh2) * dsigma_dx)) +
+                                     pow(rr_2, 3) * (-2 * rBL * R_x * dr_dR + bh_spin2 * (sigma * costh2_x + (-1 + costh2) * dsigma_dx))) /
+                                    (2. * pow(rr_2, 2) * pow(pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma), 1.5));
+        const CCTK_REAL dalpha_dy = (2 * pow(rr_2, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_y + 2 * pow(horizon_radius, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_y +
+                                     rr_2 * pow(horizon_radius, 2) * (2 * rBL * R_y * dr_dR + bh_spin2 * (-(sigma * costh2_y) - (-1 + costh2) * dsigma_dy)) +
+                                     pow(rr_2, 3) * (-2 * rBL * R_y * dr_dR + bh_spin2 * (sigma * costh2_y + (-1 + costh2) * dsigma_dy))) /
+                                    (2. * pow(rr_2, 2) * pow(pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma), 1.5));
+        const CCTK_REAL dalpha_dz = (2 * pow(rr_2, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_z + 2 * pow(horizon_radius, 2) * (pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma)) * R_z +
+                                     rr_2 * pow(horizon_radius, 2) * (2 * rBL * R_z * dr_dR + bh_spin2 * (-(sigma * costh2_z) - (-1 + costh2) * dsigma_dz)) +
+                                     pow(rr_2, 3) * (-2 * rBL * R_z * dr_dR + bh_spin2 * (sigma * costh2_z + (-1 + costh2) * dsigma_dz))) /
+                                    (2. * pow(rr_2, 2) * pow(pow(rBL, 2) + bh_spin2 * (1 - (-1 + costh2) * sigma), 1.5));
+
+        // Check for NaN or Inf in all these quantities
+        // check_nan_or_inf("dr_dR", dr_dR);
+        // check_nan_or_inf("costh2_x", costh2_x);
+        // check_nan_or_inf("costh2_y", costh2_y);
+        // check_nan_or_inf("costh2_z", costh2_z);
+
+        // check_nan_or_inf("dsigma_dx", dsigma_dx);
+        // check_nan_or_inf("dsigma_dy", dsigma_dy);
+        // check_nan_or_inf("dsigma_dz", dsigma_dz);
+
+        // check_nan_or_inf("dpsi4_2_dx", dpsi4_2_dx);
+        // check_nan_or_inf("dpsi4_2_dy", dpsi4_2_dy);
+        // check_nan_or_inf("dpsi4_2_dz", dpsi4_2_dz);
+
+        // check_nan_or_inf("dhh_dx", dhh_dx);
+        // check_nan_or_inf("dhh_dy", dhh_dy);
+        // check_nan_or_inf("dhh_dz", dhh_dz);
+
+        // check_nan_or_inf("dalpha_dx", dalpha_dx);
+        // check_nan_or_inf("dalpha_dy", dalpha_dy);
+        // check_nan_or_inf("dalpha_dz", dalpha_dz);
+
+        // check_nan_or_inf("drho2kerr_dx", drho2kerr_dx);
+        // check_nan_or_inf("drho2kerr_dy", drho2kerr_dy);
+        // check_nan_or_inf("drho2kerr_dz", drho2kerr_dz);
+
+        // check_nan_or_inf("dbetadrestphi_dx", drho2kerr_dx);
+        // check_nan_or_inf("dbetadrestphi_dy", drho2kerr_dy);
+        // check_nan_or_inf("dbetadrestphi_dz", drho2kerr_dz);
+
+        // capital Gs refer to the unboosted frame.
+
+
+        CCTK_REAL G[4][4];
         // Initialize G to zero
         for (int i = 0; i < 4; ++i)
           for (int j = 0; j < 4; ++j)
             G[i][j] = 0.0;
 
         G[0][0] = -alpha02 + bphi * bphiup;
-        G[0][1] = -y1_2 / rho2_2 * bphi;
-        G[0][2] = x1_2 * gamma / rho2_2 * bphi;
-        G[0][3] = 0;
+        G[0][1] = betadrest[1];
+        G[0][2] = betadrest[2];
+        G[0][3] = betadrest[3];
         G[1][0] = G[0][1];
         G[2][0] = G[0][2];
         G[3][0] = G[0][3];
-        G[1][1] = psi4_2 * (1.0 + x1_2 * x1_2 * gamma2 * fctGG + bh_spin2 * y1_2 * y1_2 * fctHH);
-        G[1][2] = psi4_2 * (x1_2 * gamma * y1_2 * fctGG - bh_spin2 * x1_2 * gamma * y1_2 * fctHH);
-        G[1][3] = psi4_2 * (x1_2 * gamma * z1_2 * fctGG);
+        G[1][1] = psi4_2 * (1 + bh_spin2 * hh * y1_2 * y1_2);
+        G[1][2] = -psi4_2 * bh_spin2 * hh * y1_2 * x1_2 * gamma;
+        G[1][3] = 0.0;
         G[2][1] = G[1][2];
-        G[2][2] = psi4_2 * (1.0 + y1_2 * y1_2 * fctGG + bh_spin2 * x1_2 * x1_2 * gamma2 * fctHH);
-        G[2][3] = psi4_2 * (y1_2 * z1_2 * fctGG);
+        G[2][2] = psi4_2 * (1 + bh_spin2 * hh * x1_2 * x1_2 * gamma2);
+        G[2][3] = 0.0;
         G[3][1] = G[1][3];
         G[3][2] = G[2][3];
-        G[3][3] = psi4_2 * (1.0 + z1_2 * z1_2 * fctGG);
+        G[3][3] = psi4_2;
 
         /* NaN/Inf checks for metric tensor G */
         for (int aa = 0; aa < 4; ++aa) {
@@ -846,169 +930,59 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         }
 
         // Derivatives of the metric functions
-        __float128 dG[4][4][4];
+        CCTK_REAL dG[4][4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             for (int c = 0; c < 4; ++c) {
-              if (c == 0) {
-                dG[a][b][c] = 0.0; // time derivatives of the metric are zero
-              } else {
-                dG[a][b][c] = NAN;
-              }
+              dG[a][b][c] = 0.0;
             }
           }
         }
+        // dG[a][b][c] = dG_ab/dx^c
 
-        dG[0][0][1] =
-            -(dalpha02_dR * R_x + dalpha02_dth * th_x) +
-            bphiup * (dbphi_dR * R_x + dbphi_dth * th_x) +
-            bphi * (dbphiup_dR * R_x + dbphiup_dth * th_x);
+        dG[1][1][1] = bh_spin2 * pow(y1_2, 2) * psi4_2 * dhh_dx + (1 + bh_spin2 * pow(y1_2, 2) * hh) * dpsi4_2_dx;
 
-        dG[0][0][2] =
-            -(dalpha02_dR * R_y + dalpha02_dth * th_y) +
-            bphiup * (dbphi_dR * R_y + dbphi_dth * th_y) +
-            bphi * (dbphiup_dR * R_y + dbphiup_dth * th_y);
+        dG[1][1][2] = bh_spin2 * y1_2 * psi4_2 * (2 * hh + y1_2 * dhh_dy) + (1 + bh_spin2 * pow(y1_2, 2) * hh) * dpsi4_2_dy;
 
-        dG[0][0][3] =
-            -(dalpha02_dR * R_z + dalpha02_dth * th_z) +
-            bphiup * (dbphi_dR * R_z + dbphi_dth * th_z) +
-            bphi * (dbphiup_dR * R_z + dbphiup_dth * th_z);
+        dG[1][1][3] = bh_spin2 * pow(y1_2, 2) * psi4_2 * dhh_dz + (1 + bh_spin2 * pow(y1_2, 2) * hh) * dpsi4_2_dz;
 
-        dG[0][1][1] =
-            (y1_2 *
-             (bphi * 2.0 * x1_2 -
-              rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x))) /
-            pow(rho2_2, 2);
-        dG[0][1][2] =
-            (bphi * (-rho2_2 + y1_2 * 2.0 * y1_2) -
-             y1_2 * rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y)) /
-            pow(rho2_2, 2);
-        dG[0][1][3] = -(
-            (y1_2 * (dbphi_dR * R_z + dbphi_dth * th_z)) / rho2_2);
+        dG[1][2][1] = -(bh_spin2 * y1_2 * (x1_2 * gamma * psi4_2 * dhh_dx + hh * (psi4_2 + x1_2 * gamma * dpsi4_2_dx)));
 
-        dG[0][2][1] =
-            (bphi * (rho2_2 - x1_2 * 2.0 * x1_2) +
-             x1_2 * rho2_2 * (dbphi_dR * R_x + dbphi_dth * th_x)) /
-            pow(rho2_2, 2);
-        dG[0][2][2] =
-            (x1_2 *
-             (-(bphi * 2.0 * y1_2) +
-              rho2_2 * (dbphi_dR * R_y + dbphi_dth * th_y))) /
-            pow(rho2_2, 2);
-        dG[0][2][3] =
-            (x1_2 * (dbphi_dR * R_z + dbphi_dth * th_z)) / rho2_2;
+        dG[1][2][2] = -(bh_spin2 * x1_2 * gamma * (y1_2 * psi4_2 * dhh_dy + hh * (psi4_2 + y1_2 * dpsi4_2_dy)));
 
-        dG[0][3][1] = 0;
-        dG[0][3][2] = 0;
-        dG[0][3][3] = 0;
+        dG[1][2][3] = -(bh_spin2 * x1_2 * gamma * y1_2 * (psi4_2 * dhh_dz + hh * dpsi4_2_dz));
 
-        dG[1][1][1] =
-            psi4_2 *
-                (2 * x1_2 * fctGG + pow(x1_2, 2) * (dfctGG_dR * R_x) +
-                 bh_spin2 * pow(y1_2, 2) *
-                     (dfctHH_dR * R_x + dfctHH_dth * th_x)) +
-            (1 + pow(x1_2, 2) * fctGG +
-             bh_spin2 * pow(y1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[1][1][2] =
-            psi4_2 * (pow(x1_2, 2) * (dfctGG_dR * R_y) +
-                      bh_spin2 * y1_2 *
-                          (2 * fctHH + y1_2 * (dfctHH_dR * R_y +
-                                               dfctHH_dth * th_y))) +
-            (1 + pow(x1_2, 2) * fctGG +
-             bh_spin2 * pow(y1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[1][1][3] =
-            psi4_2 * (pow(x1_2, 2) * (dfctGG_dR * R_z) +
-                      bh_spin2 * pow(y1_2, 2) *
-                          (dfctHH_dR * R_z + dfctHH_dth * th_z)) +
-            (1 + pow(x1_2, 2) * fctGG +
-             bh_spin2 * pow(y1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        // dG[1][3][i] = 0
 
-        dG[1][2][1] =
-            y1_2 * psi4_2 *
-                (fctGG + x1_2 * (dfctGG_dR * R_x) -
-                 bh_spin2 * (fctHH + x1_2 * (dfctHH_dR * R_x +
-                                             dfctHH_dth * th_x))) +
-            x1_2 * y1_2 * (fctGG - bh_spin2 * fctHH) *
-                (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[1][2][2] =
-            x1_2 * psi4_2 *
-                (fctGG + y1_2 * (dfctGG_dR * R_y) -
-                 bh_spin2 * (fctHH + y1_2 * (dfctHH_dR * R_y +
-                                             dfctHH_dth * th_y))) +
-            x1_2 * y1_2 * (fctGG - bh_spin2 * fctHH) *
-                (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[1][2][3] =
-            x1_2 * y1_2 *
-            (psi4_2 *
-                 ((dfctGG_dR * R_z) -
-                  bh_spin2 * (dfctHH_dR * R_z + dfctHH_dth * th_z)) +
-             (fctGG - bh_spin2 * fctHH) *
-                 (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z));
+        dG[2][2][1] = bh_spin2 * x1_2 * gamma * psi4_2 * (2 * hh + x1_2 * gamma * dhh_dx) + (1 +
+                                                                                             bh_spin2 * pow(x1_2 * gamma, 2) * hh) *
+                                                                                                dpsi4_2_dx;
+        dG[2][2][2] = bh_spin2 * pow(x1_2 * gamma, 2) * psi4_2 * dhh_dy + (1 +
+                                                                           bh_spin2 * pow(x1_2 * gamma, 2) * hh) *
+                                                                              dpsi4_2_dy;
+        dG[2][2][3] = bh_spin2 * pow(x1_2 * gamma, 2) * psi4_2 * dhh_dz + (1 +
+                                                                           bh_spin2 * pow(x1_2 * gamma, 2) * hh) *
+                                                                              dpsi4_2_dz;
 
-        dG[1][3][1] =
-            z1_2 * (x1_2 * psi4_2 * (dfctGG_dR * R_x) +
-                    fctGG * (psi4_2 + x1_2 * (dpsi4_2_dR * R_x +
-                                              dpsi4_2_dth * th_x)));
-        dG[1][3][2] =
-            x1_2 * z1_2 *
-            (psi4_2 * (dfctGG_dR * R_y) +
-             fctGG * (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y));
-        dG[1][3][3] =
-            x1_2 * (z1_2 * psi4_2 * (dfctGG_dR * R_z) +
-                    fctGG * (psi4_2 + z1_2 * (dpsi4_2_dR * R_z +
-                                              dpsi4_2_dth * th_z)));
+        // dG23_dx^i = 0
 
-        dG[2][2][1] =
-            psi4_2 * (pow(y1_2, 2) * (dfctGG_dR * R_x) +
-                      bh_spin2 * x1_2 *
-                          (2 * fctHH + x1_2 * (dfctHH_dR * R_x +
-                                               dfctHH_dth * th_x))) +
-            (1 + pow(y1_2, 2) * fctGG +
-             bh_spin2 * pow(x1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[2][2][2] =
-            psi4_2 *
-                (2 * y1_2 * fctGG + pow(y1_2, 2) * (dfctGG_dR * R_y) +
-                 bh_spin2 * pow(x1_2, 2) *
-                     (dfctHH_dR * R_y + dfctHH_dth * th_y)) +
-            (1 + pow(y1_2, 2) * fctGG +
-             bh_spin2 * pow(x1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[2][2][3] =
-            psi4_2 * (pow(y1_2, 2) * (dfctGG_dR * R_z) +
-                      bh_spin2 * pow(x1_2, 2) *
-                          (dfctHH_dR * R_z + dfctHH_dth * th_z)) +
-            (1 + pow(y1_2, 2) * fctGG +
-             bh_spin2 * pow(x1_2, 2) * fctHH) *
-                (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
+        dG[3][3][1] = dpsi4_2_dx;
+        dG[3][3][2] = dpsi4_2_dy;
+        dG[3][3][3] = dpsi4_2_dz;
 
-        dG[2][3][1] =
-            y1_2 * z1_2 *
-            (psi4_2 * (dfctGG_dR * R_x) +
-             fctGG * (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x));
-        dG[2][3][2] =
-            z1_2 * (y1_2 * psi4_2 * (dfctGG_dR * R_y) +
-                    fctGG * (psi4_2 + y1_2 * (dpsi4_2_dR * R_y +
-                                              dpsi4_2_dth * th_y)));
-        dG[2][3][3] =
-            y1_2 * (z1_2 * psi4_2 * (dfctGG_dR * R_z) +
-                    fctGG * (psi4_2 + z1_2 * (dpsi4_2_dR * R_z +
-                                              dpsi4_2_dth * th_z)));
-
-        dG[3][3][1] = pow(z1_2, 2) * psi4_2 * (dfctGG_dR * R_x) +
-                      (1 + pow(z1_2, 2) * fctGG) *
-                          (dpsi4_2_dR * R_x + dpsi4_2_dth * th_x);
-        dG[3][3][2] = pow(z1_2, 2) * psi4_2 * (dfctGG_dR * R_y) +
-                      (1 + pow(z1_2, 2) * fctGG) *
-                          (dpsi4_2_dR * R_y + dpsi4_2_dth * th_y);
-        dG[3][3][3] =
-            z1_2 * psi4_2 * (2 * fctGG + z1_2 * (dfctGG_dR * R_z)) +
-            (1 + pow(z1_2, 2) * fctGG) *
-                (dpsi4_2_dR * R_z + dpsi4_2_dth * th_z);
-
+        // dG[mu][nu][0] = 0
+        dG[0][0][1] = -2 * alpha0 * dalpha_dx - (bh_spin2 * (pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * (2 * x1_2 * gamma * hh + (rho2_2)*dhh_dx)) / (pow(1 + bh_spin2 * (rho2_2)*hh, 2) * psi4_2) + (2 * betadrest[1] * dbetadrest[1][1] + 2 * betadrest[2] * dbetadrest[2][1] + 2 * bh_spin2 * (x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2]) * hh * (betadrest[1] + x1_2 * gamma * dbetadrest[1][1] + y1_2 * dbetadrest[2][1]) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * dhh_dx) / ((1 + bh_spin2 * (rho2_2)*hh) * psi4_2) - ((pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * dpsi4_2_dx) / ((1 + bh_spin2 * (rho2_2)*hh) * pow(psi4_2, 2));
+        dG[0][0][2] = -2 * alpha0 * dalpha_dy - (bh_spin2 * (pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * (2 * y1_2 * hh + (rho2_2)*dhh_dy)) / (pow(1 + bh_spin2 * (rho2_2)*hh, 2) * psi4_2) + (2 * betadrest[1] * dbetadrest[1][2] + 2 * betadrest[2] * dbetadrest[2][2] + 2 * bh_spin2 * (x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2]) * hh * (betadrest[2] + x1_2 * gamma * dbetadrest[1][2] + y1_2 * dbetadrest[2][2]) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * dhh_dy) / ((1 + bh_spin2 * (rho2_2)*hh) * psi4_2) - ((pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * dpsi4_2_dy) / ((1 + bh_spin2 * (rho2_2)*hh) * pow(psi4_2, 2));
+        dG[0][0][3] = -2 * alpha0 * dalpha_dz - (bh_spin2 * (rho2_2) * (pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * dhh_dz) / (pow(1 + bh_spin2 * (rho2_2)*hh, 2) * psi4_2) + (2 * betadrest[1] * dbetadrest[1][3] + 2 * betadrest[2] * dbetadrest[2][3] + 2 * bh_spin2 * (x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2]) * hh * (x1_2 * gamma * dbetadrest[1][3] + y1_2 * dbetadrest[2][3]) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * dhh_dz) / ((1 + bh_spin2 * (rho2_2)*hh) * psi4_2) - ((pow(betadrest[1], 2) + pow(betadrest[2], 2) + bh_spin2 * pow(x1_2 * gamma * betadrest[1] + y1_2 * betadrest[2], 2) * hh) * dpsi4_2_dz) / ((1 + bh_spin2 * (rho2_2)*hh) * pow(psi4_2, 2));
+        dG[0][1][1] = dbetadrest[1][1];
+        dG[0][1][2] = dbetadrest[1][2];
+        dG[0][1][3] = dbetadrest[1][3];
+        dG[0][2][1] = dbetadrest[2][1];
+        dG[0][2][2] = dbetadrest[2][2];
+        dG[0][2][3] = dbetadrest[2][3];
+        dG[0][3][1] = dbetadrest[3][1];
+        dG[0][3][2] = dbetadrest[3][2];
+        dG[0][3][3] = dbetadrest[3][3];
         // symmetries
         dG[2][1][1] = dG[1][2][1];
         dG[2][1][2] = dG[1][2][2];
@@ -1029,6 +1003,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         dG[3][0][2] = dG[0][3][2];
         dG[3][0][3] = dG[0][3][3];
 
+
         /* NaN/Inf checks for dG tensor */
         for (int aa = 0; aa < 4; ++aa) {
           for (int bb = 0; bb < 4; ++bb) {
@@ -1040,7 +1015,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-        __float128 invLambda[4][4];
+        CCTK_REAL invLambda[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             invLambda[a][b] = 0.0;
@@ -1053,7 +1028,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         invLambda[2][2] = 1.;
         invLambda[3][3] = 1.;
 
-        __float128 Lambda[4][4];
+        CCTK_REAL Lambda[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             Lambda[a][b] = 0.0;
@@ -1066,7 +1041,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         Lambda[2][2] = 1.;
         Lambda[3][3] = 1.;
 
-        __float128 Gb[4][4];
+        CCTK_REAL Gb[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             Gb[a][b] = 0.0;
@@ -1075,7 +1050,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
-            __float128 sum = 0.0;
+            CCTK_REAL sum = 0.0;
             for (int mu = 0; mu < 4; ++mu)
               for (int nu = 0; nu < 4; ++nu)
                 sum += invLambda[mu][a] * invLambda[nu][b] * G[mu][nu];
@@ -1083,7 +1058,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-        __float128 dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
+        CCTK_REAL dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
 
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)
@@ -1094,7 +1069,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             for (int c = 0; c < 4; ++c) {
-              __float128 sum = 0.0;
+              CCTK_REAL sum = 0.0;
               for (int mu = 0; mu < 4; ++mu)
                 for (int nu = 0; nu < 4; ++nu)
                   for (int lam = 0; lam < 4; ++lam)
@@ -1120,7 +1095,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("gzz", gzz[ind]);
 
         // Invert the spatial 3x3 block of the boosted metric Gb into Gb3_inv
-        __float128 Gb3_inv[4][4];
+        CCTK_REAL Gb3_inv[4][4];
         for (int a = 0; a < 4; ++a)
           for (int b = 0; b < 4; ++b)
             Gb3_inv[a][b] = 0.0;
@@ -1128,7 +1103,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         {
 
           // Build symmetric 3x3 block M from Gb
-          __float128 M[4][4] = {{0}};
+          CCTK_REAL M[4][4] = {{0}};
           M[1][1] = Gb[1][1];
           M[1][2] = 0.5 * (Gb[1][2] + Gb[2][1]);
           M[1][3] = 0.5 * (Gb[1][3] + Gb[3][1]);
@@ -1155,13 +1130,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
           // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
           {
-            const __float128 tol = SMALL;
+            const CCTK_REAL tol = SMALL;
             for (int i3 = 1; i3 <= 3; ++i3) {
               for (int j3 = 1; j3 <= 3; ++j3) {
-                __float128 s = 0.0;
+                CCTK_REAL s = 0.0;
                 for (int k3 = 1; k3 <= 3; ++k3)
                   s += Gb3_inv[i3][k3] * Gb[k3][j3];
-                const __float128 delta = (i3 == j3) ? 1.0 : 0.0;
+                const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
                 if (fabs(s - delta) > tol) {
                   CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
                              "Gb3_inv check failed at (%d,%d): %g (tol=%g)", i3,
@@ -1181,13 +1156,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
         check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
-        __float128 beta[4];
+        CCTK_REAL beta[4];
         beta[0] = NAN;
         beta[1] = Gb[1][0];
         beta[2] = Gb[2][0];
         beta[3] = Gb[3][0];
 
-        __float128 betaup[4];
+        CCTK_REAL betaup[4];
         betaup[0] = 0.0;
         betaup[1] = Gb3_inv[1][1] * beta[1] + Gb3_inv[1][2] * beta[2] +
                     Gb3_inv[1][3] * beta[3];
@@ -1208,8 +1183,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         //////////////////////////////////////////////////////////////////////////////////////////
 
-        __float128 dW_drho_1, dW_dz_1;
-        const __float128 exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+        CCTK_REAL dW_drho_1, dW_dz_1;
+        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
 
         if (rho_1 < 1e-8) {
           dW_drho_1 = 0.;
@@ -1220,9 +1195,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           dW_dz_1 = z1_1 / rr_1 * dW_dr_1[ind] - rho_1 / rr2_1 * dW_dth_1[ind];
         }
 
-        __float128 new_alpha2 = -Gb[0][0] + betaup[1] * beta[1] +
+        CCTK_REAL new_alpha2 = -Gb[0][0] + betaup[1] * beta[1] +
                                betaup[2] * beta[2] + betaup[3] * beta[3];
-        __float128 new_alpha = sqrtq(new_alpha2);
+        CCTK_REAL new_alpha = sqrt(new_alpha2);
 
         {
           if (new_alpha2 < 0) {
@@ -1235,123 +1210,121 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         // check_nan_or_inf("new_alpha", new_alpha);
 
-        __float128 K_B[4][4]; // extrinsic curvature
+        CCTK_REAL K_B[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             K_B[a][b] = 0.0;
           }
         } // K_0\mu might not be zero but irrelevant for what i want to compute
 
-        const bool use_high_precision = (rr_2 < horizon_radius* (1 + HORIZON_PROXIMITY_FACTOR)) && (rr_2 > horizon_radius* (1 - HORIZON_PROXIMITY_FACTOR));
+        const bool use_high_precision = (rr_2 < horizon_radius* (1 + 1e-9)) && (rr_2 > horizon_radius* (1 - 1e-9));
 
-        if (use_high_precision) {
-          // High-precision computation using MPFR
-          mpfr_t mp_alpha, mp_betaup[4], mp_sum1, mp_sum2, mp_sum3;
-          mpfr_t mp_dg_temp, mp_Kab, mp_numerator, mp_half;
-          CCTK_VInfo(CCTK_THORNSTRING,"Using high-precision arithmetic for K_ij computation near the horizon %g.", (double)horizon_radius);
-          // Initialize
-          mpfr_init2(mp_alpha, MPFR_PREC);
-          for (int c = 0; c < 4; ++c)
-            mpfr_init2(mp_betaup[c], MPFR_PREC);
-          mpfr_init2(mp_sum1, MPFR_PREC);
-          mpfr_init2(mp_sum2, MPFR_PREC);
-          mpfr_init2(mp_sum3, MPFR_PREC);
-          mpfr_init2(mp_dg_temp, MPFR_PREC);
-          mpfr_init2(mp_Kab, MPFR_PREC);
-          mpfr_init2(mp_numerator, MPFR_PREC);
-          mpfr_init2(mp_half, MPFR_PREC);
+        // if (use_high_precision) {
+        //   // High-precision computation using MPFR
+        //   mpfr_t mp_alpha, mp_betaup[4], mp_sum1, mp_sum2, mp_sum3;
+        //   mpfr_t mp_dg_temp, mp_Kab, mp_numerator, mp_half;
+        //   CCTK_VInfo(CCTK_THORNSTRING,"Using high-precision arithmetic for K_ij computation near the horizon %g.", (double)horizon_radius);
+        //   // Initialize
+        //   mpfr_init2(mp_alpha, MPFR_PREC);
+        //   for (int c = 0; c < 4; ++c)
+        //     mpfr_init2(mp_betaup[c], MPFR_PREC);
+        //   mpfr_init2(mp_sum1, MPFR_PREC);
+        //   mpfr_init2(mp_sum2, MPFR_PREC);
+        //   mpfr_init2(mp_sum3, MPFR_PREC);
+        //   mpfr_init2(mp_dg_temp, MPFR_PREC);
+        //   mpfr_init2(mp_Kab, MPFR_PREC);
+        //   mpfr_init2(mp_numerator, MPFR_PREC);
+        //   mpfr_init2(mp_half, MPFR_PREC);
 
-          // Set constants
-          mpfr_set_d(mp_half, -0.5, MPFR_RNDN);
-          mpfr_set_d(mp_alpha, new_alpha, MPFR_RNDN);
-          mpfr_set_d(mp_betaup[0], 0.0, MPFR_RNDN);
-          for (int c = 1; c < 4; ++c)
-            mpfr_set_d(mp_betaup[c], betaup[c], MPFR_RNDN);
+        //   // Set constants
+        //   mpfr_set_d(mp_half, -0.5, MPFR_RNDN);
+        //   mpfr_set_d(mp_alpha, new_alpha, MPFR_RNDN);
+        //   mpfr_set_d(mp_betaup[0], 0.0, MPFR_RNDN);
+        //   for (int c = 1; c < 4; ++c)
+        //     mpfr_set_d(mp_betaup[c], betaup[c], MPFR_RNDN);
 
-          // Compute K_ij with high precision
-          for (int a = 1; a < 4; ++a) {
-            for (int b = 1; b < 4; ++b) {
-              // sum1 = Σ_c β^c ∂_c g_{ab}
-              mpfr_set_d(mp_sum1, 0.0, MPFR_RNDN);
-              for (int c = 1; c < 4; ++c) {
-                mpfr_set_d(mp_dg_temp, dg[a][b][c], MPFR_RNDN);
-                mpfr_fma(mp_sum1, mp_betaup[c], mp_dg_temp, mp_sum1, MPFR_RNDN);
-              }
+        //   // Compute K_ij with high precision
+        //   for (int a = 1; a < 4; ++a) {
+        //     for (int b = 1; b < 4; ++b) {
+        //       // sum1 = Σ_c β^c ∂_c g_{ab}
+        //       mpfr_set_d(mp_sum1, 0.0, MPFR_RNDN);
+        //       for (int c = 1; c < 4; ++c) {
+        //         mpfr_set_d(mp_dg_temp, dg[a][b][c], MPFR_RNDN);
+        //         mpfr_fma(mp_sum1, mp_betaup[c], mp_dg_temp, mp_sum1, MPFR_RNDN);
+        //       }
 
-              // sum2 = Σ_c β^c ∂_a g_{bc}
-              mpfr_set_d(mp_sum2, 0.0, MPFR_RNDN);
-              for (int c = 1; c < 4; ++c) {
-                mpfr_set_d(mp_dg_temp, dg[b][c][a], MPFR_RNDN);
-                mpfr_fma(mp_sum2, mp_betaup[c], mp_dg_temp, mp_sum2, MPFR_RNDN);
-              }
+        //       // sum2 = Σ_c β^c ∂_a g_{bc}
+        //       mpfr_set_d(mp_sum2, 0.0, MPFR_RNDN);
+        //       for (int c = 1; c < 4; ++c) {
+        //         mpfr_set_d(mp_dg_temp, dg[b][c][a], MPFR_RNDN);
+        //         mpfr_fma(mp_sum2, mp_betaup[c], mp_dg_temp, mp_sum2, MPFR_RNDN);
+        //       }
 
-              // sum3 = Σ_c β^c ∂_b g_{ac}
-              mpfr_set_d(mp_sum3, 0.0, MPFR_RNDN);
-              for (int c = 1; c < 4; ++c) {
-                mpfr_set_d(mp_dg_temp, dg[a][c][b], MPFR_RNDN);
-                mpfr_fma(mp_sum3, mp_betaup[c], mp_dg_temp, mp_sum3, MPFR_RNDN);
-              }
+        //       // sum3 = Σ_c β^c ∂_b g_{ac}
+        //       mpfr_set_d(mp_sum3, 0.0, MPFR_RNDN);
+        //       for (int c = 1; c < 4; ++c) {
+        //         mpfr_set_d(mp_dg_temp, dg[a][c][b], MPFR_RNDN);
+        //         mpfr_fma(mp_sum3, mp_betaup[c], mp_dg_temp, mp_sum3, MPFR_RNDN);
+        //       }
 
-              // numerator = ∂_t g_{ab} - sum1 - (∂_t g_{ba} - sum2) - (∂_t g_{ab} - sum3)
-              mpfr_set_d(mp_numerator, dg[a][b][0], MPFR_RNDN);
-              mpfr_sub(mp_numerator, mp_numerator, mp_sum1, MPFR_RNDN);
+        //       // numerator = ∂_t g_{ab} - sum1 - (∂_t g_{ba} - sum2) - (∂_t g_{ab} - sum3)
+        //       mpfr_set_d(mp_numerator, dg[a][b][0], MPFR_RNDN);
+        //       mpfr_sub(mp_numerator, mp_numerator, mp_sum1, MPFR_RNDN);
 
-              mpfr_t mp_term2;
-              mpfr_init2(mp_term2, MPFR_PREC);
-              mpfr_set_d(mp_term2, dg[0][b][a], MPFR_RNDN);
-              mpfr_sub(mp_term2, mp_term2, mp_sum2, MPFR_RNDN);
-              mpfr_sub(mp_numerator, mp_numerator, mp_term2, MPFR_RNDN);
+        //       mpfr_t mp_term2;
+        //       mpfr_init2(mp_term2, MPFR_PREC);
+        //       mpfr_set_d(mp_term2, dg[0][b][a], MPFR_RNDN);
+        //       mpfr_sub(mp_term2, mp_term2, mp_sum2, MPFR_RNDN);
+        //       mpfr_sub(mp_numerator, mp_numerator, mp_term2, MPFR_RNDN);
 
-              mpfr_set_d(mp_term2, dg[0][a][b], MPFR_RNDN);
-              mpfr_sub(mp_term2, mp_term2, mp_sum3, MPFR_RNDN);
-              mpfr_sub(mp_numerator, mp_numerator, mp_term2, MPFR_RNDN);
-              mpfr_clear(mp_term2);
+        //       mpfr_set_d(mp_term2, dg[0][a][b], MPFR_RNDN);
+        //       mpfr_sub(mp_term2, mp_term2, mp_sum3, MPFR_RNDN);
+        //       mpfr_sub(mp_numerator, mp_numerator, mp_term2, MPFR_RNDN);
+        //       mpfr_clear(mp_term2);
 
-              // K_{ab} = -0.5 / α * numerator
-              mpfr_div(mp_Kab, mp_numerator, mp_alpha, MPFR_RNDN);
-              mpfr_mul(mp_Kab, mp_Kab, mp_half, MPFR_RNDN);
+        //       // K_{ab} = -0.5 / α * numerator
+        //       mpfr_div(mp_Kab, mp_numerator, mp_alpha, MPFR_RNDN);
+        //       mpfr_mul(mp_Kab, mp_Kab, mp_half, MPFR_RNDN);
 
-              // Convert back to double
-              K_B[a][b] = mpfr_get_d(mp_Kab, MPFR_RNDN);
-            }
-          }
+        //       // Convert back to double
+        //       K_B[a][b] = mpfr_get_d(mp_Kab, MPFR_RNDN);
+        //     }
+        //   }
 
-          // Cleanup
-          mpfr_clear(mp_alpha);
-          for (int c = 0; c < 4; ++c)
-            mpfr_clear(mp_betaup[c]);
-          mpfr_clear(mp_sum1);
-          mpfr_clear(mp_sum2);
-          mpfr_clear(mp_sum3);
-          mpfr_clear(mp_dg_temp);
-          mpfr_clear(mp_Kab);
-          mpfr_clear(mp_numerator);
-          mpfr_clear(mp_half);
+        //   // Cleanup
+        //   mpfr_clear(mp_alpha);
+        //   for (int c = 0; c < 4; ++c)
+        //     mpfr_clear(mp_betaup[c]);
+        //   mpfr_clear(mp_sum1);
+        //   mpfr_clear(mp_sum2);
+        //   mpfr_clear(mp_sum3);
+        //   mpfr_clear(mp_dg_temp);
+        //   mpfr_clear(mp_Kab);
+        //   mpfr_clear(mp_numerator);
+        //   mpfr_clear(mp_half);
 
-        } else {
+        // } else {
         //   // Standard double precision computation (far from horizon)
-          for (int a = 1; a < 4; ++a) {
-            for (int b = 1; b < 4; ++b) {
-              __float128 sum1 = 0.0;
-              __float128 sum2 = 0.0;
-              __float128 sum3 = 0.0;
-              for (int c = 1; c < 4; ++c) {
-                sum1 += betaup[c] * dg[a][b][c];
-                sum2 += betaup[c] * dg[b][c][a];
-                sum3 += betaup[c] * dg[a][c][b];
-              }
-              K_B[a][b] = -0.5 / new_alpha *
-                          (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) -
-                           (dg[0][a][b] - sum3));
-            }
-          }
-        }
+        //   for (int a = 1; a < 4; ++a) {
+        //     for (int b = 1; b < 4; ++b) {
+        //       CCTK_REAL sum1 = 0.0;
+        //       CCTK_REAL sum2 = 0.0;
+        //       CCTK_REAL sum3 = 0.0;
+        //       for (int c = 1; c < 4; ++c) {
+        //         sum1 += betaup[c] * dg[a][b][c];
+        //         sum2 += betaup[c] * dg[b][c][a];
+        //         sum3 += betaup[c] * dg[a][c][b];
+        //       }
+        //       K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+        //     }
+        //   }
+        // }
 
         for (int a = 1; a < 4; ++a) {
           for (int b = 1; b < 4; ++b) {
-            __float128 sum1 = 0.0;
-            __float128 sum2 = 0.0;
-            __float128 sum3 = 0.0;
+            CCTK_REAL sum1 = 0.0;
+            CCTK_REAL sum2 = 0.0;
+            CCTK_REAL sum3 = 0.0;
             for (int c = 1; c < 4; ++c) {
               sum1 += betaup[c] * dg[a][b][c];
               sum2 += betaup[c] * dg[b][c][a];
@@ -1369,7 +1342,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         kzz[ind] = K_B[3][3];
 
         // if (bh_mass == 0.0) {
-        //   __float128 maxK = 0.0;
+        //   CCTK_REAL maxK = 0.0;
         //   for (int i3 = 1; i3 <= 3; ++i3)
         //     for (int j3 = 1; j3 <= 3; ++j3)
         //       maxK = fmax(maxK, fabs(K_B[i3][j3]));
@@ -1380,7 +1353,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         //   }
         // }
 
-        // __float128 auxKij, facKij, facKijRho, facKijZ;
+        // CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
         // auxKij = 2.0 * rBL2 * (rBL2 + bh_spin2) + Sigm * (rBL2 - bh_spin2);
         // facKij = alpha0 * bh_spin * bh_mass * sinth2 / (rr2_2 * pow(rho_2, 3)
         // * Delt * Sigm2); facKijRho = 2.0 * z1_2 * bh_spin2 * rBL * Delt *
@@ -1404,35 +1377,35 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         // check_nan_or_inf("kyz", kyz[ind]);
         // check_nan_or_inf("kzz", kzz[ind]);
 
-        const __float128 phi0_l_1 = phi0_1[ind]; // * pert_phi_1;
-        const __float128 phi0_l_2 = 0.;
+        const CCTK_REAL phi0_l_1 = phi0_1[ind]; // * pert_phi_1;
+        const CCTK_REAL phi0_l_2 = 0.;
 
         // scalar fields
 
         // star 1
-        __float128 phi1_1 = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
-        __float128 phi2_1 = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
+        CCTK_REAL phi1_1 = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
+        CCTK_REAL phi2_1 = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
 
         // BH 2
-        __float128 phi1_2 =
+        CCTK_REAL phi1_2 =
             0; // phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
-        __float128 phi2_2 =
+        CCTK_REAL phi2_2 =
             0; // phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
         /////////////////////////////
 
         phi1[ind] = phi1_1 + phi1_2;
         phi2[ind] = phi2_1 + phi2_2;
 
-        const __float128 alph_1 = exp(F0_1[ind]);
-        const __float128 alph_2 = new_alpha;
+        const CCTK_REAL alph_1 = exp(F0_1[ind]);
+        const CCTK_REAL alph_2 = new_alpha;
 
         // No regularization needed for the BS, the lapse is non-zero
 
-        __float128 Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
-        __float128 Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
+        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
+        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
 
-        __float128 Kphi1_2 = 0.;
-        __float128 Kphi2_2 = 0.;
+        CCTK_REAL Kphi1_2 = 0.;
+        CCTK_REAL Kphi2_2 = 0.;
 
         Kphi1[ind] = Kphi1_1 + Kphi1_2;
         Kphi2[ind] = Kphi2_1 + Kphi2_2;
@@ -1446,8 +1419,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
             alp[ind] = SMALL;
         }
 
-        // __float128 Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
-        // __float128 fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) -
+        // CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
+        // CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) -
         // Delt * bh_spin2 * sinth2; bphi = 2.0 * bh_spin * bh_mass * rBL /
         // fctFF;
 

@@ -1,19 +1,19 @@
 // este e o codigo copiado do kerrnewman.
-#include "UAv_Derivatives.h"
+#include <mpfr.h>
 #include "cctk.h"
 #include "cctk_Arguments.h"
 #include "cctk_Functions.h"
 #include "cctk_Parameters.h"
 #include "util_Table.h"
 #include <math.h>
-#include <mpfr.h>
+#include <quadmath.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define SMALL (1.e-9)
-#define MPFR_PREC 1024                // ~308 decimal digits
-#define HORIZON_PROXIMITY_FACTOR 0.2 // compute with high precision within 20% of horizon
+#define MPFR_PREC 512                // ~154 decimal digits
+#define HORIZON_PROXIMITY_FACTOR 0.2 // compute with high precision within 10% of horizon
 
 void UAv_ID_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL[], CCTK_REAL[],
                       CCTK_REAL[], CCTK_REAL[], CCTK_REAL[], CCTK_REAL[],
@@ -33,85 +33,85 @@ void check_nan_or_inf(const char *var_name, double value) {
 // (indices 1..3) Uses diagonal scaling and long-double accumulators, then
 // Cholesky: M = S^{-1} A S^{-1}, A = L L^T Returns 1 on success, 0 on failure
 // (non-SPD or singular).
-static inline int invert_spd3x3(const CCTK_REAL M[4][4], CCTK_REAL Minv[4][4]) {
+static inline int invert_spd3x3(const __float128 M[4][4], __float128 Minv[4][4]) {
   // Enforce symmetry (guards against tiny asymmetries)
-  long double m11 = (long double)M[1][1];
-  long double m22 = (long double)M[2][2];
-  long double m33 = (long double)M[3][3];
-  long double m12 = 0.5L * ((long double)M[1][2] + (long double)M[2][1]);
-  long double m13 = 0.5L * ((long double)M[1][3] + (long double)M[3][1]);
-  long double m23 = 0.5L * ((long double)M[2][3] + (long double)M[3][2]);
+  __float128 m11 = (__float128)M[1][1];
+  __float128 m22 = (__float128)M[2][2];
+  __float128 m33 = (__float128)M[3][3];
+  __float128 m12 = 0.5Q * ((__float128)M[1][2] + (__float128)M[2][1]);
+  __float128 m13 = 0.5Q * ((__float128)M[1][3] + (__float128)M[3][1]);
+  __float128 m23 = 0.5Q * ((__float128)M[2][3] + (__float128)M[3][2]);
 
-  // Diagonal scaling to improve conditioning: A = S M S, S = diag(1/sqrt(mii))
-  const long double eps = 1e-300L;
+  // Diagonal scaling to improve conditioning: A = S M S, S = diag(1/sqrtq(mii))
+  const __float128 eps = 1e-300L;
   if (!(m11 > 0 && m22 > 0 && m33 > 0))
     return 0;
-  long double s1 = 1.0L / sqrtl(fmaxl(m11, eps));
-  long double s2 = 1.0L / sqrtl(fmaxl(m22, eps));
-  long double s3 = 1.0L / sqrtl(fmaxl(m33, eps));
+  __float128 s1 = 1.0Q / sqrtq(fmaxq(m11, eps));
+  __float128 s2 = 1.0Q / sqrtq(fmaxq(m22, eps));
+  __float128 s3 = 1.0Q / sqrtq(fmaxq(m33, eps));
 
-  long double a11 = s1 * s1 * m11;
-  long double a22 = s2 * s2 * m22;
-  long double a33 = s3 * s3 * m33;
-  long double a12 = s1 * s2 * m12;
-  long double a13 = s1 * s3 * m13;
-  long double a23 = s2 * s3 * m23;
+  __float128 a11 = s1 * s1 * m11;
+  __float128 a22 = s2 * s2 * m22;
+  __float128 a33 = s3 * s3 * m33;
+  __float128 a12 = s1 * s2 * m12;
+  __float128 a13 = s1 * s3 * m13;
+  __float128 a23 = s2 * s3 * m23;
 
   // Cholesky A = L L^T (lower triangular L)
   if (!(a11 > 0))
     return 0;
-  long double L11 = sqrtl(a11);
+  __float128 L11 = sqrtq(a11);
 
-  long double L21 = a12 / L11;
-  long double L31 = a13 / L11;
+  __float128 L21 = a12 / L11;
+  __float128 L31 = a13 / L11;
 
-  long double t22 = a22 - L21 * L21;
+  __float128 t22 = a22 - L21 * L21;
   if (!(t22 > 0))
     return 0;
-  long double L22 = sqrtl(t22);
+  __float128 L22 = sqrtq(t22);
 
-  long double L32 = (a23 - L31 * L21) / L22;
+  __float128 L32 = (a23 - L31 * L21) / L22;
 
-  long double t33 = a33 - L31 * L31 - L32 * L32;
+  __float128 t33 = a33 - L31 * L31 - L32 * L32;
   if (!(t33 > 0))
     return 0;
-  long double L33 = sqrtl(t33);
+  __float128 L33 = sqrtq(t33);
 
   // Invert L (lower triangular): compute Linv so that Linv * L = I
-  long double Linv11 = 1.0L / L11;
-  long double Linv21 = -L21 * (Linv11 / L22);
-  long double Linv22 = 1.0L / L22;
-  long double Linv31 = -(L31 * Linv11 + L32 * Linv21) / L33;
-  long double Linv32 = -L32 * (Linv22 / L33);
-  long double Linv33 = 1.0L / L33;
+  __float128 Linv11 = 1.0Q / L11;
+  __float128 Linv21 = -L21 * (Linv11 / L22);
+  __float128 Linv22 = 1.0Q / L22;
+  __float128 Linv31 = -(L31 * Linv11 + L32 * Linv21) / L33;
+  __float128 Linv32 = -L32 * (Linv22 / L33);
+  __float128 Linv33 = 1.0Q / L33;
 
   // A^{-1} = (L^{-T} L^{-1}) = (Linv^T * Linv)
-  long double i11 = Linv11 * Linv11 + Linv21 * Linv21 + Linv31 * Linv31;
-  long double i12 =
-      Linv21 * Linv22 + Linv31 * Linv32 + Linv11 * 0.0L; // explicit for clarity
-  long double i13 = Linv31 * Linv33 + 0.0L;              // since Linv is lower
-  long double i22 = Linv22 * Linv22 + Linv32 * Linv32;
-  long double i23 = Linv32 * Linv33;
-  long double i33 = Linv33 * Linv33;
+  __float128 i11 = Linv11 * Linv11 + Linv21 * Linv21 + Linv31 * Linv31;
+  __float128 i12 =
+      Linv21 * Linv22 + Linv31 * Linv32 + Linv11 * 0.0Q; // explicit for clarity
+  __float128 i13 = Linv31 * Linv33 + 0.0Q;              // since Linv is lower
+  __float128 i22 = Linv22 * Linv22 + Linv32 * Linv32;
+  __float128 i23 = Linv32 * Linv33;
+  __float128 i33 = Linv33 * Linv33;
 
   // Undo scaling: M^{-1} = S * A^{-1} * S
-  long double S1 = s1, S2 = s2, S3 = s3;
-  long double mInv11 = S1 * S1 * i11;
-  long double mInv12 = S1 * S2 * i12;
-  long double mInv13 = S1 * S3 * i13;
-  long double mInv22 = S2 * S2 * i22;
-  long double mInv23 = S2 * S3 * i23;
-  long double mInv33 = S3 * S3 * i33;
+  __float128 S1 = s1, S2 = s2, S3 = s3;
+  __float128 mInv11 = S1 * S1 * i11;
+  __float128 mInv12 = S1 * S2 * i12;
+  __float128 mInv13 = S1 * S3 * i13;
+  __float128 mInv22 = S2 * S2 * i22;
+  __float128 mInv23 = S2 * S3 * i23;
+  __float128 mInv33 = S3 * S3 * i33;
 
-  Minv[1][1] = (CCTK_REAL)mInv11;
-  Minv[1][2] = (CCTK_REAL)mInv12;
-  Minv[1][3] = (CCTK_REAL)mInv13;
+  Minv[1][1] = (__float128)mInv11;
+  Minv[1][2] = (__float128)mInv12;
+  Minv[1][3] = (__float128)mInv13;
   Minv[2][1] = Minv[1][2];
-  Minv[2][2] = (CCTK_REAL)mInv22;
-  Minv[2][3] = (CCTK_REAL)mInv23;
+  Minv[2][2] = (__float128)mInv22;
+  Minv[2][3] = (__float128)mInv23;
   Minv[3][1] = Minv[1][3];
   Minv[3][2] = Minv[2][3];
-  Minv[3][3] = (CCTK_REAL)mInv33;
+  Minv[3][3] = (__float128)mInv33;
 
   return 1;
 }
@@ -643,18 +643,18 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
      to the axis and the origin, K_ij = 0.
   */
 
-  const CCTK_REAL tt = cctk_time;
+  const __float128 tt = cctk_time;
 
-  const CCTK_REAL coswt = cos(omega_BS * tt);
-  const CCTK_REAL sinwt = sin(omega_BS * tt);
+  const __float128 coswt = cos(omega_BS * tt);
+  const __float128 sinwt = sin(omega_BS * tt);
 
-  const CCTK_REAL bh_spin2 = bh_spin * bh_spin;
-  const CCTK_REAL bh_mass2 = bh_mass * bh_mass;
+  const __float128 bh_spin2 = bh_spin * bh_spin;
+  const __float128 bh_mass2 = bh_mass * bh_mass;
 
-  const CCTK_REAL rBLp = bh_mass + sqrt(bh_mass2 - bh_spin2);
-  const CCTK_REAL rBLm = bh_mass - sqrt(bh_mass2 - bh_spin2);
+  const __float128 rBLp = bh_mass + sqrtq(bh_mass2 - bh_spin2);
+  const __float128 rBLm = bh_mass - sqrtq(bh_mass2 - bh_spin2);
 
-  const CCTK_REAL horizon_radius = rBLp / 4; // 0.5 * sqrt(bh_mass2 - bh_spin2);
+  const __float128 horizon_radius = rBLp / 4; // 0.5 * sqrtq(bh_mass2 - bh_spin2);
 
   // printf("cctk_lsh[0] = %d\n",cctk_lsh[0]);
   // printf("cctk_lsh[1] = %d\n",cctk_lsh[1]);
@@ -668,131 +668,131 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         // Boson Star A ignorar por agora
 
-        const CCTK_REAL x1_1 = x[ind] - x0;
-        const CCTK_REAL y1_1 = y[ind] - y0;
-        const CCTK_REAL z1_1 = z[ind] - z0;
+        const __float128 x1_1 = x[ind] - x0;
+        const __float128 y1_1 = y[ind] - y0;
+        const __float128 z1_1 = z[ind] - z0;
 
         // For the Boson Star, rhor = R, no coordinate change needed.
-        const CCTK_REAL rr2_1 = x1_1 * x1_1 + y1_1 * y1_1 + z1_1 * z1_1;
-        const CCTK_REAL rr_1 = sqrt(rr2_1);
+        const __float128 rr2_1 = x1_1 * x1_1 + y1_1 * y1_1 + z1_1 * z1_1;
+        const __float128 rr_1 = sqrtq(rr2_1);
 
-        const CCTK_REAL rho2_1 = x1_1 * x1_1 + y1_1 * y1_1;
-        const CCTK_REAL rho_1 = sqrt(rho2_1);
+        const __float128 rho2_1 = x1_1 * x1_1 + y1_1 * y1_1;
+        const __float128 rho_1 = sqrtq(rho2_1);
 
-        const CCTK_REAL ph_1 = atan2(y1_1, x1_1);
+        const __float128 ph_1 = atan2(y1_1, x1_1);
         // If x1_2=y1_2=0, should return 0? The other metric functions should
         // vanish anyway to make sure that this doesn't matter, but can this
         // lead to nan depending on the C implementation?
 
-        const CCTK_REAL cosph_1 = cos(ph_1);
-        const CCTK_REAL sinph_1 = sin(ph_1);
+        const __float128 cosph_1 = cos(ph_1);
+        const __float128 sinph_1 = sin(ph_1);
 
-        const CCTK_REAL cosmph_1 = cos(mm * ph_1);
-        const CCTK_REAL sinmph_1 = sin(mm * ph_1);
+        const __float128 cosmph_1 = cos(mm * ph_1);
+        const __float128 sinmph_1 = sin(mm * ph_1);
 
-        const CCTK_REAL h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
+        const __float128 h_rho2_1 = exp(2. * (F2_1[ind] - F1_1[ind])) - 1.;
 
         // Black Hole B
 
-        const CCTK_REAL x1_2 = x[ind] - x0_2;
-        const CCTK_REAL y1_2 = y[ind] - y0_2;
-        const CCTK_REAL z1_2 = z[ind] - z0_2;
+        const __float128 x1_2 = x[ind] - x0_2;
+        const __float128 y1_2 = y[ind] - y0_2;
+        const __float128 z1_2 = z[ind] - z0_2;
 
-        const CCTK_REAL bh_v2 = bh_v * bh_v;
-        const CCTK_REAL gamma2 = 1. / (1. - bh_v2);
-        const CCTK_REAL gamma = sqrt(gamma2);
+        const __float128 bh_v2 = bh_v * bh_v;
+        const __float128 gamma2 = 1. / (1. - bh_v2);
+        const __float128 gamma = sqrtq(gamma2);
 
         // All quantities evaluated at point (x*gamma,y,z)
 
-        CCTK_REAL rr2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2 + z1_2 * z1_2;
+        __float128 rr2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2 + z1_2 * z1_2;
         if (rr2_2 < pow(eps_r, 2)) {
           rr2_2 = pow(eps_r, 2);
         }
-        const CCTK_REAL rr_2 = sqrt(rr2_2);
+        const __float128 rr_2 = sqrtq(rr2_2);
 
-        CCTK_REAL rho2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2;
+        __float128 rho2_2 = x1_2 * x1_2 * gamma2 + y1_2 * y1_2;
         if (rho2_2 < pow(eps_r, 2)) {
           rho2_2 = pow(eps_r, 2);
         }
-        const CCTK_REAL rho_2 = sqrt(rho2_2);
+        const __float128 rho_2 = sqrtq(rho2_2);
 
-        const CCTK_REAL rho3_2 = rho2_2 * rho_2;
+        const __float128 rho3_2 = rho2_2 * rho_2;
 
         // R0pert2 = (rr_2 - R0pert)*(rr_2 - R0pert) ;
 
-        const CCTK_REAL costh = z1_2 / rr_2;
-        const CCTK_REAL costh2 = costh * costh;
-        const CCTK_REAL sinth2 = 1. - costh2;
-        const CCTK_REAL sinth = sqrt(sinth2);
+        const __float128 costh = z1_2 / rr_2;
+        const __float128 costh2 = costh * costh;
+        const __float128 sinth2 = 1. - costh2;
+        const __float128 sinth = sqrtq(sinth2);
 
-        const CCTK_REAL ph_2 = atan2(y1_2, x1_2);
+        const __float128 ph_2 = atan2(y1_2, x1_2);
         // If x1_2=y1_2=0, should return 0? The other metric functions should
         // vanish anyway to make sure that this doesn't matter, but can this
         // lead to nan depending on the C implementation?
 
-        const CCTK_REAL cosph_2 = cos(ph_2);
-        const CCTK_REAL sinph_2 = sin(ph_2);
+        const __float128 cosph_2 = cos(ph_2);
+        const __float128 sinph_2 = sin(ph_2);
 
-        const CCTK_REAL R_x = x1_2 * gamma / rr_2;
-        const CCTK_REAL R_y = y1_2 / rr_2;
-        const CCTK_REAL R_z = z1_2 / rr_2;
+        const __float128 R_x = x1_2 * gamma / rr_2;
+        const __float128 R_y = y1_2 / rr_2;
+        const __float128 R_z = z1_2 / rr_2;
 
-        const CCTK_REAL x_R = x1_2 * gamma / rr_2;
-        const CCTK_REAL y_R = y1_2 / rr_2;
-        const CCTK_REAL z_R = z1_2 / rr_2;
+        const __float128 x_R = x1_2 * gamma / rr_2;
+        const __float128 y_R = y1_2 / rr_2;
+        const __float128 z_R = z1_2 / rr_2;
 
-        const CCTK_REAL th_x = costh * R_x / rho_2;
-        const CCTK_REAL th_y = costh * R_y / rho_2;
-        const CCTK_REAL th_z = -rho_2 / rr2_2;
+        const __float128 th_x = costh * R_x / rho_2;
+        const __float128 th_y = costh * R_y / rho_2;
+        const __float128 th_z = -rho_2 / rr2_2;
         // auxilliary quantities
-        CCTK_REAL rBL, rBL2;
+        __float128 rBL, rBL2;
         rBL = rr_2 * (1.0 + 0.25 * rBLp / rr_2) * (1.0 + 0.25 * rBLp / rr_2);
         rBL2 = rBL * rBL;
-        CCTK_REAL Delt, Sigm, Sigm2, fctFF;
+        __float128 Delt, Sigm, Sigm2, fctFF;
         Delt = (rBL - rBLp) * (rBL - rBLm); // rBL2 + bh_spin2 - 2 * bh_mass * rBL;
         Sigm = rBL2 + bh_spin2 * costh2;
         Sigm2 = Sigm * Sigm;
         fctFF = (rBL2 + bh_spin2) * (rBL2 + bh_spin2) - Delt * bh_spin2 * sinth2; // "A" no artigo
 
-        const CCTK_REAL psi4_2 = Sigm / rr2_2; // psi04 no codigo original
-        const CCTK_REAL psi2_2 = sqrt(psi4_2);
-        const CCTK_REAL psi1_2 = sqrt(psi2_2);
-        const CCTK_REAL psi4_1 = exp(2. * F1_1[ind]);
-        const CCTK_REAL psi2_1 = sqrt(psi4_1);
-        const CCTK_REAL psi1_1 = sqrt(psi2_1);
+        const __float128 psi4_2 = Sigm / rr2_2; // psi04 no codigo original
+        const __float128 psi2_2 = sqrtq(psi4_2);
+        const __float128 psi1_2 = sqrtq(psi2_2);
+        const __float128 psi4_1 = exp(2. * F1_1[ind]);
+        const __float128 psi2_1 = sqrtq(psi4_1);
+        const __float128 psi1_1 = sqrtq(psi2_1);
 
-        CCTK_REAL fctGG, fctHH;
+        __float128 fctGG, fctHH;
         fctGG = rBLm / (rr2_2 * (rBL - rBLm));
         fctHH = (2.0 * bh_mass * rBL + Sigm) / (rr2_2 * Sigm2);
 
-        // CCTK_REAL detgij;
+        // __float128 detgij;
         // detgij = psi4_2 * psi4_2 * psi4_2 * (1.0 + rr2_2 * fctGG) * (1.0 +
         // bh_spin2 * rho2_2 * fctHH);
 
         /*----------------------------------*/
 
-        // const CCTK_REAL alpha02 = (4.0 * rr_2 - rBLp) * (4.0 * rr_2 - rBLp) *
+        // const __float128 alpha02 = (4.0 * rr_2 - rBLp) * (4.0 * rr_2 - rBLp) *
         // (rBL - rBLm) / (16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass
         // * rBL * sinth2 / Sigm)));
-        const CCTK_REAL alpha0 = (4.0 * rr_2 - rBLp) * sqrt(rBL - rBLm) / sqrt(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero;
-        const CCTK_REAL alpha02 = alpha0 * alpha0;
-        // const CCTK_REAL alpha0 = sqrt(alpha02);
-        // const CCTK_REAL alpha0 = sqrt(Delt * Sigm / fctFF);
-        // const CCTK_REAL alpha02 = Delt * Sigm / fctFF;
-        // const CCTK_REAL alpha0 = sqrt(alpha02);
-        // const CCTK_REAL dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm *
+        const __float128 alpha0 = (4.0 * rr_2 - rBLp) * sqrtq(rBL - rBLm) / sqrtq(16.0 * rr_2 * (rBL2 + bh_spin2 * (1.0 + 2.0 * bh_mass * rBL * sinth2 / Sigm))); // primeiro termo para schwarzschild e zero;
+        const __float128 alpha02 = alpha0 * alpha0;
+        // const __float128 alpha0 = sqrtq(alpha02);
+        // const __float128 alpha0 = sqrtq(Delt * Sigm / fctFF);
+        // const __float128 alpha02 = Delt * Sigm / fctFF;
+        // const __float128 alpha0 = sqrtq(alpha02);
+        // const __float128 dalpha0_dR = 0.5 / alpha0 * (-(Delt * Sigm *
         // dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) /
         // pow(fctFF, 2);
-        // const CCTK_REAL dalpha0_dth = 0.5 / alpha0 * (Delt *
+        // const __float128 dalpha0_dth = 0.5 / alpha0 * (Delt *
         // (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / pow(fctFF, 2);
-        // const CCTK_REAL dalpha02_dR =(-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) /(fctFF * fctFF);
-        // const CCTK_REAL dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / (fctFF * fctFF);
-        const CCTK_REAL gphiphi = fctFF / Sigm * sinth2;
-        const CCTK_REAL bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
-        const CCTK_REAL bphi = bphiup * gphiphi;
+        // const __float128 dalpha02_dR =(-(Delt * Sigm * dfctFF_dR) + fctFF * (Sigm * dDelt_dR + Delt * dSigm_dR)) /(fctFF * fctFF);
+        // const __float128 dalpha02_dth = (Delt * (-(Sigm * dfctFF_dth) + fctFF * dSigm_dth)) / (fctFF * fctFF);
+        const __float128 gphiphi = fctFF / Sigm * sinth2;
+        const __float128 bphiup = -2.0 * bh_mass * bh_spin * rBL / fctFF;
+        const __float128 bphi = bphiup * gphiphi;
 
         // 1st derivatives of auxiliary quantities
-        CCTK_REAL drBLdR, dfctGG_dR, dfctHH_dR, dfctHH_dth, dpsi4_2_dR, dpsi4_2_dth, dDelt_dR, dSigm_dR, dSigm_dth, dfctFF_dR, dfctFF_dth;
+        __float128 drBLdR, dfctGG_dR, dfctHH_dR, dfctHH_dth, dpsi4_2_dR, dpsi4_2_dth, dDelt_dR, dSigm_dR, dSigm_dth, dfctFF_dR, dfctFF_dth;
         drBLdR = 1.0 - rBLp * rBLp / (16.0 * rr2_2);
         dDelt_dR = drBLdR * (rBL - rBLp) + drBLdR * (rBL - rBLm); //(2 * rBL - 2 * bh_mass) * drBLdR;
         dSigm_dR = 2 * rBL * drBLdR;
@@ -804,16 +804,16 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         dfctHH_dth = -(((4 * bh_mass * rBL + Sigm) * dSigm_dth) / (rr2_2 * Sigm2 * Sigm));
         dpsi4_2_dR = (-2 * Sigm + rr_2 * dSigm_dR) / (rr2_2 * rr_2);
         dpsi4_2_dth = dSigm_dth / rr2_2;
-        CCTK_REAL dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2) * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2));
-        CCTK_REAL dalpha02_dth = (bh_mass * bh_spin2 * (-4 * rr_2 + rBLp) * (-4 * rr_2 + rBLp) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2) * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2));
-        CCTK_REAL dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;
-        CCTK_REAL dgphiphi_dth = (sinth * (Sigm * sinth * dfctFF_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth))) / Sigm2;
-        CCTK_REAL dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / (fctFF * fctFF);
-        CCTK_REAL dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / (fctFF * fctFF);
-        CCTK_REAL dbphi_dR = gphiphi * dbphiup_dR + bphiup * dgphiphi_dR;
-        CCTK_REAL dbphi_dth = gphiphi * dbphiup_dth + bphiup * dgphiphi_dth;
+        __float128 dalpha02_dR = ((4 * rr_2 - rBLp) * (2 * bh_mass * bh_spin2 * Sigm * sinth2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * rBL) + rr_2 * rBLm * (4 * rr_2 - rBLp) * drBLdR) + Sigm2 * (-((4 * rr_2 + rBLp) * (rBLm - rBL) * (bh_spin2 + rBL2)) + rr_2 * (4 * rr_2 - rBLp) * (bh_spin2 + 2 * rBLm * rBL - rBL2) * drBLdR) - 2 * bh_mass * bh_spin2 * rr_2 * (4 * rr_2 - rBLp) * (rBLm - rBL) * rBL * sinth2 * dSigm_dR)) / (16. * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2) * (rr_2 * (bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rr_2 * rBL * sinth2));
+        __float128 dalpha02_dth = (bh_mass * bh_spin2 * (-4 * rr_2 + rBLp) * (-4 * rr_2 + rBLp) * (rBLm - rBL) * rBL * sinth * (2 * costh * Sigm - sinth * dSigm_dth)) / (8. * rr_2 * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2) * ((bh_spin2 + rBL2) * Sigm + 2 * bh_mass * bh_spin2 * rBL * sinth2));
+        __float128 dgphiphi_dR = (sinth2 * (Sigm * dfctFF_dR - fctFF * dSigm_dR)) / Sigm2;
+        __float128 dgphiphi_dth = (sinth * (Sigm * sinth * dfctFF_dth + fctFF * (2 * costh * Sigm - sinth * dSigm_dth))) / Sigm2;
+        __float128 dbphiup_dR = (2 * bh_mass * bh_spin * (-(fctFF * drBLdR) + rBL * dfctFF_dR)) / (fctFF * fctFF);
+        __float128 dbphiup_dth = (2 * bh_mass * bh_spin * rBL * dfctFF_dth) / (fctFF * fctFF);
+        __float128 dbphi_dR = gphiphi * dbphiup_dR + bphiup * dgphiphi_dR;
+        __float128 dbphi_dth = gphiphi * dbphiup_dth + bphiup * dgphiphi_dth;
 
-        CCTK_REAL G[4][4];
+        __float128 G[4][4];
         // Initialize G to zero
         for (int i = 0; i < 4; ++i)
           for (int j = 0; j < 4; ++j)
@@ -846,7 +846,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         }
 
         // Derivatives of the metric functions
-        CCTK_REAL dG[4][4][4];
+        __float128 dG[4][4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             for (int c = 0; c < 4; ++c) {
@@ -1040,7 +1040,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-        CCTK_REAL invLambda[4][4];
+        __float128 invLambda[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             invLambda[a][b] = 0.0;
@@ -1053,7 +1053,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         invLambda[2][2] = 1.;
         invLambda[3][3] = 1.;
 
-        CCTK_REAL Lambda[4][4];
+        __float128 Lambda[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             Lambda[a][b] = 0.0;
@@ -1066,7 +1066,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         Lambda[2][2] = 1.;
         Lambda[3][3] = 1.;
 
-        CCTK_REAL Gb[4][4];
+        __float128 Gb[4][4];
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             Gb[a][b] = 0.0;
@@ -1075,7 +1075,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
-            CCTK_REAL sum = 0.0;
+            __float128 sum = 0.0;
             for (int mu = 0; mu < 4; ++mu)
               for (int nu = 0; nu < 4; ++nu)
                 sum += invLambda[mu][a] * invLambda[nu][b] * G[mu][nu];
@@ -1083,7 +1083,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           }
         }
 
-        CCTK_REAL dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
+        __float128 dg[4][4][4], ddg[4][4][4][4]; // dg[i][j][k] = \partial_k g_{ij} (boosted metric)
 
         // Initialize dg to zero
         for (int ii = 0; ii < 4; ++ii)
@@ -1094,7 +1094,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             for (int c = 0; c < 4; ++c) {
-              CCTK_REAL sum = 0.0;
+              __float128 sum = 0.0;
               for (int mu = 0; mu < 4; ++mu)
                 for (int nu = 0; nu < 4; ++nu)
                   for (int lam = 0; lam < 4; ++lam)
@@ -1120,7 +1120,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("gzz", gzz[ind]);
 
         // Invert the spatial 3x3 block of the boosted metric Gb into Gb3_inv
-        CCTK_REAL Gb3_inv[4][4];
+        __float128 Gb3_inv[4][4];
         for (int a = 0; a < 4; ++a)
           for (int b = 0; b < 4; ++b)
             Gb3_inv[a][b] = 0.0;
@@ -1128,7 +1128,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         {
 
           // Build symmetric 3x3 block M from Gb
-          CCTK_REAL M[4][4] = {{0}};
+          __float128 M[4][4] = {{0}};
           M[1][1] = Gb[1][1];
           M[1][2] = 0.5 * (Gb[1][2] + Gb[2][1]);
           M[1][3] = 0.5 * (Gb[1][3] + Gb[3][1]);
@@ -1155,13 +1155,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
           // Verify Gb3_inv * Gb_spatial ≈ I (indices 1..3)
           {
-            const CCTK_REAL tol = SMALL;
+            const __float128 tol = SMALL;
             for (int i3 = 1; i3 <= 3; ++i3) {
               for (int j3 = 1; j3 <= 3; ++j3) {
-                CCTK_REAL s = 0.0;
+                __float128 s = 0.0;
                 for (int k3 = 1; k3 <= 3; ++k3)
                   s += Gb3_inv[i3][k3] * Gb[k3][j3];
-                const CCTK_REAL delta = (i3 == j3) ? 1.0 : 0.0;
+                const __float128 delta = (i3 == j3) ? 1.0 : 0.0;
                 if (fabs(s - delta) > tol) {
                   CCTK_VWarn(1, __LINE__, __FILE__, CCTK_THORNSTRING,
                              "Gb3_inv check failed at (%d,%d): %g (tol=%g)", i3,
@@ -1181,13 +1181,13 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         check_nan_or_inf("Gb3_inv[2][3]", Gb3_inv[2][3]);
         check_nan_or_inf("Gb3_inv[3][3]", Gb3_inv[3][3]);
 
-        CCTK_REAL beta[4];
+        __float128 beta[4];
         beta[0] = NAN;
         beta[1] = Gb[1][0];
         beta[2] = Gb[2][0];
         beta[3] = Gb[3][0];
 
-        CCTK_REAL betaup[4];
+        __float128 betaup[4];
         betaup[0] = 0.0;
         betaup[1] = Gb3_inv[1][1] * beta[1] + Gb3_inv[1][2] * beta[2] +
                     Gb3_inv[1][3] * beta[3];
@@ -1208,8 +1208,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         //////////////////////////////////////////////////////////////////////////////////////////
 
-        CCTK_REAL dW_drho_1, dW_dz_1;
-        const CCTK_REAL exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
+        __float128 dW_drho_1, dW_dz_1;
+        const __float128 exp_auxi_1 = exp(2. * F2_1[ind] - F0_1[ind]);
 
         if (rho_1 < 1e-8) {
           dW_drho_1 = 0.;
@@ -1220,9 +1220,9 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           dW_dz_1 = z1_1 / rr_1 * dW_dr_1[ind] - rho_1 / rr2_1 * dW_dth_1[ind];
         }
 
-        CCTK_REAL new_alpha2 = -Gb[0][0] + betaup[1] * beta[1] +
+        __float128 new_alpha2 = -Gb[0][0] + betaup[1] * beta[1] +
                                betaup[2] * beta[2] + betaup[3] * beta[3];
-        CCTK_REAL new_alpha = sqrt(new_alpha2);
+        __float128 new_alpha = sqrtq(new_alpha2);
 
         {
           if (new_alpha2 < 0) {
@@ -1235,14 +1235,14 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
 
         // check_nan_or_inf("new_alpha", new_alpha);
 
-        CCTK_REAL K_B[4][4]; // extrinsic curvature
+        __float128 K_B[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
             K_B[a][b] = 0.0;
           }
         } // K_0\mu might not be zero but irrelevant for what i want to compute
 
-        const bool use_high_precision = (rr_2 < horizon_radius* (1 + 1e-9)) && (rr_2 > horizon_radius* (1 - 1e-9));
+        const bool use_high_precision = (rr_2 < horizon_radius* (1 + HORIZON_PROXIMITY_FACTOR)) && (rr_2 > horizon_radius* (1 - HORIZON_PROXIMITY_FACTOR));
 
         if (use_high_precision) {
           // High-precision computation using MPFR
@@ -1329,35 +1329,37 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
           mpfr_clear(mp_half);
 
         } else {
-          // Standard double precision computation (far from horizon)
+        //   // Standard double precision computation (far from horizon)
           for (int a = 1; a < 4; ++a) {
             for (int b = 1; b < 4; ++b) {
-              CCTK_REAL sum1 = 0.0;
-              CCTK_REAL sum2 = 0.0;
-              CCTK_REAL sum3 = 0.0;
+              __float128 sum1 = 0.0;
+              __float128 sum2 = 0.0;
+              __float128 sum3 = 0.0;
               for (int c = 1; c < 4; ++c) {
                 sum1 += betaup[c] * dg[a][b][c];
                 sum2 += betaup[c] * dg[b][c][a];
                 sum3 += betaup[c] * dg[a][c][b];
               }
-              K_B[a][b] = 0.0;
+              K_B[a][b] = -0.5 / new_alpha *
+                          (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) -
+                           (dg[0][a][b] - sum3));
             }
           }
         }
 
-        // for (int a = 1; a < 4; ++a) {
-        //   for (int b = 1; b < 4; ++b) {
-        //     CCTK_REAL sum1 = 0.0;
-        //     CCTK_REAL sum2 = 0.0;
-        //     CCTK_REAL sum3 = 0.0;
-        //     for (int c = 1; c < 4; ++c) {
-        //       sum1 += betaup[c] * dg[a][b][c];
-        //       sum2 += betaup[c] * dg[b][c][a];
-        //       sum3 += betaup[c] * dg[a][c][b];
-        //     }
-        //     K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
-        //   }
-        // }
+        for (int a = 1; a < 4; ++a) {
+          for (int b = 1; b < 4; ++b) {
+            __float128 sum1 = 0.0;
+            __float128 sum2 = 0.0;
+            __float128 sum3 = 0.0;
+            for (int c = 1; c < 4; ++c) {
+              sum1 += betaup[c] * dg[a][b][c];
+              sum2 += betaup[c] * dg[b][c][a];
+              sum3 += betaup[c] * dg[a][c][b];
+            }
+            K_B[a][b] = -0.5 / new_alpha * (dg[a][b][0] - sum1 - (dg[0][b][a] - sum2) - (dg[0][a][b] - sum3));
+          }
+        }
 
         kxx[ind] = K_B[1][1];
         kxy[ind] = K_B[1][2];
@@ -1367,7 +1369,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         kzz[ind] = K_B[3][3];
 
         // if (bh_mass == 0.0) {
-        //   CCTK_REAL maxK = 0.0;
+        //   __float128 maxK = 0.0;
         //   for (int i3 = 1; i3 <= 3; ++i3)
         //     for (int j3 = 1; j3 <= 3; ++j3)
         //       maxK = fmax(maxK, fabs(K_B[i3][j3]));
@@ -1378,7 +1380,7 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         //   }
         // }
 
-        // CCTK_REAL auxKij, facKij, facKijRho, facKijZ;
+        // __float128 auxKij, facKij, facKijRho, facKijZ;
         // auxKij = 2.0 * rBL2 * (rBL2 + bh_spin2) + Sigm * (rBL2 - bh_spin2);
         // facKij = alpha0 * bh_spin * bh_mass * sinth2 / (rr2_2 * pow(rho_2, 3)
         // * Delt * Sigm2); facKijRho = 2.0 * z1_2 * bh_spin2 * rBL * Delt *
@@ -1402,35 +1404,35 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
         // check_nan_or_inf("kyz", kyz[ind]);
         // check_nan_or_inf("kzz", kzz[ind]);
 
-        const CCTK_REAL phi0_l_1 = phi0_1[ind]; // * pert_phi_1;
-        const CCTK_REAL phi0_l_2 = 0.;
+        const __float128 phi0_l_1 = phi0_1[ind]; // * pert_phi_1;
+        const __float128 phi0_l_2 = 0.;
 
         // scalar fields
 
         // star 1
-        CCTK_REAL phi1_1 = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
-        CCTK_REAL phi2_1 = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
+        __float128 phi1_1 = phi0_l_1 * (coswt * cosmph_1 + sinwt * sinmph_1);
+        __float128 phi2_1 = phi0_l_1 * (coswt * sinmph_1 - sinwt * cosmph_1);
 
         // BH 2
-        CCTK_REAL phi1_2 =
+        __float128 phi1_2 =
             0; // phi0_l_2 * (coswt * cosmph_2 + sinwt * sinmph_2);
-        CCTK_REAL phi2_2 =
+        __float128 phi2_2 =
             0; // phi0_l_2 * (coswt * sinmph_2 - sinwt * cosmph_2);
         /////////////////////////////
 
         phi1[ind] = phi1_1 + phi1_2;
         phi2[ind] = phi2_1 + phi2_2;
 
-        const CCTK_REAL alph_1 = exp(F0_1[ind]);
-        const CCTK_REAL alph_2 = new_alpha;
+        const __float128 alph_1 = exp(F0_1[ind]);
+        const __float128 alph_2 = new_alpha;
 
         // No regularization needed for the BS, the lapse is non-zero
 
-        CCTK_REAL Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
-        CCTK_REAL Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
+        __float128 Kphi1_1 = 0.5 * (mm * W_1[ind] - omega_BS) / alph_1 * phi2_1;
+        __float128 Kphi2_1 = 0.5 * (omega_BS - mm * W_1[ind]) / alph_1 * phi1_1;
 
-        CCTK_REAL Kphi1_2 = 0.;
-        CCTK_REAL Kphi2_2 = 0.;
+        __float128 Kphi1_2 = 0.;
+        __float128 Kphi2_2 = 0.;
 
         Kphi1[ind] = Kphi1_1 + Kphi1_2;
         Kphi2[ind] = Kphi2_1 + Kphi2_2;
@@ -1444,8 +1446,8 @@ void UAv_ID_Kerr_BS(CCTK_ARGUMENTS) {
             alp[ind] = SMALL;
         }
 
-        // CCTK_REAL Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
-        // CCTK_REAL fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) -
+        // __float128 Delt  = rBL*rBL + bh_spin2 - 2 * bh_mass * rBL;
+        // __float128 fctFF = ( rBL*rBL + bh_spin2 ) * ( rBL*rBL + bh_spin2 ) -
         // Delt * bh_spin2 * sinth2; bphi = 2.0 * bh_spin * bh_mass * rBL /
         // fctFF;
 

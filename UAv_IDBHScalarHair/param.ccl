@@ -1,21 +1,5 @@
 # Parameter definitions for thorn UAv_IDBHScalarHair
 
-
-KEYWORD post_initial_data "post initial data"
-{
-  "BS_single" :: "Single BS data for superposition with TwoPunctures"
-} "BS_single"
-
-KEYWORD post_initial_lapse "post initial lapse"
-{
-  "BS_single" :: "Single BS lapse for superposition with TwoPunctures"
-} "BS_single"
-
-KEYWORD post_initial_shift "post initial shift"
-{
-  "BS_single" :: "Single BS shift for superposition with TwoPunctures"
-} "BS_single"
-
 SHARES: ScalarBase
 USES CCTK_REAL mu
 
@@ -28,7 +12,7 @@ EXTENDS KEYWORD initial_data
   "ScalarBS"  :: "Scalar boson star initial data"
   "TwinScalarBS" :: "Twin scalar boson star initial data"
   "BH_BS"     :: "Boson star black hole collision"
-  "Kerr_BS"   :: "Boson star Kerr black hole collision"
+  "Kerr_BS"     :: "Boson star Kerr black hole collision"
 }
 
 EXTENDS KEYWORD initial_lapse

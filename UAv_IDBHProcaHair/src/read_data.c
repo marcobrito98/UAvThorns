@@ -82,9 +82,9 @@ void UAv_IDBHProcaHair_read_data(CCTK_INT *NF_p, CCTK_INT *NX_p, CCTK_REAL Xtmp[
       V[NF] *= sqrt(2.0 * M_PI);
     }
 
-    V[NF] *= mu;
+    // V[NF] *= mu;
 
-    W[NF] *= mu;
+    // W[NF] *= mu;
 
     NF++;
   }

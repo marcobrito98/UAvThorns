@@ -514,9 +514,10 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         const CCTK_INT ind = CCTK_GFINDEX3D(cctkGH, i, j, k);
 
-        const CCTK_REAL x1 = x[ind] - x0;
-        const CCTK_REAL y1 = y[ind] - y0;
-        const CCTK_REAL z1 = z[ind] - z0;
+        CCTK_REAL x1 = x[ind] - x0;
+        CCTK_REAL y1 = y[ind] - y0; //ter so atencao a transformar os desvios
+        CCTK_REAL z1 = z[ind] - z0;
+
 
         const CCTK_REAL rr2 = x1 * x1 + y1 * y1 + z1 * z1;
 
@@ -526,10 +527,13 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
-        // From r to the X radial coordinate (used in input files)
-        const CCTK_REAL lX = rr / (C0 + rr);
+           // Interpolation uses HATTED radius (file coordinates)
+        const CCTK_REAL r_hat = mu * rr;
 
-        const CCTK_REAL ltheta = rr < 1e-16*mu ? 0 : acos(z1 / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        // From r to the X radial coordinate (used in input files)
+        const CCTK_REAL lX = r_hat / (C0 + r_hat); //apparently in this place only C0 is rescalled to get physical coordinates
+
+        const CCTK_REAL ltheta = r_hat < 1e-16 ? 0 : acos(z1 / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
 
         X_g[ind] = lX;
         theta_g[ind] = ltheta;
@@ -717,7 +721,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
       For points close to the axis and the origin, K_ij = 0.
   */
 
-  const CCTK_REAL tt = cctk_time;
+  CCTK_REAL tt = cctk_time;
 
   const CCTK_REAL coswt = cos(omega_BS * tt);
   const CCTK_REAL sinwt = sin(omega_BS * tt);
@@ -732,7 +736,9 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        CCTK_REAL hx = x1*mu, hy = y1*mu, hz = z1*mu;
+        CCTK_REAL hx = x1 * mu;
+        CCTK_REAL hy = y1 * mu;
+        CCTK_REAL hz = z1 * mu; //hatted coordinates
 
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2 = hx * hx + hy * hy + hz * hz;
@@ -781,7 +787,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         const CCTK_REAL argpert_cf = (rr - R0pert_conf_fac) / Sigmapert_conf_fac;
         const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (hx * hx - hy * hy) * mu * mu * exp(-0.5 * argpert_cf * argpert_cf);
 
-        const CCTK_REAL conf_fac = psi4 * pert_cf;
+        const CCTK_REAL conf_fac = psi4; // * pert_cf;
 
         // 3-metric
         gxx[ind] = conf_fac * (1. + h_rho2 * sinph * sinph);
@@ -822,12 +828,12 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         }
 
         // extrinsic curvature
-        kxx[ind] = 0.0; //0.5 * rho * sin(2 * ph) * exp_auxi * dW_drho;
-        kxy[ind] = 0.0; //-0.5 * rho * cos(2 * ph) * exp_auxi * dW_drho;
-        kxz[ind] = 0.0; //0.5 * hy * exp_auxi * dW_dz;
-        kyy[ind] = 0.0; //-kxx[ind];
-        kyz[ind] = 0.0; //-0.5 * hx * exp_auxi * dW_dz;
-        kzz[ind] = 0.0; //0.;
+        kxx[ind] = 0.5 * rho * sin(2 * ph) * exp_auxi * dW_drho;
+        kxy[ind] = -0.5 * rho * cos(2 * ph) * exp_auxi * dW_drho;
+        kxz[ind] = 0.5 * hy * exp_auxi * dW_dz;
+        kyy[ind] = -kxx[ind];
+        kyz[ind] = -0.5 * hx * exp_auxi * dW_dz;
+        kzz[ind] = 0.;
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
@@ -849,23 +855,24 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // No need to change the radial component, R and r coincide
         // A_x
-        A1x[ind] = hx / rr * H1r[ind]/mu * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
-        A2x[ind] = hx / rr * H1r[ind]/mu * harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
+        A1x[ind] = hx / rr * H1r[ind] * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
+        A2x[ind] = hx / rr * H1r[ind] * harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
 
         // A_y
-        A1y[ind] = hy / rr * H1r[ind]/mu * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
-        A2y[ind] = hy / rr * H1r[ind]/mu * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
+        A1y[ind] = hy / rr * H1r[ind] * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
+        A2y[ind] = hy / rr * H1r[ind] * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
+
         // A_z
-        A1z[ind] = (hz / rr * H1r[ind]/mu - sinth / rr * H2[ind]) * harm_re;
-        A2z[ind] = (hz / rr * H1r[ind]/mu - sinth / rr * H2[ind]) * harm_im;
+        A1z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_re;
+        A2z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_im;
 
         // A_\phi
         /*
           A_\phi = -n^\mu A_\mu = - (A_t + W*A_ph)/alpha
                 = -i * e^{i (m ph - w t)} * (V + W H3 sinth) / alpha
         */
-        Aphi1[ind] = (V[ind] + W[ind] * sinth * H3[ind]) / alph * harm_im;
-        Aphi2[ind] = -(V[ind] + W[ind] * sinth * H3[ind]) / alph * harm_re;
+        Aphi1[ind] = (V[ind]*mu + W[ind] * sinth * H3[ind]) / alph * harm_im;
+        Aphi2[ind] = -(V[ind]*mu + W[ind] * sinth * H3[ind]) / alph * harm_re;
 
         // ----- Electric fields -----
 
@@ -877,15 +884,15 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
           E_r = i * e^{i(m phi - w t)} / alpha * [- (m*W - w) H1r + dV/dr + W sinth dH3/dr]
         */
 
-        E1d_r = -(-(mm * W[ind] - omega_BS) * H1r[ind]/mu + dV_dr[ind] + W[ind] * sinth * dH3_dr[ind]) / alph * harm_im;
-        E2d_r = (-(mm * W[ind] - omega_BS) * H1r[ind]/mu + dV_dr[ind] + W[ind] * sinth * dH3_dr[ind]) / alph * harm_re;
+        E1d_r = -(-(mm * W[ind] - omega_BS*mu) * H1r[ind] + dV_dr[ind]*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_im;
+        E2d_r = (-(mm * W[ind] - omega_BS*mu) * H1r[ind] + dV_dr[ind]*mu + W[ind] * sinth * dH3_dr[ind]) / alph * harm_re;
 
         // E_th
         /*
           E_th = i * e^{i(m phi - w t)} / alpha * [- (m*W - w) * H2 + dV/dth + W * d(H3 * sinth)/dth]
         */
-        E1d_th = -(-(mm * W[ind] - omega_BS) * H2[ind] + dV_dth[ind] + W[ind] * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_im;
-        E2d_th = (-(mm * W[ind] - omega_BS) * H2[ind] + dV_dth[ind] + W[ind] * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_re;
+        E1d_th = -(-(mm * W[ind] - omega_BS*mu) * H2[ind] + dV_dth[ind]*mu + W[ind] * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_im;
+        E2d_th = (-(mm * W[ind] - omega_BS*mu) * H2[ind] + dV_dth[ind]*mu + W[ind] * (sinth * dH3_dth[ind] + costh * H3[ind])) / alph * harm_re;
 
         // E_ph / sinth
         /*
@@ -901,12 +908,12 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
           // TODO: see how to deal with this if now we allow rr==0
           const CCTK_INT zsign = (costh >= 0) ? 1 : -1; // costh==0 shouldn't happen on the axis for a grid point, this would mean rr==0 too...
 
-          E1d_ph_o_sinth = -(mm * zsign * dV_dth[ind] + omega_BS * H3[ind]) / alph * harm_re;
-          E2d_ph_o_sinth = -(mm * zsign * dV_dth[ind] + omega_BS * H3[ind]) / alph * harm_im;
+          E1d_ph_o_sinth = -(mm * zsign * dV_dth[ind]*mu + omega_BS*mu * H3[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = -(mm * zsign * dV_dth[ind]*mu + omega_BS*mu * H3[ind]) / alph * harm_im;
 
         } else {
-          E1d_ph_o_sinth = -(mm * V[ind] / sinth + omega_BS * H3[ind]) / alph * harm_re;
-          E2d_ph_o_sinth = -(mm * V[ind] / sinth + omega_BS * H3[ind]) / alph * harm_im;
+          E1d_ph_o_sinth = -(mm * V[ind]*mu / sinth + omega_BS*mu * H3[ind]) / alph * harm_re;
+          E2d_ph_o_sinth = -(mm * V[ind]*mu / sinth + omega_BS*mu * H3[ind]) / alph * harm_im;
         }
 
         // E^i components
@@ -927,16 +934,16 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // Finally Cartesian components
         // E^x
-        E1x[ind] = (hx * E1u_r_o_r + hz * cosph * E1u_th - sinph * rsinthE1u_ph);
-        E2x[ind] = (hx * E2u_r_o_r + hz * cosph * E2u_th - sinph * rsinthE2u_ph);
+        E1x[ind] = hx * E1u_r_o_r + hz * cosph * E1u_th - sinph * rsinthE1u_ph;
+        E2x[ind] = hx * E2u_r_o_r + hz * cosph * E2u_th - sinph * rsinthE2u_ph;
 
         // E^y
-        E1y[ind] = (hy * E1u_r_o_r + hz * sinph * E1u_th + cosph * rsinthE1u_ph);
-        E2y[ind] = (hy * E2u_r_o_r + hz * sinph * E2u_th + cosph * rsinthE2u_ph);
+        E1y[ind] = hy * E1u_r_o_r + hz * sinph * E1u_th + cosph * rsinthE1u_ph;
+        E2y[ind] = hy * E2u_r_o_r + hz * sinph * E2u_th + cosph * rsinthE2u_ph;
 
         // E^z
-        E1z[ind] = (hz * E1u_r_o_r - rho * E1u_th);
-        E2z[ind] = (hz * E2u_r_o_r - rho * E2u_th);
+        E1z[ind] = hz * E1u_r_o_r - rho * E1u_th;
+        E2z[ind] = hz * E2u_r_o_r - rho * E2u_th;
 
         // zero-initialize constraint damping variable Zeta
         Zeta1[ind] = 0;

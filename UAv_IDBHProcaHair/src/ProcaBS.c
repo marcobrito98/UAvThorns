@@ -533,7 +533,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         // From r to the X radial coordinate (used in input files)
         const CCTK_REAL lX = rr / (C0 + rr);
 
-        const CCTK_REAL ltheta = rr < 1e-16 * mu ? 0 : acos(hz / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        const CCTK_REAL ltheta = rr < 1e-16 ? 0 : acos(hz / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
 
         X_g[ind] = lX;
         theta_g[ind] = ltheta;
@@ -735,7 +735,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        CCTK_REAL hx = x1 * mu, hy = y1 * mu, hz = z1 * mu, ht=mu*tt;
+        CCTK_REAL hx = x1 * mu, hy = y1 * mu, hz = z1 * mu, ht = mu * tt;
 
         // For the Boson Star, r = R, no coordinate change needed.
         const CCTK_REAL rr2 = hx * hx + hy * hy + hz * hz;
@@ -790,7 +790,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         const CCTK_REAL conf_fac = psi4 * 1.0; // * pert_cf;
 
         // 3-metric
-        
+
         gxx[ind] = conf_fac * (1. + h_rho2 * sinph * sinph);
         gxy[ind] = -conf_fac * h_rho2 * sinph * cosph;
         gxz[ind] = 0;
@@ -934,16 +934,16 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // Finally Cartesian components
         // E^x
-        E1x[ind] = (hx * E1u_r_o_r + hz * cosph * E1u_th - sinph * rsinthE1u_ph)*mu;
-        E2x[ind] = (hx * E2u_r_o_r + hz * cosph * E2u_th - sinph * rsinthE2u_ph)*mu;
+        E1x[ind] = (hx * E1u_r_o_r + hz * cosph * E1u_th - sinph * rsinthE1u_ph) * mu;
+        E2x[ind] = (hx * E2u_r_o_r + hz * cosph * E2u_th - sinph * rsinthE2u_ph) * mu;
 
         // E^y
-        E1y[ind] = (hy * E1u_r_o_r + hz * sinph * E1u_th + cosph * rsinthE1u_ph)*mu;
-        E2y[ind] = (hy * E2u_r_o_r + hz * sinph * E2u_th + cosph * rsinthE2u_ph)*mu;
+        E1y[ind] = (hy * E1u_r_o_r + hz * sinph * E1u_th + cosph * rsinthE1u_ph) * mu;
+        E2y[ind] = (hy * E2u_r_o_r + hz * sinph * E2u_th + cosph * rsinthE2u_ph) * mu;
 
         // E^z
-        E1z[ind] = (hz * E1u_r_o_r - rho * E1u_th)*mu;
-        E2z[ind] = (hz * E2u_r_o_r - rho * E2u_th)*mu;
+        E1z[ind] = (hz * E1u_r_o_r - rho * E1u_th) * mu;
+        E2z[ind] = (hz * E2u_r_o_r - rho * E2u_th) * mu;
 
         // zero-initialize constraint damping variable Zeta
         Zeta1[ind] = 0;

@@ -1800,14 +1800,14 @@ void UAv_IDProcaBSboost(CCTK_ARGUMENTS) {
         // lapse
         if (CCTK_EQUALS(initial_lapse, "psi^n"))
           alp[ind] = pow(psi1, initial_lapse_psi_exponent);
-        else if (CCTK_EQUALS(initial_lapse, "ProcaBS")) {
+        else if (CCTK_EQUALS(initial_lapse, "ProcaBSboost")) {
           alp[ind] = alph;
           if (alp[ind] < SMALL)
             alp[ind] = SMALL;
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "ProcaBS")) {
+        if (CCTK_EQUALS(initial_shift, "ProcaBSboost")) {
           betax[ind] = betaup[1];
           betay[ind] = betaup[2];
           betaz[ind] = betaup[3];

@@ -518,7 +518,11 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        const CCTK_REAL rr2 = x1 * x1 + y1 * y1 + z1 * z1;
+        const CCTK_REAL hx = mu * x1;
+        const CCTK_REAL hy = mu * y1;
+        const CCTK_REAL hz = mu * z1;
+
+        const CCTK_REAL rr2 = hx * hx + hy * hy + hz * hz;
 
         CCTK_REAL rr = sqrt(rr2);
         /* For the Boson Star, x, r and R coordinates coincide (rH=0). */
@@ -529,7 +533,7 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         // From r to the X radial coordinate (used in input files)
         const CCTK_REAL lX = rr / (C0 + rr);
 
-        const CCTK_REAL ltheta = rr < 1e-16 ? 0 : acos(z1 / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
+        const CCTK_REAL ltheta = rr < 1e-16 ? 0 : acos(hz / rr); // There should be at most one point in the grid with rr~0. Not sure about the threshold.
 
         X_g[ind] = lX;
         theta_g[ind] = ltheta;
@@ -719,30 +723,34 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
   const CCTK_REAL tt = cctk_time;
 
-  const CCTK_REAL coswt = cos(omega_BS * tt);
-  const CCTK_REAL sinwt = sin(omega_BS * tt);
-
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
 
         const CCTK_INT ind = CCTK_GFINDEX3D(cctkGH, i, j, k);
 
+        // code is in physical coordinates. hatted coordinates will algorithmically correspond to the rest frame coordinates in the other code, so that the proceedure is the same.
+
         const CCTK_REAL x1 = x[ind] - x0;
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
+        CCTK_REAL hx = x1 * mu, hy = y1 * mu, hz = z1 * mu, ht = mu * tt;
+
         // For the Boson Star, r = R, no coordinate change needed.
-        const CCTK_REAL rr2 = x1 * x1 + y1 * y1 + z1 * z1;
+        const CCTK_REAL rr2 = hx * hx + hy * hy + hz * hz;
         const CCTK_REAL rr = sqrt(rr2);
         /* note that there are divisions by rr in the following expressions.
            divisions by zero should be avoided by choosing a non-zero value for
            z0 (for instance) */
 
-        const CCTK_REAL rho2 = x1 * x1 + y1 * y1;
+        const CCTK_REAL coswt = cos(omega_BS * ht);
+        const CCTK_REAL sinwt = sin(omega_BS * ht);
+
+        const CCTK_REAL rho2 = hx * hx + hy * hy;
         const CCTK_REAL rho = sqrt(rho2);
 
-        const CCTK_REAL costh = z1 / rr;
+        const CCTK_REAL costh = hz / rr;
         const CCTK_REAL costh2 = costh * costh;
         /*
           For some grid points actually on the axis, it occurred that costh = 1-1e-16, resulting in sinth ~ 1.5e-8 instead of 0.
@@ -758,8 +766,8 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
           sinth = sqrt(sinth2);
         }
 
-        const CCTK_REAL ph = atan2(y1, x1);
-        // If x1=y1=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
+        const CCTK_REAL ph = atan2(hy, hx);
+        // If hx=hy=0, should return 0? The other metric functions should vanish anyway to make sure that this doesn't matter,
         // but can this lead to nan depending on the C implementation?
 
         const CCTK_REAL cosph = cos(ph);
@@ -776,12 +784,13 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // add non-axisymmetric perturbation on conformal factor
         // NOTE: the perturbation is only taken into account for the 3-metric grid functions (not extrinsic curvature, lapse, ...)
-        const CCTK_REAL argpert_cf = (rr - R0pert_conf_fac) / Sigmapert_conf_fac;
-        const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (x1 * x1 - y1 * y1) * mu * mu * exp(-0.5 * argpert_cf * argpert_cf);
+        // const CCTK_REAL argpert_cf = (rr - R0pert_conf_fac) / Sigmapert_conf_fac;
+        // const CCTK_REAL pert_cf = 1. + Apert_conf_fac * (hx * hx - hy * hy) * mu * mu * exp(-0.5 * argpert_cf * argpert_cf);
 
-        const CCTK_REAL conf_fac = psi4 * pert_cf;
+        const CCTK_REAL conf_fac = psi4 * 1.0; // * pert_cf;
 
         // 3-metric
+
         gxx[ind] = conf_fac * (1. + h_rho2 * sinph * sinph);
         gxy[ind] = -conf_fac * h_rho2 * sinph * cosph;
         gxz[ind] = 0;
@@ -815,17 +824,17 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
           dW_drho = 0.;
           dW_dz = 0.;
         } else {
-          dW_drho = rho / rr * dW_dr[ind] + z1 / rr2 * dW_dth[ind];
-          dW_dz = z1 / rr * dW_dr[ind] - rho / rr2 * dW_dth[ind];
+          dW_drho = rho / rr * dW_dr[ind] + hz / rr2 * dW_dth[ind];
+          dW_dz = hz / rr * dW_dr[ind] - rho / rr2 * dW_dth[ind];
         }
 
         // extrinsic curvature
-        kxx[ind] = 0.5 * rho * sin(2 * ph) * exp_auxi * dW_drho;
-        kxy[ind] = -0.5 * rho * cos(2 * ph) * exp_auxi * dW_drho;
-        kxz[ind] = 0.5 * y1 * exp_auxi * dW_dz;
-        kyy[ind] = -kxx[ind];
-        kyz[ind] = -0.5 * x1 * exp_auxi * dW_dz;
-        kzz[ind] = 0.;
+        kxx[ind] = 0.0; // 0.5 * rho * sin(2 * ph) * exp_auxi * dW_drho;
+        kxy[ind] = 0.0; //-0.5 * rho * cos(2 * ph) * exp_auxi * dW_drho;
+        kxz[ind] = 0.0; // 0.5 * hy * exp_auxi * dW_dz;
+        kyy[ind] = 0.0; //-kxx[ind];
+        kyz[ind] = 0.0; //-0.5 * hx * exp_auxi * dW_dz;
+        kzz[ind] = 0.0; // 0.;
 
         // lapse value (field initialization below)
         // No lapse regularization needed for the BS, the lapse is non-zero
@@ -834,29 +843,28 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
         // let's add a perturbation to the Proca field as well
         // NOTE: the perturbation is added directed to every instance of e^{i m \varphi}, hence its derivatives are not taken into account
         // TODO (?): Design perturbation more generically as ~ cos((m+1)\varphi)
-        const CCTK_REAL argpert_Proca = (rr - R0pert_Proca) / Sigmapert_Proca;
-        const CCTK_REAL pert_Proca = 1. + Apert_Proca * (x1 * x1 - y1 * y1) * mu * mu * exp(-0.5 * argpert_Proca * argpert_Proca);
+        // const CCTK_REAL argpert_Proca = (rr - R0pert_Proca) / Sigmapert_Proca;
+        // const CCTK_REAL pert_Proca = 1. + Apert_Proca * (hx * hx - hy * hy) * mu * mu * exp(-0.5 * argpert_Proca * argpert_Proca);
 
         // ----- Proca fields -----
 
         // TODO: check what happens with divisions by rr and sinth, can we work around them?
 
         // Real and imaginay part of the harmonic dependence: exp[i(m\varphi - \omega t)]
-        const CCTK_REAL harm_re = (coswt * cosmph + sinwt * sinmph) * pert_Proca;
-        const CCTK_REAL harm_im = (coswt * sinmph - sinwt * cosmph) * pert_Proca;
+        const CCTK_REAL harm_re = (coswt * cosmph + sinwt * sinmph) * 1.0;
+        const CCTK_REAL harm_im = (coswt * sinmph - sinwt * cosmph) * 1.0;
 
         // No need to change the radial component, R and r coincide
         // A_x
-        A1x[ind] = x1 / rr * H1r[ind] * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
-        A2x[ind] = x1 / rr * H1r[ind] * harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
+        A1x[ind] = hx / rr * H1r[ind] * harm_re + costh * cosph / rr * H2[ind] * harm_re + sinph / rr * H3[ind] * harm_im;
+        A2x[ind] = hx / rr * H1r[ind] * harm_im + costh * cosph / rr * H2[ind] * harm_im - sinph / rr * H3[ind] * harm_re;
 
         // A_y
-        A1y[ind] = y1 / rr * H1r[ind] * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
-        A2y[ind] = y1 / rr * H1r[ind] * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
-
+        A1y[ind] = hy / rr * H1r[ind] * harm_re + costh * sinph / rr * H2[ind] * harm_re - cosph / rr * H3[ind] * harm_im;
+        A2y[ind] = hy / rr * H1r[ind] * harm_im + costh * sinph / rr * H2[ind] * harm_im + cosph / rr * H3[ind] * harm_re;
         // A_z
-        A1z[ind] = (z1 / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_re;
-        A2z[ind] = (z1 / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_im;
+        A1z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_re;
+        A2z[ind] = (hz / rr * H1r[ind] - sinth / rr * H2[ind]) * harm_im;
 
         // A_\phi
         /*
@@ -926,16 +934,16 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // Finally Cartesian components
         // E^x
-        E1x[ind] = x1 * E1u_r_o_r + z1 * cosph * E1u_th - sinph * rsinthE1u_ph;
-        E2x[ind] = x1 * E2u_r_o_r + z1 * cosph * E2u_th - sinph * rsinthE2u_ph;
+        E1x[ind] = (hx * E1u_r_o_r + hz * cosph * E1u_th - sinph * rsinthE1u_ph) * mu;
+        E2x[ind] = (hx * E2u_r_o_r + hz * cosph * E2u_th - sinph * rsinthE2u_ph) * mu;
 
         // E^y
-        E1y[ind] = y1 * E1u_r_o_r + z1 * sinph * E1u_th + cosph * rsinthE1u_ph;
-        E2y[ind] = y1 * E2u_r_o_r + z1 * sinph * E2u_th + cosph * rsinthE2u_ph;
+        E1y[ind] = (hy * E1u_r_o_r + hz * sinph * E1u_th + cosph * rsinthE1u_ph) * mu;
+        E2y[ind] = (hy * E2u_r_o_r + hz * sinph * E2u_th + cosph * rsinthE2u_ph) * mu;
 
         // E^z
-        E1z[ind] = z1 * E1u_r_o_r - rho * E1u_th;
-        E2z[ind] = z1 * E2u_r_o_r - rho * E2u_th;
+        E1z[ind] = (hz * E1u_r_o_r - rho * E1u_th) * mu;
+        E2z[ind] = (hz * E2u_r_o_r - rho * E2u_th) * mu;
 
         // zero-initialize constraint damping variable Zeta
         Zeta1[ind] = 0;
@@ -952,8 +960,8 @@ void UAv_IDProcaBS(CCTK_ARGUMENTS) {
 
         // shift
         if (CCTK_EQUALS(initial_shift, "ProcaBS")) {
-          betax[ind] = W[ind] * y1;
-          betay[ind] = -W[ind] * x1;
+          betax[ind] = W[ind] * hy;
+          betay[ind] = -W[ind] * hx;
           betaz[ind] = 0.;
         }
 

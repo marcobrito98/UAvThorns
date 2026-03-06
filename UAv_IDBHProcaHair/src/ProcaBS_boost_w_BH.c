@@ -1910,10 +1910,14 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         }
 
         // shift
-        if (CCTK_EQUALS(initial_shift, "PS_single")) {
+        if (CCTK_EQUALS(post_initial_shift, "PS_single")) {
           betax[ind] = betax[ind] + betaup[1];
           betay[ind] = betay[ind] + betaup[2];
           betaz[ind] = betaz[ind] + betaup[3];
+        } else if (CCTK_EQUALS(post_initial_shift, "PS_zero")) {
+          betax[ind] = betax[ind] + 0.0;
+          betay[ind] = betay[ind] + 0.0;
+          betaz[ind] = betaz[ind] + 0.0;
         }
 
       } /* for i */

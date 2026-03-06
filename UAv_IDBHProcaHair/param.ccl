@@ -16,6 +16,7 @@ KEYWORD post_initial_lapse "post initial lapse"
 KEYWORD post_initial_shift "post initial shift"
 {
   "PS_single" :: "Single BS shift for superposition with TwoPunctures"
+  "PS_zero"   :: "Zero shift for Proca star part"
   "none"      :: "Disabled"
 } "none"
 

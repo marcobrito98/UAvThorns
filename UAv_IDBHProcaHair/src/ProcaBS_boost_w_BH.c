@@ -1464,13 +1464,15 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
           }
         }
 
+        CCTK_REAL separation = (center_offset[0] + 1) - x0; // only for separations along the x-axis, need to be modified for general case
+
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - 1.0;
+        gxx[ind] = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
         gxy[ind] = gammaB[1][2] + Gb[1][2];
         gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - 1.0;
+        gyy[ind] = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
         gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - 1.0;
+        gzz[ind] = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

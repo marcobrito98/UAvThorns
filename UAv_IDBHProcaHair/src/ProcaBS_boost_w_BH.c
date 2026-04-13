@@ -1481,6 +1481,53 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
 
+        ///////////////////////////////////////////
+        //aqui ate deveria ser do 2º buraco negro dado pelo two punctures que tem de ser adicionado ao do buraco negro original.
+
+        static inline double delta_ij(int i, int j) { return (i == j) ? 1.0 : 0.0; }
+        
+        // n_i = x_i / r
+        CCTK_REAL n[3] = {hx / rr, hy / rr, hz / rr};
+
+        // P·n
+        const CCTK_REAL Pdotn = par_P_plus[0] * n[0] + par_P_plus[1] * n[1] + par_P_plus[2] * n[2];
+
+        // w = n × S  (components w_i = eps_{ijk} n_j S_k)
+        CCTK_REAL w[3] = {
+            n[1] * par_S_plus[2] - n[2] * par_S_plus[1],
+            n[2] * par_S_plus[0] - n[0] * par_S_plus[2],
+            n[0] * par_S_plus[1] - n[1] * par_S_plus[0]};
+
+        const CCTK_REAL cP = 3.0 / (2.0 * rr2);
+        const CCTK_REAL cS = -3.0 / (rr * rr2);
+
+        CCTK_REAL A[4][4];
+
+        //aqui os indices i,j vão de 0 a 2
+        for (int i = 0; i < 3; ++i) {
+          for (int j = i; j < 3; ++j) {
+            const CCTK_REAL mom =
+                cP * (n[i] * par_P_plus[j] + n[j] * par_P_plus[i] + Pdotn * (n[i] * n[j] - delta_ij(i, j)));
+
+            const CCTK_REAL spin =
+                cS * (n[i] * w[j] + n[j] * w[i]);
+
+            A[i][j] = mom + spin;
+            A[j][i] = A[i][j];
+          }
+        }
+
+        CCTK_REAL Ktp[4][4];
+        for (int i = 1; i < 4; ++i)
+        {
+          for (int j = 1; j < 4; j++)
+          {
+            Ktp[i][j] = 1/psi2 * A[i-1][j-1];
+          }
+        }
+        
+        ////////////////////////////////////////////
+
         CCTK_REAL dW_drho, dW_dz;
         const CCTK_REAL exp_auxi = exp(2. * F2[ind] - F0[ind]);
 

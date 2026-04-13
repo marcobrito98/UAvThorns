@@ -28,6 +28,8 @@ USES CCTK_REAL mu
 SHARES: TwoPunctures
 USES CCTK_REAL par_m_plus
 USES CCTK_REAL center_offset[3]
+USES CCTK_REAL par_P_plus[3]
+USES CCTK_REAL par_S_plus[3]
 
 
 SHARES: ADMBase

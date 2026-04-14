@@ -11,6 +11,8 @@
 
 #define SMALL (1.e-9)
 
+static inline double delta_ij(int i, int j) { return (i == j) ? 1.0 : 0.0; }
+
 void UAv_IDBHProcaHair_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL[], CCTK_REAL[],
                                  CCTK_REAL[], CCTK_REAL[], CCTK_REAL[], CCTK_REAL[],
                                  CCTK_REAL[], CCTK_REAL[], CCTK_REAL[], CCTK_REAL[]);
@@ -1467,12 +1469,51 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         CCTK_REAL separation = (center_offset[0] + 1) - x0; // only for separations along the x-axis, need to be modified for general case
 
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
-        gxy[ind] = gammaB[1][2] + Gb[1][2];
-        gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
-        gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
+
+        CCTK_REAL gxxMC = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
+        CCTK_REAL gxyMC = gammaB[1][2] + Gb[1][2];
+        CCTK_REAL gxzMC = gammaB[1][3] + Gb[1][3];
+        CCTK_REAL gyyMC = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
+        CCTK_REAL gyzMC = gammaB[2][3] + Gb[2][3];
+        CCTK_REAL gzzMC = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
+
+        CCTK_REAL func;
+        CCTK_REAL RBH = 5.0 * par_m_plus; // some radius around the black hole between 5M to 10M
+        CCTK_REAL RBS;                    // effective radius of boson star
+        CCTK_REAL rcoords = sqrt(x[ind] * x[ind] + y[ind] * y[ind] + z[ind] * z[ind]);
+        const CCTK_REAL xx1 = x[ind] - (center_offset[0] + 1); // only for separations along the x-axis, because of the par_b parameter
+        const CCTK_REAL yy1 = y[ind] - center_offset[1];
+        const CCTK_REAL zz1 = z[ind] - center_offset[2];
+
+        const CCTK_REAL rr_1 = sqrt(xx1 * xx1 + yy1 * yy1 + zz1 * zz1);
+
+        if (omega_BS == 0.97) {
+          RBS = 5.0 * 0.412 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+        } else if (omega_BS == 0.92) {
+          RBS = 5.0 * 0.626 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+        } else if (omega_BS == 0.87) {
+          RBS = 5.0 * 0.735 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+        } else if (omega_BS == 0.82) {
+          RBS = 5.0 * 0.785 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+        } else {
+          fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
+          break;
+        }
+
+        if (rr < RBH) {
+          func = 0;
+        } else if (rr > RBS && rr == RBS) {
+          func = 1 - tanh(pow(rr_1 / RBH, 2));
+        }
+
+        CCTK_REAL TPpsi4 = pow(1 + par_m_plus / (2 * sqrt((x[ind] - xx1) * (x[ind] - xx1) + (y[ind] - yy1) * (y[ind] - yy1) + (z[ind] - zz1) * (z[ind] - zz1))) + massBS/(2 * sqrt((x[ind] - hx) * (x[ind] - hx) + (y[ind] - hy) * (y[ind] - hy) + (z[ind] - hz) * (z[ind] - hz))), 4);
+
+        gxx[ind] = gxxMC + func * (TPpsi4 - gxxMC);
+        gxy[ind] = gxyMC + func * (0.0 - gxyMC);
+        gxz[ind] = gxzMC + func * (0.0 - gxzMC);
+        gyy[ind] = gyyMC + func * (TPpsi4 - gyyMC);
+        gyz[ind] = gyzMC + func * (0.0 - gyzMC);
+        gzz[ind] = gzzMC + func * (TPpsi4 - gzzMC);
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);
@@ -1482,50 +1523,98 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         check_nan_or_inf("gzz", gzz[ind]);
 
         ///////////////////////////////////////////
-        //aqui ate deveria ser do 2º buraco negro dado pelo two punctures que tem de ser adicionado ao do buraco negro original.
 
-        static inline double delta_ij(int i, int j) { return (i == j) ? 1.0 : 0.0; }
-        
-        // n_i = x_i / r
-        CCTK_REAL n[3] = {hx / rr, hy / rr, hz / rr};
+        ////// Bowen-York extrinsic curvature for two black holes, the second one with the mass of the boson star.
+
+        // n_i = x_i / r wrt the black hole
+        CCTK_REAL n1[3] = {xx1 / rr_1, yy1 / rr_1, zz1 / rr_1};
 
         // P·n
-        const CCTK_REAL Pdotn = par_P_plus[0] * n[0] + par_P_plus[1] * n[1] + par_P_plus[2] * n[2];
+        const CCTK_REAL Pdotn1 = par_P_plus[0] * n1[0] + par_P_plus[1] * n1[1] + par_P_plus[2] * n1[2];
 
-        // w = n × S  (components w_i = eps_{ijk} n_j S_k)
-        CCTK_REAL w[3] = {
-            n[1] * par_S_plus[2] - n[2] * par_S_plus[1],
-            n[2] * par_S_plus[0] - n[0] * par_S_plus[2],
-            n[0] * par_S_plus[1] - n[1] * par_S_plus[0]};
+        // w1 = n1 × S  (components w_i = eps_{ijk} n_j S_k)
+        CCTK_REAL w1[3] = {
+            n1[1] * par_S_plus[2] - n1[2] * par_S_plus[1],
+            n1[2] * par_S_plus[0] - n1[0] * par_S_plus[2],
+            n1[0] * par_S_plus[1] - n1[1] * par_S_plus[0]};
 
-        const CCTK_REAL cP = 3.0 / (2.0 * rr2);
-        const CCTK_REAL cS = -3.0 / (rr * rr2);
+        const CCTK_REAL cP1 = 3.0 / (2.0 * rr_1 * rr_1);
+        const CCTK_REAL cS1 = -3.0 / (rr_1 * rr_1 * rr_1);
 
-        CCTK_REAL A[4][4];
+        CCTK_REAL AA1[4][4];
 
-        //aqui os indices i,j vão de 0 a 2
+        // aqui os indices i,j vão de 0 a 2
         for (int i = 0; i < 3; ++i) {
           for (int j = i; j < 3; ++j) {
             const CCTK_REAL mom =
-                cP * (n[i] * par_P_plus[j] + n[j] * par_P_plus[i] + Pdotn * (n[i] * n[j] - delta_ij(i, j)));
+                cP1 * (n1[i] * par_P_plus[j] + n1[j] * par_P_plus[i] + Pdotn1 * (n1[i] * n1[j] - delta_ij(i, j)));
 
             const CCTK_REAL spin =
-                cS * (n[i] * w[j] + n[j] * w[i]);
+                cS1 * (n1[i] * w1[j] + n1[j] * w1[i]);
 
-            A[i][j] = mom + spin;
-            A[j][i] = A[i][j];
+            AA1[i][j] = mom + spin;
+            AA1[j][i] = AA1[i][j];
           }
         }
+        //////
+
+        CCTK_REAL massBS;
+
+        if (omega_BS == 0.97) {
+          massBS = 0.412 / mu; // for the non-rotating boson star
+        } else if (omega_BS == 0.92) {
+          massBS = 0.626 / mu; // for the non-rotating boson star
+        } else if (omega_BS == 0.87) {
+          massBS = 0.735 / mu; // for the non-rotating boson star with omega=0.9
+        } else if (omega_BS == 0.82) {
+          massBS = 0.785 / mu; // for the non-rotating boson star with omega=0.8
+        } else {
+          fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
+          break;
+        }
+
+        // n_i = x_i / r wrt the black hole
+        CCTK_REAL n2[3] = {hx / rr, hy / rr, hz / rr};
+
+        // P·n
+
+        const CCTK_REAL px = massBS * bs_vx * gamma;
+        const CCTK_REAL py = massBS * bs_vy * gamma;
+        const CCTK_REAL pz = massBS * bs_vz * gamma;
+
+        const CCTK_REAL Pdotn2 = px * n2[0] + py * n2[1] + pz * n2[2];
+
+        // w2 = n2 × S  (components w_i = eps_{ijk} n_j S_k) // spin of second black hole is zero, so w2 is zero
+        CCTK_REAL w2[3] = {0, 0, 0};
+
+        const CCTK_REAL cP2 = 3.0 / (2.0 * rr2);
+        const CCTK_REAL cS2 = -3.0 / (rr * rr2);
+
+        CCTK_REAL AA2[4][4];
+
+        // aqui os indices i,j vão de 0 a 2
+        for (int i = 0; i < 3; ++i) {
+          for (int j = i; j < 3; ++j) {
+            const CCTK_REAL mom =
+                cP2 * (n2[i] * par_P_plus[j] + n2[j] * par_P_plus[i] + Pdotn2 * (n2[i] * n2[j] - delta_ij(i, j)));
+
+            const CCTK_REAL spin =
+                cS2 * (n2[i] * w2[j] + n2[j] * w2[i]);
+
+            AA2[i][j] = mom + spin;
+            AA2[j][i] = AA2[i][j];
+          }
+        }
+
+        //////
 
         CCTK_REAL Ktp[4][4];
-        for (int i = 1; i < 4; ++i)
-        {
-          for (int j = 1; j < 4; j++)
-          {
-            Ktp[i][j] = 1/psi2 * A[i-1][j-1];
+        for (int i = 1; i < 4; ++i) {
+          for (int j = 1; j < 4; j++) {
+            Ktp[i][j] = 1 / psi2 * AA1[i - 1][j - 1] + 1 / psi2 * AA2[i - 1][j - 1];
           }
         }
-        
+
         ////////////////////////////////////////////
 
         CCTK_REAL dW_drho, dW_dz;
@@ -1572,10 +1661,10 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         K_B[3][2] = K_B[2][3];
         K_B[3][3] = kzz[ind];
 
-        CCTK_REAL Kfinal[4][4]; // extrinsic curvature
+        CCTK_REAL Kcorrec[4][4]; // extrinsic curvature
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
-            Kfinal[a][b] = 0.0;
+            Kcorrec[a][b] = 0.0;
           }
         }
 
@@ -1589,16 +1678,16 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
                 sum2 += gamma_final[m][j] * (K_A[i][n] * gammaA_inv[n][m] + K_B[i][n] * gammaB_inv[n][m]);
               }
             }
-            Kfinal[i][j] = 0.5 * (sum1 + sum2);
+            Kcorrec[i][j] = 0.5 * (sum1 + sum2);
           }
         }
 
-        kxx[ind] = Kfinal[1][1];
-        kxy[ind] = Kfinal[1][2];
-        kxz[ind] = Kfinal[1][3];
-        kyy[ind] = Kfinal[2][2];
-        kyz[ind] = Kfinal[2][3];
-        kzz[ind] = Kfinal[3][3];
+        kxx[ind] = Kcorrec[1][1] + func * (Ktp[1][1] - Kcorrec[1][1]);
+        kxy[ind] = Kcorrec[1][2] + func * (Ktp[1][2] - Kcorrec[1][2]);
+        kxz[ind] = Kcorrec[1][3] + func * (Ktp[1][3] - Kcorrec[1][3]);
+        kyy[ind] = Kcorrec[2][2] + func * (Ktp[2][2] - Kcorrec[2][2]);
+        kyz[ind] = Kcorrec[2][3] + func * (Ktp[2][3] - Kcorrec[2][3]);
+        kzz[ind] = Kcorrec[3][3] + func * (Ktp[3][3] - Kcorrec[3][3]);
 
         check_nan_or_inf("kxx", kxx[ind]);
         check_nan_or_inf("kxy", kxy[ind]);

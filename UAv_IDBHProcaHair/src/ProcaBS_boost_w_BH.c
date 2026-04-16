@@ -1466,7 +1466,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
           }
         }
 
-        CCTK_REAL separation = (center_offset[0] + 1) - x0; // only for separations along the x-axis, need to be modified for general case
+        CCTK_REAL separation = sqrt(pow((center_offset[0] + 1) - x0, 2) + pow(center_offset[1] - y0, 2) + pow(center_offset[2] - z0, 2)); // for separations along the x-axis we take into account par_b
 
         // 3-metric (added Bowen-York 3-metric)
 
@@ -1488,13 +1488,28 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         const CCTK_REAL rr_1 = sqrt(xx1 * xx1 + yy1 * yy1 + zz1 * zz1);
 
         if (omega_BS == 0.97) {
-          RBS = 5.0 * 0.412 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+          RBS = 22.095 / mu; // effective radius of the boson star
         } else if (omega_BS == 0.92) {
-          RBS = 5.0 * 0.626 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+          RBS = 12.440 / mu; // effective radius of the boson star
         } else if (omega_BS == 0.87) {
-          RBS = 5.0 * 0.735 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+          RBS = 8.900 / mu; // effective radius of the boson star
         } else if (omega_BS == 0.82) {
-          RBS = 5.0 * 0.785 / mu; // effective radius of the boson star, defined as 5 times the mass of the boson star
+          RBS = 6.821 / mu; // effective radius of the boson star
+        } else {
+          fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
+          break;
+        }
+
+        CCTK_REAL massBS;
+
+        if (omega_BS == 0.97) {
+          massBS = 0.412 / mu; // for the non-rotating boson star
+        } else if (omega_BS == 0.92) {
+          massBS = 0.626 / mu; // for the non-rotating boson star
+        } else if (omega_BS == 0.87) {
+          massBS = 0.735 / mu; // for the non-rotating boson star with omega=0.9
+        } else if (omega_BS == 0.82) {
+          massBS = 0.785 / mu; // for the non-rotating boson star with omega=0.8
         } else {
           fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
           break;
@@ -1558,20 +1573,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         }
         //////
 
-        CCTK_REAL massBS;
-
-        if (omega_BS == 0.97) {
-          massBS = 0.412 / mu; // for the non-rotating boson star
-        } else if (omega_BS == 0.92) {
-          massBS = 0.626 / mu; // for the non-rotating boson star
-        } else if (omega_BS == 0.87) {
-          massBS = 0.735 / mu; // for the non-rotating boson star with omega=0.9
-        } else if (omega_BS == 0.82) {
-          massBS = 0.785 / mu; // for the non-rotating boson star with omega=0.8
-        } else {
-          fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
-          break;
-        }
 
         // n_i = x_i / r wrt the black hole
         CCTK_REAL n2[3] = {hx / rr, hy / rr, hz / rr};

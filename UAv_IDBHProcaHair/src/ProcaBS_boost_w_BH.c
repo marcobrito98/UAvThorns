@@ -1507,9 +1507,9 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         } else if (omega_BS == 0.92) {
           massBS = 0.626 / mu; // for the non-rotating boson star
         } else if (omega_BS == 0.87) {
-          massBS = 0.735 / mu; // for the non-rotating boson star with omega=0.9
+          massBS = 0.735 / mu; // for the non-rotating boson star 
         } else if (omega_BS == 0.82) {
-          massBS = 0.785 / mu; // for the non-rotating boson star with omega=0.8
+          massBS = 0.785 / mu; // for the non-rotating boson star 
         } else {
           fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
           break;

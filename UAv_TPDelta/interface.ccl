@@ -1,0 +1,26 @@
+# Interface definition for thorn UAv_TPDelta
+
+implements: UAv_TPDelta
+inherits: ADMBase grid
+
+private:
+
+CCTK_REAL metric_ref type=gf timelevels=3 tags='checkpoint="yes"'
+{
+  gxx_ref
+  gxy_ref
+  gxz_ref
+  gyy_ref
+  gyz_ref
+  gzz_ref
+} "Reference metric dataset, typically imported from a two-BH puncture run"
+
+CCTK_REAL curv_ref type=gf timelevels=3 tags='checkpoint="yes"'
+{
+  kxx_ref
+  kxy_ref
+  kxz_ref
+  kyy_ref
+  kyz_ref
+  kzz_ref
+} "Reference extrinsic curvature dataset, typically imported from a two-BH puncture run"

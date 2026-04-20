@@ -1,0 +1,23 @@
+# Schedule definitions for thorn UAv_TPDelta
+
+storage: metric_ref[3]
+storage: curv_ref[3]
+
+if (CCTK_Equals(tpdelta_mode, "assemble_two_punctures"))
+{
+  schedule UAv_TPDelta_CaptureBase IN ADMBase_InitialData after TwoPunctures
+  {
+    LANG: C
+    OPTIONS: Local
+    SYNC: metric_ref
+    SYNC: curv_ref
+  } "Capture the first puncture solution before the second puncture solution is applied"
+
+  schedule UAv_TPDelta_Assemble IN ADMBase_PostInitial before UAv_IDProcaBSboostBH
+  {
+    LANG: C
+    OPTIONS: Local
+    SYNC: ADMBase::metric
+    SYNC: ADMBase::curv
+  } "Blend the captured base solution with the later puncture solution in one run"
+}

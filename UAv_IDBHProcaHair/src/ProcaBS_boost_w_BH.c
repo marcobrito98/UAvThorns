@@ -1478,14 +1478,17 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         CCTK_REAL gzzMC = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
 
         CCTK_REAL func;
-        CCTK_REAL RBH = 5.0 * par_m_plus; // some radius around the black hole between 5M to 10M
-        CCTK_REAL RBS;                    // effective radius of boson star
-        CCTK_REAL rcoords = sqrt(x[ind] * x[ind] + y[ind] * y[ind] + z[ind] * z[ind]);
-        const CCTK_REAL xx1 = x[ind] - (center_offset[0] + 1); // only for separations along the x-axis, because of the par_b parameter
-        const CCTK_REAL yy1 = y[ind] - center_offset[1];
-        const CCTK_REAL zz1 = z[ind] - center_offset[2];
+        CCTK_REAL RBH = 4 * par_m_plus;                                                    // some radius around the black hole between 5M to 10M
+        CCTK_REAL RBS;                                                                     // effective radius of boson star
+        CCTK_REAL bhpos[3] = {(center_offset[0] + 1), center_offset[1], center_offset[2]}; // position of the black hole, taking into account par_b for separations along the x-axis
+        const CCTK_REAL xx1 = x[ind] - bhpos[0];                                           // only for separations along the x-axis, because of the par_b parameter
+        const CCTK_REAL yy1 = y[ind] - bhpos[1];
+        const CCTK_REAL zz1 = z[ind] - bhpos[2];
 
-        const CCTK_REAL rr_1 = sqrt(xx1 * xx1 + yy1 * yy1 + zz1 * zz1);
+        CCTK_REAL rr_1 = sqrt(xx1 * xx1 + yy1 * yy1 + zz1 * zz1);
+        if (rr_1 < 1e-12) {
+          rr_1 = 1e-12; // avoid division by zero
+        }
 
         if (omega_BS == 0.97) {
           RBS = 22.095 / mu; // effective radius of the boson star
@@ -1507,21 +1510,26 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         } else if (omega_BS == 0.92) {
           massBS = 0.626 / mu; // for the non-rotating boson star
         } else if (omega_BS == 0.87) {
-          massBS = 0.735 / mu; // for the non-rotating boson star 
+          massBS = 0.735 / mu; // for the non-rotating boson star
         } else if (omega_BS == 0.82) {
-          massBS = 0.785 / mu; // for the non-rotating boson star 
+          massBS = 0.785 / mu; // for the non-rotating boson star
         } else {
           fprintf(stderr, "Error: unsupported omega_BS value %lf\n", omega_BS);
           break;
         }
 
-        if (rr < RBH) {
+        if (sqrt(x1 * x1 + y1 * y1 + z1 * z1) < RBS) {
           func = 0;
-        } else if (rr > RBS && rr == RBS) {
+        } else {
           func = 1 - tanh(pow(rr_1 / RBH, 2));
         }
 
-        CCTK_REAL TPpsi4 = pow(1 + par_m_plus / (2 * sqrt((x[ind] - xx1) * (x[ind] - xx1) + (y[ind] - yy1) * (y[ind] - yy1) + (z[ind] - zz1) * (z[ind] - zz1))) + massBS/(2 * sqrt((x[ind] - hx) * (x[ind] - hx) + (y[ind] - hy) * (y[ind] - hy) + (z[ind] - hz) * (z[ind] - hz))), 4);
+        CCTK_REAL rrbs = sqrt(x1 * x1 + y1 * y1 + z1 * z1);
+        if (rrbs < 1e-12) {
+          rrbs = 1e-12; // avoid division by zero
+        }
+
+        CCTK_REAL TPpsi4 = pow(1 + par_m_plus / (2 * rr_1) + massBS / (2 * rrbs), 4);
 
         gxx[ind] = gxxMC + func * (TPpsi4 - gxxMC);
         gxy[ind] = gxyMC + func * (0.0 - gxyMC);
@@ -1573,23 +1581,23 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         }
         //////
 
-
         // n_i = x_i / r wrt the black hole
-        CCTK_REAL n2[3] = {hx / rr, hy / rr, hz / rr};
+        CCTK_REAL n2[3] = {x1 / rrbs, y1 / rrbs, z1 / rrbs};
 
         // P·n
 
         const CCTK_REAL px = massBS * bs_vx * gamma;
         const CCTK_REAL py = massBS * bs_vy * gamma;
         const CCTK_REAL pz = massBS * bs_vz * gamma;
+        const CCTK_REAL pbs[3] = {px, py, pz};
 
-        const CCTK_REAL Pdotn2 = px * n2[0] + py * n2[1] + pz * n2[2];
+        const CCTK_REAL Pdotn2 = pbs[0] * n2[0] + pbs[1] * n2[1] + pbs[2] * n2[2];
 
         // w2 = n2 × S  (components w_i = eps_{ijk} n_j S_k) // spin of second black hole is zero, so w2 is zero
         CCTK_REAL w2[3] = {0, 0, 0};
 
-        const CCTK_REAL cP2 = 3.0 / (2.0 * rr2);
-        const CCTK_REAL cS2 = -3.0 / (rr * rr2);
+        const CCTK_REAL cP2 = 3.0 / (2.0 * rrbs * rrbs);
+        const CCTK_REAL cS2 = -3.0 / (rrbs * rrbs * rrbs);
 
         CCTK_REAL AA2[4][4];
 
@@ -1597,7 +1605,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         for (int i = 0; i < 3; ++i) {
           for (int j = i; j < 3; ++j) {
             const CCTK_REAL mom =
-                cP2 * (n2[i] * par_P_plus[j] + n2[j] * par_P_plus[i] + Pdotn2 * (n2[i] * n2[j] - delta_ij(i, j)));
+                cP2 * (n2[i] * pbs[j] + n2[j] * pbs[i] + Pdotn2 * (n2[i] * n2[j] - delta_ij(i, j)));
 
             const CCTK_REAL spin =
                 cS2 * (n2[i] * w2[j] + n2[j] * w2[i]);
@@ -1612,7 +1620,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         CCTK_REAL Ktp[4][4];
         for (int i = 1; i < 4; ++i) {
           for (int j = 1; j < 4; j++) {
-            Ktp[i][j] = 1 / psi2 * AA1[i - 1][j - 1] + 1 / psi2 * AA2[i - 1][j - 1];
+            Ktp[i][j] = 1 / sqrt(TPpsi4) * AA1[i - 1][j - 1] + 1 / sqrt(TPpsi4) * AA2[i - 1][j - 1];
           }
         }
 

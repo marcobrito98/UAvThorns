@@ -1531,12 +1531,12 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
 
         CCTK_REAL TPpsi4 = pow(1 + par_m_plus / (2 * rr_1) + massBS / (2 * rrbs), 4);
 
-        gxx[ind] = gxxMC + func * (TPpsi4 - gxxMC);
-        gxy[ind] = gxyMC + func * (0.0 - gxyMC);
-        gxz[ind] = gxzMC + func * (0.0 - gxzMC);
-        gyy[ind] = gyyMC + func * (TPpsi4 - gyyMC);
-        gyz[ind] = gyzMC + func * (0.0 - gyzMC);
-        gzz[ind] = gzzMC + func * (TPpsi4 - gzzMC);
+        gxx[ind] = gxxMC ; //+ func * (TPpsi4 - gxxMC);
+        gxy[ind] = gxyMC ; //+ func * (0.0 - gxyMC);
+        gxz[ind] = gxzMC ; //+ func * (0.0 - gxzMC);
+        gyy[ind] = gyyMC ; //+ func * (TPpsi4 - gyyMC);
+        gyz[ind] = gyzMC ; //+ func * (0.0 - gyzMC);
+        gzz[ind] = gzzMC ; //+ func * (TPpsi4 - gzzMC);
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);
@@ -1544,6 +1544,8 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         check_nan_or_inf("gyy", gyy[ind]);
         check_nan_or_inf("gyz", gyz[ind]);
         check_nan_or_inf("gzz", gzz[ind]);
+
+        // printf("gxx_ref=%lf kxx_ref=%lf\n", gxx_ref[ind], kxx_ref[ind]);
 
         ///////////////////////////////////////////
 
@@ -1691,12 +1693,12 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
           }
         }
 
-        kxx[ind] = Kcorrec[1][1] + func * (Ktp[1][1] - Kcorrec[1][1]);
-        kxy[ind] = Kcorrec[1][2] + func * (Ktp[1][2] - Kcorrec[1][2]);
-        kxz[ind] = Kcorrec[1][3] + func * (Ktp[1][3] - Kcorrec[1][3]);
-        kyy[ind] = Kcorrec[2][2] + func * (Ktp[2][2] - Kcorrec[2][2]);
-        kyz[ind] = Kcorrec[2][3] + func * (Ktp[2][3] - Kcorrec[2][3]);
-        kzz[ind] = Kcorrec[3][3] + func * (Ktp[3][3] - Kcorrec[3][3]);
+        kxx[ind] = Kcorrec[1][1] ; //+ func * (Ktp[1][1] - Kcorrec[1][1]);
+        kxy[ind] = Kcorrec[1][2] ; //+ func * (Ktp[1][2] - Kcorrec[1][2]);
+        kxz[ind] = Kcorrec[1][3] ; //+ func * (Ktp[1][3] - Kcorrec[1][3]);
+        kyy[ind] = Kcorrec[2][2] ; //+ func * (Ktp[2][2] - Kcorrec[2][2]);
+        kyz[ind] = Kcorrec[2][3] ; //+ func * (Ktp[2][3] - Kcorrec[2][3]);
+        kzz[ind] = Kcorrec[3][3] ; //+ func * (Ktp[3][3] - Kcorrec[3][3]);
 
         check_nan_or_inf("kxx", kxx[ind]);
         check_nan_or_inf("kxy", kxy[ind]);

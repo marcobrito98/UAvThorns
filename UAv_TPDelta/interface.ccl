@@ -3,7 +3,7 @@
 implements: UAv_TPDelta
 inherits: ADMBase grid
 
-private:
+public:
 
 CCTK_REAL metric_ref type=gf timelevels=3 tags='checkpoint="yes"'
 {

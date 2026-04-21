@@ -6,6 +6,8 @@ if (CCTK_Equals(post_initial_data, "PS_single"))
   {
     LANG: C
     OPTIONS: Local
+    READS: UAv_TPDelta::metric_ref(Everywhere)
+    READS: UAv_TPDelta::curv_ref(Everywhere)
     SYNC: ADMBase::curv
   } "Single Proca Star data for superposition with TwoPunctures"
 }

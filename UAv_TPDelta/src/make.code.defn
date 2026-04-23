@@ -1,5 +1,0 @@
-# Main make.code.defn file for thorn UAv_TPDelta
-
-SRCS = UAv_TPDelta.c
-
-SUBDIRS =

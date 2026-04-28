@@ -995,12 +995,86 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   /* printf("phi0 = %g\n", phi0[0]); */
   /* printf("W = %g\n", W[0]); */
 
+  CCTK_VINFO("time=%g, lsh[0]=%d, lsh[1]=%d, lsh[2]=%d",
+             (double)cctk_time,
+             cctk_lsh[0], cctk_lsh[1], cctk_lsh[2]);
+  CCTK_VINFO("x0=%g y0=%g z0=%g time=%g",
+           x0, y0, z0, cctk_time);
+
+#define N_DIMS 3
+#define N_INTERP_POINTS 1
+#define N_INPUT_ARRAYS 3
+#define N_OUTPUT_ARRAYS 3
+
+  // const cGH *GH;
+  int operator_handle_new, coord_system_handle_new;
+
+  /* single interpolation point */
+  CCTK_REAL interp_x[1], interp_y[1], interp_z[1];
+  const void *interp_coords_new[N_DIMS];
+
+  /* input variables */
+  CCTK_INT input_array_variable_indices_new[N_INPUT_ARRAYS];
+
+  /* all outputs are real */
+  static const CCTK_INT output_array_type_codes_new[N_OUTPUT_ARRAYS] = {CCTK_VARIABLE_REAL, CCTK_VARIABLE_REAL, CCTK_VARIABLE_REAL};
+
+  void *output_arrays_new[N_OUTPUT_ARRAYS];
+
+  /* output storage */
+  CCTK_REAL gxx_out[1];
+  CCTK_REAL gyy_out[1];
+  CCTK_REAL gzz_out[1];
+
+  /* --- set interpolation point --- */
+  interp_x[0] = x0;
+  interp_y[0] = y0;
+  interp_z[0] = z0;
+
+  interp_coords_new[0] = interp_x;
+  interp_coords_new[1] = interp_y;
+  interp_coords_new[2] = interp_z;
+
+  /* --- get variable indices (ADMBase variables) --- */
+  input_array_variable_indices_new[0] = CCTK_VarIndex("ADMBase::gxx");
+  input_array_variable_indices_new[1] = CCTK_VarIndex("ADMBase::gyy");
+  input_array_variable_indices_new[2] = CCTK_VarIndex("ADMBase::gzz");
+
+  /* --- connect outputs --- */
+  output_arrays_new[0] = (void *)gxx_out;
+  output_arrays_new[1] = (void *)gyy_out;
+  output_arrays_new[2] = (void *)gzz_out;
+
+  /* --- get operator + coord system --- */
+  operator_handle_new = CCTK_InterpHandle("generalized polynomial interpolation");
+  coord_system_handle_new = CCTK_CoordSystemHandle("cart3d");
+
+  int param_table_new = Util_TableCreateFromString("order=1");
+
+  /* --- perform interpolation --- */
+  if (CCTK_InterpGridArrays(
+          cctkGH, N_DIMS,
+          operator_handle_new,
+          param_table_new,
+          coord_system_handle_new,
+          N_INTERP_POINTS, CCTK_VARIABLE_REAL,
+          interp_coords_new,
+          N_INPUT_ARRAYS, input_array_variable_indices_new,
+          N_OUTPUT_ARRAYS, output_array_type_codes_new,
+          output_arrays_new) < 0) {
+    CCTK_WARN(CCTK_WARN_ABORT, "Interpolation failed!");
+  }
+
+  Util_TableDestroy(param_table_new);
+
   /* now we finally write the metric and all 3+1 quantities. first we write the
      3-metric and extrinsic curvature, then Proca fields, then lapse and shift */
   /* For the Boson Star, in order to avoid unneeded regularizations and divisions,
       we express K_ij in terms of dW/drho and dW/dz.
       For points close to the axis and the origin, K_ij = 0.
   */
+
+  CCTK_VInfo(CCTK_THORNSTRING, "gxx = %6f", gxx);
 
   const CCTK_REAL tt = cctk_time;
 
@@ -1464,13 +1538,15 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
           }
         }
 
+        CCTK_REAL separation = sqrt(pow((center_offset[0] + 1) - x0, 2) + pow(center_offset[1] - y0, 2) + pow(center_offset[2] - z0, 2)); // for separations along the x-axis we take into account par_b
+
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - 1.0;
+        gxx[ind] = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
         gxy[ind] = gammaB[1][2] + Gb[1][2];
         gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - 1.0;
+        gyy[ind] = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
         gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - 1.0;
+        gzz[ind] = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

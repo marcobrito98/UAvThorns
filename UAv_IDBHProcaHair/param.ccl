@@ -24,6 +24,12 @@ KEYWORD post_initial_shift "post initial shift"
 SHARES: ComplexProcaBase
 USES CCTK_REAL mu
 
+
+SHARES: TwoPunctures
+USES CCTK_REAL par_m_plus
+USES CCTK_REAL center_offset[3]
+
+
 SHARES: ADMBase
 
 EXTENDS KEYWORD initial_data

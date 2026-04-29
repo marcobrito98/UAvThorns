@@ -995,77 +995,93 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   /* printf("phi0 = %g\n", phi0[0]); */
   /* printf("W = %g\n", W[0]); */
 
-  CCTK_VINFO("time=%g, lsh[0]=%d, lsh[1]=%d, lsh[2]=%d",
-             (double)cctk_time,
-             cctk_lsh[0], cctk_lsh[1], cctk_lsh[2]);
-  CCTK_VINFO("x0=%g y0=%g z0=%g time=%g",
-           x0, y0, z0, cctk_time);
+  /* -------------------- point -------------------- */
+  const CCTK_REAL origin_new[3] = {
+      cctk_origin_space[0],
+      cctk_origin_space[1],
+      cctk_origin_space[2]};
 
-#define N_DIMS 3
-#define N_INTERP_POINTS 1
-#define N_INPUT_ARRAYS 3
-#define N_OUTPUT_ARRAYS 3
+  const CCTK_REAL delta_new[3] = {
+      cctk_delta_space[0],
+      cctk_delta_space[1],
+      cctk_delta_space[2]};
 
-  // const cGH *GH;
-  int operator_handle_new, coord_system_handle_new;
+  /* interpolation point */
+  const CCTK_REAL interp_x[1] = {x0};
+  const CCTK_REAL interp_y[1] = {y0};
+  const CCTK_REAL interp_z[1] = {z0};
 
-  /* single interpolation point */
-  CCTK_REAL interp_x[1], interp_y[1], interp_z[1];
-  const void *interp_coords_new[N_DIMS];
+  const void *interp_coords_new[3] = {
+      (const void *)interp_x,
+      (const void *)interp_y,
+      (const void *)interp_z};
 
-  /* input variables */
-  CCTK_INT input_array_variable_indices_new[N_INPUT_ARRAYS];
+  /* -------------------- input grid data -------------------- */
+  const CCTK_REAL *gxx_in = CCTK_VarDataPtr(cctkGH, 0, "ADMBase::gxx");
+  const CCTK_REAL *gyy_in = CCTK_VarDataPtr(cctkGH, 0, "ADMBase::gyy");
+  const CCTK_REAL *gzz_in = CCTK_VarDataPtr(cctkGH, 0, "ADMBase::gzz");
 
-  /* all outputs are real */
-  static const CCTK_INT output_array_type_codes_new[N_OUTPUT_ARRAYS] = {CCTK_VARIABLE_REAL, CCTK_VARIABLE_REAL, CCTK_VARIABLE_REAL};
+  /* IMPORTANT: For Carpet Fortran ordering compatibility, pass as void* */
+  const void *input_arrays_new[3] = {
+      (const void *)gxx_in,
+      (const void *)gyy_in,
+      (const void *)gzz_in};
 
-  void *output_arrays_new[N_OUTPUT_ARRAYS];
+  const CCTK_INT input_array_dims_new[3] = {
+      cctk_lsh[0],
+      cctk_lsh[1],
+      cctk_lsh[2]};
 
-  /* output storage */
-  CCTK_REAL gxx_out[1];
-  CCTK_REAL gyy_out[1];
-  CCTK_REAL gzz_out[1];
+  const CCTK_INT input_array_types_new[3] = {
+      CCTK_VARIABLE_REAL,
+      CCTK_VARIABLE_REAL,
+      CCTK_VARIABLE_REAL};
 
-  /* --- set interpolation point --- */
-  interp_x[0] = x0;
-  interp_y[0] = y0;
-  interp_z[0] = z0;
+  /* -------------------- outputs -------------------- */
+  CCTK_REAL gxx_out[1], gyy_out[1], gzz_out[1];
 
-  interp_coords_new[0] = interp_x;
-  interp_coords_new[1] = interp_y;
-  interp_coords_new[2] = interp_z;
+  void *output_arrays_new[3] = {
+      (void *)gxx_out,
+      (void *)gyy_out,
+      (void *)gzz_out};
 
-  /* --- get variable indices (ADMBase variables) --- */
-  input_array_variable_indices_new[0] = CCTK_VarIndex("ADMBase::gxx");
-  input_array_variable_indices_new[1] = CCTK_VarIndex("ADMBase::gyy");
-  input_array_variable_indices_new[2] = CCTK_VarIndex("ADMBase::gzz");
+  const CCTK_INT output_types_new[3] = {
+      CCTK_VARIABLE_REAL,
+      CCTK_VARIABLE_REAL,
+      CCTK_VARIABLE_REAL};
 
-  /* --- connect outputs --- */
-  output_arrays_new[0] = (void *)gxx_out;
-  output_arrays_new[1] = (void *)gyy_out;
-  output_arrays_new[2] = (void *)gzz_out;
+  /* -------------------- interpolator -------------------- */
+  int op_new = CCTK_InterpHandle("Lagrange polynomial interpolation");
+  if (op_new < 0)
+    CCTK_WARN(CCTK_WARN_ABORT, "bad interpolator");
 
-  /* --- get operator + coord system --- */
-  operator_handle_new = CCTK_InterpHandle("generalized polynomial interpolation");
-  coord_system_handle_new = CCTK_CoordSystemHandle("cart3d");
+  int params_new = Util_TableCreateFromString("order=2");
+  if (params_new < 0)
+    CCTK_WARN(CCTK_WARN_ABORT, "failed to create param table");
 
-  int param_table_new = Util_TableCreateFromString("order=1");
-
-  /* --- perform interpolation --- */
-  if (CCTK_InterpGridArrays(
-          cctkGH, N_DIMS,
-          operator_handle_new,
-          param_table_new,
-          coord_system_handle_new,
-          N_INTERP_POINTS, CCTK_VARIABLE_REAL,
+  /* -------------------- call -------------------- */
+  if (CCTK_InterpLocalUniform(
+          3,
+          op_new,
+          params_new,
+          origin_new,
+          delta_new,
+          1, /* N points */
+          CCTK_VARIABLE_REAL,
           interp_coords_new,
-          N_INPUT_ARRAYS, input_array_variable_indices_new,
-          N_OUTPUT_ARRAYS, output_array_type_codes_new,
+          3,
+          input_array_dims_new,
+          input_array_types_new,
+          input_arrays_new,
+          3,
+          output_types_new,
           output_arrays_new) < 0) {
-    CCTK_WARN(CCTK_WARN_ABORT, "Interpolation failed!");
+    CCTK_WARN(CCTK_WARN_ABORT, "Local interpolation failed!");
   }
 
-  Util_TableDestroy(param_table_new);
+  Util_TableDestroy(params_new);
+
+  CCTK_VInfo(CCTK_THORNSTRING, "gxx = %6f", gxx_out[0]);
 
   /* now we finally write the metric and all 3+1 quantities. first we write the
      3-metric and extrinsic curvature, then Proca fields, then lapse and shift */
@@ -1073,8 +1089,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
       we express K_ij in terms of dW/drho and dW/dz.
       For points close to the axis and the origin, K_ij = 0.
   */
-
-  CCTK_VInfo(CCTK_THORNSTRING, "gxx = %6f", gxx);
 
   const CCTK_REAL tt = cctk_time;
 
@@ -1541,12 +1555,12 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         CCTK_REAL separation = sqrt(pow((center_offset[0] + 1) - x0, 2) + pow(center_offset[1] - y0, 2) + pow(center_offset[2] - z0, 2)); // for separations along the x-axis we take into account par_b
 
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
+        gxx[ind] = gammaB[1][1] + Gb[1][1] - 1.0;
         gxy[ind] = gammaB[1][2] + Gb[1][2];
         gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
+        gyy[ind] = gammaB[2][2] + Gb[2][2] - 1.0;
         gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
+        gzz[ind] = gammaB[3][3] + Gb[3][3] - 1.0;
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

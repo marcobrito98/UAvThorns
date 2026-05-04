@@ -2,4 +2,4 @@
 
 implements: UAv_IDBHProcaHair
 inherits: ADMBase grid ComplexProcaBase
-USES FUNCTION EvaluateGxxAtPoint
+USES FUNCTION EvaluatePsiAtPoint

@@ -1469,7 +1469,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
 
         const CCTK_REAL tp_psi_at_point = EvaluatePsiAtPoint(cctkGH, x0, y0, z0);
 
-        CCTK_VINFO(CCTK_THORNSTRING, "tp_psi_at_point = %lf \n", tp_psi_at_point);
+        printf("tp_psi_at_point = %lf \n", tp_psi_at_point); //debugging
 
         // 3-metric (added Bowen-York 3-metric)
         gxx[ind] = gammaB[1][1] + Gb[1][1] - tp_psi_at_point;
@@ -1478,7 +1478,7 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         gyy[ind] = gammaB[2][2] + Gb[2][2] - tp_psi_at_point;
         gyz[ind] = gammaB[2][3] + Gb[2][3];
         gzz[ind] = gammaB[3][3] + Gb[3][3] - tp_psi_at_point;
-        
+
         // CCTK_REAL separation = fabs((center_offset[0] + 1) - x0); // only for separations along the x-axis, need to be modified for general case
 
         // // 3-metric (added Bowen-York 3-metric)

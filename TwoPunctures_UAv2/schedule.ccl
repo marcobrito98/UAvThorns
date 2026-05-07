@@ -1,0 +1,61 @@
+# Schedule definitions for thorn TwoPunctures_UAv2
+
+if (CCTK_Equals(initial_data, "twopunctures"))
+{
+  STORAGE: energy, angular_momentum, puncture_adm_mass, bare_mass
+  STORAGE: metric_ref, curv_ref, lapse_ref, shift_ref
+
+  if (keep_u_around) {
+    STORAGE: puncture_u
+  }
+
+  SCHEDULE UAV2_TwoPunctures_ParamCheck AT PARAMCHECK
+  {
+    LANG: C
+  } "Check parameters and thorn needs"
+
+  if (schedule_in_ADMBase_InitialData)
+  {
+      SCHEDULE GROUP TwoPunctures_UAv2_Group IN ADMBase_InitialData
+      {
+      } "TwoPunctures_UAv2 initial data group"
+  }
+  else
+  {
+      SCHEDULE GROUP TwoPunctures_UAv2_Group AT Initial AFTER ADMBase_InitialData BEFORE ADMBase_PostInitial AFTER HydroBase_Initial before SetTmunu before HydroBase_Prim2ConInitial
+      {
+      } "TwoPunctures_UAv2 initial data group"
+  }
+
+    SCHEDULE UAV2_TwoPunctures IN TwoPunctures_UAv2_Group
+  {
+    LANG: C
+    STORAGE: puncture_u
+    READS: Grid::coordinates(Everywhere)
+    WRITES: TwoPunctures_UAv2::mp(Everywhere), TwoPunctures_UAv2::mm(Everywhere),
+        TwoPunctures_UAv2::mp_adm(Everywhere), TwoPunctures_UAv2::mm_adm(Everywhere),
+        TwoPunctures_UAv2::E(Everywhere), TwoPunctures_UAv2::J1(Everywhere),
+        TwoPunctures_UAv2::J2(Everywhere), TwoPunctures_UAv2::J3(Everywhere),
+        TwoPunctures_UAv2::puncture_u(Everywhere)
+    WRITES: StaticConformal::conformal_state(Everywhere),
+            StaticConformal::confac_2derivs(Everywhere),
+            StaticConformal::confac_1derivs(Everywhere),
+            StaticConformal::confac(Everywhere)
+    WRITES: AdmBase::alp(Everywhere), AdmBase::metric(Everywhere), AdmBase::curv(Everywhere)
+    WRITES: TwoPunctures_UAv2::alp_ref(Everywhere), TwoPunctures_UAv2::betax_ref(Everywhere),
+      TwoPunctures_UAv2::betay_ref(Everywhere), TwoPunctures_UAv2::betaz_ref(Everywhere),
+      TwoPunctures_UAv2::gxx_ref(Everywhere), TwoPunctures_UAv2::gxy_ref(Everywhere),
+      TwoPunctures_UAv2::gxz_ref(Everywhere), TwoPunctures_UAv2::gyy_ref(Everywhere),
+      TwoPunctures_UAv2::gyz_ref(Everywhere), TwoPunctures_UAv2::gzz_ref(Everywhere),
+      TwoPunctures_UAv2::kxx_ref(Everywhere), TwoPunctures_UAv2::kxy_ref(Everywhere),
+      TwoPunctures_UAv2::kxz_ref(Everywhere), TwoPunctures_UAv2::kyy_ref(Everywhere),
+      TwoPunctures_UAv2::kyz_ref(Everywhere), TwoPunctures_UAv2::kzz_ref(Everywhere)
+    # SYNC: ADMBase::metric ADMBase::curv ADMBase::lapse
+  } "Create puncture black hole initial data"
+
+  SCHEDULE UAV2_TwoPunctures_Metadata IN TwoPunctures_UAv2_Group after UAV2_TwoPunctures
+  {
+    LANG: C
+    OPTIONS: global
+  } "Output TwoPunctures_UAv2 metadata"
+}

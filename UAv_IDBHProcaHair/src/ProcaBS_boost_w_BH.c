@@ -2,8 +2,8 @@
 #include "cctk.h"
 #include "cctk_Arguments.h"
 #include "cctk_Functions.h"
-#include "TwoPunctures_Prototypes.h"
 #include "cctk_Parameters.h"
+#include "TwoPunctures_Prototypes.h"
 #include "util_Table.h"
 #include <math.h>
 #include <stdbool.h>
@@ -996,8 +996,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   /* printf("phi0 = %g\n", phi0[0]); */
   /* printf("W = %g\n", W[0]); */
 
-  
-
   /* now we finally write the metric and all 3+1 quantities. first we write the
      3-metric and extrinsic curvature, then Proca fields, then lapse and shift */
   /* For the Boson Star, in order to avoid unneeded regularizations and divisions,
@@ -1009,6 +1007,10 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
 
   // const CCTK_REAL coswt = cos(omega_BS * tt * gamma);
   // const CCTK_REAL sinwt = sin(omega_BS * tt * gamma);
+
+  const CCTK_REAL tp_psi4_at_point = EvaluatePsiAtPoint(cctkGH, x0, y0, z0);
+
+  printf("tp_psi4_at_point = %lf \n", tp_psi4_at_point); // debugging
 
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
@@ -1467,17 +1469,13 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
           }
         }
 
-        const CCTK_REAL tp_psi_at_point = EvaluatePsiAtPoint(cctkGH, x0, y0, z0);
-
-        printf("tp_psi_at_point = %lf \n", tp_psi_at_point); //debugging
-
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - tp_psi_at_point;
+        gxx[ind] = gammaB[1][1] + Gb[1][1] - tp_psi4_at_point;
         gxy[ind] = gammaB[1][2] + Gb[1][2];
         gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - tp_psi_at_point;
+        gyy[ind] = gammaB[2][2] + Gb[2][2] - tp_psi4_at_point;
         gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - tp_psi_at_point;
+        gzz[ind] = gammaB[3][3] + Gb[3][3] - tp_psi4_at_point;
 
         // CCTK_REAL separation = fabs((center_offset[0] + 1) - x0); // only for separations along the x-axis, need to be modified for general case
 

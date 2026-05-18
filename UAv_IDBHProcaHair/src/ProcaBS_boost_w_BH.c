@@ -3,6 +3,7 @@
 #include "cctk_Arguments.h"
 #include "cctk_Functions.h"
 #include "cctk_Parameters.h"
+#include "TwoPunctures_Prototypes.h"
 #include "util_Table.h"
 #include <math.h>
 #include <stdbool.h>
@@ -11,25 +12,25 @@
 
 #define SMALL (1.e-9)
 
-static inline double delta_ij(int i, int j) { return (i == j) ? 1.0 : 0.0; }
+// static inline double delta_ij(int i, int j) { return (i == j) ? 1.0 : 0.0; }
 
-static inline CCTK_REAL interp1_linear(const CCTK_REAL *x,
-                                       const CCTK_REAL *f,
-                                       int n,
-                                       CCTK_REAL xq) {
-  if (xq <= x[0])
-    return f[0];
-  if (xq >= x[n - 1])
-    return f[n - 1];
+// static inline CCTK_REAL interp1_linear(const CCTK_REAL *x,
+//                                        const CCTK_REAL *f,
+//                                        int n,
+//                                        CCTK_REAL xq) {
+//   if (xq <= x[0])
+//     return f[0];
+//   if (xq >= x[n - 1])
+//     return f[n - 1];
 
-  int i = 0;
-  while (i < n - 2 && x[i + 1] < xq) {
-    ++i;
-  }
+//   int i = 0;
+//   while (i < n - 2 && x[i + 1] < xq) {
+//     ++i;
+//   }
 
-  const CCTK_REAL w = (xq - x[i]) / (x[i + 1] - x[i]);
-  return (1.0 - w) * f[i] + w * f[i + 1];
-}
+//   const CCTK_REAL w = (xq - x[i]) / (x[i + 1] - x[i]);
+//   return (1.0 - w) * f[i] + w * f[i + 1];
+// }
 
 void UAv_IDBHProcaHair_read_data(CCTK_INT *, CCTK_INT *, CCTK_REAL[], CCTK_REAL[],
                                  CCTK_REAL[], CCTK_REAL[], CCTK_REAL[], CCTK_REAL[],
@@ -1027,6 +1028,10 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   // const CCTK_REAL coswt = cos(omega_BS * tt * gamma);
   // const CCTK_REAL sinwt = sin(omega_BS * tt * gamma);
 
+  const CCTK_REAL tp_psi4_at_point = EvaluatePsiAtPoint(cctkGH, x0, y0, z0);
+
+  CCTK_VINFO(CCTK_THORNSTRING,"tp_psi4_at_point = %lf \n", tp_psi4_at_point); // debugging
+
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -1488,18 +1493,17 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         }
 
         CCTK_REAL separation = sqrt(pow((center_offset[0] + 1) - x0, 2) + pow(center_offset[1] - y0, 2) + pow(center_offset[2] - z0, 2)); // for separations along the x-axis we take into account par_b
-        CCTK_REAL temp_correction = pow(1 + par_m_plus / (2 * separation), 4);
         // 3-metric (added Bowen-York 3-metric)
 
-        CCTK_REAL gxxMC = gammaB[1][1] + Gb[1][1] - temp_correction;
+        CCTK_REAL gxxMC = gammaB[1][1] + Gb[1][1] - tp_psi4_at_point;
         CCTK_REAL gxyMC = gammaB[1][2] + Gb[1][2];
         CCTK_REAL gxzMC = gammaB[1][3] + Gb[1][3];
-        CCTK_REAL gyyMC = gammaB[2][2] + Gb[2][2] - temp_correction;
+        CCTK_REAL gyyMC = gammaB[2][2] + Gb[2][2] - tp_psi4_at_point;
         CCTK_REAL gyzMC = gammaB[2][3] + Gb[2][3];
-        CCTK_REAL gzzMC = gammaB[3][3] + Gb[3][3] - temp_correction;
+        CCTK_REAL gzzMC = gammaB[3][3] + Gb[3][3] - tp_psi4_at_point;
 
         CCTK_REAL func;
-        CCTK_REAL RBH = 5 * par_m_plus;                                                    // some radius around the black hole between 5M to 10M
+        CCTK_REAL RBH = 1 * par_m_plus;                                                    // some radius around the black hole between 5M to 10M
         CCTK_REAL RBS;                                                                     // effective radius of boson star
         CCTK_REAL bhpos[3] = {(center_offset[0] + 1), center_offset[1], center_offset[2]}; // position of the black hole, taking into account par_b for separations along the x-axis
         const CCTK_REAL xx1 = x[ind] - bhpos[0];                                           // only for separations along the x-axis, because of the par_b parameter
@@ -1507,9 +1511,9 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         const CCTK_REAL zz1 = z[ind] - bhpos[2];
 
         CCTK_REAL rr_1 = sqrt(xx1 * xx1 + yy1 * yy1 + zz1 * zz1);
-        if (rr_1 < 1e-12) {
-          rr_1 = 1e-12; // avoid division by zero
-        }
+        // if (rr_1 < 1e-12) {
+        //   rr_1 = 1e-12; // avoid division by zero
+        // }
 
         if (omega_BS == 0.97) {
           RBS = 22.095 / mu; // effective radius of the boson star
@@ -1549,8 +1553,6 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         if (rrbs < 1e-12) {
           rrbs = 1e-12; // avoid division by zero
         }
-
-        CCTK_REAL TPpsi4 = pow(1 + par_m_plus / (2 * rr_1) + massBS / (2 * rrbs), 4);
 
         gxx[ind] = gxxMC + func * (gxx_ref[ind] - gxxMC);
         gxy[ind] = gxyMC + func * (gxy_ref[ind] - gxyMC);

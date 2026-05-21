@@ -1,0 +1,24 @@
+# Interface definition for thorn TargetTracker
+
+implements: TargetTracker
+inherits: SphericalSurface
+
+private:
+
+CCTK_INT is_tracked[nmax_targets] type=scalar timelevels=1 tags='checkpoint="yes"' "Flag to reflect parameter track (for recovery)"
+
+CCTK_INT is_active[nmax_targets] type=scalar timelevels=1 tags='checkpoint="yes"' "Flag to know which tracker is active"
+
+CCTK_REAL target_loc[nmax_targets] type=scalar timelevels=1 tags='checkpoint="yes"'
+{
+  target_loc_x
+  target_loc_y
+  target_loc_z
+} "Tracked point coordinates"
+
+CCTK_INT target_ids[nmax_targets] type=scalar timelevels=1 tags='checkpoint="yes"' 
+{
+  target_id_x
+  target_id_y
+  target_id_z
+} "ID of the targets"

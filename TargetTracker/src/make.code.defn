@@ -1,0 +1,9 @@
+# Main make.code.defn file for thorn TargetTracker
+
+# Source files in this directory
+SRCS =  TargetTracker.c  \
+        Initialization.c \
+        ParamCheck.c
+
+# Subdirectories containing source files
+SUBDIRS =

@@ -1,5 +1,46 @@
 # Parameter definitions for thorn UAv_Analysis
 
+#####################
+###### WARNING ######
+#####################
+# 
+### CONTEXT ###
+# 
+# For multipatch simulations, the computation of volume integrals requires the volume form from thorn Coordinates.
+# So far, we don't include an explicit parameter here for multipatch, 
+# with the philosophy (like evolution thorns) that the simulation should figure it out by itself.
+# 
+### PROBLEM ###
+# 
+# However, at the time of this commit, different patch systems compute the volume form inconsistently.
+# More precisely, Thornburg04 (which is the typical case of interest) sets it so that it can be used directly in the integral
+# (i.e, in the spherical grid, volume_form = h(1)*h(2)*h(3)/abs(detJ)).
+# On the other hand, the default behavior, used for instance by Thornburg04nc, sets volume_form = detJ.
+# This would imply a differentiated treatment in the Analysis which is not desirable.
+# Building blocks of required modifications can be found in legacy commit:
+# 47e14e81b506b918bf6a203fbaa043c3d76339bb
+# 
+### DECISION ###
+# 
+# It is hoped that this will be fixed in Llama directly. To this effect, see the following information:
+# - bug report: https://bitbucket.org/einsteintoolkit/tickets/issues/2912/inconsistent-computation-of-the-volume
+# - mailing list thread: https://lists.einsteintoolkit.org/pipermail/users/2026-January/009856.html
+# 
+# For now, we consider that this should not be tackled here by checking the patch system type.
+# We therefore adopt a single unified treatment, consistent with system Thornburg04,
+# which can use directly the volume form without more information/calculation.
+# THIS WILL GIVE WRONG RESULTS FOR OTHER PATCH SYSTEMS (except Thornburg04 and Thornburg13, latter not tested).
+# 
+### TODO ###
+# 
+# Depending on how this issue evolves, here are possible needed actions:
+# - update/remove this WARNING comment section, and echoes of it in other files
+# - update the code in UAv_Analysis.F90, etc. (for instance if Llama behavior stays unchanged, or changes Thornburg04)
+# - add some comments/warnings/outputs/checks about ET/Llama version and compatibility.
+# 
+#####################
+
+
 # exclude horizon from integration
 
 BOOLEAN excise_horizon "excise the region inside the AH from the volume integrations?" STEERABLE=ALWAYS
@@ -23,23 +64,29 @@ BOOLEAN track_origin_from_grid_scalar "Track analysis origin from given grid sca
 {
 } "no"
 
+# Splitting the grid scalar names in two cases for legibility and portability
 STRING track_origin_source_x "grid scalar containing the x component of the origin estimate" STEERABLE=RECOVER
 {
-  "" :: "don't use this feature"
-  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
-} ""
+  "fixed" :: "No target, or fixed value."
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*"                :: "name of a grid scalar without index"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*\[[0-9][0-9]*\]" :: "name of a grid scalar with index"
+} "fixed"
 
+# Splitting the grid scalar names in two cases for legibility and portability
 STRING track_origin_source_y "grid scalar containing the y component of the origin estimate" STEERABLE=RECOVER
 {
-  "" :: "don't use this feature"
-  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
-} ""
+  "fixed" :: "No target, or fixed value."
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*"                :: "name of a grid scalar without index"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*\[[0-9][0-9]*\]" :: "name of a grid scalar with index"
+} "fixed"
 
+# Splitting the grid scalar names in two cases for legibility and portability
 STRING track_origin_source_z "grid scalar containing the z component of the origin estimate" STEERABLE=RECOVER
 {
-  "" :: "don't use this feature"
-  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*(\[0-9+\])" :: "name of a grid scalar"
-} ""
+  "fixed" :: "No target, or fixed value."
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*"                :: "name of a grid scalar without index"
+  "[a-zA-Z_][a-zA-Z0-9_]*[:][:][a-zA-Z_][a-zA-Z0-9_]*\[[0-9][0-9]*\]" :: "name of a grid scalar with index"
+} "fixed"
 
 REAL origin_x "x coordinate for the fixed origin used in the analysis" STEERABLE=RECOVER
 {

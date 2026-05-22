@@ -22,10 +22,16 @@ void UAv_Track_origin (CCTK_ARGUMENTS) {
   if (cctk_iteration % do_analysis_every != 0) return;
 
   // Track the coordinates of the origin from the chosen grid scalars
-  *x0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_x);
-  *y0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_y);
-  *z0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_z);
-
+  // Negative index means "fixed"
+  if (*origin_from_grid_scalar_index_x >= 0) {
+    *x0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_x);
+  }
+  if (*origin_from_grid_scalar_index_y >= 0) {
+    *y0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_y);
+  }
+  if (*origin_from_grid_scalar_index_z >= 0) {
+    *z0 = * (CCTK_REAL*) CCTK_VarDataPtrI(cctkGH, 0, *origin_from_grid_scalar_index_z);
+  }
 
   // // TODO: Could be added to some verbose parameter...
   // CCTK_VINFO ("Tracking origin in UAv_Analysis:");

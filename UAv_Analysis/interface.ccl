@@ -18,6 +18,12 @@ USES FUNCTION Boundary_SelectGroupForBC
 
 private:
 
+# For information about multipatch/Llama behavior, see WARNING in param.ccl
+# Two separate flags, in case later we implement something with derivatives that use the jacobian, for example
+CCTK_INT is_multipatch type=scalar timelevels=1 tags='checkpoint="no"' "Flag to know if the simulation uses a multipatch grid."
+
+CCTK_INT use_volume_form type=scalar timelevels=1 tags='checkpoint="no"' "Flag to know if we can use the volume form from the multipatch grid."
+
 CCTK_REAL total_energy type=scalar timelevels=1 tags='checkpoint="no"' "Komar mass (volume integral). See Gourgoulhon's 3+1 Formalism, sections 8.6.1 and 8.6.2 (Eq. 8.63 and 8.70)."
 
 CCTK_REAL dE_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="Scalar" checkpoint="no"' "energy density gridfunction for volume integration"
@@ -35,6 +41,22 @@ CCTK_REAL dJ_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortype
   dJy_gf_volume
   dJz_gf_volume
 } "angular momentum density J_i gridfunctions for volume integration"
+
+CCTK_REAL center_of_mass_Tmunu type=scalar timelevels=1 tags='checkpoint="no"'
+{
+  center_of_mass_Tmunu_x
+  center_of_mass_Tmunu_y
+  center_of_mass_Tmunu_z
+} "Center of mass computed from $\rho = - n^\mu n^\nu T_{\mu\nu}$ and $\int (x^i \rho \alpha \sqrt(\gamma) dV)/$\int (\rho \alpha \sqrt(\gamma) dV). Note that we use x, and not x-x0, so that the density GF can be safely used in other thorns."
+
+CCTK_REAL drho_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="Scalar" checkpoint="no"' "density gridfunction for volume integration"
+
+CCTK_REAL dCoM_Tmunu_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="U" checkpoint="no"'
+{
+  dCoM_Tmunu_gf_volume_x
+  dCoM_Tmunu_gf_volume_y
+  dCoM_Tmunu_gf_volume_z
+} "density rho*x^i gridfunctions for volume integration. Note that we use x, and not x-x0, so that the density GF can be safely used in other thorns."
 
 CCTK_REAL quadrupole type=scalar timelevels=1 tags='checkpoint="no"'
 {

@@ -70,7 +70,7 @@ schedule UAv_Initialization at BASEGRID after MultiPatch_SpatialCoordinates
 # schedule GROUP UAv_Analysis_Group in MoL_PseudoEvolution after MoL_PostStep
 ###############################################################################
 
-schedule GROUP UAv_Analysis_Group at ANALYSIS after AHFinderDirect_maybe_do_masks
+schedule GROUP UAv_Analysis_Group at ANALYSIS after AHFinderDirect_maybe_do_masks before TargetTracker_SetSurfaces
 {
 } "Compute several diagnostic quantities"
 

@@ -102,3 +102,11 @@ REAL origin_z "z coordinate for the fixed origin used in the analysis" STEERABLE
 {
     *:*     :: "Any real number"
 } 0.0
+
+KEYWORD symmetry "Symmetry type of the integrands, in order to multiply by the correct factor."
+{
+  "none"     :: "no symmetry"
+  "bitant_x" :: "bitant even symmetry across x=0 plane"
+  "bitant_y" :: "bitant even symmetry across y=0 plane"
+  "bitant_z" :: "bitant even symmetry across z=0 plane"
+} "none"

@@ -1,15 +1,23 @@
 # Schedule definitions for thorn UAv_Analysis
 
+# TODO: See if we can have a more clever storage scheme
+
+# internal variables
 storage: is_multipatch[1]
 storage: use_volume_form[1]
+storage: symmetry_factors[1]
+# Grid Function integrands
 storage: dE_gf_volume[3]
 storage: dJ_gf_volume[3]
 storage: drho_gf_volume[3]
-storage: dCoM_Tmunu_gf_volume[3]
+storage: dCoM_gf_volume[3]
+storage: dp_gf_volume[3]
 storage: quadrupole_gf_volume[3]
+# Integrated quantities
 storage: total_energy[1]
 storage: total_angular_momentum[1]
-storage: center_of_mass_Tmunu[1]
+storage: center_of_mass[1]
+storage: linear_momentum[1]
 storage: quadrupole[1]
 
 # allocate densities if required
@@ -91,6 +99,9 @@ schedule UAv_Analysis_gfs in UAv_Analysis_Group after UAv_Track_origin
   LANG: Fortran
   SYNC: dE_gf_volume
   SYNC: dJ_gf_volume
+  SYNC: drho_gf_volume
+  SYNC: dCoM_gf_volume
+  SYNC: dp_gf_volume
   SYNC: quadrupole_gf_volume
   SYNC: density_rho
   SYNC: density_p

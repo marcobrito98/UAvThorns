@@ -15,7 +15,7 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
   DECLARE_CCTK_PARAMETERS
 
   CCTK_REAL alph, beta(3), Tab(4,4)
-  CCTK_REAL gd(3,3), gu(3,3), detgd
+  CCTK_REAL gd(3,3), gu(3,3), detgd, sqrt_detgd
 
   CCTK_REAL S, rho
   CCTK_REAL mom(3)
@@ -78,20 +78,23 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
 !   write(*,*) 'y0 = ', y0
 !   write(*,*) 'z0 = ', z0
 
-  dE_gf_volume   = 0
-  dJx_gf_volume  = 0
-  dJy_gf_volume  = 0
-  dJz_gf_volume  = 0
-  drho_gf_volume = 0
-  dCoM_Tmunu_gf_volume_x = 0
-  dCoM_Tmunu_gf_volume_y = 0
-  dCoM_Tmunu_gf_volume_z = 0
-  dIxx_gf_volume = 0
-  dIxy_gf_volume = 0
-  dIxz_gf_volume = 0
-  dIyy_gf_volume = 0
-  dIyz_gf_volume = 0
-  dIzz_gf_volume = 0
+  dE_gf_volume    = 0
+  dJx_gf_volume   = 0
+  dJy_gf_volume   = 0
+  dJz_gf_volume   = 0
+  drho_gf_volume  = 0
+  dCoMx_gf_volume = 0
+  dCoMy_gf_volume = 0
+  dCoMz_gf_volume = 0
+  dpx_gf_volume   = 0
+  dpy_gf_volume   = 0
+  dpz_gf_volume   = 0
+  dIxx_gf_volume  = 0
+  dIxy_gf_volume  = 0
+  dIxz_gf_volume  = 0
+  dIyy_gf_volume  = 0
+  dIyz_gf_volume  = 0
+  dIzz_gf_volume  = 0
   if (compute_density_rho == 1) then
      density_rho    = 0
   end if
@@ -179,6 +182,8 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
     gu(2,1) = gu(1,2)
     gu(3,1) = gu(1,3)
     gu(3,2) = gu(2,3)
+
+    sqrt_detgd = sqrt(detgd)
     !--------------------------------------------
 
     ! Eulerian energy density
@@ -227,33 +232,40 @@ subroutine UAv_Analysis_gfs( CCTK_ARGUMENTS )
        dV = dV_cart
     end if
 
+    ! Symmetry: we multiply by the factors here, so that other thorns can use these GFs safely
+
     ! dE = (alpha h^ij T_ij + T_tt / alpha - beta^i beta^j T_ij / alpha) sqrt(detgd)
     !              = (alpha * (rho + S) - 2 p_i beta^i) sqrt(detgd)
 
-    dE_gf_volume(i,j,k)   = (alph * (rho + S) - 2 * sum(beta * mom)) * sqrt(detgd) * dV
+    dE_gf_volume(i,j,k)   = (alph * (rho + S) - 2 * sum(beta * mom)) * sqrt_detgd * dV * sym_factor_dE
 
     ! dJz = (-y p_x + x p_y) sqrt(detgd)        + permutations
-    dJz_gf_volume(i,j,k)  = (-y1 * mom(1) + x1 * mom(2)) * sqrt(detgd) * dV
-    dJx_gf_volume(i,j,k)  = (-z1 * mom(2) + y1 * mom(3)) * sqrt(detgd) * dV
-    dJy_gf_volume(i,j,k)  = (-x1 * mom(3) + z1 * mom(1)) * sqrt(detgd) * dV
+    dJz_gf_volume(i,j,k)  = (-y1 * mom(1) + x1 * mom(2)) * sqrt_detgd * dV * sym_factor_dJz
+    dJx_gf_volume(i,j,k)  = (-z1 * mom(2) + y1 * mom(3)) * sqrt_detgd * dV * sym_factor_dJx
+    dJy_gf_volume(i,j,k)  = (-x1 * mom(3) + z1 * mom(1)) * sqrt_detgd * dV * sym_factor_dJy
     
     ! drho = rho * alpha * sqrt(detgd)
-    drho_gf_volume(i,j,k) = alph * rho * sqrt(detgd) * dV
+    drho_gf_volume(i,j,k) = alph * rho * sqrt_detgd * dV * sym_factor_drho
 
     ! dCoM^i = rho * x^i * alpha * sqrt(detgd)
     ! Division by integral of density in IntegrateVol
     ! We don't use x1 here (and add x0 back in IntegrateVol), so that this GF can be used in other thorns directly
-    dCoM_Tmunu_gf_volume_x(i,j,k) = alph * rho * x(i,j,k) * sqrt(detgd) * dV
-    dCoM_Tmunu_gf_volume_y(i,j,k) = alph * rho * y(i,j,k) * sqrt(detgd) * dV
-    dCoM_Tmunu_gf_volume_z(i,j,k) = alph * rho * z(i,j,k) * sqrt(detgd) * dV
+    dCoMx_gf_volume(i,j,k) = alph * rho * x(i,j,k) * sqrt_detgd * dV * sym_factor_dCoMx
+    dCoMy_gf_volume(i,j,k) = alph * rho * y(i,j,k) * sqrt_detgd * dV * sym_factor_dCoMy
+    dCoMz_gf_volume(i,j,k) = alph * rho * z(i,j,k) * sqrt_detgd * dV * sym_factor_dCoMz
+
+    ! dp^i = p^i * alpha * sqrt(detgd)
+    dpx_gf_volume(i,j,k) = alph * mom(1) * sqrt_detgd * dV * sym_factor_dpx
+    dpy_gf_volume(i,j,k) = alph * mom(2) * sqrt_detgd * dV * sym_factor_dpy
+    dpz_gf_volume(i,j,k) = alph * mom(3) * sqrt_detgd * dV * sym_factor_dpz
 
     ! dI_ij = rho * x^i x^j * alpha * sqrt(detgd)
-    dIxx_gf_volume(i,j,k) = alph * rho * x1 * x1 * sqrt(detgd) * dV
-    dIxy_gf_volume(i,j,k) = alph * rho * x1 * y1 * sqrt(detgd) * dV
-    dIxz_gf_volume(i,j,k) = alph * rho * x1 * z1 * sqrt(detgd) * dV
-    dIyy_gf_volume(i,j,k) = alph * rho * y1 * y1 * sqrt(detgd) * dV
-    dIyz_gf_volume(i,j,k) = alph * rho * y1 * z1 * sqrt(detgd) * dV
-    dIzz_gf_volume(i,j,k) = alph * rho * z1 * z1 * sqrt(detgd) * dV
+    dIxx_gf_volume(i,j,k) = alph * rho * x1 * x1 * sqrt_detgd * dV * sym_factor_dIxx
+    dIxy_gf_volume(i,j,k) = alph * rho * x1 * y1 * sqrt_detgd * dV * sym_factor_dIxy
+    dIxz_gf_volume(i,j,k) = alph * rho * x1 * z1 * sqrt_detgd * dV * sym_factor_dIxz
+    dIyy_gf_volume(i,j,k) = alph * rho * y1 * y1 * sqrt_detgd * dV * sym_factor_dIyy
+    dIyz_gf_volume(i,j,k) = alph * rho * y1 * z1 * sqrt_detgd * dV * sym_factor_dIyz
+    dIzz_gf_volume(i,j,k) = alph * rho * z1 * z1 * sqrt_detgd * dV * sym_factor_dIzz
 
   end do
   end do
@@ -268,7 +280,7 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
   DECLARE_CCTK_PARAMETERS
 
   ! num_out_vals: number of output values for a given reduction
-  CCTK_INT, PARAMETER :: num_in_fields = 14, num_out_vals = 1  
+  CCTK_INT, PARAMETER :: num_in_fields = 17, num_out_vals = 1  
   CCTK_REAL out_vals(num_in_fields*num_out_vals)
   
   CCTK_INT ierr
@@ -282,7 +294,8 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
                                           LEN("dJx_gf_volume"), &
                                           LEN("dIxx_gf_volume"), &
                                           LEN("drho_gf_volume"), &
-                                          LEN("dCoM_Tmunu_gf_volume_x"))
+                                          LEN("dCoMx_gf_volume"), &
+                                          LEN("dp_gf_volume"))
 
   CCTK_INT, PARAMETER :: full_strlen = thorn_strlen + var_strlen 
   character(len=full_strlen), dimension(num_in_fields) :: varnames
@@ -302,9 +315,13 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
                thorn_str//"dIzz_gf_volume", &
                ! 10
                thorn_str//"drho_gf_volume", &
-               thorn_str//"dCoM_Tmunu_gf_volume_x", &
-               thorn_str//"dCoM_Tmunu_gf_volume_y", &
-               thorn_str//"dCoM_Tmunu_gf_volume_z"]
+               thorn_str//"dCoMx_gf_volume", &
+               thorn_str//"dCoMy_gf_volume", &
+               thorn_str//"dCoMz_gf_volume", &
+               ! 14
+               thorn_str//"dpx_gf_volume", &
+               thorn_str//"dpy_gf_volume", &
+               thorn_str//"dpz_gf_volume"]
 
 
   if (do_analysis_every .le. 0) then
@@ -338,7 +355,8 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
        varid(2), varid(3), varid(4), & ! J_i
        varid(5), varid(6), varid(7), varid(8), varid(9), varid(10), & ! I_ij
        varid(11), & ! rho
-       varid(12), varid(13), varid(14)) ! Center of mass
+       varid(12), varid(13), varid(14), & ! Center of mass
+       varid(15), varid(16), varid(17)) ! p_i
   if (ierr < 0) then
      call CCTK_WARN(0, 'Error while reducing the auxiliary XX_gf_volume grid functions.')
   end if
@@ -349,9 +367,13 @@ subroutine UAv_Analysis_IntegrateVol( CCTK_ARGUMENTS )
   total_angular_momentum_y = out_vals(3)
   total_angular_momentum_z = out_vals(4)
 
-  center_of_mass_Tmunu_x = out_vals(12) / out_vals(11)
-  center_of_mass_Tmunu_y = out_vals(13) / out_vals(11)
-  center_of_mass_Tmunu_z = out_vals(14) / out_vals(11)
+  center_of_mass_x = out_vals(12) / out_vals(11)
+  center_of_mass_y = out_vals(13) / out_vals(11)
+  center_of_mass_z = out_vals(14) / out_vals(11)
+
+  linear_momentum_x = out_vals(15)
+  linear_momentum_y = out_vals(16)
+  linear_momentum_z = out_vals(17)
 
   Ixx = out_vals(5)
   Ixy = out_vals(6)

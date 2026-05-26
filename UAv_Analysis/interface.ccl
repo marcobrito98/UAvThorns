@@ -42,21 +42,35 @@ CCTK_REAL dJ_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortype
   dJz_gf_volume
 } "angular momentum density J_i gridfunctions for volume integration"
 
-CCTK_REAL center_of_mass_Tmunu type=scalar timelevels=1 tags='checkpoint="no"'
+CCTK_REAL center_of_mass type=scalar timelevels=1 tags='checkpoint="no"'
 {
-  center_of_mass_Tmunu_x
-  center_of_mass_Tmunu_y
-  center_of_mass_Tmunu_z
+  center_of_mass_x
+  center_of_mass_y
+  center_of_mass_z
 } "Center of mass computed from $\rho = - n^\mu n^\nu T_{\mu\nu}$ and $\int (x^i \rho \alpha \sqrt(\gamma) dV)/$\int (\rho \alpha \sqrt(\gamma) dV). Note that we use x, and not x-x0, so that the density GF can be safely used in other thorns."
 
 CCTK_REAL drho_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="Scalar" checkpoint="no"' "density gridfunction for volume integration"
 
-CCTK_REAL dCoM_Tmunu_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="U" checkpoint="no"'
+CCTK_REAL dCoM_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="U" checkpoint="no"'
 {
-  dCoM_Tmunu_gf_volume_x
-  dCoM_Tmunu_gf_volume_y
-  dCoM_Tmunu_gf_volume_z
-} "density rho*x^i gridfunctions for volume integration. Note that we use x, and not x-x0, so that the density GF can be safely used in other thorns."
+  dCoMx_gf_volume
+  dCoMy_gf_volume
+  dCoMz_gf_volume
+} "density_rho*x^i gridfunctions for volume integration. Note that we use x, and not x-x0, so that the density GF can be safely used in other thorns."
+
+CCTK_REAL linear_momentum type=scalar timelevels=1 tags='checkpoint="no"'
+{
+  linear_momentum_x
+  linear_momentum_y
+  linear_momentum_z
+} "Linear momentum (volume integral)."
+
+CCTK_REAL dp_gf_volume type=gf timelevels=3 tags='Prolongation="none" tensortypealias="D" checkpoint="no"'
+{
+  dpx_gf_volume
+  dpy_gf_volume
+  dpz_gf_volume
+} "momentum density gridfunctions for volume integration"
 
 CCTK_REAL quadrupole type=scalar timelevels=1 tags='checkpoint="no"'
 {
@@ -95,3 +109,16 @@ CCTK_INT origin_from_grid_scalar_index type=scalar tags='checkpoint="no"'
   origin_from_grid_scalar_index_y
   origin_from_grid_scalar_index_z
 } "Auxiliary to store the Cactus indices of the grid scalars tracking the origin"
+
+# TODO: See if there is a clever way to deal with quantities that should be 0 by symmetry.
+#       One issue is that storage is assigned for a whole group.
+#       Another is to figure out, if possible, how to reduce in one go only specific variables.
+CCTK_INT symmetry_factors type=scalar timelevels=1 tags='checkpoint="no"'
+{
+  sym_factor_dE
+  sym_factor_dJx, sym_factor_dJy, sym_factor_dJz
+  sym_factor_drho
+  sym_factor_dpx, sym_factor_dpy, sym_factor_dpz
+  sym_factor_dCoMx, sym_factor_dCoMy, sym_factor_dCoMz
+  sym_factor_dIxx, sym_factor_dIxy, sym_factor_dIxz, sym_factor_dIyy, sym_factor_dIyz, sym_factor_dIzz
+} "Symmetry factors to apply to the integrands, depending on the symmetry of the problem (given by parameter 'symmetry')."

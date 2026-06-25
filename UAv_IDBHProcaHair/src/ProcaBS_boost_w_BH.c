@@ -3,6 +3,7 @@
 #include "cctk_Arguments.h"
 #include "cctk_Functions.h"
 #include "cctk_Parameters.h"
+#include "TwoPunctures_Prototypes.h"
 #include "util_Table.h"
 #include <math.h>
 #include <stdbool.h>
@@ -1007,6 +1008,10 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   // const CCTK_REAL coswt = cos(omega_BS * tt * gamma);
   // const CCTK_REAL sinwt = sin(omega_BS * tt * gamma);
 
+  const CCTK_REAL tp_psi4_at_point = EvaluatePsiAtPoint(cctkGH, x0, y0, z0);
+
+  printf("tp_psi4_at_point = %lf \n", tp_psi4_at_point); // debugging
+
   for (int k = 0; k < cctk_lsh[2]; ++k) {
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -1465,12 +1470,22 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         }
 
         // 3-metric (added Bowen-York 3-metric)
-        gxx[ind] = gammaB[1][1] + Gb[1][1] - 1.0;
+        gxx[ind] = gammaB[1][1] + Gb[1][1] - tp_psi4_at_point;
         gxy[ind] = gammaB[1][2] + Gb[1][2];
         gxz[ind] = gammaB[1][3] + Gb[1][3];
-        gyy[ind] = gammaB[2][2] + Gb[2][2] - 1.0;
+        gyy[ind] = gammaB[2][2] + Gb[2][2] - tp_psi4_at_point;
         gyz[ind] = gammaB[2][3] + Gb[2][3];
-        gzz[ind] = gammaB[3][3] + Gb[3][3] - 1.0;
+        gzz[ind] = gammaB[3][3] + Gb[3][3] - tp_psi4_at_point;
+
+        // CCTK_REAL separation = fabs((center_offset[0] + 1) - x0); // only for separations along the x-axis, need to be modified for general case
+
+        // // 3-metric (added Bowen-York 3-metric)
+        // gxx[ind] = gammaB[1][1] + Gb[1][1] - pow(1 + par_m_plus / (2 * separation), 4);
+        // gxy[ind] = gammaB[1][2] + Gb[1][2];
+        // gxz[ind] = gammaB[1][3] + Gb[1][3];
+        // gyy[ind] = gammaB[2][2] + Gb[2][2] - pow(1 + par_m_plus / (2 * separation), 4);
+        // gyz[ind] = gammaB[2][3] + Gb[2][3];
+        // gzz[ind] = gammaB[3][3] + Gb[3][3] - pow(1 + par_m_plus / (2 * separation), 4);
 
         check_nan_or_inf("gxx", gxx[ind]);
         check_nan_or_inf("gxy", gxy[ind]);

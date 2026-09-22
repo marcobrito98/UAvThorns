@@ -727,6 +727,31 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
   const CCTK_REAL gamma2 = 1. / (1. - bs_v2);
   const CCTK_REAL gamma = sqrt(gamma2);
 
+  // Active spatial rotation of the star, applied in its rest frame before the boost.
+  const CCTK_REAL rotation_axis_norm = sqrt(rotation_axis[0] * rotation_axis[0] +
+                                            rotation_axis[1] * rotation_axis[1] +
+                                            rotation_axis[2] * rotation_axis[2]);
+  if (rotation_angle != 0. && rotation_axis_norm == 0.) {
+    CCTK_VERROR("rotation_axis must be nonzero when rotation_angle is nonzero.");
+  }
+  const CCTK_REAL nx = rotation_axis_norm == 0. ? 0. : rotation_axis[0] / rotation_axis_norm;
+  const CCTK_REAL ny = rotation_axis_norm == 0. ? 0. : rotation_axis[1] / rotation_axis_norm;
+  const CCTK_REAL nz = rotation_axis_norm == 0. ? 0. : rotation_axis[2] / rotation_axis_norm;
+  const CCTK_REAL crotation = cos(rotation_angle);
+  const CCTK_REAL srotation = sin(rotation_angle);
+  const CCTK_REAL one_minus_crotation = 1. - crotation;
+  CCTK_REAL rotation[4][4] = {{0.}};
+  rotation[0][0] = 1.;
+  rotation[1][1] = crotation + nx * nx * one_minus_crotation;
+  rotation[1][2] = nx * ny * one_minus_crotation - nz * srotation;
+  rotation[1][3] = nx * nz * one_minus_crotation + ny * srotation;
+  rotation[2][1] = ny * nx * one_minus_crotation + nz * srotation;
+  rotation[2][2] = crotation + ny * ny * one_minus_crotation;
+  rotation[2][3] = ny * nz * one_minus_crotation - nx * srotation;
+  rotation[3][1] = nz * nx * one_minus_crotation - ny * srotation;
+  rotation[3][2] = nz * ny * one_minus_crotation + nx * srotation;
+  rotation[3][3] = crotation + nz * nz * one_minus_crotation;
+
   for (int k = 0; k < cctk_lsh[2]; ++k) { // code is in lab-frame coordinates. need to write functions as functions of rest frame coords
     for (int j = 0; j < cctk_lsh[1]; ++j) {
       for (int i = 0; i < cctk_lsh[0]; ++i) {
@@ -737,9 +762,14 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        const CCTK_REAL x1rest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL y1rest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL z1rest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL x1boostrest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL y1boostrest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL z1boostrest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+
+        // Sample the unrotated solution at R^T x_rest. This is an active rotation.
+        const CCTK_REAL x1rest = rotation[1][1] * x1boostrest + rotation[2][1] * y1boostrest + rotation[3][1] * z1boostrest;
+        const CCTK_REAL y1rest = rotation[1][2] * x1boostrest + rotation[2][2] * y1boostrest + rotation[3][2] * z1boostrest;
+        const CCTK_REAL z1rest = rotation[1][3] * x1boostrest + rotation[2][3] * y1boostrest + rotation[3][3] * z1boostrest;
 
         const CCTK_REAL hx = mu * x1rest;
         const CCTK_REAL hy = mu * y1rest;
@@ -1024,9 +1054,14 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         const CCTK_REAL y1 = y[ind] - y0;
         const CCTK_REAL z1 = z[ind] - z0;
 
-        const CCTK_REAL x1rest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL y1rest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
-        const CCTK_REAL z1rest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL x1boostrest = x1 + gamma2 / (gamma + 1.) * bs_vx * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL y1boostrest = y1 + gamma2 / (gamma + 1.) * bs_vy * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+        const CCTK_REAL z1boostrest = z1 + gamma2 / (gamma + 1.) * bs_vz * (bs_vx * x1 + bs_vy * y1 + bs_vz * z1);
+
+        // The rotation is performed before the boost, so sample the canonical star at R^T x_rest.
+        const CCTK_REAL x1rest = rotation[1][1] * x1boostrest + rotation[2][1] * y1boostrest + rotation[3][1] * z1boostrest;
+        const CCTK_REAL y1rest = rotation[1][2] * x1boostrest + rotation[2][2] * y1boostrest + rotation[3][2] * z1boostrest;
+        const CCTK_REAL z1rest = rotation[1][3] * x1boostrest + rotation[2][3] * y1boostrest + rotation[3][3] * z1boostrest;
         const CCTK_REAL ttrest = gamma * (tt + (bs_vx * x1 + bs_vy * y1 + bs_vz * z1));
 
         CCTK_REAL hx = x1rest * mu, hy = y1rest * mu, hz = z1rest * mu, ht = mu * ttrest;
@@ -1179,6 +1214,34 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         dG[3][2][1] = dG[2][3][1];
         dG[3][2][2] = dG[2][3][2];
         dG[3][2][3] = dG[2][3][3];
+
+        // Rotate covariant rest-frame tensors after evaluating the star at R^T x_rest.
+        // Time is unchanged, so rotation[0][0] = 1 and all mixed time-space entries vanish.
+        CCTK_REAL rotated_G[4][4];
+        CCTK_REAL rotated_dG[4][4][4];
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            rotated_G[a][b] = 0.;
+            for (int chi = 0; chi < 4; ++chi)
+              for (int nu = 0; nu < 4; ++nu)
+                rotated_G[a][b] += rotation[a][chi] * rotation[b][nu] * G[chi][nu];
+
+            for (int c = 0; c < 4; ++c) {
+              rotated_dG[a][b][c] = 0.;
+              for (int chi = 0; chi < 4; ++chi)
+                for (int nu = 0; nu < 4; ++nu)
+                  for (int lam = 0; lam < 4; ++lam)
+                    rotated_dG[a][b][c] += rotation[a][chi] * rotation[b][nu] * rotation[c][lam] * dG[chi][nu][lam];
+            }
+          }
+        }
+        for (int a = 0; a < 4; ++a) {
+          for (int b = 0; b < 4; ++b) {
+            G[a][b] = rotated_G[a][b];
+            for (int c = 0; c < 4; ++c)
+              dG[a][b][c] = rotated_dG[a][b][c];
+          }
+        }
 
         for (int a = 0; a < 4; ++a) {
           for (int b = 0; b < 4; ++b) {
@@ -1810,6 +1873,35 @@ void UAv_IDProcaBSboostBH(CCTK_ARGUMENTS) {
         F2_unb[3][1] = -F2_unb[1][3];
         F2_unb[2][3] = dA2z_dy - dA2y_dz;
         F2_unb[3][2] = -F2_unb[2][3];
+
+        // Rotate the covariant potential and field strength in the rest frame.
+        CCTK_REAL rotated_A1[4], rotated_A2[4];
+        CCTK_REAL rotated_F1[4][4], rotated_F2[4][4];
+        for (int a = 0; a < 4; ++a) {
+          rotated_A1[a] = 0.;
+          rotated_A2[a] = 0.;
+          for (int chi = 0; chi < 4; ++chi) {
+            rotated_A1[a] += rotation[a][chi] * A1_unboosted[chi];
+            rotated_A2[a] += rotation[a][chi] * A2_unboosted[chi];
+          }
+          for (int b = 0; b < 4; ++b) {
+            rotated_F1[a][b] = 0.;
+            rotated_F2[a][b] = 0.;
+            for (int chi = 0; chi < 4; ++chi)
+              for (int nu = 0; nu < 4; ++nu) {
+                rotated_F1[a][b] += rotation[a][chi] * rotation[b][nu] * F1_unb[chi][nu];
+                rotated_F2[a][b] += rotation[a][chi] * rotation[b][nu] * F2_unb[chi][nu];
+              }
+          }
+        }
+        for (int a = 0; a < 4; ++a) {
+          A1_unboosted[a] = rotated_A1[a];
+          A2_unboosted[a] = rotated_A2[a];
+          for (int b = 0; b < 4; ++b) {
+            F1_unb[a][b] = rotated_F1[a][b];
+            F2_unb[a][b] = rotated_F2[a][b];
+          }
+        }
 
         CCTK_REAL A1_boosted[4]; // A_\chi real part
         CCTK_REAL A2_boosted[4]; // A_\chi imag part

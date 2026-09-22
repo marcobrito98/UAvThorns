@@ -93,6 +93,16 @@ REAL bs_vz "Velocity along z of the boson star. Incompatible with the Scalar Bos
   -1:1 :: "any number in this interval"
 } 0.0
 
+REAL rotation_angle "Active rotation angle of the Proca star, in radians, applied before the boost"
+{
+  *:* :: "any real angle"
+} 0.0
+
+REAL rotation_axis[3] "Axis of the active Proca-star rotation"
+{
+  *:* :: "any real vector; must be nonzero when rotation_angle is nonzero"
+} 0.0
+
 INT Wbar_r_power "power p in Wbar = r^p * W. For now, p=0,1,2 to make sense with asymptotic behavior. Default is p==2, mostly used in ProcaHairyBH initial data."
 {
   0:2 :: "0, 1 or 2"
